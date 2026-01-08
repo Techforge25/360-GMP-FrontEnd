@@ -10,11 +10,11 @@ export const Stepper = ({ currentStep, steps }) => {
   return (
     <div className="relative w-full max-w-4xl mx-auto mb-12 px-4">
       {/* Base line */}
-      <div className="absolute top-5 left-10 w-[calc(100%-8rem)] h-0.5 bg-border-light" />
+      <div className="absolute top-5 left-15 w-[calc(100%-8rem)] h-0.5 bg-border-light" />
 
       {/* Progress line */}
       <div
-        className="absolute top-5 left-10 h-0.5 bg-accent-success transition-all duration-300"
+        className="absolute top-5 left-15 h-0.5 bg-accent-success transition-all duration-300"
         style={{
           width: activeIndex === 0 ? "0%" : `calc(${rawProgress}% - 8rem)`,
         }}

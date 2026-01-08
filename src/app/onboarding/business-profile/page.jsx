@@ -23,16 +23,8 @@ import {
 import { BsBuilding } from "react-icons/bs";
 import { BsPersonFill } from "react-icons/bs";
 
-const FileUpload = ({ label, subLabel }) => (
-  <label className="border-2 border-dashed border-border-light rounded-lg p-8 text-center bg-surface hover:bg-surface-muted transition-colors cursor-pointer block">
-    <input type="file" className="hidden" />
-    <div className="w-10 h-10 bg-surface-elevated rounded-lg flex items-center justify-center mx-auto mb-3 shadow-sm border border-border-light">
-      <FiUpload className="text-brand-primary" />
-    </div>
-    <p className="text-sm font-medium text-brand-primary mb-1">{label}</p>
-    <p className="text-xs text-text-secondary">{subLabel}</p>
-  </label>
-);
+import { FileUpload } from "@/components/ui/FileUpload";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 const IndustryOptions = [
   "Manufacturing",
@@ -53,7 +45,20 @@ const CompanySizeOptions = [
   "501+ Employees",
 ];
 
-const Step1 = ({ formData, handleChange }) => (
+const formatYearMonth = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+  });
+};
+
+const isValidEmail = (email) => {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+};
+
+const Step1 = ({ formData, handleChange, setIsUploading }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div className="grid md:grid-cols-2 gap-6">
       <div className="space-y-2">
@@ -117,7 +122,7 @@ const Step1 = ({ formData, handleChange }) => (
         <div className="relative">
           <Input
             type="date"
-            classNames="block"
+            className="block"
             value={formData.foundedDate || ""}
             onChange={(e) => handleChange("foundedDate", e.target.value)}
           />
@@ -128,6 +133,7 @@ const Step1 = ({ formData, handleChange }) => (
         <div className="relative">
           <Input
             type="time"
+            className="block"
             value={formData.operatingHours || ""}
             onChange={(e) => handleChange("operatingHours", e.target.value)}
             placeholder="09:00"
@@ -159,22 +165,40 @@ const Step1 = ({ formData, handleChange }) => (
       <div className="space-y-2">
         <label className="text-sm font-medium">Profile Image</label>
         <FileUpload
-          label="Click To Upload Img • Drag & drop here"
-          subLabel="JPG,PNG, Max 100 Mb"
+          label="Upload Profile Image"
+          subLabel="JPG, PNG (Max 10MB)"
+          onUploadingChange={setIsUploading}
+          onUpload={(file, onProgress) =>
+            uploadToCloudinary(file, "business/profile", onProgress).then(
+              (url) => {
+                handleChange("profileImageUrl", url);
+                return url;
+              }
+            )
+          }
         />
       </div>
       <div className="space-y-2">
         <label className="text-sm font-medium">Banner Image</label>
         <FileUpload
-          label="Click To Upload Img • Drag & drop here"
-          subLabel="JPG,PNG, Max 100 Mb - Dimension 1440*300"
+          label="Upload Banner Image"
+          subLabel="Dimension 1440×300 (Max 10MB)"
+          onUploadingChange={setIsUploading}
+          onUpload={(file, onProgress) =>
+            uploadToCloudinary(file, "business/banner", onProgress).then(
+              (url) => {
+                handleChange("bannerImageUrl", url);
+                return url;
+              }
+            )
+          }
         />
       </div>
     </div>
   </div>
 );
 
-const Step2 = ({ formData, handleChange }) => (
+const Step2 = ({ formData, handleChange, setIsUploading }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div>
       <h3 className="text-lg font-semibold mb-4">Company Location</h3>
@@ -215,11 +239,22 @@ const Step2 = ({ formData, handleChange }) => (
           "TUV SUD",
           "FDA Approved",
           "Ethical Sourcing",
-        ].map((cert, i) => (
-          <label key={i} className="flex items-center space-x-2 cursor-pointer">
+        ].map((cert) => (
+          <label key={cert} className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
-              className="rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
+              checked={(formData.compliances || []).includes(cert)}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  handleChange("compliances", [...formData.compliances, cert]);
+                } else {
+                  handleChange(
+                    "compliances",
+                    formData.compliances.filter((c) => c !== cert)
+                  );
+                }
+              }}
+              className="rounded border-gray-300 text-brand-primary"
             />
             <span className="text-sm text-text-secondary">{cert}</span>
           </label>
@@ -231,17 +266,19 @@ const Step2 = ({ formData, handleChange }) => (
       <label className="text-sm font-medium">
         Upload Certification Document
       </label>
-      <div className="border-2 border-dashed border-border-light rounded-lg p-6 flex flex-col items-center justify-center bg-surface">
-        <h4 className="font-semibold text-brand-primary mb-1">
-          Upload Document
-        </h4>
-        <p className="text-xs text-text-secondary mb-4">
-          PDF, DOC, DOCX, JPG, PNG (Max 5MB)
-        </p>
-        <Button className="bg-indigo-900 text-white hover:bg-indigo-800 gap-2">
-          <FiUpload /> Upload
-        </Button>
-      </div>
+      <FileUpload
+        label="Upload Certification Document"
+        subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
+        onUploadingChange={setIsUploading}
+        onUpload={(file, onProgress) =>
+          uploadToCloudinary(file, "business/certifications", onProgress).then(
+            (url) => {
+              handleChange("certificationDocUrl", url);
+              return url;
+            }
+          )
+        }
+      />
     </div>
 
     <div>
@@ -283,23 +320,32 @@ const Step2 = ({ formData, handleChange }) => (
 const Step3 = ({ formData }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div className="relative h-48 w-full rounded-xl mb-12">
-      <Image
-        src="/assets/images/placeholderBanner.jpg"
-        alt="Banner"
-        fill
-        className="object-cover rounded-xl"
-        priority
-      />
+      {formData.bannerImageUrl && (
+        <Image
+          src={
+            formData.bannerImageUrl || "/assets/images/placeholderBanner.jpg"
+          }
+          alt="Banner"
+          fill
+          className="object-cover rounded-xl"
+          priority
+        />
+      )}
 
       <div className="absolute -bottom-10 left-8">
         <div className="w-24 h-24 bg-white rounded-lg shadow-lg border border-border-light p-2">
-          <Image
-            src="/assets/images/Portrait_Placeholder.png"
-            alt="Portrait_Placeholder"
-            width={96}
-            height={96}
-            className="object-contain"
-          />
+          {formData.profileImageUrl && (
+            <Image
+              src={
+                formData.profileImageUrl ||
+                "/assets/images/Portrait_Placeholder.png"
+              }
+              alt="Portrait_Placeholder"
+              width={96}
+              height={96}
+              className="object-contain"
+            />
+          )}
         </div>
       </div>
     </div>
@@ -314,9 +360,11 @@ const Step3 = ({ formData }) => (
         </span>
         <span className="flex items-center gap-1">
           <FiCalendar />{" "}
-          {formData.foundedDate
-            ? new Date(formData.foundedDate).getFullYear()
-            : "3 yrs"}
+          <p className="text-sm text-text-secondary">
+            {formData.foundedDate
+              ? formatYearMonth(formData.foundedDate)
+              : "August 2021"}
+          </p>
         </span>
         <span className="flex items-center gap-1">
           <FiMapPin /> {formData.city || "Ottawa"},{" "}
@@ -402,6 +450,10 @@ export default function BusinessProfilePage() {
     contactTitle: "",
     contactPhone: "",
     contactEmail: "",
+    profileImageUrl: "",
+    bannerImageUrl: "",
+    certificationDocUrl: "",
+    compliances: [],
   });
 
   const router = useRouter();
@@ -412,6 +464,24 @@ export default function BusinessProfilePage() {
 
   const onSubmit = async () => {
     setError("");
+
+    console.log(formData);
+
+    if (
+      !formData.companyName ||
+      !formData.industry ||
+      !formData.contactEmail ||
+      !formData.country ||
+      !formData.city
+    ) {
+      setError("Please fill all required fields before submitting.");
+      return false;
+    }
+
+    if (!isValidEmail(formData.contactEmail)) {
+      setError("Please enter a valid email address.");
+      return false;
+    }
 
     try {
       const res = await fetch(
@@ -425,35 +495,36 @@ export default function BusinessProfilePage() {
 
       const data = await res.json();
 
-      if (res.ok) {
-        // Success handled by showing modal or redirect
-      } else {
+      if (!res.ok) {
         setError(data.message || "Signup failed");
-        setIsSuccessModalOpen(false); // Don't show success if failed
-        // In a real app we might stay on the review page and show error
+        return false;
       }
+
+      return true;
     } catch (err) {
       setError("Something went wrong. Please try again.");
       console.error(err);
-      setIsSuccessModalOpen(false);
-    } finally {
-      setIsLoading(false);
+      return false;
     }
   };
 
-  const handleNext = () => {
-    const changed = nextStep();
-    if (!changed) {
-      // If nextStep returned false, we are at the end
-      setIsLoading(true);
-      onSubmit().then(() => {
-        // If no error, show success modal
-        // For now, let's assume if it reaches here it's "success" UI flow
-        // But ideally we check result of onSubmit.
-        // Since onSubmit is async void here, we rely on the implementation.
-        // Let's modify logic to open modal immediately for demo or after success.
-        setIsSuccessModalOpen(true);
-      });
+  const handleNext = async () => {
+    if (isUploading) {
+      setError("Please wait for uploads to finish.");
+      return;
+    }
+
+    if (currentStep < steps.length) {
+      nextStep();
+      return;
+    }
+
+    setIsLoading(true);
+    const success = await onSubmit();
+    setIsLoading(false);
+
+    if (success) {
+      setIsSuccessModalOpen(true);
     }
   };
 
@@ -468,6 +539,8 @@ export default function BusinessProfilePage() {
       router.push("/onboarding/plans");
     }
   };
+
+  const [isUploading, setIsUploading] = useState(false);
 
   return (
     <div className="min-h-screen">
@@ -487,10 +560,18 @@ export default function BusinessProfilePage() {
           )}
 
           {currentStep === 1 && (
-            <Step1 formData={formData} handleChange={handleChange} />
+            <Step1
+              formData={formData}
+              handleChange={handleChange}
+              setIsUploading={setIsUploading}
+            />
           )}
           {currentStep === 2 && (
-            <Step2 formData={formData} handleChange={handleChange} />
+            <Step2
+              formData={formData}
+              handleChange={handleChange}
+              setIsUploading={setIsUploading}
+            />
           )}
           {currentStep === 3 && <Step3 formData={formData} />}
         </CardContent>
@@ -506,10 +587,13 @@ export default function BusinessProfilePage() {
           <div className="flex gap-4">
             <Button
               onClick={handleNext}
-              isLoading={isLoading}
-              className="bg-indigo-900 hover:bg-indigo-800 text-white min-w-[140px]"
+              isLoading={isLoading || isUploading}
+              disabled={isUploading}
+              className="min-w-[140px]"
             >
-              {currentStep === steps.length
+              {isUploading
+                ? "Uploading..."
+                : currentStep === steps.length
                 ? "Submit Profile For Verification"
                 : "Next"}
               <FiArrowRight className="ml-2" />

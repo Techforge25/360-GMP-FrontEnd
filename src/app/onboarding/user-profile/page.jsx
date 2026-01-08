@@ -14,27 +14,22 @@ import {
   FiArrowRight,
   FiUpload,
   FiChevronDown,
-  FiCalendar,
-  FiClock,
-  FiMapPin,
   FiPlus,
 } from "react-icons/fi";
-import { BsPersonFill } from "react-icons/bs";
 
-// --- Components ---
+import { FileUpload } from "@/components/ui/FileUpload";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
-const FileUpload = ({ label, subLabel }) => (
-  <label className="border-2 border-dashed border-border-light rounded-lg p-8 text-center bg-surface hover:bg-surface-muted transition-colors cursor-pointer block h-full flex flex-col items-center justify-center">
-    <input type="file" className="hidden" />
-    <div className="w-10 h-10 bg-surface-elevated rounded-lg flex items-center justify-center mx-auto mb-3 shadow-sm border border-border-light">
-      <FiUpload className="text-brand-primary" />
-    </div>
-    <p className="text-sm font-medium text-brand-primary mb-1">{label}</p>
-    <p className="text-xs text-text-secondary">{subLabel}</p>
-  </label>
-);
-
-// --- Steps ---
+const IndustryOptions = [
+  "Manufacturing",
+  "Technology",
+  "Retail",
+  "Healthcare",
+  "Finance",
+  "Construction",
+  "Education",
+  "Other",
+];
 
 const Step1 = ({ formData, handleChange }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -52,21 +47,61 @@ const Step1 = ({ formData, handleChange }) => (
         <div className="space-y-2">
           <label className="text-sm font-medium">Current Title / Role</label>
           <div className="relative">
-            <Input placeholder="e.g Supply Chain Analyst" />
-            <FiChevronDown className="absolute right-3 top-3 text-text-secondary" />
+            <select
+              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+              placeholder="e.g Supply Chain Analyst"
+              value={formData.currentTitle || ""}
+              onChange={(e) => handleChange("currentTitle", e.target.value)}
+            >
+              <option value="">Select Title</option>
+              {IndustryOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
           </div>
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">Contact Phone Number</label>
-          <Input placeholder="+128895949965" />
+          <Input
+            placeholder="+128895949965"
+            value={formData.phone || ""}
+            onChange={(e) => handleChange("phone", e.target.value)}
+          />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">
+          {/* <label className="text-sm font-medium">
             Location (City,State,Country)
-          </label>
-          <div className="relative">
-            <Input placeholder="e.g San Francisco, CA ,USA" />
-            <FiChevronDown className="absolute right-3 top-3 text-text-secondary" />
+          </label> */}
+          <div>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Country</label>
+                <Input
+                  placeholder="e.g Canada"
+                  value={formData.country || ""}
+                  onChange={(e) => handleChange("country", e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">City</label>
+                <Input
+                  placeholder="Ottawa"
+                  value={formData.city || ""}
+                  onChange={(e) => handleChange("city", e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Address Line</label>
+                <Input
+                  placeholder="street address"
+                  value={formData.address || ""}
+                  onChange={(e) => handleChange("address", e.target.value)}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -75,57 +110,247 @@ const Step1 = ({ formData, handleChange }) => (
     <div className="space-y-2">
       <label className="text-sm font-medium">Description</label>
       <textarea
-        className="w-full min-h-[150px] rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+        className="w-full min-h-[150px] rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
         placeholder="..."
+        value={formData.bio || ""}
+        onChange={(e) => handleChange("bio", e.target.value)}
       ></textarea>
     </div>
   </div>
 );
 
-const Step2 = ({ formData, handleChange }) => (
-  <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-    <div className="space-y-4">
-      <h3 className="text-lg font-semibold">Upload your resume</h3>
-      <div className="border border-dashed border-border-light border-indigo-100 bg-indigo-50/20 rounded-xl p-10 text-center">
-        <div className="flex flex-col items-center justify-center">
-          <h4 className="font-semibold mb-1">Upload Document</h4>
-          <p className="text-xs text-text-secondary mb-4">
-            PDF, DOC, DOCX, JPG, PNG (Max 5MB)
-          </p>
-          <Button className="bg-indigo-900 text-white hover:bg-indigo-800 gap-2 min-w-[120px]">
-            <FiUpload /> Upload
-          </Button>
+const Step2 = ({ formData, handleChange, setIsUploading }) => {
+  const [showEducationForm, setShowEducationForm] = useState(false);
+  const [educationDraft, setEducationDraft] = useState({
+    institution: "",
+    degree: "",
+    fieldOfStudy: "",
+    startDate: "",
+    endDate: "",
+    isCurrent: false,
+    description: "",
+    grade: "",
+  });
+
+  const handleSaveEducation = () => {
+    const {
+      institution,
+      degree,
+      fieldOfStudy,
+      startDate,
+      endDate,
+      isCurrent,
+      description,
+      grade,
+    } = educationDraft;
+
+    if (
+      !institution ||
+      !degree ||
+      !fieldOfStudy ||
+      !startDate ||
+      (!isCurrent && !endDate) ||
+      !description ||
+      !grade
+    ) {
+      alert("Please fill all education fields");
+      return;
+    }
+
+    handleChange("education", [...formData.education, educationDraft]);
+
+    setEducationDraft({
+      institution: "",
+      degree: "",
+      fieldOfStudy: "",
+      startDate: "",
+      endDate: "",
+      isCurrent: false,
+      description: "",
+      grade: "",
+    });
+
+    setShowEducationForm(false);
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Upload your resume</h3>
+        <FileUpload
+          label="Upload Resume"
+          subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
+          onUploadingChange={setIsUploading}
+          onUpload={(file, onProgress) =>
+            uploadToCloudinary(file, "user/resume", onProgress).then((url) => {
+              handleChange("resumeUrl", url);
+              return url;
+            })
+          }
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-sm font-medium">
+          Key Skills/Expertise(Mandatory)
+        </label>
+        <Input
+          placeholder="e.g Python,Java,Figma,"
+          value={formData.skills || ""}
+          onChange={(e) => handleChange("skills", e.target.value)}
+        />
+      </div>
+
+      <div className="space-y-4">
+        <label className="text-sm font-medium">Education</label>
+
+        <p className="text-xs text-text-secondary">
+          {formData.education.length} Education Entries Added
+        </p>
+
+        <div className="space-y-2">
+          {formData.education.map((edu, index) => (
+            <div key={index} className="border rounded-lg p-4 bg-surface">
+              <p className="text-sm font-medium">
+                {edu.degree} in {edu.fieldOfStudy}
+              </p>
+              <p className="text-xs text-text-secondary">{edu.institution}</p>
+              <p className="text-xs text-text-secondary">
+                {edu.startDate} – {edu.isCurrent ? "Present" : edu.endDate}
+              </p>
+            </div>
+          ))}
         </div>
+
+        {!showEducationForm && formData.education.length < 3 && (
+          <button
+            type="button"
+            onClick={() => setShowEducationForm(true)}
+            className="w-full border border-dashed border-border-light rounded-lg p-4 flex items-center gap-3 text-text-secondary hover:bg-gray-50 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
+              <FiPlus />
+            </div>
+            <span className="text-sm font-medium">Add Education</span>
+          </button>
+        )}
+
+        {showEducationForm && (
+          <div className="border rounded-lg p-4 space-y-3 bg-white">
+            <Input
+              placeholder="Institution"
+              value={educationDraft.institution}
+              onChange={(e) =>
+                setEducationDraft((p) => ({
+                  ...p,
+                  institution: e.target.value,
+                }))
+              }
+            />
+
+            <Input
+              placeholder="Degree"
+              value={educationDraft.degree}
+              onChange={(e) =>
+                setEducationDraft((p) => ({ ...p, degree: e.target.value }))
+              }
+            />
+
+            <Input
+              placeholder="Field of Study"
+              value={educationDraft.fieldOfStudy}
+              onChange={(e) =>
+                setEducationDraft((p) => ({
+                  ...p,
+                  fieldOfStudy: e.target.value,
+                }))
+              }
+            />
+
+            <div className="flex gap-2">
+              <Input
+                type="date"
+                className="block"
+                value={educationDraft.startDate}
+                onChange={(e) =>
+                  setEducationDraft((p) => ({
+                    ...p,
+                    startDate: e.target.value,
+                  }))
+                }
+              />
+
+              <Input
+                type="date"
+                className="block"
+                disabled={educationDraft.isCurrent}
+                value={educationDraft.endDate}
+                onChange={(e) =>
+                  setEducationDraft((p) => ({ ...p, endDate: e.target.value }))
+                }
+              />
+            </div>
+
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={educationDraft.isCurrent}
+                onChange={(e) =>
+                  setEducationDraft((p) => ({
+                    ...p,
+                    isCurrent: e.target.checked,
+                    endDate: e.target.checked ? "" : p.endDate,
+                  }))
+                }
+              />
+              Currently studying here
+            </label>
+
+            <Input
+              placeholder="Grade (e.g. GPA 3.8 / First Class)"
+              value={educationDraft.grade}
+              onChange={(e) =>
+                setEducationDraft((p) => ({ ...p, grade: e.target.value }))
+              }
+            />
+
+            <textarea
+              className="w-full min-h-[80px] rounded-md border border-border-light px-3 py-2 text-sm"
+              placeholder="Description"
+              value={educationDraft.description}
+              onChange={(e) =>
+                setEducationDraft((p) => ({
+                  ...p,
+                  description: e.target.value,
+                }))
+              }
+            />
+
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowEducationForm(false)}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSaveEducation}>Save</Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
-
-    <div className="space-y-2">
-      <label className="text-sm font-medium">
-        Key Skills/Expertise(Mandatory)
-      </label>
-      <Input placeholder="e.g Python,Java,Figma," />
-    </div>
-
-    <div className="space-y-4">
-      <label className="text-sm font-medium">Education</label>
-      <p className="text-xs text-text-secondary">
-        No Education Entries Added Yet
-      </p>
-      <button className="w-full border border-dashed border-border-light rounded-lg p-4 flex items-center gap-3 text-text-secondary hover:bg-gray-50 transition-colors">
-        <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
-          <FiPlus />
-        </div>
-        <span className="text-sm font-medium">Add Education</span>
-      </button>
-    </div>
-  </div>
-);
+  );
+};
 
 const Step3 = ({ formData, handleChange }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div className="space-y-2">
       <label className="text-sm font-medium">Target Job Title</label>
-      <Input placeholder="e.g Python,Java,Figma," />
+      <Input
+        placeholder="e.g Supply Chain Analyst"
+        value={formData.jobTitle || ""}
+        onChange={(e) => handleChange("jobTitle", e.target.value)}
+      />
       <p className="text-xs text-text-secondary">
         This Focus Your Job Recomendation
       </p>
@@ -135,13 +360,22 @@ const Step3 = ({ formData, handleChange }) => (
       <label className="text-sm font-medium mb-3 block">Employment Type</label>
       <div className="space-y-3">
         {["Full Time", "Remote", "Contract", "Hybrid", "Part-Time"].map(
-          (type, i) => (
-            <label key={i} className="flex items-center gap-3 cursor-pointer">
+          (type) => (
+            <label
+              key={type}
+              className="flex items-center gap-3 cursor-pointer"
+            >
               <div className="relative flex items-center">
                 <input
                   type="checkbox"
                   className="w-4 h-4 rounded border-border-light text-brand-primary focus:ring-brand-primary"
-                  defaultChecked={i === 1}
+                  checked={formData.employeeType.includes(type)}
+                  onChange={(e) => {
+                    const newTypes = e.target.checked
+                      ? [...formData.employeeType, type]
+                      : formData.employeeType.filter((t) => t !== type);
+                    handleChange("employeeType", newTypes);
+                  }}
                 />
               </div>
               <span className="text-sm text-text-secondary font-medium">
@@ -158,22 +392,17 @@ const Step3 = ({ formData, handleChange }) => (
         Preferred Annual Salary Range (USD)
       </label>
       <div className="grid grid-cols-2 gap-4">
-        <Input placeholder="Min ($)" />
-        <Input placeholder="Max ($)" />
+        <Input
+          placeholder="Min ($)"
+          value={formData.minSalary || ""}
+          onChange={(e) => handleChange("minSalary", e.target.value)}
+        />
+        <Input
+          placeholder="Max ($)"
+          value={formData.maxSalary || ""}
+          onChange={(e) => handleChange("maxSalary", e.target.value)}
+        />
       </div>
-    </div>
-
-    <div className="space-y-4">
-      <label className="text-sm font-medium">Education</label>
-      <p className="text-xs text-text-secondary">
-        No Education Entries Added Yet
-      </p>
-      <button className="w-full border border-dashed border-border-light rounded-lg p-4 flex items-center gap-3 text-text-secondary hover:bg-gray-50 transition-colors">
-        <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
-          <FiPlus />
-        </div>
-        <span className="text-sm font-medium">Add Education</span>
-      </button>
     </div>
 
     <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-sm text-orange-800">
@@ -193,8 +422,6 @@ const Step3 = ({ formData, handleChange }) => (
   </div>
 );
 
-// --- Main Page ---
-
 export default function UserProfilePage() {
   const steps = [
     { id: 1, label: "Personal Information" },
@@ -204,18 +431,101 @@ export default function UserProfilePage() {
 
   const { currentStep, nextStep, prevStep } = useStepper(1, steps.length);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [formData, setFormData] = useState({
     fullName: "",
-    // ...
+    currentTitle: "",
+    phone: "",
+    // location: "",
+    country: "",
+    city: "",
+    address: "",
+    bio: "",
+    skills: "",
+    jobTitle: "",
+    minSalary: "",
+    education: [],
+    maxSalary: "",
+    employeeType: [],
+    resumeUrl: "",
   });
   const router = useRouter();
 
-  const handleNext = () => {
-    if (currentStep === steps.length) {
-      setIsSuccessModalOpen(true);
-    } else {
+  const handleSubmit = async () => {
+    setLoading(true);
+    setError("");
+
+    // testing
+    console.log(formData);
+
+    if (
+      !formData.fullName ||
+      !formData.currentTitle ||
+      !formData.phone ||
+      !formData.city ||
+      !formData.country ||
+      !formData.address ||
+      !formData.bio ||
+      !formData.skills ||
+      !formData.jobTitle ||
+      !formData.minSalary ||
+      !formData.maxSalary ||
+      !formData.resumeUrl ||
+      formData.employeeType.length === 0 ||
+      formData.education.length === 0
+    ) {
+      setError("Please fill all required fields before submitting.");
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/userProfile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Signup failed");
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+      console.error(err);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleNext = async () => {
+    if (currentStep < steps.length) {
       nextStep();
+      return;
+    }
+
+    if (isUploading) {
+      setError("Please wait for file upload to finish.");
+      return;
+    }
+
+    setLoading(true);
+    const success = await handleSubmit();
+    setLoading(false);
+
+    if (success) {
+      setIsSuccessModalOpen(true);
     }
   };
 
@@ -233,6 +543,7 @@ export default function UserProfilePage() {
   const handleSuccessNext = () => {
     router.push("/dashboard");
   };
+  const [isUploading, setIsUploading] = useState(false);
 
   return (
     <div className="min-h-screen">
@@ -245,11 +556,21 @@ export default function UserProfilePage() {
         </div>
 
         <CardContent className="p-8 pt-4">
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm text-center">
+              {error}
+            </div>
+          )}
+
           {currentStep === 1 && (
             <Step1 formData={formData} handleChange={handleChange} />
           )}
           {currentStep === 2 && (
-            <Step2 formData={formData} handleChange={handleChange} />
+            <Step2
+              formData={formData}
+              handleChange={handleChange}
+              setIsUploading={setIsUploading}
+            />
           )}
           {currentStep === 3 && (
             <Step3 formData={formData} handleChange={handleChange} />
@@ -257,19 +578,27 @@ export default function UserProfilePage() {
         </CardContent>
 
         <div className="p-8 border-t border-border-light flex justify-between items-center">
-          <button
+          <Button
+            variant="outline"
             onClick={handleBack}
-            className="flex items-center gap-2 text-text-secondary hover:text-brand-primary font-medium"
+            className="flex items-center gap-2"
           >
             <FiArrowLeft /> Back
-          </button>
+          </Button>
 
           <div className="flex gap-4">
             <Button
+              variant="default"
               onClick={handleNext}
-              className="bg-indigo-900 hover:bg-indigo-800 text-white min-w-[140px]"
+              isLoading={loading || isUploading}
+              disabled={isUploading}
+              className="min-w-[140px]"
             >
-              {currentStep === steps.length ? "Submit" : "Next"}{" "}
+              {isUploading
+                ? "Uploading..."
+                : currentStep === steps.length
+                ? "Submit"
+                : "Next"}{" "}
               <FiArrowRight className="ml-2" />
             </Button>
           </div>
