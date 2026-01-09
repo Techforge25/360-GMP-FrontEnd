@@ -11,12 +11,16 @@ import {
 } from "@/components/ui/Card";
 import { RoleSelectionCard } from "@/components/ui/RoleSelectionCard";
 
+import { useUserRole } from "@/context/UserContext";
+
 export default function RoleSelectionPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState("business");
+  const { setOnboardingRole } = useUserRole();
 
   const handleContinue = () => {
-    router.push(`/onboarding/plans?role=${selectedRole}`);
+    setOnboardingRole(selectedRole);
+    router.push(`/onboarding/plans`);
   };
 
   return (

@@ -9,6 +9,7 @@ import { FiCheck, FiX } from "react-icons/fi";
 import { FaCrown, FaPaypal, FaStripe, FaBitcoin } from "react-icons/fa";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BsCheckCircleFill } from "react-icons/bs";
+import { useUserRole } from "@/context/UserContext";
 
 const CheckItem = ({ children }) => (
   <div className="flex items-start gap-3">
@@ -77,7 +78,7 @@ const PlanCard = ({
           </span>
         )}
         <h3 className="text-5xl font-semibold mb-1 flex items-baseline justify-center gap-1">
-          {price}
+          ${price}
           <span className="text-base font-normal text-text-secondary">
             {period}
           </span>
@@ -265,7 +266,11 @@ const ConfirmationModal = ({
 function PlansList() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const role = searchParams.get("role") || "user";
+
+  const { onboardingRole } = useUserRole();
+
+  // Prefer context role, fallback to query param, default to "user"
+  const role = onboardingRole || searchParams.get("role") || "user";
   const isBusiness = role === "business";
 
   const [subscription, setSubscription] = useState(null);
@@ -290,29 +295,23 @@ function PlansList() {
     fetchPlans();
   }, []);
 
-  const handleSelectPlan = (planId, planName) => {
-    // Logic for Business Users
-    if (isBusiness) {
-      if (planId === "trial") {
-        // Show Error Modal immediatey
-        setConfirmationData({
-          featureName: planName,
-          isError: true,
-          message: "Thank You! Your Account Is Now 14 Day Trial!", // The header says confirmed even in error image
-        });
-        return;
-      }
+  const handleSelectPlan = (plan) => {
+    if (isBusiness && !plan.allowsBusinessAccess) {
+      setConfirmationData({
+        featureName: plan.name,
+        isError: true,
+        message: "This plan is not available for business accounts.",
+      });
+      return;
     }
 
-    // For paid plans, show payment modal
-    if (planId !== "trial") {
-      setPaymentPlan({ id: planId, name: planName });
+    if (plan.price > 0) {
+      setPaymentPlan({ id: plan.backendId, name: plan.name });
     } else {
-      // User taking trial - direct success
       setConfirmationData({
-        featureName: planName,
+        featureName: plan.name,
         isError: false,
-        message: "Thank You! Your Account Is Now 14 Day Trial!",
+        message: "Thank you! Your trial has started.",
       });
     }
   };
@@ -333,7 +332,7 @@ function PlansList() {
       setConfirmationData(null);
       return;
     }
-    router.push(`/onboarding/business-profile?role=${role}`);
+    router.push(`/onboarding/business-profile`);
   };
 
   if (loading) {
@@ -367,19 +366,25 @@ function PlansList() {
       color: "orange",
       buttonText: isBusiness ? "Upgrade to Silver" : "Buy Membership",
     },
-    gold: {
-      id: "gold",
+    premium: {
+      id: "premium",
       variant: "purple",
       color: "purple",
-      buttonText: isBusiness ? "Upgrade to Gold" : "Buy Membership",
+      buttonText: isBusiness ? "Upgrade to Premium" : "Buy Membership",
     },
   };
 
   const subscriptionPlans = subscription.data.map((plan) => {
-    const uiConfig = subscribePlansColor[plan.id] || subscribePlansColor.trial;
+    const planKey = plan.name ? plan.name.toLowerCase() : "trial";
+    const uiConfig = subscribePlansColor[planKey] || subscribePlansColor.trial;
 
     return {
-      ...plan,
+      id: planKey,
+      backendId: plan._id,
+      name: plan.name,
+      price: plan.price,
+      description: plan.description,
+      allowsBusinessAccess: plan.allowsBusinessAccess,
       variant: uiConfig.variant,
       color: uiConfig.color,
       buttonText: uiConfig.buttonText,
@@ -401,17 +406,17 @@ function PlansList() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6 justify-center items-center md:items-stretch">
-        {subscriptionPlans.map((plan, index) => (
+        {subscriptionPlans.map((plan) => (
           <PlanCard
-            key={`${plan.id}-${index}`}
+            key={plan.backendId}
             title={plan.name}
             price={plan.price}
-            badge={plan.badge}
+            badge={plan.name}
             description={plan.description}
             buttonText={plan.buttonText}
             variant={plan.variant}
             features={plan.features}
-            onSelect={() => handleSelectPlan(plan.id, plan.name)}
+            onSelect={() => handleSelectPlan(plan)}
           />
         ))}
 
