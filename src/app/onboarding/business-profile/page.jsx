@@ -22,7 +22,7 @@ import {
 } from "react-icons/fi";
 import { BsBuilding } from "react-icons/bs";
 import { BsPersonFill } from "react-icons/bs";
-
+import api from "@/lib/axios";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 
@@ -483,26 +483,21 @@ export default function BusinessProfilePage() {
       return false;
     }
 
+    // ... inside component
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/businessProfile`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await api.post({
+        url: "/auth/businessProfile",
+        payload: formData,
+      });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Signup failed");
+      if (!response.success) {
+        setError(response.message || "Signup failed");
         return false;
       }
 
       return true;
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(err.message || "Something went wrong. Please try again.");
       console.error(err);
       return false;
     }
@@ -529,7 +524,7 @@ export default function BusinessProfilePage() {
   };
 
   const handleSuccessNext = () => {
-    router.push("/dashboard");
+    router.push("/dashboard/business");
   };
 
   const handleBack = () => {

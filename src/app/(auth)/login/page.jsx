@@ -12,14 +12,17 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/Card";
+import api from "@/lib/axios";
+import { useUserRole } from "@/context/UserContext";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { login } = useUserRole();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,24 +30,55 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, passwordHash: password }),
+      const res = await api.post({
+        url: `/auth/user/login`,
+        payload: {
+          email,
+          passwordHash: password,
+        },
+      });
+
+      if (res.success) {
+        console.log("Logged in:", res.data);
+        login(res.data);
+
+        // Check isNew field to decide navigation
+        if (res.data.isNew) {
+          router.push("/onboarding/role");
+        } else {
+          // If not new, send to dashboard based on role (or default dashboard)
+          // If role is missing, default to role selection anyway as a fallback
+          const role = res.data.role;
+          if (role === "business") router.push("/dashboard/business");
+          else if (role === "user") router.push("/dashboard/user");
+          else router.push("/dashboard");
         }
-      );
-
-      const data = await res.json();
-
-      if (res.ok) {
-        console.log("Logged in:", data);
-
-        // onboarding/business-profile?role=business
-        router.push("/onboarding/role");
       } else {
-        setError(data.message || "Login failed");
+        setError(res.message || "Login failed");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await api.get({
+        url: `/auth/logout`,
+      });
+
+      if (res.success) {
+        console.log("Logged out:", res.data);
+
+        router.push("/login");
+      } else {
+        setError(res.message || "Logout failed");
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
@@ -149,6 +183,7 @@ export default function LoginPage() {
         <Button
           variant="outline"
           className="w-full h-11 border-border-light text-text-primary font-medium hover:bg-surface-muted relative"
+          onClick={handleGoogleLogin}
         >
           <div className="absolute left-4">
             <FcGoogle className="h-5 w-5" />

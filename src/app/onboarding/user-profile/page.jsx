@@ -16,7 +16,7 @@ import {
   FiChevronDown,
   FiPlus,
 } from "react-icons/fi";
-
+import api from "@/lib/axios";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 
@@ -480,28 +480,21 @@ export default function UserProfilePage() {
       return;
     }
 
+    // ... inside component
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/userProfile`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await api.post({
+        url: "/auth/userProfile",
+        payload: formData,
+      });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Signup failed");
+      if (!response.success) {
+        setError(response.message || "Signup failed");
         return false;
       }
 
       return true;
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(err.message || "Something went wrong. Please try again.");
       console.error(err);
       return false;
     } finally {
@@ -541,7 +534,7 @@ export default function UserProfilePage() {
   };
 
   const handleSuccessNext = () => {
-    router.push("/dashboard");
+    router.push("/dashboard/user");
   };
   const [isUploading, setIsUploading] = useState(false);
 

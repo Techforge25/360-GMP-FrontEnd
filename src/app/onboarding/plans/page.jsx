@@ -10,6 +10,7 @@ import { FaCrown, FaPaypal, FaStripe, FaBitcoin } from "react-icons/fa";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { useUserRole } from "@/context/UserContext";
+import api from "@/lib/axios";
 
 const CheckItem = ({ children }) => (
   <div className="flex items-start gap-3">
@@ -282,9 +283,8 @@ function PlansList() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/plan`);
-        const data = await res.json();
-        setSubscription(data);
+        const response = await api.get({ url: "/plan" });
+        setSubscription(response);
       } catch (err) {
         console.error("Failed to fetch plans", err);
       } finally {
@@ -332,7 +332,12 @@ function PlansList() {
       setConfirmationData(null);
       return;
     }
-    router.push(`/onboarding/business-profile`);
+
+    if (isBusiness) {
+      router.push(`/onboarding/business-profile`);
+    } else {
+      router.push(`/onboarding/user-profile`);
+    }
   };
 
   if (loading) {
@@ -419,27 +424,6 @@ function PlansList() {
             onSelect={() => handleSelectPlan(plan)}
           />
         ))}
-
-        {/* Premium/Gold - Commented out or waiting for data index 2 */}
-        {/*
-        {subscription.data[2] && (
-            <PlanCard
-              title={subscription.data[2].name}
-              price={subscription.data[2].price}
-              badge="Premium"
-              description="Best for established enterprises"
-              buttonText={isBusiness ? "Upgrade to Premium" : "Buy Membership"}
-              variant="purple"
-              features={[
-                "Buy bulk products (unlimited quantity)",
-                "Send up to 150 messages to businesses",
-                "Join up to 50 paid communities",
-                "Advanced analytics access",
-              ]}
-              onSelect={() => handleSelectPlan("premium", "Premium")}
-            />
-        )}
-        */}
       </div>
 
       <div className="text-center mt-12 text-sm text-text-secondary flex items-center justify-center gap-2">

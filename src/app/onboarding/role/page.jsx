@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -16,7 +16,15 @@ import { useUserRole } from "@/context/UserContext";
 export default function RoleSelectionPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState("business");
-  const { setOnboardingRole } = useUserRole();
+  const { setOnboardingRole, user } = useUserRole();
+
+  useEffect(() => {
+    if (user && !user.isNew) {
+      // If user is not new, redirect to dashboard
+      if (user.role === "business") router.push("/dashboard/business");
+      else router.push("/dashboard/user");
+    }
+  }, [user, router]);
 
   const handleContinue = () => {
     setOnboardingRole(selectedRole);

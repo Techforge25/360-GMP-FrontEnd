@@ -12,19 +12,32 @@ import {
   FiX,
 } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
+import { useUserRole } from "@/context/UserContext";
 
 const AuthNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user } = useUserRole();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const navLinks = [
-    { label: "Explore", href: "/dashboard" },
-    { label: "Businesses", href: "/dashboard/businesses" },
-    { label: "Marketplace", href: "/dashboard/marketplace" },
-    { label: "Jobs", href: "/dashboard/jobs" },
-    { label: "Communities", href: "/dashboard/communities" },
+  const userLinks = [
+    { label: "Explorer", href: "/dashboard/user" },
+    { label: "Marketplace", href: "/dashboard/user/marketplace" }, // Products for users
+    { label: "Jobs", href: "/dashboard/user/jobs" },
+    { label: "Communities", href: "/dashboard/user/communities" },
   ];
+
+  const businessLinks = [
+    { label: "Dashboard", href: "/dashboard/business" },
+    { label: "My Profile", href: "/dashboard/business/profile" },
+    { label: "Products", href: "/dashboard/business/products" }, // Manage products
+    { label: "Jobs", href: "/dashboard/business/jobs" }, // Manage jobs
+    { label: "Communities", href: "/dashboard/business/communities" }, // Manage communities
+  ];
+
+  // Default to userLinks if no role found (or handle partial loading state)
+  // Check specifically for 'business' (case-insensitive if needed, but usually typically lowercase in this app)
+  const navLinks = user?.role === "business" ? businessLinks : userLinks;
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -32,7 +45,14 @@ const AuthNavbar = () => {
         <div className="flex justify-between items-center h-20">
           {/* Logo & Desktop Nav */}
           <div className="flex items-center gap-12">
-            <Link href="/dashboard" className="flex-shrink-0">
+            <Link
+              href={
+                user?.role === "business"
+                  ? "/dashboard/business"
+                  : "/dashboard/user"
+              }
+              className="flex-shrink-0"
+            >
               <Image
                 src="/assets/images/Logo.png"
                 alt="3SIXTY Logo"
@@ -65,12 +85,20 @@ const AuthNavbar = () => {
                   0
                 </span>
               </button>
-              <button className="text-gray-500 hover:text-indigo-900 transition-colors relative">
-                <FiMessageSquare className="w-5 h-5" />
-                <span className="absolute -top-1 -right-2 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full">
-                  0
-                </span>
-              </button>
+              <Link
+                href={
+                  user?.role === "business"
+                    ? "/dashboard/business/messages"
+                    : "/dashboard/user/messages"
+                }
+              >
+                <button className="text-gray-500 hover:text-indigo-900 transition-colors relative">
+                  <FiMessageSquare className="w-5 h-5" />
+                  <span className="absolute -top-1 -right-2 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full">
+                    0
+                  </span>
+                </button>
+              </Link>
               <button className="text-gray-500 hover:text-indigo-900 transition-colors relative">
                 <FiBell className="w-5 h-5" />
                 <span className="absolute -top-1 -right-2 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full">
@@ -80,11 +108,19 @@ const AuthNavbar = () => {
             </div>
             <div className="h-8 w-[1px] bg-gray-200 mx-2" />
 
-            <button className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700">
-                <FiUser className="w-4 h-4" />
-              </div>
-            </button>
+            <Link
+              href={
+                user?.role === "business"
+                  ? "/dashboard/business/settings"
+                  : "/dashboard/user/profile"
+              }
+            >
+              <button className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700">
+                  <FiUser className="w-4 h-4" />
+                </div>
+              </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -116,17 +152,25 @@ const AuthNavbar = () => {
                 {link.label}
               </Link>
             ))}
-            <div className="border-t border-red-500 pt-4 flex gap-4 px-3">
-              <div className="border border-red-500">
+            <div className="border-t border-gray-100 pt-4 flex gap-4 px-3">
+              <div className="flex flex-col gap-3 w-full">
                 <button className="flex items-center gap-2 text-sm font-medium text-gray-600">
                   <FiShoppingCart className="w-4 h-4" /> Cart
                 </button>
                 <button className="flex items-center gap-2 text-sm font-medium text-gray-600">
                   <FiBell className="w-4 h-4" /> Alerts
                 </button>
-                <button className="flex items-center gap-2 text-sm font-medium text-gray-600">
+                <Link
+                  href={
+                    user?.role === "business"
+                      ? "/dashboard/business/settings"
+                      : "/dashboard/user/profile"
+                  }
+                  className="flex items-center gap-2 text-sm font-medium text-gray-600"
+                  onClick={toggleMenu}
+                >
                   <FiUser className="w-4 h-4" /> Profile
-                </button>
+                </Link>
               </div>
             </div>
           </div>
