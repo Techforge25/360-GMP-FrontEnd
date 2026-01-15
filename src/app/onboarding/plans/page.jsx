@@ -20,99 +20,107 @@ const CheckItem = ({ children }) => (
 );
 
 const PlanCard = ({
-  title,
-  price,
-  period = "/month",
-  description,
-  features = [],
-  buttonText,
-  variant = "default",
-  badge,
-  disabled = false,
-  disabledMessage,
-  onSelect,
+title,
+price,
+period = "/month",
+description,
+features = [],
+buttonText,
+variant = "default",
+badge,
+disabled = false,
+disabledMessage,
+onSelect,
 }) => {
-  const variants = {
-    default: {
-      header: "bg-surface-muted",
-      button: "bg-surface-muted text-text-primary hover:bg-surface-muted/80",
-      badge: "bg-surface-muted text-text-secondary",
-    },
-    orange: {
-      header: "text-orange-900",
-      button:
-        "bg-white text-orange-900 border border-orange-200 hover:bg-orange-50",
-      badge: "bg-orange-100 text-orange-800",
-      border: "border-orange-200",
-    },
-    purple: {
-      header: "text-purple-900",
-      button: "bg-indigo-900 text-white hover:bg-indigo-800",
-      badge: "bg-purple-100 text-purple-800",
-      border: "border-purple-200 ring-1 ring-purple-100",
-    },
-  };
+const variants = {
+default: {
+badge: "bg-green-100 text-green-700",
+border: "border-[#D1D7E3]",
+},
+orange: {
+badge: "bg-orange-100 text-orange-800",
+border: "border-[#CC6A21]",
+},
+purple: {
+badge: "bg-purple-100 text-purple-800",
+border: "border-purple-200 ring-1 ring-purple-100",
+},
+};
+const currentVariant = variants[variant];
+return (
+<Card
+className={cn(
+"w-full max-w-[400px] flex flex-col transition-all duration-300 bg-white",
+variant === "purple" ? "scale-105 shadow-xl z-10" : "shadow-md hover:shadow-lg",
+disabled && "opacity-60 grayscale-[0.5]",
+currentVariant.border
+)}
+>
+<CardContent className="flex-1 p-8">
+{/* Badge */}
+{badge && (
+<div className="flex justify-center mb-6">
+<span
+className={cn(
+"px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1",
+currentVariant.badge
+)}
+>
+{variant === "purple" && <FaCrown className="w-3 h-3" />}
+{badge}
+</span>
+</div>
+)}
+    {/* Price */}
+    <div className="text-center mb-2">
+      <span className="text-6xl font-semibold text-gray-900">${price}</span>
+      <span className="text-gray-500 text-md ml-1">{period}</span>
+    </div>
 
-  const currentVariant = variants[variant];
+    {/* Description */}
+    <p className="text-center text-gray-600 mb-8 px-4">{description}</p>
 
-  return (
-    <Card
+    {/* CTA Button */}
+    <Button
+      onClick={onSelect}
+      disabled={disabled}
       className={cn(
-        "w-full max-w-[350px] flex flex-col transition-all duration-300",
+        "w-full mb-8 font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer",
         variant === "purple"
-          ? "scale-105 shadow-xl z-10"
-          : "shadow-md hover:shadow-lg",
-        disabled && "opacity-60 grayscale-[0.5]",
-        currentVariant.border
+          ? "bg-indigo-900 text-white hover:bg-indigo-800"
+          : variant === "orange"
+          ? "bg-white text-orange-900 border border-orange-200 hover:bg-orange-50"
+          : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
       )}
     >
-      <CardHeader className="text-center pb-2 pt-8 relative items-center">
-        {badge && (
-          <span
-            className={cn(
-              "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1",
-              currentVariant.badge
-            )}
-          >
-            {variant === "purple" && <FaCrown className="w-3 h-3" />}
-            {badge}
-          </span>
-        )}
-        <h3 className="text-5xl font-semibold mb-1 flex items-baseline justify-center gap-1">
-          ${price}
-          <span className="text-base font-normal text-text-secondary">
-            {period}
-          </span>
-        </h3>
-        <p className="text-sm max-w-[200px] text-text-secondary px-4">
-          {description}
-        </p>
-      </CardHeader>
+      {disabled && disabledMessage ? disabledMessage : buttonText}
+    </Button>
 
-      <CardContent className="flex-1 py-8">
-        <Button
-          onClick={onSelect}
-          // Disabled prop removed here to allow clicking for error popup
-          className={cn("w-full mb-8 font-semibold", currentVariant.button)}
-          variant={variant === "default" ? "secondary" : "default"}
-        >
-          {disabled && disabledMessage ? disabledMessage : buttonText}
-        </Button>
+    {disabled && disabledMessage && (
+      <div className="mb-6 flex items-center gap-2 text-xs text-red-500 justify-center font-medium">
+        <FiX /> {disabledMessage}
+      </div>
+    )}
 
-        {disabled && disabledMessage && (
-          <div className="mb-6 flex items-center gap-2 text-xs text-red-500 justify-center font-medium">
-            <FiX /> {disabledMessage}
+    {/* Divider */}
+    <div className="border-t border-gray-200 mb-8"></div>
+
+    {/* Features List */}
+    <div className="space-y-4">
+      {features.length === 0 ? (
+        <p className="text-sm text-gray-400 italic text-center">No features listed</p>
+      ) : (
+        features.map((feature, i) => (
+          <div key={i} className="flex items-start gap-3">
+            <FiCheck className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <span className="text-gray-700">{feature}</span>
           </div>
-        )}
-
-        <div className="space-y-4">
-          {features.map((feature, i) => (
-            <CheckItem key={i}>{feature}</CheckItem>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
+        ))
+      )}
+    </div>
+  </CardContent>
+</Card>
+);
 };
 
 const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {

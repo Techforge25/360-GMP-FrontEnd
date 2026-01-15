@@ -64,7 +64,7 @@ function OTPForm() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/verify-otp`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verifyPasswordResetToken`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

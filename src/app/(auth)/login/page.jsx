@@ -23,6 +23,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
 
   const { login } = useUserRole();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +44,7 @@ export default function LoginPage() {
         login(res.data);
 
         // Check isNew field to decide navigation
-        if (res.data.isNew) {
+        if (res.data.isNewToPlatform) {
           router.push("/onboarding/role");
         } else {
           // If not new, send to dashboard based on role (or default dashboard)
@@ -57,6 +58,7 @@ export default function LoginPage() {
         setError(res.message || "Login failed");
       }
     } catch (err) {
+      console.error("Login Error:", err);
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -173,7 +175,7 @@ export default function LoginPage() {
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border-light" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
+          <div className="relative flex justify-center text-xs">
             <span className="bg-surface-elevated px-2 text-text-secondary rounded-full border border-border-light">
               or
             </span>

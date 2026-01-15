@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/forgot-password`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/forgotPassword`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

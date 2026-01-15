@@ -10,7 +10,7 @@ import { showSuccess, showError } from "../utils/toasterMessage";
 
 // Create instance
 const client = axios.create({
-  baseURL: `${backendURL}/api/v1`,
+  baseURL: `${backendURL}`,
   withCredentials: true,
   timeout: 0,
 });

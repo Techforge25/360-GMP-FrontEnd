@@ -34,7 +34,6 @@ const IndustryOptions = [
 const Step1 = ({ formData, handleChange }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
     <div>
-      <h3 className="text-lg font-semibold mb-6">Personal Information</h3>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label className="text-sm font-medium">Full Name</label>
@@ -178,7 +177,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Upload your resume</h3>
         <FileUpload
-          label="Upload Resume"
+          label="Upload Document"
           subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
           onUploadingChange={setIsUploading}
           onUpload={(file, onProgress) =>
@@ -483,7 +482,7 @@ export default function UserProfilePage() {
     // ... inside component
     try {
       const response = await api.post({
-        url: "/auth/userProfile",
+        url: "/userProfile",
         payload: formData,
       });
 
@@ -542,9 +541,12 @@ export default function UserProfilePage() {
     <div className="min-h-screen">
       <Card className="w-full sm:w-3xl lg:w-5xl max-w-5xl mx-auto mt-16 md:mt-10 flex-shrink-0 bg-white shadow-xl min-h-[800px]">
         <div className="p-8 pb-0">
-          <h1 className="text-2xl font-bold text-center mb-8">
+          <h1 className="text-[#40444C] text-2xl font-semibold text-center mb-8">
             Complete Your Profile
           </h1>
+          <h3 className="text-lg text-[#40444C] font-semibold mb-6 border-t border-border-light pt-6">
+            Personal Information
+          </h3>
           <Stepper currentStep={currentStep} steps={steps} />
         </div>
 

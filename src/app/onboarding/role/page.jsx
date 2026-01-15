@@ -19,8 +19,8 @@ export default function RoleSelectionPage() {
   const { setOnboardingRole, user } = useUserRole();
 
   useEffect(() => {
-    if (user && !user.isNew) {
-      // If user is not new, redirect to dashboard
+    // Only redirect if user exists, is NOT new to platform, AND has a role
+    if (user && !user.isNewToPlatform) {
       if (user.role === "business") router.push("/dashboard/business");
       else router.push("/dashboard/user");
     }
