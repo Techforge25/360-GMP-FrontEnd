@@ -26,9 +26,13 @@ export default function RoleSelectionPage() {
     }
   }, [user, router]);
 
-  const handleContinue = () => {
-    setOnboardingRole(selectedRole);
-    router.push(`/onboarding/plans`);
+  const handleContinue = async () => {
+    try {
+      await setOnboardingRole(selectedRole);
+      router.push(`/onboarding/plans`);
+    } catch (e) {
+      console.error("Navigation halted due to role sync error");
+    }
   };
 
   return (

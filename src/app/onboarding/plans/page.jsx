@@ -20,107 +20,111 @@ const CheckItem = ({ children }) => (
 );
 
 const PlanCard = ({
-title,
-price,
-period = "/month",
-description,
-features = [],
-buttonText,
-variant = "default",
-badge,
-disabled = false,
-disabledMessage,
-onSelect,
+  title,
+  price,
+  period = "/month",
+  description,
+  features = [],
+  buttonText,
+  variant = "default",
+  badge,
+  disabled = false,
+  disabledMessage,
+  onSelect,
 }) => {
-const variants = {
-default: {
-badge: "bg-green-100 text-green-700",
-border: "border-[#D1D7E3]",
-},
-orange: {
-badge: "bg-orange-100 text-orange-800",
-border: "border-[#CC6A21]",
-},
-purple: {
-badge: "bg-purple-100 text-purple-800",
-border: "border-purple-200 ring-1 ring-purple-100",
-},
-};
-const currentVariant = variants[variant];
-return (
-<Card
-className={cn(
-"w-full max-w-[400px] flex flex-col transition-all duration-300 bg-white",
-variant === "purple" ? "scale-105 shadow-xl z-10" : "shadow-md hover:shadow-lg",
-disabled && "opacity-60 grayscale-[0.5]",
-currentVariant.border
-)}
->
-<CardContent className="flex-1 p-8">
-{/* Badge */}
-{badge && (
-<div className="flex justify-center mb-6">
-<span
-className={cn(
-"px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1",
-currentVariant.badge
-)}
->
-{variant === "purple" && <FaCrown className="w-3 h-3" />}
-{badge}
-</span>
-</div>
-)}
-    {/* Price */}
-    <div className="text-center mb-2">
-      <span className="text-6xl font-semibold text-gray-900">${price}</span>
-      <span className="text-gray-500 text-md ml-1">{period}</span>
-    </div>
-
-    {/* Description */}
-    <p className="text-center text-gray-600 mb-8 px-4">{description}</p>
-
-    {/* CTA Button */}
-    <Button
-      onClick={onSelect}
-      disabled={disabled}
+  const variants = {
+    default: {
+      badge: "bg-green-100 text-green-700",
+      border: "border-[#D1D7E3]",
+    },
+    orange: {
+      badge: "bg-orange-100 text-orange-800",
+      border: "border-[#CC6A21]",
+    },
+    purple: {
+      badge: "bg-purple-100 text-purple-800",
+      border: "border-purple-200 ring-1 ring-purple-100",
+    },
+  };
+  const currentVariant = variants[variant];
+  return (
+    <Card
       className={cn(
-        "w-full mb-8 font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer",
+        "w-full max-w-[400px] flex flex-col transition-all duration-300 bg-white",
         variant === "purple"
-          ? "bg-indigo-900 text-white hover:bg-indigo-800"
-          : variant === "orange"
-          ? "bg-white text-orange-900 border border-orange-200 hover:bg-orange-50"
-          : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          ? "scale-105 shadow-xl z-10"
+          : "shadow-md hover:shadow-lg",
+        disabled && "opacity-60 grayscale-[0.5]",
+        currentVariant.border
       )}
     >
-      {disabled && disabledMessage ? disabledMessage : buttonText}
-    </Button>
-
-    {disabled && disabledMessage && (
-      <div className="mb-6 flex items-center gap-2 text-xs text-red-500 justify-center font-medium">
-        <FiX /> {disabledMessage}
-      </div>
-    )}
-
-    {/* Divider */}
-    <div className="border-t border-gray-200 mb-8"></div>
-
-    {/* Features List */}
-    <div className="space-y-4">
-      {features.length === 0 ? (
-        <p className="text-sm text-gray-400 italic text-center">No features listed</p>
-      ) : (
-        features.map((feature, i) => (
-          <div key={i} className="flex items-start gap-3">
-            <FiCheck className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-            <span className="text-gray-700">{feature}</span>
+      <CardContent className="flex-1 p-8">
+        {/* Badge */}
+        {badge && (
+          <div className="flex justify-center mb-6">
+            <span
+              className={cn(
+                "px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1",
+                currentVariant.badge
+              )}
+            >
+              {variant === "purple" && <FaCrown className="w-3 h-3" />}
+              {badge}
+            </span>
           </div>
-        ))
-      )}
-    </div>
-  </CardContent>
-</Card>
-);
+        )}
+        {/* Price */}
+        <div className="text-center mb-2">
+          <span className="text-6xl font-semibold text-gray-900">${price}</span>
+          <span className="text-gray-500 text-md ml-1">{period}</span>
+        </div>
+
+        {/* Description */}
+        <p className="text-center text-gray-600 mb-8 px-4">{description}</p>
+
+        {/* CTA Button */}
+        <Button
+          onClick={onSelect}
+          disabled={disabled}
+          className={cn(
+            "w-full mb-8 font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer",
+            variant === "purple"
+              ? "bg-indigo-900 text-white hover:bg-indigo-800"
+              : variant === "orange"
+              ? "bg-white text-orange-900 border border-orange-200 hover:bg-orange-50"
+              : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+          )}
+        >
+          {disabled && disabledMessage ? disabledMessage : buttonText}
+        </Button>
+
+        {disabled && disabledMessage && (
+          <div className="mb-6 flex items-center gap-2 text-xs text-red-500 justify-center font-medium">
+            <FiX /> {disabledMessage}
+          </div>
+        )}
+
+        {/* Divider */}
+        <div className="border-t border-gray-200 mb-8"></div>
+
+        {/* Features List */}
+        <div className="space-y-4">
+          {features.length === 0 ? (
+            <p className="text-sm text-gray-400 italic text-center">
+              No features listed
+            </p>
+          ) : (
+            features.map((feature, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <FiCheck className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                <span className="text-gray-700">{feature}</span>
+              </div>
+            ))
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 };
 
 const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {
@@ -320,6 +324,7 @@ function PlansList() {
         featureName: plan.name,
         isError: false,
         message: "Thank you! Your trial has started.",
+        isTrial: true,
       });
     }
   };
@@ -342,9 +347,15 @@ function PlansList() {
     }
 
     if (isBusiness) {
-      router.push(`/onboarding/business-profile`);
+      // router.push(`/onboarding/business-profile`);
+      // Temporarily skip business profile creation due to subscription requirement
+      router.push(`/dashboard/business`);
     } else {
-      router.push(`/onboarding/user-profile`);
+      if (confirmationData?.isTrial) {
+        router.push(`/dashboard/user`);
+      } else {
+        router.push(`/onboarding/user-profile`);
+      }
     }
   };
 

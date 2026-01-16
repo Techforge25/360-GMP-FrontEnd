@@ -18,6 +18,21 @@ const client = axios.create({
 // Request interceptor
 client.interceptors.request.use(
   async (request) => {
+    try {
+      // Manual token injection fallback
+      if (typeof window !== "undefined") {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          const token = user.token || user.accessToken;
+          if (token) {
+            request.headers.Authorization = `Bearer ${token}`;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Token injection error", e);
+    }
     return request;
   },
   (error) => {

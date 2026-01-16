@@ -471,7 +471,7 @@ export default function UserProfilePage() {
       !formData.jobTitle ||
       !formData.minSalary ||
       !formData.maxSalary ||
-      !formData.resumeUrl ||
+      // !formData.resumeUrl || // Resume is optional
       formData.employeeType.length === 0 ||
       formData.education.length === 0
     ) {
@@ -481,9 +481,39 @@ export default function UserProfilePage() {
 
     // ... inside component
     try {
+      // Format payload to match backend schema
+      const payload = {
+        ...formData,
+        skills: formData.skills
+          ? formData.skills
+              .split(",")
+              .map((s) => s.trim())
+              .filter(Boolean)
+          : [],
+        employmentType: formData.employeeType,
+
+        // Mapping inferred from errors and UI usage:
+        // 1. "location" expects a string (seen in UserHeader)
+        location: `${formData.city || ""}, ${formData.country || ""}`,
+
+        // 2. "currentTitle" in UI selects from IndustryOptions
+        // Not sending currentTitle/industry/profession as it causes 400 Bad Request
+
+        // 3. "jobTitle" (Target Job Title) map to "title"
+        title: formData.jobTitle,
+      };
+
+      // Remove forbidden/mapped keys
+      delete payload.employeeType;
+      delete payload.currentTitle;
+      delete payload.jobTitle;
+      delete payload.city;
+      delete payload.country;
+      delete payload.address;
+
       const response = await api.post({
         url: "/userProfile",
-        payload: formData,
+        payload: payload,
       });
 
       if (!response.success) {

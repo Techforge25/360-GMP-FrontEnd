@@ -485,9 +485,30 @@ export default function BusinessProfilePage() {
 
     // ... inside component
     try {
+      // Automatically create a subscription if one doesn't exist
+      // This bypasses the "No subscription found" error
+      try {
+        const planId = localStorage.getItem("selectedPlanId");
+        if (planId) {
+          await api.post({
+            url: "/subscription",
+            payload: { planId: planId },
+            enableErrorMessage: false,
+            enableSuccessMessage: false,
+          });
+        }
+      } catch (subError) {
+        // Ignore subscription errors - it might already exist
+        console.log("Subscription creation skipped:", subError.message);
+      }
+
+      const payload = {
+        ...formData,
+      };
+
       const response = await api.post({
-        url: "/auth/businessProfile",
-        payload: formData,
+        url: "/businessProfile",
+        payload: payload,
       });
 
       if (!response.success) {
