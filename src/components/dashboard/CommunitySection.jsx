@@ -17,7 +17,7 @@ const CommunitySection = () => {
     const fetchCommunities = async () => {
       try {
         const response = await api.get({
-          url: "/community?limit=8&status=active",
+          url: "/community?limit=4&status=active",
           enableErrorMessage: false,
           enableSuccessMessage: false,
         });
