@@ -11,6 +11,7 @@ import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { useUserRole } from "@/context/UserContext";
 import api from "@/lib/axios";
+import subscriptionAPI from "@/services/subscriptionAPI";
 
 const CheckItem = ({ children }) => (
   <div className="flex items-start gap-3">
@@ -307,7 +308,7 @@ function PlansList() {
     fetchPlans();
   }, []);
 
-  const handleSelectPlan = (plan) => {
+  const handleSelectPlan = async (plan) => {
     if (isBusiness && !plan.allowsBusinessAccess) {
       setConfirmationData({
         featureName: plan.name,
@@ -317,27 +318,177 @@ function PlansList() {
       return;
     }
 
+    // For paid plans, show payment modal first
     if (plan.price > 0) {
       setPaymentPlan({ id: plan.backendId, name: plan.name });
     } else {
-      setConfirmationData({
-        featureName: plan.name,
-        isError: false,
-        message: "Thank you! Your trial has started.",
-        isTrial: true,
-      });
+      // For free trial, directly create Stripe session and redirect
+      try {
+        console.log("Creating Free Trial Stripe checkout session...");
+        console.log("Plan ID:", plan.backendId);
+        console.log("Role:", role);
+
+        const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
+        const cancelUrl = `${window.location.origin}/onboarding/plans`;
+
+        const response = await subscriptionAPI.createStripeCheckout(
+          plan.backendId,
+          role,
+          successUrl,
+          cancelUrl
+        );
+
+        console.log("Free Trial Stripe response:", response);
+        console.log("Response data:", response.data);
+        console.log("Response success:", response.success);
+        console.log("Full response object:", JSON.stringify(response, null, 2));
+
+        // Check if data contains url property or IS the url string
+        const checkoutUrl =
+          typeof response.data === "string"
+            ? response.data
+            : response.data?.url;
+
+        if (response.success && checkoutUrl) {
+          // Store trial info before redirecting
+          const subscriptionData = {
+            planId: plan.backendId,
+            planName: plan.name,
+            role: role,
+            status: "trial",
+            createdAt: new Date().toISOString(),
+          };
+
+          subscriptionAPI.storeSubscription(subscriptionData);
+
+          // Redirect to Stripe checkout
+          console.log("Redirecting to Free Trial checkout:", checkoutUrl);
+          window.location.href = checkoutUrl;
+        } else {
+          console.error("Invalid response from Free Trial API:", response);
+          setConfirmationData({
+            featureName: plan.name,
+            isError: true,
+            message: "Failed to start trial. Please try again.",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to create Free Trial - Full error:", error);
+        console.error("Error details:", {
+          message: error.message,
+          statusCode: error.statusCode,
+          data: error.data,
+          stack: error.stack,
+        });
+
+        let errorMessage = "Failed to start trial. Please try again.";
+
+        if (error.statusCode === 404) {
+          errorMessage =
+            "Subscription endpoint not found. Please check the API configuration.";
+        } else if (error.statusCode === 401 || error.statusCode === 403) {
+          errorMessage = "Authentication required. Please log in first.";
+        } else if (error.statusCode >= 500) {
+          errorMessage = "Server error. Please try again later.";
+        } else if (error.message) {
+          errorMessage = error.message;
+        } else if (!navigator.onLine) {
+          errorMessage = "No internet connection. Please check your network.";
+        }
+
+        setConfirmationData({
+          featureName: plan.name,
+          isError: true,
+          message: errorMessage,
+        });
+      }
     }
   };
 
-  const handlePaymentConfirm = () => {
+  const handlePaymentConfirm = async () => {
     const plan = paymentPlan;
     setPaymentPlan(null);
-    // Show success confirmation
-    setConfirmationData({
-      featureName: plan.name,
-      isError: false,
-      message: `Thank You! Your Account Is Now (${plan.name} Plan)`,
-    });
+
+    try {
+      console.log("Creating Stripe checkout session...");
+      console.log("Plan object:", plan);
+      console.log("Plan ID:", plan.id);
+      console.log("Plan backendId:", plan.backendId);
+      console.log("Role:", role);
+
+      const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${window.location.origin}/onboarding/plans`;
+
+      // Call backend to create Stripe checkout session
+      const response = await subscriptionAPI.createStripeCheckout(
+        plan.id,
+        role,
+        successUrl,
+        cancelUrl
+      );
+
+      console.log("Stripe checkout response:", response);
+      console.log("Response data:", response.data);
+      console.log("Response success:", response.success);
+      console.log("Full response object:", JSON.stringify(response, null, 2));
+
+      // Check if data contains url property or IS the url string
+      const checkoutUrl =
+        typeof response.data === "string" ? response.data : response.data?.url;
+
+      if (response.success && checkoutUrl) {
+        // Store plan info before redirecting
+        const subscriptionData = {
+          planId: plan.id,
+          planName: plan.name,
+          role: role,
+          status: "pending",
+          createdAt: new Date().toISOString(),
+        };
+
+        subscriptionAPI.storeSubscription(subscriptionData);
+
+        // Redirect to Stripe checkout
+        console.log("Redirecting to Stripe checkout:", checkoutUrl);
+        window.location.href = checkoutUrl;
+      } else {
+        console.error("Invalid response from Stripe checkout API:", response);
+        setConfirmationData({
+          featureName: plan.name,
+          isError: true,
+          message: "Failed to create checkout session. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to create Stripe checkout - Full error:", error);
+      console.error("Error details:", {
+        message: error.message,
+        statusCode: error.statusCode,
+        data: error.data,
+        stack: error.stack,
+      });
+
+      let errorMessage = "Failed to process payment. Please try again.";
+
+      if (error.statusCode === 404) {
+        errorMessage =
+          "Subscription endpoint not found. Please check the API configuration.";
+      } else if (error.statusCode === 401 || error.statusCode === 403) {
+        errorMessage = "Authentication required. Please log in first.";
+      } else if (error.statusCode >= 500) {
+        errorMessage = "Server error. Please try again later.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      } else if (!navigator.onLine) {
+        errorMessage = "No internet connection. Please check your network.";
+      }
+
+      setConfirmationData({
+        featureName: plan.name,
+        isError: true,
+        message: errorMessage,
+      });
+    }
   };
 
   const handleNext = () => {
