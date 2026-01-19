@@ -37,15 +37,14 @@ client.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor
 client.interceptors.response.use(
   (response) => {
-    const { data, message, statusCode, success } = response.data;
     const headers = response.headers;
-    return { data, message, statusCode, success, headers };
+    return { ...response.data, headers };
   },
   (error) => {
     const data = error?.response?.data || null;
@@ -54,7 +53,7 @@ client.interceptors.response.use(
     const statusCode = error?.response?.status || null;
     const stack = error?.stack || null;
     return Promise.reject({ data, message, success, statusCode, stack });
-  }
+  },
 );
 
 // Blue Print For API Request Service Providers

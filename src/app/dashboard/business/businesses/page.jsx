@@ -80,12 +80,12 @@ export default function BusinessesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="w-full min-h-screen bg-white">
       <main className="pb-24">
         <BusinessHero />
 
         <div className="mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
             {/* Sidebar */}
             <aside className="w-full lg:w-64 flex-shrink-0">
               <FilterSidebar />

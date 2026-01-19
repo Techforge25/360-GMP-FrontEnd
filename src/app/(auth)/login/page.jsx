@@ -41,10 +41,20 @@ export default function LoginPage() {
 
       if (res.success) {
         console.log("Logged in:", res.data);
-        login(res.data);
+        // Check if token is at the root level and merge it
+        const finalUserData = {
+          ...res.data,
+          accessToken:
+            res.accessToken ||
+            res.token ||
+            res.data?.accessToken ||
+            res.data?.token,
+        };
+
+        login(finalUserData);
 
         // Check isNew field to decide navigation
-        if (res.data.isNewToPlatform) {
+        if (finalUserData.isNewToPlatform) {
           router.push("/onboarding/role");
         } else {
           // If not new, send to dashboard based on role (or default dashboard)
