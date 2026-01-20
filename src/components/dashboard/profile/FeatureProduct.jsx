@@ -47,8 +47,8 @@ const FeatureProduct = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-bold text-gray-900">Feature Product</h2>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-100 transition-colors">
+        <h2 className="text-xl font-semiboldz text-gray-900">Feature Product</h2>
+        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#240457] rounded-md text-xs font-medium hover:bg-gray-100 transition-colors">
           Manage Featured Products
           <FiSliders className="w-3.5 h-3.5" />
         </button>
@@ -63,7 +63,7 @@ const FeatureProduct = () => {
             <div className="aspect-[4/3] bg-gray-50 relative p-4 flex items-center justify-center">
               {/* Stock Badge */}
               <div
-                className={`absolute top-3 right-3 px-2 py-1 rounded text-[10px] font-bold text-white ${product.stockColor || "bg-green-600"}`}
+                className={`absolute top-3 right-3 px-2 py-1 rounded-2xl text-[10px] font-bold text-white ${product.stockColor || "bg-green-600"}`}
               >
                 Stock {product.stock}
               </div>
@@ -94,12 +94,12 @@ const FeatureProduct = () => {
 
               <div className="flex items-center justify-between text-xs mb-4">
                 <span className="text-gray-500">MOQ: {product.moq}</span>
-                <span className="text-gray-900 font-semibold">
+                <span className="text-gray-500 font-semibold">
                   USD {product.price}
                 </span>
               </div>
 
-              <button className="w-full py-2 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:text-[#240457] hover:border-[#240457]/30 transition-all">
+              <button className="w-full py-2 border border-[#240457] rounded-lg text-xs font-semibold text-[#240457] hover:bg-gray-50 transition-all">
                 View Product
               </button>
             </div>
