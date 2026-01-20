@@ -10,13 +10,23 @@ import {
   FiMenu,
   FiX,
   FiChevronDown,
+  FiBox,
+  FiCreditCard,
+  FiShoppingBag,
+  FiLayers,
+  FiHelpCircle,
+  FiRepeat,
+  FiLogOut,
 } from "react-icons/fi";
 import { useUserRole } from "@/context/UserContext";
+import { useCart } from "@/context/CartContext";
 import { MdOutlineMessage } from "react-icons/md";
 
 const AuthNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { user } = useUserRole();
+  const { cartCount } = useCart();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -80,6 +90,16 @@ const AuthNavbar = () => {
           <div className="hidden lg:flex items-center gap-4">
             {/* Icon Group */}
             <div className="flex items-center gap-4">
+              {/* Cart Icon */}
+              <button className="text-gray-600 hover:text-indigo-600 transition-colors relative">
+                <FiShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
               <button className="text-gray-600 hover:text-indigo-600 transition-colors relative">
                 <FiBell className="w-5 h-5" />
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
@@ -93,29 +113,119 @@ const AuthNavbar = () => {
                     ? "/dashboard/business/messages"
                     : "/dashboard/user/messages"
                 }
+                className="text-gray-600 hover:text-indigo-600 transition-colors relative mt-1 flex items-center justify-center p-0 bg-transparent border-none appearance-none cursor-pointer"
               >
-                <button className="text-gray-600 hover:text-indigo-600 transition-colors relative mt-1">
-                  <MdOutlineMessage className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
-                    1
-                  </span>
-                </button>
+                <MdOutlineMessage className="w-5 h-5" />
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
+                  1
+                </span>
               </Link>
 
               {/* User Profile with Dropdown */}
-              <Link
-                href={
-                  user?.role === "business"
-                    ? "/dashboard/business/settings"
-                    : "/dashboard/user/profile"
-                }
-                className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-              >
-                <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-                  M
-                </div>
-                <FiChevronDown className="w-4 h-4 text-gray-600" />
-              </Link>
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
+                >
+                  <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                    M
+                  </div>
+                  <FiChevronDown
+                    className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {/* Profile Dropdown */}
+                {isProfileOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setIsProfileOpen(false)}
+                    />
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-20 animate-in fade-in zoom-in-95 duration-100">
+                      <div className="flex flex-col">
+                        <Link
+                          href={
+                            user?.role === "business"
+                              ? "/dashboard/business/profile"
+                              : "/dashboard/user/profile"
+                          }
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiUser className="w-5 h-5 text-gray-900" />
+                          <span>My Profile</span>
+                        </Link>
+
+                        {user?.role === "business" && (
+                          <Link
+                            href="/dashboard/business/products"
+                            className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            <FiBox className="w-5 h-5 text-gray-900" />
+                            <span>My Products</span>
+                          </Link>
+                        )}
+
+                        <Link
+                          href="/dashboard/business/wallet"
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiCreditCard className="w-5 h-5 text-gray-900" />
+                          <span>Wallet</span>
+                        </Link>
+
+                        <Link
+                          href="/dashboard/orders"
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiShoppingBag className="w-5 h-5 text-gray-900" />
+                          <span>Orders</span>
+                        </Link>
+
+                        <Link
+                          href="/dashboard/subscriptions"
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiLayers className="w-5 h-5 text-gray-900" />
+                          <span>Subscriptions</span>
+                        </Link>
+
+                        <Link
+                          href="/help"
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiHelpCircle className="w-5 h-5 text-gray-900" />
+                          <span>Support</span>
+                        </Link>
+
+                        <div className="h-px bg-gray-100 my-1 mx-4" />
+
+                        <button
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiRepeat className="w-5 h-5 text-gray-900" />
+                          <span>Switch</span>
+                        </button>
+
+                        <button
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiLogOut className="w-5 h-5 text-gray-900" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 
@@ -161,7 +271,7 @@ const AuthNavbar = () => {
                 className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md hover:bg-gray-50"
                 onClick={toggleMenu}
               >
-                <MdOutlineMessage  className="w-5 h-5" />
+                <MdOutlineMessage className="w-5 h-5" />
                 <span>Messages</span>
               </Link>
               <Link
