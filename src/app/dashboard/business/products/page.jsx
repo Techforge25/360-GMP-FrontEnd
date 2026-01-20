@@ -65,6 +65,9 @@ const MyProductsPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
+      <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          My Product
+        </p>
       {/* 1. Hero / Header Section */}
       <div className="relative bg-[#8B5CF6]">
         {/* Background Pattern (Abstract shapes/gradients) */}

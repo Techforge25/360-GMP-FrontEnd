@@ -18,6 +18,7 @@ import {
   MdContentCut,
 } from "react-icons/md";
 import { BsBank, BsGrid } from "react-icons/bs";
+import { ChevronRight } from "lucide-react";
 
 const WalletPage = () => {
   const [activeTab, setActiveTab] = useState("Wallet");
@@ -27,37 +28,37 @@ const WalletPage = () => {
       label: "Net Balance",
       amount: "$12,450.00",
       subLabel: "Available for withdrawal",
-      subLabelColor: "text-green-500",
-      icon: MdOutlineAccountBalanceWallet,
+      subLabelColor: "text-[#0B8806]",
+      icon: "/assets/images/withdrawalIcon.png",
       iconColor: "text-green-600",
-      bg: "bg-green-100",
+      bg: "bg-[#0B8806]",
     },
     {
       label: "Pending Settlements",
       amount: "$3,200.00",
       subLabel: "Held in escrow",
-      subLabelColor: "text-orange-500",
-      icon: MdPendingActions,
+      subLabelColor: "text-[#FF8D28]",
+      icon: "/assets/images/escrowIcon.png",
       iconColor: "text-orange-600",
-      bg: "bg-orange-100",
+      bg: "bg-[#FF8D28]",
     },
     {
       label: "Total Sales Volume",
       amount: "$156,500.00",
       subLabel: "Total Sales Volume",
-      subLabelColor: "text-blue-500",
-      icon: MdLocalOffer,
+      subLabelColor: "text-[#185ADB]",
+      icon: "/assets/images/salesIcon.png",
       iconColor: "text-blue-600",
-      bg: "bg-blue-100",
+      bg: "bg-[#185ADB]",
     },
     {
       label: "Platform & Service Deductions",
       amount: "$15,650.00",
       subLabel: "Total Fee",
       subLabelColor: "text-gray-500",
-      icon: BsGrid, // Using Grid as placeholder for the icon in image
+      icon: "/assets/images/feeIcon.png",
       iconColor: "text-gray-600",
-      bg: "bg-gray-100",
+      bg: "bg-[#B4B4B433]",
     },
   ];
 
@@ -148,13 +149,16 @@ const WalletPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
       {/* 1. Header Section */}
+        <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          My Wallet
+        </p>
       <div className="relative bg-[#8B5CF6] h-48 overflow-hidden flex items-center justify-center">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-20"></div>
         <div
-          className="absolute inset-0 opacity-20"
+          className="absolute inset-0 opacity-200"
           style={{
-            backgroundImage: "url('/assets/images/settingsBanner.png')", // Reusing existing banner pattern or similar
+            backgroundImage: "url('/assets/images/walletBanner.png')", // Reusing existing banner pattern or similar
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -173,17 +177,16 @@ const WalletPage = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-2 md:pb-0 whitespace-nowrap border-b-2 md:border-b-0 transition-colors ${activeTab === tab ? "text-[#2e1065] border-[#2e1065]" : "text-gray-500 border-transparent hover:text-gray-700"}`}
+                className={`pb-2 md:pb-0 whitespace-nowrap border-b-2 transition-colors ${activeTab === tab ? "text-[#2e1065] border-[#2e1065]" : "text-gray-500 border-transparent hover:text-gray-700"}`}
               >
                 {tab}
               </button>
             ))}
           </div>
           <button className="flex items-center gap-2 bg-[#2e1065] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#1e0a45] transition-colors shadow-sm">
-            <FiDownload className="rotate-0 md:rotate-0" />{" "}
             {/* Using Download icon as placeholder for Withdraw or similar */}
             Withdraw
-            <BsBank className="w-4 h-4" />
+            <img src="/assets/images/withdrawIcon.png" alt="" />
           </button>
         </div>
 
@@ -196,13 +199,13 @@ const WalletPage = () => {
             >
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-medium text-black">
                     {stat.amount}
                   </h2>
                   <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
                 </div>
                 <div className={`p-2 rounded-lg ${stat.bg}`}>
-                  <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
+                  <img src={stat.icon} alt="" className={`w-5 h-5 ${stat.iconColor}`} />
                 </div>
               </div>
               <p className={`text-[10px] font-medium ${stat.subLabelColor}`}>
@@ -215,11 +218,11 @@ const WalletPage = () => {
         {/* 4. Payment Method & Messaging (Mock) */}
         <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-6 relative overflow-hidden">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-medium text-black">
               Save Payment Method
             </h3>
             {/* Messaging Widget Overlay (Matches design) */}
-            <div className="hidden md:flex absolute top-4 right-4 items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm z-10">
+            {/* <div className="hidden md:flex absolute top-4 right-4 items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm z-10">
               <div className="w-8 h-8 bg-orange-100 rounded flex items-center justify-center text-orange-600">
                 <span className="font-bold text-xs">M</span>
               </div>
@@ -235,14 +238,14 @@ const WalletPage = () => {
                 <FiMoreHorizontal className="cursor-pointer hover:text-gray-600" />
                 <FiEdit2 className="cursor-pointer hover:text-gray-600 w-3 h-3" />
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="space-y-3">
             {/* Master Card */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100 group hover:border-gray-200 transition-colors">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 group hover:border-gray-200 transition-colors">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-6 bg-white border rounded flex items-center justify-center">
+                <div className="w-10 h-6 bg-white border border-gray-200 py-4 rounded flex items-center justify-center">
                   <div className="flex -space-x-1">
                     <div className="w-3 h-3 rounded-full bg-red-500 opacity-80"></div>
                     <div className="w-3 h-3 rounded-full bg-yellow-500 opacity-80"></div>
@@ -251,7 +254,7 @@ const WalletPage = () => {
                 <div>
                   <p className="text-sm font-semibold text-gray-900 flex items-center gap-2">
                     Mastercard{" "}
-                    <span className="text-gray-400 text-xs font-normal">
+                    <span className="text-[#240457] text-xs font-normal">
                       • Default Method
                     </span>
                   </p>
@@ -260,7 +263,7 @@ const WalletPage = () => {
                   </p>
                 </div>
               </div>
-              <button className="text-xs text-red-500 hover:text-red-700 font-medium mt-2 sm:mt-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+              <button className="text-xs text-[#FF383C] font-medium mt-2 sm:mt-0 opacity-100 transition-opacity underline">
                 Disconnect
               </button>
             </div>
@@ -268,7 +271,7 @@ const WalletPage = () => {
             {/* Visa Card */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100 group hover:border-gray-200 transition-colors">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-6 bg-white border rounded flex items-center justify-center text-blue-800 font-bold italic text-[8px]">
+                <div className="w-10 h-6 bg-white border border-gray-200 py-4 rounded flex items-center justify-center text-blue-800 font-bold italic text-[8px]">
                   VISA
                 </div>
                 <div>
@@ -278,7 +281,7 @@ const WalletPage = () => {
                   <p className="text-xs text-gray-500">Expiry - 12/27</p>
                 </div>
               </div>
-              <button className="text-xs text-indigo-600 hover:text-indigo-800 font-medium underline mt-2 sm:mt-0">
+              <button className="text-xs text-[#240457] font-medium underline mt-2 sm:mt-0">
                 Set as Default
               </button>
             </div>
@@ -288,10 +291,10 @@ const WalletPage = () => {
         {/* 5. Recent Transactions */}
         <div className="bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden">
           <div className="p-6 flex items-center justify-between border-b border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900">
+            <h3 className="text-lg font-medium text-gray-900">
               Recent Transactions
             </h3>
-            <button className="text-xs font-semibold text-[#2e1065] flex items-center gap-1 hover:underline">
+            <button className="text-xs font-medium text-[#2e1065] flex items-center gap-1 hover:underline">
               View All <FiArrowUpRight className="rotate-45" />
             </button>
           </div>
@@ -304,10 +307,10 @@ const WalletPage = () => {
                 className="rounded border-gray-300 text-indigo-600 focus:ring-0"
               />
             </div>
-            <div className="col-span-4">Description/Date</div>
-            <div className="col-span-3">Payment Method</div>
-            <div className="col-span-2">Status</div>
-            <div className="col-span-2 text-right">Amount</div>
+            <div className="col-span-4 text-[#22252B]">Description/Date</div>
+            <div className="col-span-3 text-[#22252B]">Payment Method</div>
+            <div className="col-span-2 text-[#22252B]">Status</div>
+            <div className="col-span-2 text-right text-[#22252B]">Amount</div>
           </div>
 
           <div className="divide-y divide-gray-100">
@@ -318,7 +321,7 @@ const WalletPage = () => {
               >
                 <div className="col-span-1 flex items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.isIncoming ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
+                    className={`w-6 h-6 rounded-full flex items-center justify-center ${tx.isIncoming ? "bg-[#B4B4B433] text-[#0B8806]" : "bg-red-50 text-red-600"}`}
                   >
                     {tx.isIncoming ? <FiArrowDownLeft /> : <FiArrowUpRight />}
                   </div>
@@ -334,7 +337,7 @@ const WalletPage = () => {
                 </div>
                 <div className="col-span-2">
                   <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium
                                 ${tx.status === "Completed" ? "bg-green-100 text-green-700" : ""}
                                 ${tx.status === "Pending" ? "bg-yellow-100 text-yellow-700" : ""}
                             `}
@@ -343,9 +346,9 @@ const WalletPage = () => {
                   </span>
                 </div>
                 <div
-                  className={`col-span-2 text-right text-sm font-semibold ${tx.isIncoming ? "text-green-600" : "text-gray-900"}`}
+                  className={`col-span-2 flex items-center justify-end text-right text-sm font-medium ${tx.isIncoming ? "text-green-600" : "text-gray-900"}`}
                 >
-                  {tx.amount}
+                  <h4 className="flex items-center gap-2">{tx.amount}  <span><ChevronRight className="w-4 h-4 text-[#768299]" /></span></h4>  
                 </div>
               </div>
             ))}
@@ -355,8 +358,8 @@ const WalletPage = () => {
         {/* 6. Help Footer */}
         <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-4 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-[#2e1065]">
-              <FiHelpCircle className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-sm bg-[#DCDCDC33] flex items-center justify-center text-[#2e1065]">
+              <img src="/assets/images/helpIcon.png" alt="help" />
             </div>
             <div>
               <h4 className="text-sm font-bold text-gray-900">Need Help?</h4>
