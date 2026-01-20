@@ -19,6 +19,7 @@ import {
 } from "react-icons/md";
 import { BsBank, BsGrid } from "react-icons/bs";
 import { ChevronRight } from "lucide-react";
+import DashboardFooter from "@/components/dashboard/DashboardFooter";
 
 const WalletPage = () => {
   const [activeTab, setActiveTab] = useState("Wallet");
@@ -147,11 +148,11 @@ const WalletPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-gray-50">
       {/* 1. Header Section */}
-        <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          My Wallet
-        </p>
+      <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        My Wallet
+      </p>
       <div className="relative bg-[#8B5CF6] h-48 overflow-hidden flex items-center justify-center">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-20"></div>
@@ -205,7 +206,11 @@ const WalletPage = () => {
                   <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
                 </div>
                 <div className={`p-2 rounded-lg ${stat.bg}`}>
-                  <img src={stat.icon} alt="" className={`w-5 h-5 ${stat.iconColor}`} />
+                  <img
+                    src={stat.icon}
+                    alt=""
+                    className={`w-5 h-5 ${stat.iconColor}`}
+                  />
                 </div>
               </div>
               <p className={`text-[10px] font-medium ${stat.subLabelColor}`}>
@@ -348,7 +353,12 @@ const WalletPage = () => {
                 <div
                   className={`col-span-2 flex items-center justify-end text-right text-sm font-medium ${tx.isIncoming ? "text-green-600" : "text-gray-900"}`}
                 >
-                  <h4 className="flex items-center gap-2">{tx.amount}  <span><ChevronRight className="w-4 h-4 text-[#768299]" /></span></h4>  
+                  <h4 className="flex items-center gap-2">
+                    {tx.amount}{" "}
+                    <span>
+                      <ChevronRight className="w-4 h-4 text-[#768299]" />
+                    </span>
+                  </h4>
                 </div>
               </div>
             ))}
@@ -356,7 +366,7 @@ const WalletPage = () => {
         </div>
 
         {/* 6. Help Footer */}
-        <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="bg-white rounded-lg border border-gray-100 shadow-sm p-4 flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-sm bg-[#DCDCDC33] flex items-center justify-center text-[#2e1065]">
               <img src="/assets/images/helpIcon.png" alt="help" />
@@ -374,6 +384,7 @@ const WalletPage = () => {
           </button>
         </div>
       </div>
+      <DashboardFooter />
     </div>
   );
 };

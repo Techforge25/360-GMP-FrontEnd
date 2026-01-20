@@ -11,6 +11,7 @@ import {
   FiTrash2,
 } from "react-icons/fi";
 import { HiOutlineChatAlt } from "react-icons/hi";
+import DashboardFooter from "@/components/dashboard/DashboardFooter";
 
 const MyProductsPage = () => {
   const [activeTab, setActiveTab] = useState("all");
@@ -64,10 +65,10 @@ const MyProductsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-gray-50">
       <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          My Product
-        </p>
+        My Product
+      </p>
       {/* 1. Hero / Header Section */}
       <div className="relative bg-[#8B5CF6]">
         {/* Background Pattern (Abstract shapes/gradients) */}
@@ -184,8 +185,6 @@ const MyProductsPage = () => {
           <button className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center gap-2">
             Create A New Product <span>→</span>
           </button>
-
-
         </div>
         {/* 5. Product List Table */}
         <div className="bg-white shadow-sm overflow-hidden">
@@ -211,7 +210,6 @@ const MyProductsPage = () => {
               key={product.id}
               className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-gray-100 items-center hover:bg-gray-50 transition-colors last:border-none"
             >
-
               {/* Product Info */}
               <div className="col-span-4 flex items-start gap-3">
                 <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200">
@@ -278,11 +276,13 @@ const MyProductsPage = () => {
           ))}
         </div>
 
-        <div className="flex justify-center items-center mt-8">
-            <button className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2">Load More</button>
-        </div>  
-
+        <div className="flex justify-center items-center mt-8 mb-8">
+          <button className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2">
+            Load More
+          </button>
+        </div>
       </div>
+      <DashboardFooter />
     </div>
   );
 };
