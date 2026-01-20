@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/Card";
 import api from "@/lib/axios";
 import { useUserRole } from "@/context/UserContext";
+import { backendURL } from "@/constants";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -75,28 +76,32 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  // const handleGoogleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setError("");
 
-    try {
-      const res = await api.get({
-        url: `/auth/logout`,
-      });
+  //   try {
+  //     const res = await api.get({
+  //       url: `/auth/logout`,
+  //     });
 
-      if (res.success) {
-        console.log("Logged out:", res.data);
+  //     if (res.success) {
+  //       console.log("Logged out:", res.data);
 
-        router.push("/login");
-      } else {
-        setError(res.message || "Logout failed");
-      }
-    } catch (err) {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+  //       router.push("/login");
+  //     } else {
+  //       setError(res.message || "Logout failed");
+  //     }
+  //   } catch (err) {
+  //     setError("Something went wrong. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const handleGoogleLogin = () => {
+    window.open(`${backendURL}/auth/google`, `_self`);
   };
 
   return (

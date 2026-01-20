@@ -19,6 +19,7 @@ import {
 const ProfileHeader = () => {
   return (
     <div className="bg-white border-b border-gray-200">
+      <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">Home <span className="text-[#240457]">/ Global Manufacturing Co.</span></p>
       {/* Cover Image */}
       <div className="h-64 w-full relative bg-gray-200">
         <Image
@@ -27,20 +28,26 @@ const ProfileHeader = () => {
           fill
           className="object-cover"
         />
-        <div className="absolute top-4 right-4 flex gap-3">
-          <button className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-white transition-colors flex items-center gap-2">
-            <FiUsers className="w-4 h-4" />
+        <div className="absolute bottom-4 right-4 flex gap-3">
+          <button className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-2">
+            <img src="/assets/images/eyeIcon.png" alt="" />
             View as a user
           </button>
-          <button className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-white transition-colors flex items-center gap-2">
-            <FiEdit2 className="w-4 h-4" />
+          <button className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-2">
+            <img src="/assets/images/cameraIcon.png" alt="" />
             Update cover
           </button>
+        <div className="absolute -bottom-18 right-2">
+                <button className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-900 transition-colors shadow-sm flex items-center gap-2 mx-auto sm:mx-0">
+                  <img src="/assets/images/updateProfileIcon.png" alt="" />
+                  Update Profile
+                </button>
+              </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative -mt-16 mb-6 flex flex-col items-center sm:items-start sm:flex-row gap-6">
+        <div className="relative -mt-16 mb-6 flex flex-col items-center justify-center sm:items-start sm:flex-row gap-6">
           {/* Company Logo */}
           <div className="relative">
             <div className="w-32 h-32 rounded-xl bg-white p-1 shadow-lg border border-gray-100 overflow-hidden">
@@ -54,15 +61,16 @@ const ProfileHeader = () => {
           </div>
 
           {/* Profile Info */}
-          <div className="flex-1 pt-16 sm:pt-20 text-center sm:text-left">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
+        </div>
+          <div className="flex-1 pt-4 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-4">
+              <div className="flex flex-col flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-3 text-sm text-gray-500">
                 <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center sm:justify-start gap-2">
                   Global Manufacturing Co.
                   <FiCheckCircle className="w-5 h-5 text-blue-500" />
                 </h1>
 
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-3 text-sm text-gray-500">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-2 text-sm text-gray-500 mb-12">
                   <div className="flex items-center gap-1.5">
                     <FiUsers className="w-4 h-4" />
                     <span>500-1000 Employees</span>
@@ -85,19 +93,13 @@ const ProfileHeader = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="flex-shrink-0">
-                <button className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-900 transition-colors shadow-sm flex items-center gap-2 mx-auto sm:mx-0">
-                  <FiEdit2 className="w-4 h-4" />
-                  Update Profile
-                </button>
-              </div>
             </div>
           </div>
-        </div>
+
+          
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-8 overflow-x-auto pb-px scrollbar-hide">
+        <div className="flex items-center justify-center border-t border-gray-200 pt-4 gap-8 overflow-x-auto pb-px scrollbar-hide">
           <TabButton label="Home" icon={FiHome} active />
           <TabButton label="About" icon={FiInfo} />
           <TabButton label="Product" icon={FiCube} />
