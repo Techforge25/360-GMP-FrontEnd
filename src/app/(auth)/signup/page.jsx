@@ -14,6 +14,8 @@ import {
   CardDescription,
 } from "@/components/ui/Card";
 
+import { backendURL } from "@/constants";
+
 export default function SignupPage() {
   const router = useRouter();
   const [step, setStep] = useState(1); // 1: Email, 2: Details
@@ -41,7 +43,7 @@ export default function SignupPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, dob, passwordHash: password }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -56,6 +58,10 @@ export default function SignupPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSignup = () => {
+    window.open(`${backendURL}/auth/google`, `_self`);
   };
 
   return (
@@ -146,6 +152,7 @@ export default function SignupPage() {
         <Button
           variant="outline"
           className="w-full h-11 border-border-light text-text-primary font-medium hover:bg-surface-muted relative"
+          onClick={handleGoogleSignup}
         >
           <div className="absolute left-4">
             <FcGoogle className="h-5 w-5" />

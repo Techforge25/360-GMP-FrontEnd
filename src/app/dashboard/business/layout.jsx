@@ -11,6 +11,9 @@ export default function UserDashboardLayout({ children }) {
     "/dashboard/business/profile",
     "/dashboard/business/products",
     "/dashboard/business/wallet",
+    "/dashboard/business/orders",
+    "/dashboard/business/support",
+    "/dashboard/business/subscriptions",
   ];
 
   const shouldHideFooter = hideFooterRoutes.includes(pathname);

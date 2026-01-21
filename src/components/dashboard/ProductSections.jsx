@@ -145,14 +145,14 @@ const ProductSections = () => {
                 className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group"
               >
                 <div className="h-48 bg-gray-100 relative">
-                  <img
+                  {/* <img
                     src={prod.image}
                     alt={prod.name}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.src = "/assets/images/product-placeholder.png";
                     }}
-                  />
+                  /> */}
                   <span className="absolute top-2 left-2 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase">
                     {prod.tag}
                   </span>
@@ -210,7 +210,7 @@ const ProductSections = () => {
                       className="bg-white rounded-xl p-3 text-gray-900 shadow-lg"
                     >
                       <div className="h-24 bg-gray-100 rounded-lg mb-3 overflow-hidden">
-                        <img
+                        {/* <img
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover"
@@ -218,7 +218,7 @@ const ProductSections = () => {
                             e.target.src =
                               "/assets/images/product-placeholder.png";
                           }}
-                        />
+                        /> */}
                       </div>
                       <h3 className="font-bold text-sm truncate">
                         {item.name}
@@ -264,7 +264,7 @@ const ProductSections = () => {
                       className="bg-gray-800 rounded-xl p-3 border border-gray-700 shadow-lg"
                     >
                       <div className="h-24 bg-gray-700 rounded-lg mb-3 overflow-hidden">
-                        <img
+                        {/* <img
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover"
@@ -272,7 +272,7 @@ const ProductSections = () => {
                             e.target.src =
                               "/assets/images/product-placeholder.png";
                           }}
-                        />
+                        /> */}
                       </div>
                       <h3 className="font-bold text-sm truncate text-gray-200">
                         {item.name}

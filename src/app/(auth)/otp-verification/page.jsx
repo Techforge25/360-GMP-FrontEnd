@@ -68,8 +68,8 @@ function OTPForm() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ otp: code, email }),
-        }
+          body: JSON.stringify({ passwordResetToken: code, email }),
+        },
       );
 
       const data = await res.json();
@@ -77,7 +77,7 @@ function OTPForm() {
       if (res.ok) {
         // Success
         console.log("Verified:", data);
-        router.push("/login"); // Or dashboard
+        router.push(`/reset-password?token=${code}`);
       } else {
         setError(data.message || "Verification failed");
       }

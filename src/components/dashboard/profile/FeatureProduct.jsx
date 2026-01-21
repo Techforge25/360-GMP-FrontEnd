@@ -50,7 +50,7 @@ const FeatureProduct = () => {
         <h2 className="text-xl font-semiboldz text-gray-900">Feature Product</h2>
         <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#240457] rounded-md text-xs font-medium hover:bg-gray-100 transition-colors">
           Manage Featured Products
-          <FiSliders className="w-3.5 h-3.5" />
+          <img src="/assets/images/manageIcon.png" alt="" />
         </button>
       </div>
 
@@ -69,11 +69,11 @@ const FeatureProduct = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="absolute bottom-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button className="p-1.5 bg-white rounded-full shadow text-gray-500 hover:text-indigo-600">
+              <div className="absolute bottom-3 left-3 flex gap-1 bg-[#00000033] p-1 rounded-full opacity-100 transition-opacity">
+                <button className="p-1.5 bg-white rounded-full shadow text-gray-500">
                   <FiEdit2 className="w-3.5 h-3.5" />
                 </button>
-                <button className="p-1.5 bg-white rounded-full shadow text-gray-500 hover:text-red-600">
+                <button className="p-1.5 bg-white rounded-full shadow text-red-600">
                   <FiTrash2 className="w-3.5 h-3.5" />
                 </button>
               </div>

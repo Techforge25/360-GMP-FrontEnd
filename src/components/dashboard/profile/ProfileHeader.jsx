@@ -51,14 +51,18 @@ const ProfileHeader = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative -mt-16 mb-6 flex flex-col items-center justify-center sm:items-start sm:flex-row gap-6">
           {/* Company Logo */}
-          <div className="relative">
-            <div className="w-32 h-32 rounded-xl bg-white p-1 shadow-lg border border-gray-100 overflow-hidden">
-              <div className="w-full h-full bg-orange-50 flex items-center justify-center text-orange-500 text-4xl font-bold">
-                M
+          <div className="relative ">
+            <div className="w-32 h-32 rounded-2xl bg-white p-1.5 shadow-lg border-2 border-gray-300">
+              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center overflow-hidden relative">
+                <img
+                  src="/assets/images/profileLogo.png"
+                  alt="Profile"
+                  className="w flex-1 h-full object-contain"
+                />
               </div>
             </div>
-            <button className="absolute bottom-2 right-2 p-1.5 bg-white rounded-full shadow-md text-gray-500 hover:text-indigo-600 transition-colors border border-gray-100">
-              <FiEdit2 className="w-3 h-3" />
+            <button className="absolute bottom-10 -right-5 p-2.5 border border-gray-300 bg-white rounded-full shadow-lg text-gray-600 hover:text-indigo-600 transition-colors border border-gray-100 z-10">
+              <FiEdit2 className="w-4 h-4" />
             </button>
           </div>
 
@@ -74,11 +78,11 @@ const ProfileHeader = () => {
 
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-2 text-sm text-gray-500 mb-12">
                 <div className="flex items-center gap-1.5">
-                  <FiUsers className="w-4 h-4" />
+                  <img src="/assets/images/employeesIcon.png" alt="" />
                   <span>500-1000 Employees</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <FiDollarSign className="w-4 h-4" />
+                  <img src="/assets/images/dollarIcon.png" alt="" />
                   <span>Revenue • USD $3.6M+</span>
                 </div>
                 <div className="flex items-center gap-1.5">
@@ -86,7 +90,7 @@ const ProfileHeader = () => {
                   <span>3 yrs</span>
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <FiBox className="w-4 h-4" />
+                  <img src="/assets/images/manufacturingIcon.png" alt="" />
                   <span>Manufacturing</span>
                 </div>
                 <div className="flex items-center gap-1.5">
