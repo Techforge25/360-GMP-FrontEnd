@@ -93,10 +93,10 @@ const JobSection = () => {
   if (!jobs.length) return null;
 
   return (
-    <section className="py-12 bg-white mb-12">
+    <section className="py-12 bg-gray-50/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-indigo-950 mb-2">
+          <h2 className="text-2xl font-semibold mx-auto text-black mb-2 max-w-sm">
             Latest Jobs Posted By Other Companies
           </h2>
         </div>
@@ -105,48 +105,81 @@ const JobSection = () => {
           {jobs.map((job, i) => (
             <div
               key={i}
-              className="p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow bg-white flex items-start gap-4"
+              className="p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white flex items-start gap-4"
             >
+              {/* Company Logo */}
               <div
-                className={`w-12 h-12 rounded-lg ${job.color} flex-shrink-0 flex items-center justify-center text-xl font-bold text-gray-700`}
+                className={`w-35 h-full rounded-2xl bg-[#ECEFF6] border border-[#E3E7EE] flex-shrink-0 flex items-center justify-center`}
               >
-                {job.company.charAt(0)}
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center">
+                  <span className="text-2xl font-bold text-gray-700">
+                    {job.company.charAt(0)}
+                  </span>
+                </div>
               </div>
+
+              {/* Job Details */}
               <div className="flex-1">
-                <h3 className="font-bold text-gray-900 text-base mb-1">
+                <h3 className="font-semibold text-gray-900 text-base">
                   {job.title}
                 </h3>
-                <p className="text-sm text-indigo-600 font-medium mb-3">
-                  {job.company}
-                </p>
+                <p className="text-sm text-[#240457] mb-3">{job.company}</p>
 
-                <div className="flex flex-wrap gap-4 text-xs text-gray-500 mb-4">
+                {/* Job Meta Info */}
+                <div className="flex flex-wrap gap-3 text-xs text-gray-600 mb-4">
                   <span className="flex items-center gap-1">
-                    <FiMapPin /> {job.location}
+                    <img src="/assets/images/pinIcon.png" alt="" />
+                    {job.location}
                   </span>
                   <span className="flex items-center gap-1">
-                    <FiBriefcase /> {job.type}
+                    <img src="/assets/images/bagIcon.png" alt="" />
+                    {job.type}
                   </span>
                   <span className="flex items-center gap-1">
-                    <FiClock /> {job.posted}
+                    <img src="/assets/images/clockIcon.png" alt="" />
+                    {job.posted}
                   </span>
                 </div>
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full sm:w-auto rounded-full text-xs font-medium border-gray-200"
-                >
+                {/* View Details Button */}
+                <button className="px-4 mt-6 py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-sm flex items-center gap-2">
                   View Details
-                </Button>
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
           ))}
         </div>
 
+        {/* View All Jobs Button */}
         <div className="flex justify-center">
-          <Button className="bg-indigo-900 text-white rounded-full px-8">
+          <Button className="bg-[#240457] hover:bg-[#1a0340] text-white rounded-xl px-8 py-3 font-medium flex items-center gap-2">
             View All Jobs
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
           </Button>
         </div>
       </div>

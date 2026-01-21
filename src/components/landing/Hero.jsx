@@ -7,12 +7,12 @@ import { FiArrowRight } from "react-icons/fi";
 const Hero = () => {
   return (
     <section className="relative w-full h-[90vh] min-h-[600px] flex items-center overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 z-10" />
+      <div className="absolute inset-0 z-0 px-2">
+        <div className="absolute inset-0 z-10 rounded-lg" />
         <img
           src="/assets/images/landingBg.png"
           alt="Hero Background"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover rounded-lg"
         />
       </div>
 

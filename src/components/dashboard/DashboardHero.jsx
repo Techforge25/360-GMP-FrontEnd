@@ -48,7 +48,7 @@ const DashboardHero = () => {
                 className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
               />
               <button className="p-1 hover:bg-gray-200 rounded transition-colors">
-                <FiMenu className="text-gray-500 w-4 h-4" />
+                <img src="/assets/images/barIcon.png" alt="" />
               </button>
             </div>
 
@@ -63,7 +63,7 @@ const DashboardHero = () => {
             </div>
 
             {/* Search Button */}
-            <Button className="bg-purple-900 hover:bg-purple-800 text-white rounded-xl px-10 py-4 font-semibold transition-all shadow-md hover:shadow-lg whitespace-nowrap">
+            <Button className="bg-[#240457] hover:bg-purple-800 text-white rounded-xl px-10 py-4 font-semibold transition-all shadow-md hover:shadow-lg whitespace-nowrap">
               Search
             </Button>
           </div>

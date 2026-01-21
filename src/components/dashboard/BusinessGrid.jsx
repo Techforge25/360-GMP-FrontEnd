@@ -74,10 +74,10 @@ const BusinessGrid = () => {
     <section className="py-12 bg-gray-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-bold text-indigo-950 mb-2">
+          <h2 className="text-2xl font-medium text-black mb-2">
             Businesses
           </h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-900">
             Explore verified businesses around the world.
           </p>
         </div>
@@ -107,8 +107,9 @@ const BusinessGrid = () => {
                   }}
                 />
                 {/* Logo Overlay */}
-                <div className="absolute -bottom-6 left-4">
-                  <div className="w-12 h-12 rounded-lg bg-white p-1 shadow-sm border border-gray-100 flex items-center justify-center">
+                <div className="absolute -bottom-8 left-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-12  h-12 rounded-lg bg-white p-1 shadow-sm border border-gray-100 flex items-center justify-center">
                     <img
                       src={biz.logo}
                       alt={biz.name}
@@ -118,15 +119,20 @@ const BusinessGrid = () => {
                       }}
                     />
                   </div>
+                  <h1 className="text-lg text-black mt-6 ">TechVision</h1>
+                  </div>
                 </div>
               </div>
 
-              <div className="pt-8 px-4 pb-4">
+              <div className="pt-10 px-4 pb-4">
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex flex-col">
+                    <div className="flex items-center gap-1">
+                      <img src="/assets/images/companyIcon.png" alt="" className="w-4 h-4" />
                     <h3 className="text-xs text-gray-500 mt-1">{biz.name}</h3>
+                    </div>
                     <div className="flex items-center text-xs text-gray-500 mt-1">
-                      <FiMapPin className="mr-1 w-3 h-3" />
+                      <FiMapPin className="mr-1 w-3 h-3 text-black" />
                       {biz.location}
                     </div>
                   </div>
@@ -138,7 +144,17 @@ const BusinessGrid = () => {
                         rel="noopener noreferrer"
                         className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
                       >
-                        <FiGlobe className="w-3.5 h-3.5" />
+                        <FiGlobe className="w-4 h-4 text-[#240457]" />
+                      </a>
+                    )}
+                    {biz.website !== "#" && (
+                      <a
+                        href={biz.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
+                      >
+                        <img src="/assets/images/twoArrows.png" alt="" />
                       </a>
                     )}
                     {biz.phone !== "#" && (
@@ -146,7 +162,7 @@ const BusinessGrid = () => {
                         href={`tel:${biz.phone}`}
                         className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
                       >
-                        <FiPhone className="w-3.5 h-3.5" />
+                        <FiPhone className="w-4 h-4 text-[#240457]" />
                       </a>
                     )}
                   </div>
@@ -159,7 +175,7 @@ const BusinessGrid = () => {
         <div className="flex justify-center mt-10">
           <Link
             href="/dashboard/business/businesses"
-            className="px-6 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm"
+            className="px-6 py-2 bg-white border border-gray-300 rounded-xl  text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm"
           >
             Browse All Businesses
           </Link>

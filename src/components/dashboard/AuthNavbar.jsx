@@ -251,7 +251,7 @@ const AuthNavbar = () => {
           {/* Mobile Menu Toggle */}
           <div className="lg:hidden flex items-center gap-4">
             <button className="text-gray-600 hover:text-indigo-600 relative">
-              <FiBell className="w-5 h-5" />
+              <FiBell className="w-5 h-5 text-[#240457]" />
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
                 2
               </span>
