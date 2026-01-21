@@ -56,7 +56,7 @@ const PlanCard = ({
           ? "scale-105 shadow-xl z-10"
           : "shadow-md hover:shadow-lg",
         disabled && "opacity-60 grayscale-[0.5]",
-        currentVariant.border
+        currentVariant.border,
       )}
     >
       <CardContent className="flex-1 p-8">
@@ -66,7 +66,7 @@ const PlanCard = ({
             <span
               className={cn(
                 "px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1",
-                currentVariant.badge
+                currentVariant.badge,
               )}
             >
               {variant === "purple" && <FaCrown className="w-3 h-3" />}
@@ -92,8 +92,8 @@ const PlanCard = ({
             variant === "purple"
               ? "bg-indigo-900 text-white hover:bg-indigo-800"
               : variant === "orange"
-              ? "bg-white text-orange-900 border border-orange-200 hover:bg-orange-50"
-              : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50"
+                ? "bg-white text-orange-900 border border-orange-200 hover:bg-orange-50"
+                : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50",
           )}
         >
           {disabled && disabledMessage ? disabledMessage : buttonText}
@@ -151,7 +151,7 @@ const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {
                 "flex-1 h-14 border rounded-md flex items-center justify-center gap-2 transition-all",
                 method === "stripe"
                   ? "border-brand-primary ring-1 ring-brand-primary bg-brand-primary/5"
-                  : "border-border-light hover:bg-gray-50"
+                  : "border-border-light hover:bg-gray-50",
               )}
             >
               <span className="font-bold text-indigo-600 flex items-center gap-1">
@@ -165,7 +165,7 @@ const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {
                 "flex-1 h-14 border rounded-md flex items-center justify-center gap-2 transition-all",
                 method === "paypal"
                   ? "border-brand-primary ring-1 ring-brand-primary bg-brand-primary/5"
-                  : "border-border-light hover:bg-gray-50"
+                  : "border-border-light hover:bg-gray-50",
               )}
             >
               <FaPaypal className="text-blue-700" />{" "}
@@ -177,7 +177,7 @@ const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {
                 "flex-1 h-14 border rounded-md flex items-center justify-center gap-2 transition-all",
                 method === "bitpay"
                   ? "border-brand-primary ring-1 ring-brand-primary bg-brand-primary/5"
-                  : "border-border-light hover:bg-gray-50"
+                  : "border-border-light hover:bg-gray-50",
               )}
             >
               <span className="font-bold text-slate-700">bitpay</span>
@@ -221,7 +221,7 @@ const ConfirmationModal = ({
           <div
             className={cn(
               "mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4",
-              isError ? "bg-red-50" : "bg-green-50"
+              isError ? "bg-red-50" : "bg-green-50",
             )}
           >
             {isError ? (
@@ -328,14 +328,14 @@ function PlansList() {
         console.log("Plan ID:", plan.backendId);
         console.log("Role:", role);
 
-        const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
+        const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`
         const cancelUrl = `${window.location.origin}/onboarding/plans`;
 
         const response = await subscriptionAPI.createStripeCheckout(
           plan.backendId,
           role,
           successUrl,
-          cancelUrl
+          cancelUrl,
         );
 
         console.log("Free Trial Stripe response:", response);
@@ -424,7 +424,7 @@ function PlansList() {
         plan.id,
         role,
         successUrl,
-        cancelUrl
+        cancelUrl,
       );
 
       console.log("Stripe checkout response:", response);

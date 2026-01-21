@@ -9,14 +9,13 @@ import { Button } from "@/components/ui/Button";
 function SubscriptionSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [status, setStatus] = useState("verifying"); // verifying, success, error
+  const [status, setStatus] = useState("pending"); // verifying, success, error
   const [message, setMessage] = useState("Verifying your subscription...");
   const [subscriptionData, setSubscriptionData] = useState(null);
 
   useEffect(() => {
     const verifySubscription = async () => {
       try {
-        // Get session_id from URL query params
         const sessionId = searchParams.get("session_id");
 
         if (!sessionId) {
@@ -25,29 +24,37 @@ function SubscriptionSuccessContent() {
           return;
         }
 
-        console.log("Verifying Stripe session:", sessionId);
+        console.log("Loading subscription for session:", sessionId);
 
-        // Verify payment with backend
-        const response = await subscriptionAPI.verifyStripePayment(sessionId);
+        // Since the backend already verified and saved the subscription before redirecting,
+        // we just need to update the local storage status from "pending" to "active"
+        const storedSubscription = subscriptionAPI.getStoredSubscription();
 
-        console.log("Verification response:", response);
+        if (storedSubscription) {
+          // Update status to active
+          const updatedSubscription = {
+            ...storedSubscription,
+            status: "active",
+          };
 
-        if (response.success && response.data) {
-          // Store subscription data
-          subscriptionAPI.storeSubscription(response.data);
-          setSubscriptionData(response.data);
-          setStatus("success");
+          subscriptionAPI.storeSubscription(updatedSubscription);
+          setSubscriptionData(updatedSubscription);
+          setStatus("active");
           setMessage("Your subscription has been activated successfully!");
+
+          console.log("Subscription updated to active:", updatedSubscription);
         } else {
           setStatus("error");
-          setMessage(response.message || "Failed to verify subscription.");
+          setMessage(
+            "Could not find subscription data. Please contact support.",
+          );
         }
       } catch (error) {
-        console.error("Subscription verification error:", error);
+        console.error("Subscription check error:", error);
         setStatus("error");
         setMessage(
           error.message ||
-            "Failed to verify subscription. Please contact support."
+            "Failed to load subscription. Please contact support.",
         );
       }
     };
@@ -71,10 +78,10 @@ function SubscriptionSuccessContent() {
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
         {/* Status Icon */}
         <div className="flex justify-center mb-6">
-          {status === "verifying" && (
+          {status === "pending" && (
             <div className="animate-spin h-16 w-16 border-4 border-brand-primary border-t-transparent rounded-full"></div>
           )}
-          {status === "success" && (
+          {status === "active" && (
             <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
               <BsCheckCircleFill className="w-10 h-10 text-green-500" />
             </div>
@@ -88,8 +95,8 @@ function SubscriptionSuccessContent() {
 
         {/* Title */}
         <h1 className="text-2xl font-bold text-center mb-2">
-          {status === "verifying" && "Verifying Payment"}
-          {status === "success" && "Subscription Activated!"}
+          {status === "pending" && "Verifying Payment"}
+          {status === "active" && "Subscription Activated!"}
           {status === "error" && "Verification Failed"}
         </h1>
 
@@ -97,7 +104,7 @@ function SubscriptionSuccessContent() {
         <p className="text-center text-gray-600 mb-6">{message}</p>
 
         {/* Subscription Details */}
-        {status === "success" && subscriptionData && (
+        {status === "active" && subscriptionData && (
           <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-sm mb-3 text-indigo-900">
               Subscription Details
@@ -136,7 +143,7 @@ function SubscriptionSuccessContent() {
         )}
 
         {/* Action Buttons */}
-        {status === "success" && (
+        {status === "active" && (
           <Button
             onClick={handleContinue}
             className="w-full bg-indigo-900 hover:bg-indigo-800 text-white"
@@ -163,7 +170,7 @@ function SubscriptionSuccessContent() {
           </div>
         )}
 
-        {status === "verifying" && (
+        {status === "pending" && (
           <p className="text-xs text-center text-gray-500">
             Please wait while we confirm your payment...
           </p>

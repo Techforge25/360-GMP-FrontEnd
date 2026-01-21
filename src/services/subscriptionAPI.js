@@ -33,30 +33,6 @@ class SubscriptionAPI {
   }
 
   /**
-   * Get user's current subscription
-   */
-  async getCurrentSubscription() {
-    return await api.get({
-      url: "/subscription/current",
-      activateLoader: false,
-      enableSuccessMessage: false,
-      enableErrorMessage: true,
-    });
-  }
-
-  /**
-   * Get all subscriptions for user
-   */
-  async getAllSubscriptions() {
-    return await api.get({
-      url: "/subscription",
-      activateLoader: false,
-      enableSuccessMessage: false,
-      enableErrorMessage: true,
-    });
-  }
-
-  /**
    * Cancel subscription
    * @param {string} subscriptionId - The subscription ID
    */
@@ -75,7 +51,7 @@ class SubscriptionAPI {
    */
   async verifyStripePayment(sessionId) {
     return await api.get({
-      url: `/subscription/stripe/verify?session_id=${sessionId}`,
+      url: `/subscription/stripe/success?session_id=${sessionId}`,
       activateLoader: true,
       enableSuccessMessage: false,
       enableErrorMessage: true,
