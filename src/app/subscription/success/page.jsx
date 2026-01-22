@@ -66,11 +66,15 @@ function SubscriptionSuccessContent() {
     const storedSub = subscriptionAPI.getStoredSubscription();
     const role = storedSub?.role || "user";
 
+    // Requirement:
+    // - If user role created Stripe account => redirect to onboarding/business-profile
+    // - If business role created Stripe account => redirect to onboarding/user-profile
     if (role === "business") {
-      router.push("/dashboard/business");
-    } else {
-      router.push("/dashboard/user");
+      router.push("/onboarding/business-profile");
+      return;
     }
+
+    router.push("/onboarding/user-profile");
   };
 
   return (
@@ -148,7 +152,7 @@ function SubscriptionSuccessContent() {
             onClick={handleContinue}
             className="w-full bg-indigo-900 hover:bg-indigo-800 text-white"
           >
-            Continue to Dashboard
+            Continue
           </Button>
         )}
 
