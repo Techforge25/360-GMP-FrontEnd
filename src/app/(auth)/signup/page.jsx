@@ -37,6 +37,7 @@ export default function SignupPage() {
     setError("");
 
     try {
+      // Step 1: Create the account
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/signup`,
         {
@@ -49,7 +50,25 @@ export default function SignupPage() {
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/login");
+        // Step 2: Trigger OTP email by calling forgotPassword
+        try {
+          await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/forgotPassword`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            },
+          );
+        } catch (otpError) {
+          console.error("Failed to send OTP:", otpError);
+          // Continue anyway - user can resend OTP from verification page
+        }
+
+        // Redirect to OTP verification page with email
+        router.push(
+          `/otp-verification?email=${encodeURIComponent(email)}&type=signup`,
+        );
       } else {
         setError(data.message || "Signup failed");
       }

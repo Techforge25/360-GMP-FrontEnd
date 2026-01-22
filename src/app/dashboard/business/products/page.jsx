@@ -263,13 +263,13 @@ const MyProductsPage = () => {
               {/* Actions */}
               <div className="col-span-1 flex items-center justify-end gap-2">
                 <button className="text-gray-400 hover:text-indigo-600 transition-colors">
-                  <img src="/assets/images/editIcon.png" alt="" srcset="" />
+                  <img src="/assets/images/editIcon.png" alt="" />
                 </button>
                 <button className="text-gray-400 hover:text-green-600 transition-colors">
-                  <img src="/assets/images/chartIcon.png" alt="" srcset="" />
+                  <img src="/assets/images/chartIcon.png" alt="" />
                 </button>
                 <button className="text-gray-400 hover:text-red-500 transition-colors">
-                  <img src="/assets/images/deleteIcon.png" alt="" srcset="" />
+                  <img src="/assets/images/deleteIcon.png" alt="" />
                 </button>
               </div>
             </div>

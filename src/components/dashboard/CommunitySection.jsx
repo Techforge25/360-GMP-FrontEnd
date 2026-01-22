@@ -24,9 +24,88 @@ const CommunitySection = () => {
 
         if (response.success && response.data?.communities) {
           setCommunities(response.data.communities);
+        } else {
+          // Set dummy data if API fails or returns no data
+          setCommunities([
+            {
+              _id: "1",
+              name: "Tech Innovators Hub",
+              description:
+                "Connect with technology enthusiasts and innovators from around the world.",
+              type: "public",
+              coverImage: "/assets/images/community.png",
+              memberCount: 1250,
+            },
+            {
+              _id: "2",
+              name: "Manufacturing Excellence",
+              description:
+                "A private community for manufacturing professionals to share best practices.",
+              type: "private",
+              coverImage: "/assets/images/community.png",
+              memberCount: 850,
+            },
+            {
+              _id: "3",
+              name: "Global Business Network",
+              description:
+                "Featured community connecting businesses worldwide for collaboration.",
+              type: "featured",
+              coverImage: "/assets/images/community.png",
+              memberCount: 2100,
+            },
+            {
+              _id: "4",
+              name: "Supply Chain Experts",
+              description:
+                "Join supply chain professionals discussing logistics and optimization.",
+              type: "public",
+              coverImage: "/assets/images/community.png",
+              memberCount: 680,
+            },
+          ]);
         }
       } catch (error) {
         console.error("Failed to fetch communities:", error);
+        // Set dummy data on error
+        setCommunities([
+          {
+            _id: "1",
+            name: "Tech Innovators Hub",
+            description:
+              "Connect with technology enthusiasts and innovators from around the world.",
+            type: "public",
+            coverImage: "/assets/images/community.png",
+            memberCount: 1250,
+          },
+          {
+            _id: "2",
+            name: "Manufacturing Excellence",
+            description:
+              "A private community for manufacturing professionals to share best practices.",
+            type: "private",
+            coverImage: "/assets/images/community.png",
+            memberCount: 850,
+          },
+          {
+            _id: "3",
+            name: "Global Business Network",
+            description:
+              "Featured community connecting businesses worldwide for collaboration.",
+            type: "featured",
+            coverImage: "/assets/images/community.png",
+            memberCount: 2100,
+          },
+          {
+            _id: "4",
+            name: "Supply Chain Experts",
+            description:
+              "Join supply chain professionals discussing logistics and optimization.",
+            type: "public",
+            coverImage: "/assets/images/community.png",
+            memberCount: 680,
+          },
+        ]);
       } finally {
         setLoading(false);
       }
@@ -138,12 +217,15 @@ const CommunitySection = () => {
                 </p>
 
                 <div className="flex justify-between items-center">
-                  <p className="text-xs text-gray-500 mb-4">
-                    {comm.memberCount || 0} Members
-                  </p>
+                  <div className="flex items-center gap-2">
+                    <img src="/assets/images/communityIcon.png" alt="" />
+                    <p className="text-xs text-gray-500 ">
+                      {comm.memberCount || 0} Members
+                    </p>
+                  </div>
                   <Link
                     href={`/community/${comm._id}`}
-                    className="p-2 bg-brand-primary/30 rounded-card align-right"
+                    className="p-2 bg-brand-primary/10 rounded-card align-right"
                   >
                     <FaArrowRightLong
                       size={16}
@@ -169,7 +251,7 @@ const CommunitySection = () => {
                     : "w-1.5 bg-gray-300"
                 }`}
               />
-            )
+            ),
           )}
         </div>
       </div>

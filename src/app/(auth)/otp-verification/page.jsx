@@ -14,6 +14,7 @@ function OTPForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
+  const type = searchParams.get("type"); // 'signup' or 'password-reset'
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(54);
@@ -75,9 +76,16 @@ function OTPForm() {
       const data = await res.json();
 
       if (res.ok) {
-        // Success
+        // Success - redirect based on type
         console.log("Verified:", data);
-        router.push(`/reset-password?token=${code}`);
+
+        if (type === "signup") {
+          // For signup, redirect to login page
+          router.push("/login");
+        } else {
+          // For password reset, redirect to reset password page
+          router.push(`/reset-password?token=${code}`);
+        }
       } else {
         setError(data.message || "Verification failed");
       }

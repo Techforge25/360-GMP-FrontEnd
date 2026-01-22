@@ -16,9 +16,9 @@ const FilterSection = ({ title, options, isOpen = true }) => {
           {title}
         </h4>
         {open ? (
-          <FiChevronUp className="text-text-secondary" />
+          <FiChevronUp className="text-black" />
         ) : (
-          <FiChevronDown className="text-text-secondary" />
+          <FiChevronDown className="text-black" />
         )}
       </button>
 
@@ -28,7 +28,7 @@ const FilterSection = ({ title, options, isOpen = true }) => {
             <label key={i} className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-brand-primary focus:ring-brand-primary"
+                className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-brand-primary"
               />
               <span className="text-sm text-text-secondary hover:text-text-primary transition-colors">
                 {opt}
@@ -45,7 +45,7 @@ export const JobFilterSidebar = () => {
   return (
     <div className="w-64 flex-shrink-0 bg-white rounded-lg border border-border-light p-4 h-fit sticky top-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-text-primary">Jobs Category</h3>
+        <h3 className="font-semibold text-gray-500">Jobs Category</h3>
       </div>
 
       <FilterSection
@@ -69,7 +69,7 @@ export const JobFilterSidebar = () => {
         ]}
       />
 
-      <div className="mt-4 pt-4 border-t border-border-light text-center">
+      <div className="pt-4 text-center flex justify-center">
         <button className="text-sm text-brand-primary font-medium hover:underline flex items-center justify-center gap-1">
           All Filters <FiChevronDown />
         </button>

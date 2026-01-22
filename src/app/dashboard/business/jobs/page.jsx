@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FiSearch, FiMapPin } from "react-icons/fi";
+import { FiSearch, FiMapPin, FiChevronDown } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -74,7 +74,7 @@ export default function JobsPage() {
         <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
           <div className="flex flex-1 items-center bg-white border border-border-light rounded-lg overflow-hidden h-11">
             <div className="relative flex-1">
-              <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
+              <img src="/assets/images/long_searchBar.png" className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" alt="" />
               <Input
                 placeholder="Search by role, skill, or company name..."
                 className="pl-10 h-11 border-0 focus:ring-0 rounded-none"
@@ -87,7 +87,7 @@ export default function JobsPage() {
             <div className="w-px h-6 bg-border-light" />
 
             <div className="relative flex-1">
-              <FiMapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
+              <img src="/assets/images/plusMap.png" className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" alt="" />
               <Input
                 placeholder="Canada/USA"
                 className="pl-10 h-11 border-0 focus:ring-0 rounded-none"
@@ -110,12 +110,12 @@ export default function JobsPage() {
           <Card className="bg-white border-border-light shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <p className="font-bold text-text-primary">
+                <p className="font-semibold text-text-primary">
                   Showing {jobs.length} of {totalJobs} Jobs
                 </p>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-text-secondary">Sort By</span>
-                  <select className="text-sm border-none bg-transparent font-semibold text-text-primary focus:ring-0 cursor-pointer outline-none">
+                  <span className="text-sm text-gray-700">Sort By</span>
+                  <select className="text-sm bg-transparent font-medium border border-gray-200 rounded-md p-2 text-text-primary focus:ring-0 cursor-pointer outline-none">
                     <option>Newest</option>
                     <option>Oldest</option>
                   </select>
@@ -174,10 +174,16 @@ export default function JobsPage() {
                   </button>
                 </div>
               )}
+              
             </CardContent>
           </Card>
+          
         </div>
+        
       </div>
+
+      
+
 
       <ChatWidget />
     </div>

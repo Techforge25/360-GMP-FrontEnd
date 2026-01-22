@@ -74,7 +74,7 @@ const BusinessGrid = () => {
     <section className="py-12 bg-gray-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <h2 className="text-2xl font-medium text-black mb-2">
+          <h2 className="text-2xl font-semibold mx-auto text-black mb-2 max-w-sm mb-2">
             Businesses
           </h2>
           <p className="text-sm text-gray-900">
@@ -175,7 +175,7 @@ const BusinessGrid = () => {
         <div className="flex justify-center mt-10">
           <Link
             href="/dashboard/business/businesses"
-            className="px-6 py-2 bg-white border border-gray-300 rounded-xl  text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm"
+            className="px-6 py-2 bg-white border border-gray-300 rounded-xl  text-sm font-medium text-gray-900 hover:bg-gray-50 shadow-sm"
           >
             Browse All Businesses
           </Link>
