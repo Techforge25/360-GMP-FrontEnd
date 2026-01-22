@@ -14,6 +14,7 @@ function OTPForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
+  const userId = searchParams.get("userId");
   const type = searchParams.get("type"); // 'signup' or 'password-reset'
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -64,33 +65,71 @@ function OTPForm() {
     setError("");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verifyPasswordResetToken`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ passwordResetToken: code, email }),
-        },
-      );
+      if (type === "signup") {
+        // For signup, use the new account verification endpoint
+        if (!userId) {
+          setError("User ID is missing. Please try signing up again.");
+          setLoading(false);
+          return;
+        }
 
-      const data = await res.json();
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/verify-otp`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId,
+              accountVerificationToken: code,
+            }),
+          },
+        );
 
-      if (res.ok) {
-        // Success - redirect based on type
-        console.log("Verified:", data);
+        let data;
+        try {
+          data = await res.json();
+        } catch (parseError) {
+          // If response is not valid JSON, show a more helpful error
+          setError("Server error: Invalid response from server. Please check your backend code.");
+          setLoading(false);
+          return;
+        }
 
-        if (type === "signup") {
-          // For signup, redirect to login page
+        if (res.ok) {
+          // Success - redirect to login page
           router.push("/login");
         } else {
-          // For password reset, redirect to reset password page
-          router.push(`/reset-password?token=${code}`);
+          setError(data.message || "Verification failed");
         }
       } else {
-        setError(data.message || "Verification failed");
+        // For password reset, use the old endpoint
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verifyPasswordResetToken`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ passwordResetToken: code, email }),
+          },
+        );
+
+        let data;
+        try {
+          data = await res.json();
+        } catch (parseError) {
+          setError("Server error: Invalid response from server.");
+          setLoading(false);
+          return;
+        }
+
+        if (res.ok) {
+          // For password reset, redirect to reset password page
+          router.push(`/reset-password?token=${code}`);
+        } else {
+          setError(data.message || "Verification failed");
+        }
       }
     } catch (err) {
-      setError("Something went wrong.");
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

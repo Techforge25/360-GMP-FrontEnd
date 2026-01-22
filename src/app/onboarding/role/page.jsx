@@ -36,7 +36,7 @@ export default function RoleSelectionPage() {
   };
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center">
       <div className="fixed inset-0 -z-10">
         <img
           src="/assets/images/authBG.png"
@@ -46,7 +46,7 @@ export default function RoleSelectionPage() {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <Card className="w-full max-w-2xl border-none shadow-xl bg-surface-elevated z-10 relative">
+      <Card className="w-full max-w-2xl rounded-3xl border-none shadow-xl bg-surface-elevated z-10 relative">
         <CardHeader className="text-center pb-2">
           <CardTitle className="text-2xl font-bold bg-gradient-to-r from-brand-primary to-brand-primary-light bg-clip-text text-transparent">
             Welcome To 360 GMP

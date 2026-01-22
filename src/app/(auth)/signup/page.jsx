@@ -18,18 +18,12 @@ import { backendURL } from "@/constants";
 
 export default function SignupPage() {
   const router = useRouter();
-  const [step, setStep] = useState(1); // 1: Email, 2: Details
   const [email, setEmail] = useState("");
-  const [dob, setDob] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleContinue = (e) => {
-    e.preventDefault();
-    if (email) setStep(2);
-  };
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -37,37 +31,25 @@ export default function SignupPage() {
     setError("");
 
     try {
-      // Step 1: Create the account
+      // Create the account - backend will send OTP automatically
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, dob, passwordHash: password }),
+          body: JSON.stringify({ email, passwordHash: password }),
         },
       );
 
       const data = await res.json();
 
       if (res.ok) {
-        // Step 2: Trigger OTP email by calling forgotPassword
-        try {
-          await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/forgotPassword`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ email }),
-            },
-          );
-        } catch (otpError) {
-          console.error("Failed to send OTP:", otpError);
-          // Continue anyway - user can resend OTP from verification page
-        }
-
-        // Redirect to OTP verification page with email
+        // Backend returns userId in data.data
+        const userId = data.data;
+        
+        // Redirect to OTP verification page with userId and email
         router.push(
-          `/otp-verification?email=${encodeURIComponent(email)}&type=signup`,
+          `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
         );
       } else {
         setError(data.message || "Signup failed");
