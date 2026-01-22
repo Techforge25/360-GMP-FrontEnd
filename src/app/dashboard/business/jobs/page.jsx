@@ -12,22 +12,39 @@ import api from "@/lib/axios";
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
-  const itemsPerPage = 10;
+  const [hasMore, setHasMore] = useState(true);
+
+  // Set items per page to 20 as requested
+  const itemsPerPage = 20;
 
   useEffect(() => {
-    fetchJobs();
-  }, [currentPage]);
+    // Reset and fetch initial data when filters change
+    setCurrentPage(1);
+    setHasMore(true);
+    fetchInitialJobs();
+  }, []);
 
-  const fetchJobs = async () => {
+  const fetchInitialJobs = async () => {
     try {
       setLoading(true);
+      const queryParams = new URLSearchParams({
+        page: 1,
+        limit: itemsPerPage,
+        status: "open",
+      });
+
+      if (searchQuery) queryParams.append("search", searchQuery);
+      // Backend doesn't support location query in the provided snippet explicitly for filtering jobs list directly
+      // but if it did, we'd add it here. Keeping it for future or if api supports it.
+
       const response = await api.get({
-        url: `/jobs?page=${currentPage}&limit=${itemsPerPage}&status=open`,
+        url: `/jobs?${queryParams.toString()}`,
         enableErrorMessage: false,
         enableSuccessMessage: false,
         activateLoader: false,
@@ -37,22 +54,58 @@ export default function JobsPage() {
         setJobs(response.data.jobs || []);
         setTotalPages(response.data.pagination?.totalPages || 1);
         setTotalJobs(response.data.pagination?.totalJobs || 0);
+        setHasMore(response.data.pagination?.hasNextPage || false);
+        setCurrentPage(2); // Next page to fetch
+      } else {
+        setJobs([]);
+        setHasMore(false);
       }
     } catch (error) {
       console.error("Failed to fetch jobs:", error);
+      setJobs([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const loadMoreJobs = async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+      const queryParams = new URLSearchParams({
+        page: currentPage,
+        limit: itemsPerPage,
+        status: "open",
+      });
+
+      if (searchQuery) queryParams.append("search", searchQuery);
+
+      const response = await api.get({
+        url: `/jobs?${queryParams.toString()}`,
+        enableErrorMessage: false,
+        enableSuccessMessage: false,
+        activateLoader: false,
+      });
+
+      if (response.success && response.data) {
+        const newJobs = response.data.jobs || [];
+        setJobs((prev) => [...prev, ...newJobs]);
+        setHasMore(response.data.pagination?.hasNextPage || false);
+        setCurrentPage((prev) => prev + 1);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Failed to load more jobs:", error);
+    } finally {
+      setLoadingMore(false);
+    }
   };
 
   const handleSearch = () => {
     setCurrentPage(1);
-    fetchJobs();
+    fetchInitialJobs();
   };
 
   if (loading && jobs.length === 0) {
@@ -74,7 +127,11 @@ export default function JobsPage() {
         <div className="flex flex-col md:flex-row gap-4 max-w-4xl mx-auto">
           <div className="flex flex-1 items-center bg-white border border-border-light rounded-lg overflow-hidden h-11">
             <div className="relative flex-1">
-              <img src="/assets/images/long_searchBar.png" className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" alt="" />
+              <img
+                src="/assets/images/long_searchBar.png"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary"
+                alt=""
+              />
               <Input
                 placeholder="Search by role, skill, or company name..."
                 className="pl-10 h-11 border-0 focus:ring-0 rounded-none"
@@ -87,7 +144,11 @@ export default function JobsPage() {
             <div className="w-px h-6 bg-border-light" />
 
             <div className="relative flex-1">
-              <img src="/assets/images/plusMap.png" className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" alt="" />
+              <img
+                src="/assets/images/plusMap.png"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary"
+                alt=""
+              />
               <Input
                 placeholder="Canada/USA"
                 className="pl-10 h-11 border-0 focus:ring-0 rounded-none"
@@ -138,52 +199,29 @@ export default function JobsPage() {
                 </div>
               )}
 
-              {totalPages > 1 && (
-                <div className="mt-8 flex justify-center items-center gap-2">
+              {/* Load More Button */}
+              {hasMore && (
+                <div className="mt-8 flex justify-center">
                   <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1 rounded border border-border-light text-text-secondary hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={loadMoreJobs}
+                    disabled={loadingMore}
+                    className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    &lt;
-                  </button>
-
-                  {[...Array(Math.min(totalPages, 5))].map((_, i) => {
-                    const pageNum = i + 1;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => handlePageChange(pageNum)}
-                        className={`w-8 h-8 rounded flex items-center justify-center text-sm font-medium transition-colors ${
-                          currentPage === pageNum
-                            ? "bg-brand-primary text-white"
-                            : "text-text-secondary hover:bg-gray-50 border border-border-light"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-3 py-1 rounded border border-border-light text-text-secondary hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    &gt;
+                    {loadingMore ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                        Loading...
+                      </>
+                    ) : (
+                      "Load More Jobs"
+                    )}
                   </button>
                 </div>
               )}
-              
             </CardContent>
           </Card>
-          
         </div>
-        
       </div>
-
-      
-
 
       <ChatWidget />
     </div>
