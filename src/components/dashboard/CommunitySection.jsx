@@ -22,90 +22,21 @@ const CommunitySection = () => {
           enableSuccessMessage: false,
         });
 
-        if (response.success && response.data?.communities) {
-          setCommunities(response.data.communities);
+        // Backend returns paginated response with docs array
+        if (
+          response.success &&
+          response.data?.docs &&
+          response.data.docs.length > 0
+        ) {
+          setCommunities(response.data.docs);
         } else {
-          // Set dummy data if API fails or returns no data
-          setCommunities([
-            {
-              _id: "1",
-              name: "Tech Innovators Hub",
-              description:
-                "Connect with technology enthusiasts and innovators from around the world.",
-              type: "public",
-              coverImage: "/assets/images/community.png",
-              memberCount: 1250,
-            },
-            {
-              _id: "2",
-              name: "Manufacturing Excellence",
-              description:
-                "A private community for manufacturing professionals to share best practices.",
-              type: "private",
-              coverImage: "/assets/images/community.png",
-              memberCount: 850,
-            },
-            {
-              _id: "3",
-              name: "Global Business Network",
-              description:
-                "Featured community connecting businesses worldwide for collaboration.",
-              type: "featured",
-              coverImage: "/assets/images/community.png",
-              memberCount: 2100,
-            },
-            {
-              _id: "4",
-              name: "Supply Chain Experts",
-              description:
-                "Join supply chain professionals discussing logistics and optimization.",
-              type: "public",
-              coverImage: "/assets/images/community.png",
-              memberCount: 680,
-            },
-          ]);
+          // Set empty array if no communities found
+          setCommunities([]);
         }
       } catch (error) {
         console.error("Failed to fetch communities:", error);
-        // Set dummy data on error
-        setCommunities([
-          {
-            _id: "1",
-            name: "Tech Innovators Hub",
-            description:
-              "Connect with technology enthusiasts and innovators from around the world.",
-            type: "public",
-            coverImage: "/assets/images/community.png",
-            memberCount: 1250,
-          },
-          {
-            _id: "2",
-            name: "Manufacturing Excellence",
-            description:
-              "A private community for manufacturing professionals to share best practices.",
-            type: "private",
-            coverImage: "/assets/images/community.png",
-            memberCount: 850,
-          },
-          {
-            _id: "3",
-            name: "Global Business Network",
-            description:
-              "Featured community connecting businesses worldwide for collaboration.",
-            type: "featured",
-            coverImage: "/assets/images/community.png",
-            memberCount: 2100,
-          },
-          {
-            _id: "4",
-            name: "Supply Chain Experts",
-            description:
-              "Join supply chain professionals discussing logistics and optimization.",
-            type: "public",
-            coverImage: "/assets/images/community.png",
-            memberCount: 680,
-          },
-        ]);
+        // Set empty array on error
+        setCommunities([]);
       } finally {
         setLoading(false);
       }

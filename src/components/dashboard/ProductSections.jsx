@@ -25,9 +25,9 @@ const ProductSections = () => {
 
       // Fetch all three categories in parallel
       const [featuredRes, topRankingRes, newProductsRes] = await Promise.all([
-        productAPI.getFeatured(6),
-        productAPI.getTopRanking(4),
-        productAPI.getNewProducts(4),
+        productAPI.getFeatured(3),
+        productAPI.getTopRanking(2),
+        productAPI.getNewProducts(2),
       ]);
 
       console.log("Featured products response:", featuredRes);
@@ -35,31 +35,53 @@ const ProductSections = () => {
       console.log("New products response:", newProductsRes);
 
       // Transform and set featured products
-      if (featuredRes.success && featuredRes.data) {
-        const transformedFeatured = Array.isArray(featuredRes.data)
-          ? featuredRes.data.map(transformProduct)
-          : [transformProduct(featuredRes.data)];
+      // Featured endpoint returns paginated response with docs array
+      if (
+        featuredRes.success &&
+        featuredRes.data?.docs &&
+        featuredRes.data.docs.length > 0
+      ) {
+        const transformedFeatured = featuredRes.data.docs.map(transformProduct);
         setFeatured(transformedFeatured);
+      } else {
+        setFeatured([]);
       }
 
       // Transform and set top ranking products
-      if (topRankingRes.success && topRankingRes.data) {
-        const transformedTopRanking = Array.isArray(topRankingRes.data)
-          ? topRankingRes.data.map(transformProduct)
-          : [transformProduct(topRankingRes.data)];
+      // Top-ranking endpoint returns direct array
+      if (
+        topRankingRes.success &&
+        Array.isArray(topRankingRes.data) &&
+        topRankingRes.data.length > 0
+      ) {
+        const transformedTopRanking = topRankingRes.data.map(transformProduct);
         setTopRanking(transformedTopRanking);
+      } else {
+        setTopRanking([]);
       }
 
       // Transform and set new products
-      if (newProductsRes.success && newProductsRes.data) {
-        const transformedNewProducts = Array.isArray(newProductsRes.data)
-          ? newProductsRes.data.map(transformProduct)
-          : [transformProduct(newProductsRes.data)];
+      // New products endpoint returns direct array
+      // Backend returns more than requested, so we slice to get only 2
+      if (
+        newProductsRes.success &&
+        Array.isArray(newProductsRes.data) &&
+        newProductsRes.data.length > 0
+      ) {
+        const transformedNewProducts = newProductsRes.data
+          .slice(0, 2)
+          .map(transformProduct);
         setNewProducts(transformedNewProducts);
+      } else {
+        setNewProducts([]);
       }
     } catch (err) {
       console.error("Failed to fetch products:", err);
       setError(err.message || "Failed to load products");
+      // Set empty arrays on error
+      setFeatured([]);
+      setTopRanking([]);
+      setNewProducts([]);
     } finally {
       setLoading(false);
     }
@@ -67,7 +89,7 @@ const ProductSections = () => {
 
   const transformProduct = (product) => {
     return {
-      id: product._id,
+      id: product._id || product.productId,
       name: product.title || "Unnamed Product",
       image: product.image || "/assets/images/Portrait_Placeholder.png",
       desc: product.detail?.substring(0, 50) || "No description",
@@ -78,7 +100,7 @@ const ProductSections = () => {
         : product.status === "approved"
           ? "Approved"
           : "New",
-      minOrder: product.minOrderQty || 1,
+      minOrder: product.minOrderQty || product.moq || 1,
       stock: product.stockQty || 0,
       shipping: product.shippingMethod || "Standard",
       deliveryDays: product.estimatedDeliveryDays || "5-7 days",

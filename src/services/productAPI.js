@@ -19,36 +19,36 @@ class ProductAPI {
   /**
    * Get featured products
    */
-  async getFeatured(limit = 6) {
+  async getFeatured(limit = 3) {
     return await api.get({
-      url: `/products?isFeatured=true&limit=${limit}`,
+      url: `/products/featured?limit=${limit}`,
       activateLoader: false,
       enableSuccessMessage: false,
-      enableErrorMessage: true,
+      enableErrorMessage: false,
     });
   }
 
   /**
    * Get products sorted by price (highest first)
    */
-  async getTopRanking(limit = 4) {
+  async getTopRanking(limit = 2) {
     return await api.get({
-      url: `/products?sortBy=pricePerUnit&order=desc&limit=${limit}`,
+      url: `/products/top-ranking?limit=${limit}`,
       activateLoader: false,
       enableSuccessMessage: false,
-      enableErrorMessage: true,
+      enableErrorMessage: false,
     });
   }
 
   /**
    * Get new products (recently created)
    */
-  async getNewProducts(limit = 4) {
+  async getNewProducts(limit = 2) {
     return await api.get({
-      url: `/products?sortBy=createdAt&order=desc&limit=${limit}`,
+      url: `/products/new?limit=${limit}`,
       activateLoader: false,
       enableSuccessMessage: false,
-      enableErrorMessage: true,
+      enableErrorMessage: false,
     });
   }
 

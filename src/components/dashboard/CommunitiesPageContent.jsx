@@ -11,31 +11,127 @@ import Link from "next/link";
 export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  // Filters
   const [sortBy, setSortBy] = useState("recent");
   const [searchQuery, setSearchQuery] = useState("");
   const [industry, setIndustry] = useState("");
   const [region, setRegion] = useState("");
 
   useEffect(() => {
-    fetchCommunities();
-  }, []);
+    // Reset and fetch initial data when filters change
+    setPage(1);
+    setHasMore(true);
+    fetchInitialCommunities();
+  }, [searchQuery, industry, region, sortBy]);
 
-  const fetchCommunities = async () => {
+  const fetchInitialCommunities = async () => {
     try {
       setLoading(true);
+      const queryParams = new URLSearchParams({
+        page: 1,
+        limit: 4,
+        status: "active",
+        search: searchQuery,
+        industry: industry,
+        region: region,
+        // Backend doesn't support generic sort param in provided snippet, but passing it just in case or for future
+      });
+
       const response = await api.get({
-        url: "/community?status=active",
+        url: `/community?${queryParams.toString()}`,
         enableErrorMessage: false,
         enableSuccessMessage: false,
       });
 
-      if (response.success && response.data?.communities) {
-        setCommunities(response.data.communities);
+      if (response.success && response.data?.docs) {
+        setCommunities(response.data.docs);
+        setHasMore(response.data.hasNextPage);
+        // Next page to fetch will be 2
+        setPage(2);
+      } else {
+        setCommunities([]);
+        setHasMore(false);
       }
     } catch (error) {
       console.error("Failed to fetch communities:", error);
+      setCommunities([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMoreCommunities = async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+
+      // We want to load 8 more items.
+      // Since we started with limit=4 (Page 1), the next logical chunks are Page 2 and Page 3 (each limit=4).
+      // This gives us indices 4-7 and 8-11, total 8 items.
+
+      // Fetch Page A
+      const queryParamsA = new URLSearchParams({
+        page: page,
+        limit: 4,
+        status: "active",
+        search: searchQuery,
+        industry: industry,
+        region: region,
+      });
+
+      const resA = await api.get({
+        url: `/community?${queryParamsA.toString()}`,
+        enableErrorMessage: false,
+        enableSuccessMessage: false,
+      });
+
+      let newDocs = [];
+      let nextHasMore = false;
+      let nextPage = page + 1;
+
+      if (resA.success && resA.data?.docs) {
+        newDocs = [...resA.data.docs];
+        // If Page A has a next page, we fetch Page B to fulfill the "8 items" requirement
+        if (resA.data.hasNextPage) {
+          const queryParamsB = new URLSearchParams({
+            page: page + 1,
+            limit: 4,
+            status: "active",
+            search: searchQuery,
+            industry: industry,
+            region: region,
+          });
+
+          const resB = await api.get({
+            url: `/community?${queryParamsB.toString()}`,
+            enableErrorMessage: false,
+            enableSuccessMessage: false,
+          });
+
+          if (resB.success && resB.data?.docs) {
+            newDocs = [...newDocs, ...resB.data.docs];
+            nextHasMore = resB.data.hasNextPage;
+            nextPage = page + 2;
+          } else {
+            nextHasMore = false;
+          }
+        } else {
+          nextHasMore = false;
+        }
+
+        setCommunities((prev) => [...prev, ...newDocs]);
+        setHasMore(nextHasMore);
+        setPage(nextPage);
+      }
+    } catch (error) {
+      console.error("Failed to load more communities:", error);
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -186,86 +282,108 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
             <p className="text-gray-500">No communities found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {communities.map((community) => (
-              <div
-                key={community._id}
-                className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                {/* Community Cover Image */}
-                <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600">
-                  {community.coverImage ? (
-                    <img
-                      src={community.coverImage}
-                      alt={community.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <FiUsers className="w-16 h-16 text-white opacity-50" />
-                    </div>
-                  )}
-
-                  {/* Category Badge */}
-                  <div className="absolute top-3 right-3">
-                    <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-gray-700">
-                      {community.category || "General"}
-                    </span>
-                  </div>
-
-                  {/* Type Icon */}
-                  <div className="absolute bottom-3 right-3 bg-white p-2 rounded-full">
-                    {getCommunityIcon(community.type)}
-                  </div>
-                </div>
-
-                {/* Community Info */}
-                <div className="p-5">
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">
-                    {community.name}
-                  </h3>
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
-                    {community.description ||
-                      community.purpose ||
-                      "Join this community to connect with like-minded professionals"}
-                  </p>
-
-                  {/* Members Info */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex -space-x-2">
-                        {[1, 2, 3].map((i) => (
-                          <div
-                            key={i}
-                            className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-white flex items-center justify-center text-white text-xs font-semibold"
-                          >
-                            {String.fromCharCode(64 + i)}
-                          </div>
-                        ))}
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {communities.map((community) => (
+                <div
+                  key={community._id}
+                  className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
+                >
+                  {/* Community Cover Image */}
+                  <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600">
+                    {community.coverImage ? (
+                      <img
+                        src={community.coverImage}
+                        alt={community.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = "none";
+                        }}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <FiUsers className="w-16 h-16 text-white opacity-50" />
                       </div>
-                      <span className="text-sm text-gray-600">
-                        +{community.memberCount || 0}
+                    )}
+
+                    {/* Category Badge */}
+                    <div className="absolute top-3 right-3">
+                      <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-gray-700">
+                        {community.category || "General"}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 text-sm text-gray-500">
-                      <FiUsers className="w-4 h-4" />
-                      <span>{community.memberCount || 0} Members</span>
+
+                    {/* Type Icon */}
+                    <div className="absolute bottom-3 right-3 bg-white p-2 rounded-full">
+                      {getCommunityIcon(community.type)}
                     </div>
                   </div>
 
-                  {/* View Community Button */}
-                  <Link href={`/community/${community._id}`}>
-                    <button className="w-full py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                      View Community
-                    </button>
-                  </Link>
+                  {/* Community Info */}
+                  <div className="p-5">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">
+                      {community.name}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
+                      {community.description ||
+                        community.purpose ||
+                        "Join this community to connect with like-minded professionals"}
+                    </p>
+
+                    {/* Members Info */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <div className="flex -space-x-2">
+                          {[1, 2, 3].map((i) => (
+                            <div
+                              key={i}
+                              className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-white flex items-center justify-center text-white text-xs font-semibold"
+                            >
+                              {String.fromCharCode(64 + i)}
+                            </div>
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-600">
+                          +{community.memberCount || 0}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-gray-500">
+                        <FiUsers className="w-4 h-4" />
+                        <span>{community.memberCount || 0} Members</span>
+                      </div>
+                    </div>
+
+                    {/* View Community Button */}
+                    <Link href={`/community/${community._id}`}>
+                      <button className="w-full py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        View Community
+                      </button>
+                    </Link>
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {/* Load More Button */}
+            {hasMore && (
+              <div className="flex justify-center mt-12">
+                <button
+                  onClick={loadMoreCommunities}
+                  disabled={loadingMore}
+                  className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {loadingMore ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
+                      Loading...
+                    </>
+                  ) : (
+                    "View all communities"
+                  )}
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>
