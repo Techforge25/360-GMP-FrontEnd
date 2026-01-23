@@ -17,7 +17,10 @@ import { CartProvider } from "@/context/CartContext";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${openSans.variable} antialiased`}>
+      <body
+        className={`${openSans.variable} antialiased`}
+        suppressHydrationWarning
+      >
         <CartProvider>
           <UserProvider>{children}</UserProvider>
         </CartProvider>

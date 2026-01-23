@@ -3,7 +3,13 @@ import React from "react";
 import { FiSearch, FiMapPin } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 
-const BusinessHero = () => {
+const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      onSearch();
+    }
+  };
+
   return (
     <div className="relative w-full h-[400px] flex items-center justify-center overflow-hidden mb-8 p-4 rounded-card">
       {/* Background with Overlay */}
@@ -35,6 +41,9 @@ const BusinessHero = () => {
               type="text"
               placeholder="Reference / products, service..."
               className="w-full bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
           <div className="flex-1 flex items-center px-4 py-4 h-12 bg-gray-50 rounded-md border border-gray-200">
@@ -43,9 +52,15 @@ const BusinessHero = () => {
               type="text"
               placeholder="City or country..."
               className="w-full bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
           </div>
-          <Button className="bg-indigo-900 text-white rounded-md px-8 h-12 font-medium hover:bg-indigo-800 w-full md:w-auto">
+          <Button
+            onClick={onSearch}
+            className="bg-indigo-900 cursor-pointer text-white rounded-md px-8 h-12 font-medium hover:bg-indigo-800 w-full md:w-auto"
+          >
             <FiSearch className="text-xl" />
           </Button>
         </div>

@@ -13,10 +13,20 @@ export default function BusinessesPage() {
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [query, setQuery] = useState("");
+  const [location, setLocation] = useState("");
+  const [filteredBusinesses, setFilteredBusinesses] = useState([]);
 
   useEffect(() => {
     fetchBusinessProfiles();
   }, []);
+
+  useEffect(() => {
+    // Initialize filtered list when data loads
+    if (businesses.length > 0) {
+      setFilteredBusinesses(businesses);
+    }
+  }, [businesses]);
 
   const fetchBusinessProfiles = async () => {
     try {
@@ -31,6 +41,7 @@ export default function BusinessesPage() {
           : [transformBusinessProfile(response.data)];
 
         setBusinesses(transformedData);
+        setFilteredBusinesses(transformedData);
       }
     } catch (err) {
       console.error("Failed to fetch business profiles:", err);
@@ -40,6 +51,34 @@ export default function BusinessesPage() {
     }
   };
 
+  const filterBusinesses = () => {
+    let filtered = businesses;
+
+    if (query) {
+      const lowerQuery = query.toLowerCase();
+      filtered = filtered.filter(
+        (biz) =>
+          biz.name.toLowerCase().includes(lowerQuery) ||
+          biz.category.toLowerCase().includes(lowerQuery) ||
+          (biz.tags &&
+            biz.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))),
+      );
+    }
+
+    if (location) {
+      const lowerLocation = location.toLowerCase();
+      filtered = filtered.filter((biz) =>
+        biz.location.toLowerCase().includes(lowerLocation),
+      );
+    }
+
+    setFilteredBusinesses(filtered);
+  };
+
+  const handleSearch = () => {
+    filterBusinesses();
+  };
+
   // Transform backend schema to component schema
   const transformBusinessProfile = (profile) => {
     return {
@@ -47,7 +86,7 @@ export default function BusinessesPage() {
       description: profile.description || "No description available",
       verified: profile.certifications?.length > 0 || false,
       location: profile.location
-        ? `${profile.location.city}, ${profile.location.country}`
+        ? `${profile.location.city || ""}, ${profile.location.country || ""}`
         : "Location not specified",
       rating: 4.8, // Default rating (backend doesn't provide this yet)
       reviews: 124, // Default reviews count
@@ -82,7 +121,13 @@ export default function BusinessesPage() {
   return (
     <div className="w-full min-h-screen bg-white">
       <main className="pb-24">
-        <BusinessHero />
+        <BusinessHero
+          query={query}
+          setQuery={setQuery}
+          location={location}
+          setLocation={setLocation}
+          onSearch={handleSearch}
+        />
 
         <div className="mx-auto px-4 sm:px-6 lg:px-20">
           <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
@@ -97,8 +142,10 @@ export default function BusinessesPage() {
                 <h2 className="text-xl font-bold text-gray-900">
                   {loading
                     ? "Loading..."
-                    : `${businesses.length} ${
-                        businesses.length === 1 ? "Company" : "Companies"
+                    : `${filteredBusinesses.length} ${
+                        filteredBusinesses.length === 1
+                          ? "Company"
+                          : "Companies"
                       } Found`}
                 </h2>
 
@@ -140,9 +187,9 @@ export default function BusinessesPage() {
               )}
 
               {/* Business List */}
-              {!loading && !error && businesses.length > 0 && (
+              {!loading && !error && filteredBusinesses.length > 0 && (
                 <div className="space-y-4">
-                  {businesses.map((biz, i) => (
+                  {filteredBusinesses.map((biz, i) => (
                     <BusinessCard key={i} business={biz} />
                   ))}
                 </div>
