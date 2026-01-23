@@ -36,11 +36,15 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         limit: 4,
         status: "active",
         search: searchQuery,
-        keyword: searchQuery, // Added keyword for robustness
+        keyword: searchQuery,
         industry: industry,
         region: region,
-        // Backend doesn't support generic sort param in provided snippet, but passing it just in case or for future
       });
+
+      // Handle type filtering (sortBy acts as type filter now)
+      if (sortBy && sortBy !== "all" && sortBy !== "recent") {
+        queryParams.append("type", sortBy);
+      }
 
       const response = await api.get({
         url: `/community?${queryParams.toString()}`,
@@ -86,6 +90,10 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         region: region,
       });
 
+      if (sortBy && sortBy !== "all" && sortBy !== "recent") {
+        queryParamsA.append("type", sortBy);
+      }
+
       const resA = await api.get({
         url: `/community?${queryParamsA.toString()}`,
         enableErrorMessage: false,
@@ -109,6 +117,10 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
             industry: industry,
             region: region,
           });
+
+          if (sortBy && sortBy !== "all" && sortBy !== "recent") {
+            queryParamsB.append("type", sortBy);
+          }
 
           const resB = await api.get({
             url: `/community?${queryParamsB.toString()}`,
@@ -164,9 +176,9 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen px-4 overflow-x-hidden bg-gray-50">
       {/* Hero Section */}
-      <div className="relative w-full rounded-3xl overflow-hidden mx-4 sm:mx-6 lg:mx-8 mt-6 mb-8 shadow-2xl">
+      <div className="relative w-full rounded-3xl overflow-hidden mt-6 mb-8 shadow-2xl">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
           <img
@@ -275,9 +287,10 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                 >
-                  <option value="recent">Most Recent</option>
-                  <option value="members">Most Members</option>
-                  <option value="active">Most Active</option>
+                  <option value="all">All</option>
+                  <option value="public">Public</option>
+                  <option value="private">Private</option>
+                  <option value="featured">Premium</option>
                 </select>
               </div>
               {canCreateCommunity && (
@@ -309,7 +322,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
                 >
                   {/* Community Cover Image */}
-                  <div className="relative h-48 bg-gradient-to-br from-blue-500 to-purple-600">
+                  <div className="relative h-48 bg-gray-200">
                     {community.coverImage ? (
                       <img
                         src={community.coverImage}
@@ -320,55 +333,83 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                         }}
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
                         <FiUsers className="w-16 h-16 text-white opacity-50" />
                       </div>
                     )}
 
+                    {/* Community Profile Image (Logo) */}
+                    <div className="absolute -bottom-6 left-5 border-4 border-white rounded-xl overflow-hidden shadow-sm w-16 h-16 bg-white">
+                      {community.profileImage ? (
+                        <img
+                          src={community.profileImage}
+                          alt={community.name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-100 text-purple-900 font-bold text-xl">
+                          {community.name?.charAt(0) || "C"}
+                        </div>
+                      )}
+                    </div>
+
                     {/* Category Badge */}
                     <div className="absolute top-3 right-3">
-                      <span className="px-3 py-1 bg-white rounded-full text-xs font-medium text-gray-700">
+                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-xs font-medium text-gray-700 shadow-sm border border-gray-100">
                         {community.category || "General"}
                       </span>
                     </div>
 
                     {/* Type Icon */}
-                    <div className="absolute bottom-3 right-3 bg-white p-2 rounded-full">
+                    <div className="absolute bottom-3 right-3 bg-white p-2 rounded-full shadow-sm">
                       {getCommunityIcon(community.type)}
                     </div>
                   </div>
 
                   {/* Community Info */}
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      {community.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
+                  <div className="pt-10 px-5 pb-5">
+                    <div className="mb-3">
+                      <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
+                        {community.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        {community.industry || community.category} •{" "}
+                        {community.region || "Global"}
+                      </p>
+                    </div>
+
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2 h-[40px]">
                       {community.description ||
                         community.purpose ||
                         "Join this community to connect with like-minded professionals"}
                     </p>
 
-                    {/* Members Info */}
-                    <div className="flex items-center justify-between mb-4">
+                    {/* Stats */}
+                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <div className="flex items-center gap-2">
                         <div className="flex -space-x-2">
                           {[1, 2, 3].map((i) => (
                             <div
                               key={i}
-                              className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 border-2 border-white flex items-center justify-center text-white text-xs font-semibold"
+                              className="w-6 h-6 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] text-gray-500 font-medium"
                             >
                               {String.fromCharCode(64 + i)}
                             </div>
                           ))}
                         </div>
-                        <span className="text-sm text-gray-600">
-                          +{community.memberCount || 0}
+                        <span className="text-sm font-semibold text-gray-700">
+                          {community.memberCount || 0}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Member{community.memberCount !== 1 && "s"}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-sm text-gray-500">
-                        <FiUsers className="w-4 h-4" />
-                        <span>{community.memberCount || 0} Members</span>
+
+                      <div className="flex items-center gap-1">
+                        {/* Status badge if needed */}
+                        {community.status === "active" && (
+                          <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                        )}
                       </div>
                     </div>
 

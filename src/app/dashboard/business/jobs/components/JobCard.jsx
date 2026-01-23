@@ -7,15 +7,7 @@ import Link from "next/link";
 
 // Dummy data for temporary display
 const dummyJob = {
-  id: "1",
   logo: "/assets/images/Logo.png",
-  company: "Tech Solutions Inc.",
-  isActive: true,
-  title: "Senior Software Developer",
-  location: "Toronto, ON",
-  type: "Full-time",
-  postedAt: "2 days ago",
-  salary: "$80,000 - $120,000",
 };
 
 export const JobCard = ({ job = dummyJob }) => {
@@ -53,23 +45,29 @@ export const JobCard = ({ job = dummyJob }) => {
   // Use dummy data if job prop is not provided or incomplete
   const rawLocation = job?.location || job?.jobLocation;
   const rawPostedAt = job?.postedAt || job?.createdAt;
-  
+
   const jobData = {
     id: job?.id || job?._id || dummyJob.id,
     logo: job?.logo || job?.companyLogo || dummyJob.logo,
-    company: job?.company || job?.companyName || dummyJob.company,
-    isActive: job?.isActive !== undefined ? job.isActive : dummyJob.isActive,
-    title: job?.title || job?.jobTitle || dummyJob.title,
+    company: job?.company || job?.companyName || "Unknown Company",
+    isActive: job?.isActive !== undefined ? job.isActive : true,
+    title: job?.title || job?.jobTitle || "Untitled Job",
     location: formatLocation(rawLocation),
-    type: job?.type || job?.jobType || dummyJob.type,
+    type: job?.type || job?.jobType || "Full-time",
     postedAt: formatPostedAt(rawPostedAt),
-    salary: job?.salary || job?.salaryRange || dummyJob.salary,
+    salary: job?.salary || job?.salaryRange || "Not specified",
+    category: job?.category || job?.jobCategory || "General",
   };
 
   return (
     <div className="bg-white border border-border-light rounded-lg p-5 hover:shadow-md transition-shadow flex flex-col md:flex-row gap-4 items-start relative">
       <div className="w-24 h-24 rounded-lg bg-gray-50 border border-border-light flex-shrink-0 relative overflow-hidden">
-        <Image src={jobData.logo} alt={jobData.company} fill className="object-cover" />
+        <Image
+          src={jobData.logo}
+          alt={jobData.company}
+          fill
+          className="object-cover"
+        />
       </div>
 
       <div className="flex-1 min-w-0 flex flex-col gap-4">
@@ -93,6 +91,11 @@ export const JobCard = ({ job = dummyJob }) => {
         <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-text-secondary">
           <div className="flex items-center gap-1">
             <img src="/assets/images/pinIcon.png" alt="" /> {jobData.location}
+          </div>
+          <div className="w-px h-4 bg-border-light" />
+          <div className="flex items-center gap-1">
+            <img src="/assets/images/bussinessIcon.png" alt="" />{" "}
+            {jobData.category}
           </div>
           <div className="w-px h-4 bg-border-light" />
           <div className="flex items-center gap-1">

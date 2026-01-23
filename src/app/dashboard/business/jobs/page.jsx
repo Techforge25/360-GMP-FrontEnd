@@ -39,9 +39,18 @@ export default function JobsPage() {
         status: "open",
       });
 
-      if (searchQuery) queryParams.append("search", searchQuery);
-      // Backend doesn't support location query in the provided snippet explicitly for filtering jobs list directly
-      // but if it did, we'd add it here. Keeping it for future or if api supports it.
+      if (searchQuery) {
+        queryParams.append("search", searchQuery);
+        queryParams.append("keyword", searchQuery);
+        queryParams.append("category", searchQuery);
+      }
+      if (locationQuery) {
+        queryParams.append("location", locationQuery);
+        queryParams.append("country", locationQuery);
+        queryParams.append("city", locationQuery);
+        queryParams.append("location.city", locationQuery);
+        queryParams.append("location.country", locationQuery);
+      }
 
       const response = await api.get({
         url: `/jobs?${queryParams.toString()}`,
@@ -51,10 +60,18 @@ export default function JobsPage() {
       });
 
       if (response.success && response.data) {
-        setJobs(response.data.jobs || []);
-        setTotalPages(response.data.pagination?.totalPages || 1);
-        setTotalJobs(response.data.pagination?.totalJobs || 0);
-        setHasMore(response.data.pagination?.hasNextPage || false);
+        setJobs(response.data.docs || response.data.jobs || []);
+        setTotalPages(
+          response.data.totalPages || response.data.pagination?.totalPages || 1,
+        );
+        setTotalJobs(
+          response.data.totalDocs || response.data.pagination?.totalJobs || 0,
+        );
+        setHasMore(
+          response.data.hasNextPage ??
+            response.data.pagination?.hasNextPage ??
+            false,
+        );
         setCurrentPage(2); // Next page to fetch
       } else {
         setJobs([]);
@@ -79,7 +96,18 @@ export default function JobsPage() {
         status: "open",
       });
 
-      if (searchQuery) queryParams.append("search", searchQuery);
+      if (searchQuery) {
+        queryParams.append("search", searchQuery);
+        queryParams.append("keyword", searchQuery);
+        queryParams.append("category", searchQuery);
+      }
+      if (locationQuery) {
+        queryParams.append("location", locationQuery);
+        queryParams.append("country", locationQuery);
+        queryParams.append("city", locationQuery);
+        queryParams.append("location.city", locationQuery);
+        queryParams.append("location.country", locationQuery);
+      }
 
       const response = await api.get({
         url: `/jobs?${queryParams.toString()}`,
@@ -89,15 +117,19 @@ export default function JobsPage() {
       });
 
       if (response.success && response.data) {
-        const newJobs = response.data.jobs || [];
+        const newJobs = response.data.docs || response.data.jobs || [];
         setJobs((prev) => [...prev, ...newJobs]);
-        setHasMore(response.data.pagination?.hasNextPage || false);
+        setHasMore(
+          response.data.hasNextPage ??
+            response.data.pagination?.hasNextPage ??
+            false,
+        );
         setCurrentPage((prev) => prev + 1);
       } else {
         setHasMore(false);
       }
     } catch (error) {
-      console.error("Failed to load more jobs:", error);
+      console.error("Failed to load more jobs:", error.message || error);
     } finally {
       setLoadingMore(false);
     }
@@ -134,7 +166,7 @@ export default function JobsPage() {
               />
               <Input
                 placeholder="Search by role, skill, or company name..."
-                className="pl-10 h-11 border-0 focus:ring-0 rounded-none"
+                className="pl-10 text-text-secondary h-11 border-0 focus:ring-0 rounded-none"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
@@ -151,7 +183,7 @@ export default function JobsPage() {
               />
               <Input
                 placeholder="Canada/USA"
-                className="pl-10 h-11 border-0 focus:ring-0 rounded-none"
+                className="pl-10 text-text-secondary h-11 border-0 focus:ring-0 rounded-none"
                 value={locationQuery}
                 onChange={(e) => setLocationQuery(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
