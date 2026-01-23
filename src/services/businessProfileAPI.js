@@ -4,9 +4,17 @@ class BusinessProfileAPI {
   /**
    * Get all business profiles
    */
-  async getAll() {
+  /**
+   * Get all business profiles
+   */
+  async getAll(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams
+      ? `/businessProfile?${queryParams}`
+      : "/businessProfile";
+
     return await api.get({
-      url: "/businessProfile",
+      url,
       activateLoader: true,
       enableSuccessMessage: false,
       enableErrorMessage: true,

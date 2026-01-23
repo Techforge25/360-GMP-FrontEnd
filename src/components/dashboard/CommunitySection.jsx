@@ -192,11 +192,14 @@ const CommunitySection = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mt-10">
-        <button className="px-6 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm">
-          Explore all communities
-        </button>
-      </div>
+        <div className="flex justify-center mt-10">
+          <Link
+            href="/dashboard/business/communities"
+            className="px-6 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-black hover:bg-gray-50 shadow-sm"
+          >
+            Explore all communities
+          </Link>
+        </div>
     </section>
   );
 };

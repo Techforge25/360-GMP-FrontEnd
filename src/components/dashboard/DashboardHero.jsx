@@ -1,9 +1,30 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { FiSearch, FiMapPin, FiMenu } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 
 const DashboardHero = () => {
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [location, setLocation] = useState("");
+
+  const handleSearch = () => {
+    // Allow search if at least one field has input
+    if (!query.trim() && !location.trim()) return;
+
+    const params = new URLSearchParams();
+    if (query.trim()) params.append("q", query.trim());
+    if (location.trim()) params.append("location", location.trim());
+
+    router.push(`/dashboard/search?${params.toString()}`);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
   return (
     <div className="relative w-full min-h-[650px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-200 to-slate-300">
       {/* Background Image */}
@@ -24,7 +45,7 @@ const DashboardHero = () => {
       {/* Content */}
       <div className="relative z-20 w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         {/* White Content Card */}
-        <div className="bg-white rounded-lg shadow-2xl p-8 sm:p-12 max-w-4xl mx-auto">
+        <div className="bg-white rounded-lg shadow-2xl p-8 max-w-4xl mx-auto">
           {/* Heading */}
           <h1 className="text-lg sm:text-xl lg:text-3xl font-semibold text-gray-900 mb-5 text-center">
             Find Verified Businesses Across the Globe
@@ -41,15 +62,15 @@ const DashboardHero = () => {
           <div className="flex flex-col sm:flex-row gap-3 mb-6">
             {/* Business Search Input */}
             <div className="flex-1 flex items-center gap-3 px-5 bg-gray-50 rounded-xl border border-gray-200 hover:border-gray-300 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100 transition-all">
-              <FiSearch className="text-gray-400 w-5 h-5 flex-shrink-0" />
+              <FiSearch className="text-gray-400 w-6 h-6 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Businesses, products, communities..."
-                className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
+                className="flex-1 bg-transparent border-none focus:outline-none text-[13px] text-gray-700 placeholder:text-gray-400"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
-              <button className="p-1 hover:bg-gray-200 rounded transition-colors">
-                <img src="/assets/images/barIcon.png" alt="" />
-              </button>
             </div>
 
             {/* Location Input */}
@@ -59,11 +80,17 @@ const DashboardHero = () => {
                 type="text"
                 placeholder="City, country..."
                 className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
             </div>
 
             {/* Search Button */}
-            <Button className="bg-[#240457] hover:bg-purple-800 text-white rounded-xl px-10 py-4 font-semibold transition-all shadow-md hover:shadow-lg whitespace-nowrap">
+            <Button
+              onClick={handleSearch}
+              className="bg-[#240457] hover:bg-purple-800 text-white rounded-xl px-10 py-4 font-semibold transition-all shadow-md hover:shadow-lg whitespace-nowrap"
+            >
               Search
             </Button>
           </div>
