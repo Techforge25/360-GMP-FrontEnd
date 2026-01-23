@@ -53,9 +53,10 @@ export const JobCard = ({ job = dummyJob }) => {
     isActive: job?.isActive !== undefined ? job.isActive : true,
     title: job?.title || job?.jobTitle || "Untitled Job",
     location: formatLocation(rawLocation),
-    type: job?.type || job?.jobType || "Full-time",
+    type: job?.type || job?.jobType || job?.employmentType || "Full-time",
     postedAt: formatPostedAt(rawPostedAt),
-    salary: job?.salary || job?.salaryRange || "Not specified",
+    salaryMin: job?.salaryMin || job?.salaryMin || "Not specified",
+    salaryMax: job?.salaryMax || job?.salaryMax || "Not specified",
     category: job?.category || job?.jobCategory || "General",
   };
 
@@ -94,7 +95,6 @@ export const JobCard = ({ job = dummyJob }) => {
           </div>
           <div className="w-px h-4 bg-border-light" />
           <div className="flex items-center gap-1">
-            <img src="/assets/images/bussinessIcon.png" alt="" />{" "}
             {jobData.category}
           </div>
           <div className="w-px h-4 bg-border-light" />
@@ -107,7 +107,8 @@ export const JobCard = ({ job = dummyJob }) => {
           </div>
           <div className="w-px h-4 bg-border-light" />
           <div className="flex items-center gap-1">
-            <img src="/assets/images/dollarIcon.png" alt="" /> {jobData.salary}
+            <img src="/assets/images/dollarIcon.png" alt="" />{" "}
+            {jobData.salaryMin} - {jobData.salaryMax}
           </div>
         </div>
       </div>

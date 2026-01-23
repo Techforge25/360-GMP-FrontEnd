@@ -18,7 +18,17 @@ export default function JobsPage() {
   const [totalJobs, setTotalJobs] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
   const [hasMore, setHasMore] = useState(true);
+
+  // Filter states from sidebar
+  const [filters, setFilters] = useState({
+    pay: [],
+    categories: [],
+    jobTypes: [],
+    locations: [],
+    datePosted: [],
+  });
 
   // Set items per page to 20 as requested
   const itemsPerPage = 20;
@@ -28,7 +38,11 @@ export default function JobsPage() {
     setCurrentPage(1);
     setHasMore(true);
     fetchInitialJobs();
-  }, []);
+  }, [sortBy, filters]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
 
   const fetchInitialJobs = async () => {
     try {
@@ -50,6 +64,43 @@ export default function JobsPage() {
         queryParams.append("city", locationQuery);
         queryParams.append("location.city", locationQuery);
         queryParams.append("location.country", locationQuery);
+      }
+
+      // Add filter parameters
+      if (filters.pay.length > 0) {
+        // Backend logic 'Number(payRange)' expects a single value.
+        queryParams.append("payRange", filters.pay[filters.pay.length - 1]);
+      }
+      if (filters.categories.length > 0) {
+        filters.categories.forEach((cat) =>
+          queryParams.append("jobCategory", cat),
+        );
+      }
+      if (filters.jobTypes.length > 0) {
+        filters.jobTypes.forEach((type) =>
+          queryParams.append("employmentType", type),
+        );
+      }
+      if (filters.locations.length > 0) {
+        // Backend logic 'if(country)' expects a single value for regex.
+        queryParams.append(
+          "country",
+          filters.locations[filters.locations.length - 1],
+        );
+      }
+      if (filters.datePosted.length > 0) {
+        // Handle date posted filters
+        filters.datePosted.forEach((date) =>
+          queryParams.append("datePosted", date),
+        );
+      }
+
+      // Add sort parameter
+      if (sortBy) {
+        queryParams.append(
+          "sort",
+          sortBy === "newest" ? "-createdAt" : "createdAt",
+        );
       }
 
       const response = await api.get({
@@ -78,7 +129,11 @@ export default function JobsPage() {
         setHasMore(false);
       }
     } catch (error) {
-      console.error("Failed to fetch jobs:", error);
+      console.error("Failed to fetch jobs. Full error:", error);
+      if (error.response) {
+        console.error("Error data:", error.response.data);
+        console.error("Error status:", error.response.status);
+      }
       setJobs([]);
     } finally {
       setLoading(false);
@@ -107,6 +162,42 @@ export default function JobsPage() {
         queryParams.append("city", locationQuery);
         queryParams.append("location.city", locationQuery);
         queryParams.append("location.country", locationQuery);
+      }
+
+      // Add filter parameters
+      if (filters.pay.length > 0) {
+        // Backend logic 'Number(payRange)' expects a single value.
+        queryParams.append("payRange", filters.pay[filters.pay.length - 1]);
+      }
+      if (filters.categories.length > 0) {
+        filters.categories.forEach((cat) =>
+          queryParams.append("jobCategory", cat),
+        );
+      }
+      if (filters.jobTypes.length > 0) {
+        filters.jobTypes.forEach((type) =>
+          queryParams.append("employmentType", type),
+        );
+      }
+      if (filters.locations.length > 0) {
+        // Backend logic 'if(country)' expects a single value for regex.
+        queryParams.append(
+          "country",
+          filters.locations[filters.locations.length - 1],
+        );
+      }
+      if (filters.datePosted.length > 0) {
+        filters.datePosted.forEach((date) =>
+          queryParams.append("datePosted", date),
+        );
+      }
+
+      // Add sort parameter
+      if (sortBy) {
+        queryParams.append(
+          "sort",
+          sortBy === "newest" ? "-createdAt" : "createdAt",
+        );
       }
 
       const response = await api.get({
@@ -197,7 +288,7 @@ export default function JobsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto flex flex-col items-start sm:flex-row mb-10 gap-6">
-        <JobFilterSidebar />
+        <JobFilterSidebar onFilterChange={handleFilterChange} />
 
         <div className="flex-1 w-full">
           <Card className="bg-white border-border-light shadow-sm">
@@ -208,9 +299,13 @@ export default function JobsPage() {
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-gray-700">Sort By</span>
-                  <select className="text-sm bg-transparent font-medium border border-gray-200 rounded-md p-2 text-text-primary focus:ring-0 cursor-pointer outline-none">
-                    <option>Newest</option>
-                    <option>Oldest</option>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="text-sm bg-transparent font-medium border border-gray-200 rounded-md p-2 text-text-primary focus:ring-0 cursor-pointer outline-none"
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
                   </select>
                 </div>
               </div>
