@@ -53,6 +53,18 @@ class ProductAPI {
   }
 
   /**
+   * Get flash deals (Top-deals products)
+   */
+  async getFlashDeals(limit = 4) {
+    return await api.get({
+      url: `/products/top-deals?limit=${limit}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
    * Get a single product by ID
    */
   async getById(productId) {

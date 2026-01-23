@@ -26,7 +26,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
     setPage(1);
     setHasMore(true);
     fetchInitialCommunities();
-  }, [searchQuery, industry, region, sortBy]);
+  }, [industry, region, sortBy]); // Removed searchQuery from dependencies for manual search trigger
 
   const fetchInitialCommunities = async () => {
     try {
@@ -36,6 +36,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         limit: 4,
         status: "active",
         search: searchQuery,
+        keyword: searchQuery, // Added keyword for robustness
         industry: industry,
         region: region,
         // Backend doesn't support generic sort param in provided snippet, but passing it just in case or for future
@@ -80,6 +81,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         limit: 4,
         status: "active",
         search: searchQuery,
+        keyword: searchQuery,
         industry: industry,
         region: region,
       });
@@ -103,6 +105,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
             limit: 4,
             status: "active",
             search: searchQuery,
+            keyword: searchQuery,
             industry: industry,
             region: region,
           });
@@ -132,6 +135,18 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
       console.error("Failed to load more communities:", error);
     } finally {
       setLoadingMore(false);
+    }
+  };
+
+  const handleSearch = () => {
+    setPage(1);
+    setHasMore(true);
+    fetchInitialCommunities();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -180,7 +195,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
             </p>
 
             {/* Search Bar */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 max-w-4xl mx-auto">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 max-w-5xl mx-auto">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Input */}
                 <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white rounded-xl">
@@ -190,6 +205,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                     placeholder="find community by name or topic"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={handleKeyDown}
                     className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
                   />
                 </div>
@@ -227,7 +243,10 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                 </div>
 
                 {/* Search Button */}
-                <button className="px-8 py-3 bg-purple-900 hover:bg-purple-800 text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 sm:w-auto w-full">
+                <button
+                  onClick={handleSearch}
+                  className="px-4 py-3 cursor-pointer bg-purple-900 hover:bg-purple-800 text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 sm:w-auto w-full"
+                >
                   <FaChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -241,8 +260,8 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
-                All Communities
+              <h2 className="text-3xl font-semibold text-gray-900">
+                Communities
               </h2>
               <p className="text-gray-600 mt-1 text-sm">
                 Discover Active Groups Matching Your Expertise
