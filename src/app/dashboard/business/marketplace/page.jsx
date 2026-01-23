@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, ChevronDown, ChevronRight, X } from "lucide-react";
+import {
+  Search,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  X,
+  MapPin,
+} from "lucide-react";
 import productAPI from "@/services/productAPI";
 
 export default function MarketplacePage() {
@@ -56,6 +63,9 @@ export default function MarketplacePage() {
   const [flashDeals, setFlashDeals] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [countrySearchQuery, setCountrySearchQuery] = useState("");
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -63,13 +73,21 @@ export default function MarketplacePage() {
     const fetchData = async () => {
       setLoading(true);
       try {
+        const productsParams = { limit: 20 };
+        if (selectedCategories.length > 0) {
+          productsParams.category = selectedCategories.join(",");
+        }
+        if (selectedCountry) {
+          productsParams.country = selectedCountry.toLowerCase();
+        }
+
         const [featuredRes, topRankingRes, newRes, flashRes, allRes] =
           await Promise.all([
             productAPI.getFeatured(6),
             productAPI.getTopRanking(3),
             productAPI.getNewProducts(3),
             productAPI.getFlashDeals(3),
-            productAPI.getAll({ limit: 20 }),
+            productAPI.getAll(productsParams),
           ]);
 
         if (featuredRes.success)
@@ -92,17 +110,19 @@ export default function MarketplacePage() {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedCategories, selectedCountry]);
 
   const handleSearch = async () => {
-    if (!query.trim()) {
-      setFilteredProducts(allProducts);
-      return;
-    }
-
     setLoading(true);
     try {
-      const response = await productAPI.getAll({ search: query });
+      const params = { search: query };
+      if (selectedCategories.length > 0) {
+        params.category = selectedCategories.join(",");
+      }
+      if (selectedCountry) {
+        params.country = selectedCountry.toLowerCase();
+      }
+      const response = await productAPI.getAll(params);
       if (response.success) {
         setFilteredProducts(response.data.docs || response.data || []);
       } else {
@@ -114,6 +134,30 @@ export default function MarketplacePage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCategoryToggle = (categoryName) => {
+    setSelectedCategories((prev) => {
+      const isSelected = prev.includes(categoryName);
+      if (isSelected) {
+        return prev.filter((c) => c !== categoryName);
+      } else {
+        return [...prev, categoryName];
+      }
+    });
+  };
+
+  const handleCountrySelect = (countryName) => {
+    setSelectedCountry((prev) => (prev === countryName ? "" : countryName));
+  };
+
+  const clearFilters = () => {
+    setSelectedCategories([]);
+    setSelectedCountry("");
+    setCountrySearchQuery("");
+    setQuery("");
+    // Trigger a fresh fetch with no filters
+    fetchData();
   };
 
   const handleKeyDown = (e) => {
@@ -213,9 +257,6 @@ export default function MarketplacePage() {
               <div className="bg-white rounded-lg border border-gray-200 overflow-hidden top-4">
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h3 className="font-semibold text-gray-900">Filter</h3>
-                  <button className="text-purple-600 text-sm hover:text-purple-700">
-                    ×Clear
-                  </button>
                 </div>
 
                 {/* Product Category */}
@@ -243,6 +284,8 @@ export default function MarketplacePage() {
                           <input
                             type="checkbox"
                             className="w-4 h-4 rounded border-gray-300 text-purple-600"
+                            checked={selectedCategories.includes(cat.name)}
+                            onChange={() => handleCategoryToggle(cat.name)}
                           />
                           <span className="text-sm text-gray-700 flex-1">
                             {cat.name}
@@ -261,39 +304,71 @@ export default function MarketplacePage() {
                 <div className="border-b border-gray-200">
                   <button
                     onClick={() => toggleCategory("country")}
-                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50"
+                    className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
                   >
-                    <span className="font-medium text-gray-900 text-sm">
+                    <span className="font-bold text-gray-900 text-sm">
                       Country
                     </span>
                     {expandedCategories.country ? (
-                      <ChevronDown className="w-4 h-4" />
+                      <ChevronUp className="w-4 h-4 text-gray-900" />
                     ) : (
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-4 h-4 text-gray-900" />
                     )}
                   </button>
                   {expandedCategories.country && (
-                    <div className="px-4 pb-4">
-                      <div className="mb-3">
-                        <button className="px-3 py-1 bg-purple-600 text-white rounded text-xs">
-                          Pakistan ×
+                    <div className="px-4 pb-4 bg-white">
+                      {/* Country Search Bar */}
+                      <div className="flex items-center gap-2 mb-4 p-1 border border-gray-200 rounded-lg shadow-sm">
+                        <div className="flex-1 flex items-center pl-2">
+                          <MapPin className="w-4 h-4 text-gray-400 mr-2" />
+                          <input
+                            type="text"
+                            placeholder="Search Location"
+                            className="w-full py-1.5 text-sm focus:outline-none placeholder:text-gray-400 text-gray-700"
+                            value={countrySearchQuery}
+                            onChange={(e) =>
+                              setCountrySearchQuery(e.target.value)
+                            }
+                          />
+                        </div>
+                        <button className="bg-[#1D064F] hover:bg-[#2D0A75] text-white px-4 py-1.5 rounded-md text-xs font-semibold transition-colors">
+                          Search
                         </button>
                       </div>
-                      {countries.map((country, idx) => (
-                        <label
-                          key={idx}
-                          className="flex items-center gap-2 py-2 cursor-pointer hover:bg-gray-50 -mx-2 px-2 rounded"
-                        >
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-gray-300 text-purple-600"
-                          />
-                          <span className="text-base mr-1">{country.flag}</span>
-                          <span className="text-sm text-gray-700 flex-1">
-                            {country.name}
-                          </span>
-                        </label>
-                      ))}
+
+                      {/* Country List */}
+                      <div className="space-y-1 max-h-64 overflow-y-auto custom-scrollbar pr-1">
+                        {countries
+                          .filter((c) =>
+                            c.name
+                              .toLowerCase()
+                              .includes(countrySearchQuery.toLowerCase()),
+                          )
+                          .map((country, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => handleCountrySelect(country.name)}
+                              className={`w-full flex items-center gap-3 py-2 px-3 rounded-md transition-all duration-200 group ${
+                                selectedCountry === country.name
+                                  ? "bg-gray-100"
+                                  : "hover:bg-gray-50"
+                              }`}
+                            >
+                              <span className="text-xl flex-shrink-0 grayscale-0 group-hover:grayscale-0 transition-all">
+                                {country.flag}
+                              </span>
+                              <span
+                                className={`text-sm flex-1 text-left ${
+                                  selectedCountry === country.name
+                                    ? "text-gray-900 font-medium"
+                                    : "text-gray-600 group-hover:text-gray-900"
+                                }`}
+                              >
+                                {country.name}
+                              </span>
+                            </button>
+                          ))}
+                      </div>
                     </div>
                   )}
                 </div>
