@@ -33,11 +33,6 @@ const FilterGroup = ({ title, options, isOpenDefault = true }) => {
               </span>
             </label>
           ))}
-          {options.length > 5 && (
-            <button className="text-xs text-indigo-600 font-medium hover:underline mt-2">
-              See More
-            </button>
-          )}
         </div>
       )}
     </div>
@@ -47,11 +42,8 @@ const FilterGroup = ({ title, options, isOpenDefault = true }) => {
 const FilterSidebar = () => {
   return (
     <div className="w-full border border-border-light p-6 rounded-card">
-      <div className="flex items-center gap-2 mb-6 text-gray-900 font-bold border-b pb-4">
-        <FiFilter /> Filters
-        <span className="text-xs font-normal text-gray-500 ml-auto cursor-pointer hover:text-red-500">
-          Reset All
-        </span>
+      <div className="flex items-center gap-2 mb-6 text-gray-600 font-bold border-b pb-4">
+        Filters
       </div>
 
       <FilterGroup
@@ -84,16 +76,6 @@ const FilterSidebar = () => {
       <FilterGroup
         title="Rating"
         options={["5 Stars", "4 Stars & Up", "3 Stars & Up", "2 Stars & Up"]}
-      />
-
-      <FilterGroup
-        title="Business Type"
-        options={[
-          "Manufacturer",
-          "Wholesaler",
-          "Distributor",
-          "Service Provider",
-        ]}
       />
     </div>
   );
