@@ -6,13 +6,14 @@ import { LuCrown } from "react-icons/lu";
 import { PiGlobeBold } from "react-icons/pi";
 import { MdLockOutline } from "react-icons/md";
 import api from "@/lib/axios";
+import { useUserRole } from "@/context/UserContext";
 
 const CommunitySection = () => {
   const scrollRef = React.useRef(null);
   const [activeIndex, setActiveIndex] = React.useState(0);
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const { user } = useUserRole();
   useEffect(() => {
     const fetchCommunities = async () => {
       try {
@@ -85,7 +86,9 @@ const CommunitySection = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center text-center mb-8">
             <h2 className="text-2xl font-bold text-indigo-950 mb-1">
-              Communities
+            {
+                    user?.role === "user" ? "Join Communities" : "Communities"
+                  } 
             </h2>
             <p className="text-sm text-gray-500">Loading communities...</p>
           </div>
@@ -102,7 +105,9 @@ const CommunitySection = () => {
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-8">
           <h2 className="text-2xl font-bold text-indigo-950 mb-1">
-            Communities
+          {
+                    user?.role === "user" ? "Join Communities" : "Communities"
+                  } 
           </h2>
           <p className="text-sm text-gray-500">
             Connect with businesses and professionals.

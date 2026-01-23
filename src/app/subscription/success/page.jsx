@@ -66,15 +66,10 @@ function SubscriptionSuccessContent() {
     const storedSub = subscriptionAPI.getStoredSubscription();
     const role = storedSub?.role || "user";
 
-    // Requirement:
-    // - If user role created Stripe account => redirect to onboarding/business-profile
-    // - If business role created Stripe account => redirect to onboarding/user-profile
-    if (role === "business") {
-      router.push("/onboarding/business-profile");
-      return;
-    }
-
-    router.push("/onboarding/user-profile");
+    // Flow: Plans → Stripe → Profile Creation
+    // - User role → User Profile creation
+    // - Business role → Business Profile creation
+    role === "business" ? router.push("/onboarding/business-profile") : router.push("/onboarding/user-profile");
   };
 
   return (

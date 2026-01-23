@@ -328,7 +328,7 @@ function PlansList() {
         console.log("Plan ID:", plan.backendId);
         console.log("Role:", role);
 
-        const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`
+        const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
         const cancelUrl = `${window.location.origin}/onboarding/plans`;
 
         const response = await subscriptionAPI.createStripeCheckout(
@@ -509,6 +509,13 @@ function PlansList() {
       }
     }
   };
+
+  // if (isBusiness) {
+  //     router.push("/onboarding/business-profile");
+  //   } else {
+  //     router.push("/onboarding/user-profile");
+  //   }
+  // };
 
   if (loading) {
     return (

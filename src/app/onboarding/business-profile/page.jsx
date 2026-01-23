@@ -483,7 +483,6 @@ export default function BusinessProfilePage() {
       return false;
     }
 
-    // ... inside component
     try {
       // Automatically create a subscription if one doesn't exist
       // This bypasses the "No subscription found" error
@@ -502,8 +501,33 @@ export default function BusinessProfilePage() {
         console.log("Subscription creation skipped:", subError.message);
       }
 
+      // Map frontend fields to backend BusinessProfile schema
       const payload = {
-        ...formData,
+        companyName: formData.companyName,
+        businessType: formData.businessType || "",
+        companySize: formData.companySize || "",
+        foundedDate: formData.foundedDate || null,
+        primaryIndustry: formData.industry || "",
+        operationHour: formData.operatingHours || "",
+        website: formData.website || "",
+        description: formData.bio || "",
+        logo: formData.profileImageUrl || "",
+        banner: formData.bannerImageUrl || "",
+        // Map location fields into nested object
+        location: {
+          country: formData.country || "",
+          city: formData.city || "",
+          addressLine: formData.address || "",
+        },
+        // Map B2B contact fields into nested object
+        b2bContact: {
+          name: formData.contactName || "",
+          title: formData.contactTitle || "",
+          phone: formData.contactPhone || "",
+          supportEmail: formData.contactEmail || "",
+        },
+        // Backend expects `certifications` array, use selected compliances
+        certifications: formData.compliances || [],
       };
 
       const response = await api.post({
