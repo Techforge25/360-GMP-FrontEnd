@@ -21,7 +21,7 @@ export default function BusinessDashboardLayout({ children }) {
 
   return (
     <RoleGuard allowedRoles={["business"]}>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col">
         <AuthNavbar />
 
         <main className="flex-1">{children}</main>

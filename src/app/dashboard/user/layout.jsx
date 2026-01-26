@@ -7,7 +7,7 @@ import RoleGuard from "@/components/auth/RoleGuard";
 export default function UserDashboardLayout({ children }) {
   return (
     <RoleGuard allowedRoles={["user", "paid_user", "free_trial"]}>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col">
         <AuthNavbar />
 
         <main className="flex-1">{children}</main>

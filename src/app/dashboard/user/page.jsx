@@ -8,7 +8,7 @@ import JobSection from "@/components/dashboard/JobSection";
 
 export default function UserDashboard() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white">
       <DashboardHero />
       <BusinessGrid />
       <CommunitySection />

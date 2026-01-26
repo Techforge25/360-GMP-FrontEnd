@@ -119,7 +119,7 @@ export default function BusinessesPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-white">
+    <div className="w-full bg-white">
       <main className="pb-24">
         <BusinessHero
           query={query}

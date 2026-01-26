@@ -17,7 +17,7 @@ import { RiVisaLine } from "react-icons/ri";
 
 const BusinessSubscriptionsPage = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className=" bg-gray-50">
       {/* Header */}
       <div className="bg-emerald-50/50 py-12 border-b border-gray-200 mb-8">
         <div className="max-w-4xl mx-auto text-center space-y-2">

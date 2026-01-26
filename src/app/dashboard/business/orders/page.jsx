@@ -134,7 +134,7 @@ const BusinessOrdersPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF]">
+    <div className="bg-[#FFFFFF]">
       {/* Seller Dashboard Banner */}
       <div className="mx-auto mb-8 bg-[#110026] relative overflow-hidden">
         <div className="flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10 max-w-7xl mx-auto">
