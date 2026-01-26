@@ -6,13 +6,15 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   // Full User State
-  const [user, setUserState] = useState(null);
+  const [user, setUserState] = useState(undefined);
 
   useEffect(() => {
     // Load from localStorage on mount
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUserState(JSON.parse(storedUser));
+    } else {
+      setUserState(null); // Explicitly null if nothing in localStorage
     }
   }, []);
 
@@ -59,7 +61,7 @@ export const UserProvider = ({ children }) => {
 
       if (isProfileMissing) {
         console.warn(
-          "Backend sync skipped (Profile missing). Updating local state to proceed."
+          "Backend sync skipped (Profile missing). Updating local state to proceed.",
         );
         const updatedUser = {
           ...user,
@@ -70,7 +72,7 @@ export const UserProvider = ({ children }) => {
       }
       console.error(
         "Failed to sync role with backend",
-        error.response?.data || error
+        error.response?.data || error,
       );
       throw error; // Re-throw to handle in UI
     }

@@ -2,10 +2,11 @@
 import React from "react";
 import Footer from "@/components/landing/Footer";
 import AuthNavbar from "@/components/dashboard/AuthNavbar";
+import RoleGuard from "@/components/auth/RoleGuard";
 
 import { usePathname } from "next/navigation";
 
-export default function UserDashboardLayout({ children }) {
+export default function BusinessDashboardLayout({ children }) {
   const pathname = usePathname();
   const hideFooterRoutes = [
     "/dashboard/business/profile",
@@ -19,12 +20,14 @@ export default function UserDashboardLayout({ children }) {
   const shouldHideFooter = hideFooterRoutes.includes(pathname);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <AuthNavbar />
+    <RoleGuard allowedRoles={["business"]}>
+      <div className="flex flex-col min-h-screen">
+        <AuthNavbar />
 
-      <main className="flex-1">{children}</main>
+        <main className="flex-1">{children}</main>
 
-      {!shouldHideFooter && <Footer />}
-    </div>
+        {!shouldHideFooter && <Footer />}
+      </div>
+    </RoleGuard>
   );
 }
