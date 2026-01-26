@@ -567,6 +567,7 @@ export default function UserProfilePage() {
     if (typeof window !== "undefined") {
       const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
       storedUser.role = "user";
+      storedUser.isNewToPlatform = false;
       localStorage.setItem("user", JSON.stringify(storedUser));
       window.location.href = "/dashboard/user";
     }

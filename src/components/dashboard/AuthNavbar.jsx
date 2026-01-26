@@ -52,6 +52,7 @@ const AuthNavbar = () => {
         const updatedUser = {
           ...user,
           role: targetRole,
+          isNewToPlatform: false, // User switching roles from dashboard is not new
         };
 
         if (typeof window !== "undefined") {

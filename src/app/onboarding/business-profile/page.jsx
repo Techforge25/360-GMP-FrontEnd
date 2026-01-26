@@ -573,6 +573,7 @@ export default function BusinessProfilePage() {
     if (typeof window !== "undefined") {
       const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
       storedUser.role = "business";
+      storedUser.isNewToPlatform = false;
       localStorage.setItem("user", JSON.stringify(storedUser));
       window.location.href = "/dashboard/business";
     }

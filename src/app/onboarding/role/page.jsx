@@ -29,7 +29,17 @@ export default function RoleSelectionPage() {
   const handleContinue = async () => {
     try {
       await setOnboardingRole(selectedRole);
-      router.push(`/onboarding/plans`);
+
+      // If user is new, send to plans. Otherwise, send to dashboard.
+      if (user?.isNewToPlatform) {
+        router.push(`/onboarding/plans`);
+      } else {
+        const dashboardUrl =
+          selectedRole === "business"
+            ? "/dashboard/business"
+            : "/dashboard/user";
+        router.push(dashboardUrl);
+      }
     } catch (e) {
       console.error("Navigation halted due to role sync error");
     }
