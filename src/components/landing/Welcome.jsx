@@ -2,6 +2,8 @@
 import React from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
+import { FiArrowRight } from "react-icons/fi";
+import Link from "next/link";
 
 const Welcome = () => {
   return (
@@ -28,76 +30,104 @@ const Welcome = () => {
             <h2 className="text-3xl md:text-4xl font-bold text-indigo-950 mb-6">
               Welcome
             </h2>
-            <p className="text-text-secondary leading-relaxed mb-6">
-              Welcome to 3SIXTY Global Marketplace, the premier digital
-              ecosystem designed to connect verified businesses, manufacturers,
-              and professionals worldwide. Our platform bridges the gap between
-              local capabilities and global opportunities, ensuring seamless
-              trade, collaboration, and growth.
+            <p className="text-text-secondary leading-relaxed mb-6 max-w-110">
+              Greetings from 360 Global Marketplace LLC! We're excited to
+              welcome you to our platform, where you can find a wide array of
+              products and services. Dive into our marketplace and uncover
+              unique selections tailored to meet your every need. We appreciate
+              you choosing us as your one stop global hub!
             </p>
-            <Button className="bg-indigo-900 text-white px-8 rounded-full">
-              Learn More
+            <Button className="bg-[#240457] text-white px-8 rounded-xl">
+              Join Now <FiArrowRight className="ml-2" />
             </Button>
           </div>
         </div>
 
-        <div className="relative bg-gradient-to-br from-indigo-50 to-white rounded-3xl p-8 md:p-12 shadow-sm border border-indigo-50">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-indigo-950 mb-4">
+        <div className="relative rounded-3xl p-8 md:p-12 shadow-sm border border-indigo-50 overflow-hidden">
+          {/* Background Image */}
+          {/* <div className="absolute inset-0 z-0">
+            <img
+              src="/assets/images/nutshellBg.png"
+              alt="Nutshell Background"
+              className="w-full h-full object-cover rounded-3xl"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/90 via-blue-50/85 to-white/90 rounded-3xl" />
+          </div> */}
+          <div className="relative z-10 text-center mb-12">
+            <h2 className="text-3xl font-semibold text-black mb-4">
               In A Nutshell
             </h2>
-            <p className="text-text-secondary max-w-2xl mx-auto">
-              A streamlined, secure, and smart way to navigate the global
-              market. From discovering partners to closing deals, we simplify
-              every step.
+            <p className="text-sm md:text-base text-black max-w-3xl mx-auto leading-relaxed">
+              360 Global Marketplace revolutionizes the supply chain by giving
+              small business owners direct access to manufacturers—removing
+              middlemen, reducing costs, and accelerating growth.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-border-light text-center group hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-indigo-100 text-indigo-900 rounded-lg flex items-center justify-center mx-auto mb-4 font-bold">
-                1
-              </div>
-              <h3 className="font-bold text-indigo-950 mb-2">
-                Discover Opportunities
-              </h3>
-              <p className="text-sm text-text-secondary">
-                Find verified buyers/sellers globally.
-              </p>
-            </div>
+          {/* Empowerment Section */}
+          <div className="relative z-10 mb-12 md:mb-16">
+            <h3 className="text-lg md:text-xl font-semibold text-black text-center mb-8 md:mb-10">
+              We Empower Organizations And Independent <br /> Business Owners By
+            </h3>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-border-light text-center group hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-indigo-100 text-indigo-900 rounded-lg flex items-center justify-center mx-auto mb-4 font-bold">
-                2
+            {/* Three Points with Dotted Connectors */}
+            <div className="relative max-w-6xl mx-auto">
+              {/* Dotted Line Connector - Hidden on mobile */}
+              <div className="hidden md:block absolute top-8 left-0 right-0 h-0.5">
+                <svg className="w-full h-full" preserveAspectRatio="none">
+                  <path
+                    d="M 0 0 Q 25 -30, 50 0 T 100 0"
+                    stroke="#6366f1"
+                    strokeWidth="2"
+                    strokeDasharray="8,8"
+                    fill="none"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
               </div>
-              <h3 className="font-bold text-indigo-950 mb-2">
-                Secure Transactions
-              </h3>
-              <p className="text-sm text-text-secondary">
-                Safe escrow & contract management.
-              </p>
-            </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-border-light text-center group hover:shadow-md transition-all">
-              <div className="w-12 h-12 bg-indigo-100 text-indigo-900 rounded-lg flex items-center justify-center mx-auto mb-4 font-bold">
-                3
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-10">
+                {/* Point 1 */}
+                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-500 border-dashed hover:shadow-md transition-all">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                      1
+                    </div>
+                    <p className="text-xs md:text-base text-black font-sm">
+                      Eliminating inefficiencies
+                    </p>
+                  </div>
+                </div>
+
+                {/* Point 2 */}
+                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-500 border-dashed hover:shadow-md transition-all">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                      2
+                    </div>
+                    <p className="text-xs md:text-base text-black font-sm">
+                      Supporting global expansion
+                    </p>
+                  </div>
+                </div>
+
+                {/* Point 3 */}
+                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-500 border-dashed hover:shadow-md transition-all">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                      3
+                    </div>
+                    <p className="text-xs md:text-base text-black font-sm">
+                      Increasing visibility and collaboration
+                    </p>
+                  </div>
+                </div>
               </div>
-              <h3 className="font-bold text-indigo-950 mb-2">Grow Globally</h3>
-              <p className="text-sm text-text-secondary">
-                Expand your network and revenue.
-              </p>
             </div>
           </div>
 
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-blue-100/50 blur-3xl -z-0 rounded-full" />
-        </div>
-
-        <div className="mt-12 text-center">
-          <p className="text-sm text-center text-text-secondary max-w-3xl mx-auto italic">
-            "3SIXTY bridges the gap between local manufacturers and the global
-            market, providing a secure platform for growth, transparency, and
-            efficiency."
-          </p>
+          {/* Background Blur Effect */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-purple-200/30 blur-3xl -z-0 rounded-full pointer-events-none" />
         </div>
       </div>
     </section>

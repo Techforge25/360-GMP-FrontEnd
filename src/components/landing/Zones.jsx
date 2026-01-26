@@ -7,26 +7,26 @@ const Zones = () => {
   const zones = [
     {
       title: "Marketplace",
-      icon: <FiGlobe className="w-6 h-6 text-brand-primary" />,
-      desc: "Browse global commodities, manufactured goods, and verified suppliers.",
+      icon: <img src="/assets/images/marketplaceIcon2.png" alt="" />,
+      desc: "Browse single & bulk listings, compare pricing, chat securely with sellers, and purchase using the Escrow system.",
       border: "hover:border hover:border-brand-primary",
     },
     {
       title: "Business Zone",
-      icon: <FiBriefcase className="w-6 h-6 text-brand-primary" />,
-      desc: "Manage your business profile, products, jobs, and orders in one place.",
+      icon: <img src="/assets/images/zoneIcon.png" alt="" />,
+      desc: "Manage your product catalog, handle order fulfillment, and utilize advanced tools for job posting & hiring.",
       border: "hover:border hover:border-brand-primary-light",
     },
     {
       title: "Job Portal",
-      icon: <FiUsers className="w-6 h-6 text-brand-primary" />,
-      desc: "Find specialized talent or land your dream job with top manufacturers.",
+      icon: <img src="/assets/images/jobIcon2.png" alt="" />,
+      desc: "Find or post jobs, apply with one click, and manage all your candidate pipelines and application statuses in one place.",
       border: "hover:border hover:border-brown",
     },
     {
       title: "Community Hub",
-      icon: <FiMessageCircle className="w-6 h-6 text-brand-primary" />,
-      desc: "Network with peers, join industry groups, and share insights.",
+      icon: <img src="/assets/images/hubIcon.png" alt="" />,
+      desc: "Join industry-based groups for networking, knowledge sharing, direct discussions, and real-time collaboration.",
       border: "hover:border hover:border-blue-dark",
     },
   ];
@@ -35,13 +35,9 @@ const Zones = () => {
     <section className="py-24 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-indigo-950 mb-4">
+          <h2 className="text-3xl md:text-4xl max-w-xl mx-auto font-semibold text-black mb-4">
             Explore Our Dedicated Platform Zones
           </h2>
-          <p className="text-text-secondary max-w-2xl mx-auto">
-            Each zone is tailored to specific needs, creating a cohesive yet
-            specialized experience for every user type.
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -51,11 +47,11 @@ const Zones = () => {
               className={`bg-white p-6 ${zone.border} rounded-xl shadow-lg transition-all duration-600`}
             >
               <div
-                className={`w-12 h-12 rounded-lg bg-highlight-purple flex items-center justify-center mb-4`}
+                className={`w-12 h-12 rounded-lg bg-[#EAE6EF] flex items-center justify-center mb-4`}
               >
                 {zone.icon}
               </div>
-              <h3 className="font-bold text-lg text-brand-primary mb-2">
+              <h3 className="font-bold text-lg text-black mb-2">
                 {zone.title}
               </h3>
               <p className="text-sm text-text-secondary leading-relaxed">
@@ -65,8 +61,8 @@ const Zones = () => {
           ))}
         </div>
 
-        <div className="mt-24">
-          <h3 className="text-center font-semibold text-4xl text-brand-primary mb-8">
+        <div className="mt-16 border-t border-gray-300 pt-10">
+          <h3 className="text-center font-semibold text-3xl text-black mb-8">
             Key Features
           </h3>
 

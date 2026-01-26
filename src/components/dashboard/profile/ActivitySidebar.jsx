@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   FiAlertTriangle,
   FiArrowRight,
@@ -15,8 +15,157 @@ import {
   FaFacebookF,
   FaInstagram,
 } from "react-icons/fa";
+import businessProfileAPI from "@/services/businessProfileAPI";
+import socialLinkAPI from "@/services/socialLinkAPI";
+
+const getSocialIcon = (platform) => {
+  const p = platform?.toLowerCase() || "";
+  if (p.includes("linkedin")) return FaLinkedinIn;
+  if (p.includes("twitter")) return FaTwitter;
+  if (p.includes("facebook")) return FaFacebookF;
+  if (p.includes("instagram")) return FaInstagram;
+  return FiGlobe;
+};
 
 const ActivitySidebar = () => {
+  const [lowStockItems, setLowStockItems] = useState([]);
+  const [applicants, setApplicants] = useState([]);
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing2, setIsEditing2] = useState(false);
+  const [socialLinks, setSocialLinks] = useState([]);
+  const [newSocialLink, setNewSocialLink] = useState({
+    platformName: "linkedin",
+    url: "",
+  });
+  const [formData, setFormData] = useState({
+    supportEmail: "",
+    phone: "",
+    website: "",
+    addressLine: "",
+    city: "",
+    country: "",
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveContact = async () => {
+    try {
+      await businessProfileAPI.updateContactInfo(formData);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update contact info:", error);
+    }
+  };
+
+  const handleAddSocialLink = async () => {
+    if (!newSocialLink.url) return;
+    try {
+      await socialLinkAPI.create(newSocialLink);
+      // Refresh links
+      const res = await socialLinkAPI.getByBusinessProfileId(profile._id);
+      if (res?.data) setSocialLinks(res.data);
+      setNewSocialLink({ platformName: "linkedin", url: "" });
+      setIsEditing2(false);
+    } catch (error) {
+      console.error("Failed to add social link:", error);
+    }
+  };
+
+  const handleDeleteSocialLink = async (id) => {
+    try {
+      await socialLinkAPI.delete(id);
+      setSocialLinks((prev) => prev.filter((link) => link._id !== id));
+    } catch (error) {
+      console.error("Failed to delete social link:", error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [lowStockRes, applicantsRes, profileRes] = await Promise.all([
+          businessProfileAPI.getLowStockProducts({ limit: 2 }),
+          businessProfileAPI.getRecentJobApplications(),
+          businessProfileAPI.getMyProfile(),
+        ]);
+
+        if (lowStockRes?.data?.docs) {
+          setLowStockItems(lowStockRes.data.docs);
+        }
+
+        if (applicantsRes?.data) {
+          setApplicants(applicantsRes.data);
+        }
+
+        if (profileRes?.data) {
+          setProfile(profileRes.data);
+          // Fetch social links
+          try {
+            const socialRes = await socialLinkAPI.getByBusinessProfileId(
+              profileRes.data._id,
+            );
+            if (socialRes?.data) {
+              setSocialLinks(socialRes.data);
+            }
+          } catch (e) {
+            console.error("Failed to fetch social links", e);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch sidebar data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatTimeAgo = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
+    if (diffInSeconds < 86400)
+      return `${Math.floor(diffInSeconds / 3600)}h ago`;
+    return `${Math.floor(diffInSeconds / 86400)}d ago`;
+  };
+
+  const getFullAddress = (location) => {
+    if (!location) return "No location provided";
+    const parts = [
+      location.addressLine,
+      location.city,
+      location.country,
+    ].filter(Boolean);
+    return parts.join(", ");
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        {[1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 h-48 animate-pulse bg-gray-50"
+          ></div>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Recent Critical Activity */}
@@ -25,18 +174,21 @@ const ActivitySidebar = () => {
           Recent Critical Activity
         </h3>
         <div className="space-y-3">
-          <ActivityItem
-            title="Low Stock Alert: (32 units left)"
-            time="2 hours ago"
-            action="Update Inventory"
-            severity="high"
-          />
-          <ActivityItem
-            title="Low Stock Alert: (32 units left)"
-            time="2 hours ago"
-            action="Update Inventory"
-            severity="high"
-          />
+          {lowStockItems.length > 0 ? (
+            lowStockItems.map((item, index) => (
+              <ActivityItem
+                key={item._id || index}
+                title={`Low Stock: ${item.title}`}
+                time="Just now" // API doesn't provide updated time for low stock, usually
+                action="Update Inventory"
+                severity="high"
+                stockQty={item.stockQty}
+                threshold={item.lowStockThreshold}
+              />
+            ))
+          ) : (
+            <p className="text-xs text-gray-500">No critical alerts</p>
+          )}
         </div>
       </div>
 
@@ -46,55 +198,223 @@ const ActivitySidebar = () => {
           Recent Applicant
         </h3>
         <div className="space-y-4">
-          <ApplicantItem name="Joseph" time="45 min ago" />
-          <ApplicantItem name="Sarah Connor" time="3 hours ago" />
-          <ApplicantItem name="Alex" time="13 hours ago" />
+          {applicants.length > 0 ? (
+            applicants.map((app, index) => (
+              <ApplicantItem
+                key={app._id || index}
+                name={app.applicantName || "Unknown Candidate"} // Assuming applicantName or similar field
+                time={formatTimeAgo(app.createdAt)}
+              />
+            ))
+          ) : (
+            <p className="text-xs text-gray-500">No recent applicants</p>
+          )}
         </div>
       </div>
 
       {/* Contact Info */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 relative">
-        <button className="absolute top-5 right-5 text-gray-400 hover:text-gray-600">
-          <FiEdit2 className="w-3.5 h-3.5" />
+        <button
+          onClick={() => setIsEditing(!isEditing)}
+          className="absolute top-5 right-5 text-gray-400 hover:text-gray-600"
+        >
+          <FiEdit2
+            className={`w-3.5 h-3.5 ${isEditing ? "text-indigo-600" : ""}`}
+          />
         </button>
         <h3 className="text-sm font-bold text-gray-900 mb-4">Contact Info</h3>
-        <ul className="space-y-5 bg-[#B4B4B433] p-3 rounded-lg">
-          <ContactItem icon="/assets/images/mailIcon.png" text="contact@globalmanufacturing.com" />
-          <ContactItem icon="/assets/images/phoneIcon.png" text="+1 (347) 123 4690" />
-          <ContactItem icon="/assets/images/globeIcon.png" text="www.globalmanufacturing.com" />
-          <ContactItem
-            icon="/assets/images/locationIcon.png"
-            text="123 abv, street 1, SanFransisco, United States"
-          />
-        </ul>
+
+        {isEditing ? (
+          <div className="space-y-3 bg-[#B4B4B433] p-3 rounded-lg">
+            <div className="flex items-center gap-2">
+              <img
+                src="/assets/images/mailIcon.png"
+                className="w-[16px] h-[16px]"
+                alt="email"
+              />
+              <input
+                type="email"
+                name="supportEmail"
+                value={formData.supportEmail}
+                onChange={handleInputChange}
+                placeholder="Support Email"
+                className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <img
+                src="/assets/images/phoneIcon.png"
+                className="w-[16px] h-[16px]"
+                alt="phone"
+              />
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                placeholder="Phone"
+                className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <img
+                src="/assets/images/globeIcon.png"
+                className="w-[16px] h-[16px]"
+                alt="website"
+              />
+              <input
+                type="text"
+                name="website"
+                value={formData.website}
+                onChange={handleInputChange}
+                placeholder="Website"
+                className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div className="space-y-2 pt-2 border-t border-gray-200">
+              <div className="flex items-center gap-2">
+                <FiMapPin className="w-[16px] h-[16px] text-purple-900" />
+                <input
+                  type="text"
+                  name="addressLine"
+                  value={formData.addressLine}
+                  onChange={handleInputChange}
+                  placeholder="Address Line"
+                  className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              <div className="flex gap-2 pl-6">
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  placeholder="City"
+                  className="w-1/2 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                />
+                <input
+                  type="text"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  placeholder="Country"
+                  className="w-1/2 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+            </div>
+            <button
+              onClick={handleSaveContact}
+              className="w-full mt-2 bg-[#240457] text-white py-1.5 rounded text-xs font-semibold hover:bg-indigo-900 transition-colors"
+            >
+              Save Changes
+            </button>
+          </div>
+        ) : (
+          <ul className="space-y-5 bg-[#B4B4B433] p-3 rounded-lg">
+            <ContactItem
+              icon="/assets/images/mailIcon.png"
+              text={profile?.b2bContact?.supportEmail || "No email"}
+            />
+            <ContactItem
+              icon="/assets/images/phoneIcon.png"
+              text={profile?.b2bContact?.phone || "No phone"}
+            />
+            <ContactItem
+              icon="/assets/images/globeIcon.png"
+              text={profile?.website || "No website"}
+            />
+            <ContactItem
+              icon="/assets/images/locationIcon.png"
+              text={getFullAddress(profile?.location)}
+            />
+          </ul>
+        )}
 
         <div className="mt-6 mb-2">
           <p className="text-xs text-[#556179] mb-3">Social Media</p>
-          <div className="flex gap-2">
-            <SocialIcon icon={FaLinkedinIn} />
-            <SocialIcon icon={FaTwitter} />
-            <SocialIcon icon={FaFacebookF} />
-            <SocialIcon icon={FaInstagram} />
+          <div className="flex flex-wrap gap-2">
+            {socialLinks.map((link) => {
+              const Icon = getSocialIcon(link.platformName);
+              return (
+                <div key={link._id} className="relative group">
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-7 h-7 rounded-full bg-[#ECEFF6] flex items-center justify-center text-[#240457] transition-colors hover:bg-indigo-100"
+                  >
+                    <Icon className="w-4 h-4" />
+                  </a>
+                  {isEditing2 && (
+                    <button
+                      onClick={() => handleDeleteSocialLink(link._id)}
+                      className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center text-white text-[8px]"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        <button className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-xs font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2">
-          Add Social Link <span>+</span>
-        </button>
-      {/* Map / Location */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden py-3 px-5 mt-4">
-        <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden">
-          {/* Placeholder for Map */}
-          <div className="w-full h-full flex items-center justify-center text-blue-300">
-            <FiMapPin className="w-8 h-8" />
+        {isEditing2 ? (
+          <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <p className="text-xs font-semibold mb-2">Add Social Link</p>
+            <select
+              className="w-full text-black text-xs p-1 mb-2 rounded border border-gray-300"
+              value={newSocialLink.platformName}
+              onChange={(e) =>
+                setNewSocialLink({
+                  ...newSocialLink,
+                  platformName: e.target.value,
+                })
+              }
+            >
+              <option value="linkedin">LinkedIn</option>
+              <option value="twitter">Twitter</option>
+              <option value="facebook">Facebook</option>
+              <option value="instagram">Instagram</option>
+              <option value="website">Website</option>
+            </select>
+            <input
+              type="text"
+              placeholder="URL"
+              className="w-full text-xs p-1 text-black mb-2 rounded border border-gray-300"
+              value={newSocialLink.url}
+              onChange={(e) =>
+                setNewSocialLink({ ...newSocialLink, url: e.target.value })
+              }
+            />
+            <button
+              onClick={handleAddSocialLink}
+              className="w-full bg-[#240457] text-white py-1 rounded text-xs"
+            >
+              Add
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setIsEditing2(true)}
+            className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-xs font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2"
+          >
+            Add Social Link <span>+</span>
+          </button>
+        )}
+        {/* Map / Location */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden py-3 px-5 mt-4">
+          <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden">
+            {/* Placeholder for Map */}
+            <div className="w-full h-full flex items-center justify-center text-blue-300">
+              <FiMapPin className="w-8 h-8" />
+            </div>
           </div>
         </div>
-      </div>
         <button className="w-full py-3 bg-[#240457] text-white text-xs font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg">
           Update Location <FiMapPin className="w-3 h-3" />
         </button>
       </div>
-
     </div>
   );
 };

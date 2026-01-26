@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   FiSearch,
@@ -12,66 +12,139 @@ import {
 } from "react-icons/fi";
 import { HiOutlineChatAlt } from "react-icons/hi";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
+import AddProductModal from "@/components/dashboard/products/AddProductModal";
+import ProductDetailModal from "@/components/dashboard/products/ProductDetailModal";
+import productAPI from "@/services/productAPI";
 
 const MyProductsPage = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
 
-  // Mock Data
-  const products = [
-    {
-      id: 1,
-      name: "CNC Machined Component",
-      sku: "CMC-01",
-      category: "Manufacturing > Machine Component",
-      moq: "100 Pc",
-      priceRange: "$1200-$1500",
-      status: "Live",
-      stockStatus: "In Stock",
-      stockCount: "1200 Units",
-      image: "/assets/images/product1.png", // Ensure this path exists or use a placeholder
-    },
-    {
-      id: 2,
-      name: "Silent Block Suspension Parts",
-      sku: "SBS-02",
-      category: "Manufacturing > Machine Component",
-      moq: "1200 Pc",
-      priceRange: "$1800-$3000",
-      status: "Pending",
-      stockStatus: "In Stock",
-      stockCount: "1278 Units",
-      image: "/assets/images/product2.png",
-    },
-    {
-      id: 3,
-      name: "CNC Machined Component",
-      sku: "CMC-01",
-      category: "Manufacturing > Machine Component",
-      moq: "100 Pc",
-      priceRange: "$1200-$1500",
-      status: "Live",
-      stockStatus: "In Stock",
-      stockCount: "1200 Units",
-      image: "/assets/images/product1.png",
-    },
-  ];
+  // Filters
+  const [inventoryFilter, setInventoryFilter] = useState(""); // In Stock, Low Stock, etc.
+  const [stockLevelFilter, setStockLevelFilter] = useState("all"); // The dropdown value actually
+  const [categoryFilter, setCategoryFilter] = useState("");
+
+  // We need to pass inventory filter to fetchProducts
+  const fetchProducts = async (
+    currentPage,
+    statusFilter,
+    stockFilter = "all",
+    catFilter = "",
+  ) => {
+    try {
+      setLoading(true);
+      const params = {
+        page: currentPage,
+        limit: 10,
+      };
+
+      if (catFilter) {
+        params.category = catFilter;
+      }
+
+      const tabStatusMap = {
+        live: "approved",
+        pending: "pending",
+        rejected: "rejected",
+        draft: "draft",
+      };
+
+      if (statusFilter !== "all" && tabStatusMap[statusFilter]) {
+        params.filter = tabStatusMap[statusFilter];
+      }
+
+      let response;
+
+      // Determine which API method to call based on stockFilter
+      switch (stockFilter) {
+        case "In Stock":
+          response = await productAPI.getInStockProducts(params);
+          break;
+        case "Low Stock":
+          response = await productAPI.getLowStockProducts(params);
+          break;
+        case "Out of Stock":
+          response = await productAPI.getOutOfStockProducts(params);
+          break;
+        default:
+          response = await productAPI.getMyProducts(params);
+      }
+
+      if (response?.data) {
+        if (currentPage === 1) {
+          setProducts(response.data.docs || []);
+        } else {
+          setProducts((prev) => [...prev, ...response.data.docs]);
+        }
+        setTotalPages(response.data.totalPages || 1);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts(1, activeTab, stockLevelFilter, categoryFilter);
+    setPage(1);
+  }, [activeTab, stockLevelFilter, categoryFilter]);
+
+  const handleLoadMore = () => {
+    if (page < totalPages) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchProducts(nextPage, activeTab, stockLevelFilter, categoryFilter);
+    }
+  };
+
+  const handleProductCreated = () => {
+    fetchProducts(1, activeTab, stockLevelFilter, categoryFilter);
+    setPage(1);
+  };
+
+  const handleEdit = (product, e) => {
+    if (e) e.stopPropagation();
+    setEditingProduct(product);
+    setIsAddModalOpen(true);
+  };
+
+  const handleDelete = async (productId, e) => {
+    if (e) e.stopPropagation();
+    if (confirm("Are you sure you want to delete this product?")) {
+      try {
+        await productAPI.delete(productId);
+        handleProductCreated();
+      } catch (err) {
+        console.error("Failed to delete product:", err);
+      }
+    }
+  };
 
   const tabs = [
-    { id: "all", label: "All Procuct", count: null },
-    { id: "live", label: "Live/Approved", count: 12 },
-    { id: "rejected", label: "Rejected", count: 1 },
-    { id: "pending", label: "Pending/Review", count: 1 },
-    { id: "draft", label: "Draft", count: 0 },
+    { id: "all", label: "All Product" },
+    { id: "live", label: "Live/Approved" },
+    { id: "rejected", label: "Rejected" },
+    { id: "pending", label: "Pending/Review" },
+    { id: "draft", label: "Draft" },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className=" bg-gray-50">
       <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         My Product
       </p>
       {/* 1. Hero / Header Section */}
       <div className="relative bg-[#8B5CF6]">
-        {/* Background Pattern (Abstract shapes/gradients) */}
+        {/* Background Pattern */}
         <div className="absolute inset-0 opacity-20"></div>
         <div
           className="absolute inset-0 opacity-200"
@@ -121,7 +194,7 @@ const MyProductsPage = () => {
                 Inventory Alert
               </h3>
               <p className="text-gray-600 text-sm">
-                5 Listings Are Below Minimum Safety Stock Levels.
+                Check for products below minimum safety stock levels.
               </p>
             </div>
           </div>
@@ -135,7 +208,7 @@ const MyProductsPage = () => {
           <div className="flex items-center gap-3">
             <h2 className="text-xl font-semibold text-gray-900">My Products</h2>
             <span className="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs rounded-full flex items-center gap-1">
-              34 records found{" "}
+              {products.length} records found{" "}
               <span className="cursor-pointer hover:text-gray-800">×</span>
             </span>
           </div>
@@ -143,27 +216,38 @@ const MyProductsPage = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-sm text-black">Inventory Status</span>
-              <select className="border border-gray-300 rounded-md text-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white">
-                <option>In Stock</option>
-                <option>Low Stock</option>
-                <option>Out of Stock</option>
+              <select
+                className="border border-gray-300 rounded-md text-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white"
+                value={stockLevelFilter}
+                onChange={(e) => setStockLevelFilter(e.target.value)}
+              >
+                <option value="all">All Status</option>
+                <option value="In Stock">In Stock</option>
+                <option value="Low Stock">Low Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-black">Inventory Status</span>
-              <select className="border border-gray-300 rounded-md text-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white">
-                <option>Raw Materials</option>
-                <option>Sub-Components</option>
-                <option>Finished Goods</option>
-                <option>Manufacturing</option>
-                <option>Category 5</option>
-                <option>Category 6</option>
-                <option>Category 7</option>
+              <span className="text-sm text-black">Product Category</span>
+              <select
+                className="border border-gray-300 rounded-md text-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
+                <option value="">All Category</option>
+                <option value="Raw Materials">Raw Materials</option>
+                <option value="Sub-Components">Sub-Components</option>
+                <option value="Finished Goods">Finished Goods</option>
+                <option value="Manufacturing">Manufacturing</option>
+                <option value="Metals & Fabrication">
+                  Metals & Fabrication
+                </option>
+                <option value="Electronics">Electronics</option>
+                <option value="Textiles">Textiles</option>
               </select>
             </div>
           </div>
         </div>
-
         {/* 4. Tabs & Action Button */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-200 border border-gray-200 p-4 rounded-t-lg bg-white">
           <div className="flex items-center gap-1 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
@@ -177,12 +261,18 @@ const MyProductsPage = () => {
                     : "bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100"
                 }`}
               >
-                {tab.label} {tab.count !== null && `(${tab.count})`}
+                {tab.label}
               </button>
             ))}
           </div>
 
-          <button className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center gap-2">
+          <button
+            onClick={() => {
+              setEditingProduct(null);
+              setIsAddModalOpen(true);
+            }}
+            className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center gap-2"
+          >
             Create A New Product <span>→</span>
           </button>
         </div>
@@ -205,84 +295,157 @@ const MyProductsPage = () => {
           </div>
 
           {/* Table Rows */}
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-gray-100 items-center hover:bg-gray-50 transition-colors last:border-none"
-            >
-              {/* Product Info */}
-              <div className="col-span-4 flex items-start gap-3">
-                <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200">
-                  <span className="text-[8px] text-gray-400 text-center px-1">
-                    Img
+          {loading && page === 1 ? (
+            <div className="p-8 text-center text-gray-500">
+              Loading products...
+            </div>
+          ) : products.length > 0 ? (
+            products.map((product) => (
+              <div
+                key={product._id}
+                onClick={() => {
+                  setSelectedProduct(product);
+                  setIsDetailModalOpen(true);
+                }}
+                className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-gray-100 items-center hover:bg-gray-50 transition-colors last:border-none cursor-pointer"
+              >
+                {/* Product Info */}
+                <div className="col-span-4 flex items-start gap-3">
+                  <div className="w-12 h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200 relative">
+                    {product.image ? (
+                      <Image
+                        src={
+                          product.image.startsWith("http") ||
+                          product.image.startsWith("/")
+                            ? product.image
+                            : `/${product.image}`
+                        }
+                        alt={product.title}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-[8px] text-gray-400 text-center px-1">
+                        Img
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900 leading-tight mb-0.5">
+                      {product.title}
+                    </h3>
+                    <p className="text-[12px] text-[#240457] truncate">
+                      {product.category}
+                    </p>
+                  </div>
+                </div>
+
+                {/* MOQ & Price */}
+                <div className="col-span-2 text-xs">
+                  <p className="text-gray-600 mb-1">
+                    MOQ:{product.minOrderQty}
+                  </p>
+                  <p className="text-gray-500">
+                    Price: ${product.pricePerUnit}
+                  </p>
+                </div>
+
+                {/* Status */}
+                <div className="col-span-2">
+                  <span
+                    className={`inline-flex items-center px-3 py-2 rounded-full text-xs font-medium capitalize
+                    ${product.status === "approved" ? "bg-green-100 text-green-800" : ""}
+                    ${product.status === "pending" ? "bg-yellow-100 text-yellow-800" : ""}
+                    ${product.status === "rejected" ? "bg-red-100 text-red-800" : ""}
+                    ${product.status === "draft" ? "bg-gray-100 text-gray-800" : ""}
+                  `}
+                  >
+                    {product.status === "approved" ? "Live" : product.status}
                   </span>
                 </div>
-                <div>
-                  <h3 className="text-sm font-medium text-gray-900 leading-tight mb-0.5">
-                    {product.name}
-                  </h3>
-                  <p className="text-xs text-gray-400 font-medium mb-0.5">
-                    SKU:{product.sku}
-                  </p>
-                  <p className="text-[12px] text-black truncate">
-                    {product.category}
-                  </p>
+
+                {/* Stock */}
+                <div className="col-span-2 text-xs">
+                  <span
+                    className={`inline-block px-3 py-2 rounded font-medium mb-1 capitalize
+                     ${product.stockFlag === "out-of-stock" ? "bg-red-100 text-red-800" : ""}
+                     ${product.stockFlag === "critical-threshold" ? "bg-yellow-100 text-yellow-800" : ""}
+                     ${product.stockFlag === "in-stock" ? "bg-green-100 text-green-800" : ""}
+                     ${!product.stockFlag ? "bg-green-100 text-green-800" : ""}
+                  `}
+                  >
+                    {product.stockFlag?.replace("-", " ") || "In Stock"}
+                  </span>
+                </div>
+
+                {/* SKU / Units */}
+                <div className="col-span-1 text-xs text-gray-600 font-medium">
+                  {product.stockQty} Units
+                </div>
+
+                {/* Actions */}
+                <div className="col-span-1 flex items-center justify-end gap-2">
+                  <button
+                    onClick={(e) => handleEdit(product, e)}
+                    className="text-gray-400 hover:text-indigo-600 transition-colors"
+                  >
+                    <img src="/assets/images/editIcon.png" alt="" />
+                  </button>
+                  <button className="text-gray-400 hover:text-green-600 transition-colors">
+                    <img src="/assets/images/chartIcon.png" alt="" />
+                  </button>
+                  <button
+                    onClick={(e) => handleDelete(product._id, e)}
+                    className="text-gray-400 hover:text-red-500 transition-colors"
+                  >
+                    <img src="/assets/images/deleteIcon.png" alt="" />
+                  </button>
                 </div>
               </div>
-
-              {/* MOQ & Price */}
-              <div className="col-span-2 text-xs">
-                <p className="text-gray-600 mb-1">MOQ:{product.moq}</p>
-                <p className="text-gray-500">Price: {product.priceRange}</p>
-              </div>
-
-              {/* Status */}
-              <div className="col-span-2">
-                <span
-                  className={`inline-flex items-center px-3 py-2 rounded-full text-xs font-medium
-                  ${product.status === "Live" ? "bg-green-100 text-green-800" : ""}
-                  ${product.status === "Pending" ? "bg-yellow-100 text-yellow-800" : ""}
-                `}
-                >
-                  {product.status}
-                </span>
-              </div>
-
-              {/* Stock */}
-              <div className="col-span-2 text-xs">
-                <span className="inline-block px-3 py-2 bg-green-50 text-green-700 rounded font-medium mb-1">
-                  {product.stockStatus}
-                </span>
-              </div>
-
-              {/* SKU / Units */}
-              <div className="col-span-1 text-xs text-gray-600 font-medium">
-                {product.stockCount}
-              </div>
-
-              {/* Actions */}
-              <div className="col-span-1 flex items-center justify-end gap-2">
-                <button className="text-gray-400 hover:text-indigo-600 transition-colors">
-                  <img src="/assets/images/editIcon.png" alt="" />
-                </button>
-                <button className="text-gray-400 hover:text-green-600 transition-colors">
-                  <img src="/assets/images/chartIcon.png" alt="" />
-                </button>
-                <button className="text-gray-400 hover:text-red-500 transition-colors">
-                  <img src="/assets/images/deleteIcon.png" alt="" />
-                </button>
-              </div>
+            ))
+          ) : (
+            <div className="p-8 text-center text-gray-500">
+              No products found.
             </div>
-          ))}
+          )}
         </div>
 
-        <div className="flex justify-center items-center mt-8 mb-8">
-          <button className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2">
-            Load More
-          </button>
-        </div>
+        {page < totalPages && (
+          <div className="flex justify-center items-center mt-8 mb-8">
+            <button
+              onClick={handleLoadMore}
+              disabled={loading}
+              className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {loading ? "Loading..." : "Load More"}
+            </button>
+          </div>
+        )}
       </div>
-      <DashboardFooter />
+      <div className="mt-10">
+        <DashboardFooter />
+      </div>
+
+      <AddProductModal
+        isOpen={isAddModalOpen}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setEditingProduct(null);
+        }}
+        onSuccess={handleProductCreated}
+        editProduct={editingProduct}
+      />
+
+      <ProductDetailModal
+        isOpen={isDetailModalOpen}
+        product={selectedProduct}
+        onClose={() => setIsDetailModalOpen(false)}
+        onEdit={(prod) => {
+          setIsDetailModalOpen(false);
+          setEditingProduct(prod);
+          setIsAddModalOpen(true);
+        }}
+      />
     </div>
   );
 };

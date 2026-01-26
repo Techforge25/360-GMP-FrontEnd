@@ -1,115 +1,146 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
+import { FiArrowRight } from "react-icons/fi";
 
 const AboutVision = () => {
   return (
-    <section id="about" className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
-        <div className="flex flex-col md:flex-row items-center gap-12">
-          <div className="w-full md:w-1/2">
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-primary mb-6">
+    <section
+      id="about"
+      className="py-16 md:py-20 "
+    >
+      <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8 space-y-16 md:space-y-20">
+        {/* About Us Section */}
+         {/* bg-gradient-to-br from-purple-50 via-pink-50 to-white */}
+        <div className="flex p-4 rounded-2xl flex-col md:flex-row items-center gap-8 md:gap-12">
+          <div className="w-full md:w-[40%] order-2 md:order-1">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               About Us
             </h2>
-            <p className="text-text-secondary leading-relaxed mb-6">
-              3SIXTY is more than just a marketplace; it's a comprehensive
-              ecosystem dedicated to empowering businesses of all sizes. We
-              combine cutting-edge technology with rigorous verification
-              processes to create a trusted environment for B2B trade.
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-6">
+              360 Global Marketplace is dedicated to revolutionizing the way businesses connect with suppliers and customers. Our platform provides a seamless and efficient way to facilitate mutually beneficial relationships, driving growth and success for all parties involved.
             </p>
-            <ul className="space-y-3 mb-8">
+
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-6">
+              By joining 360 Global Marketplace LLC, you're taking a significant step towards empowering businesses and creating a more equitable and connected global business community.
+            </p>
+          <div className="flex items-center">
+            <img className="-mt-5 max-h-44" src="/assets/images/rangeDot.png" alt="" />
+            <ul className="space-y-[14px] mb-6">
+              
               {[
-                "Verified Partners",
-                "Global Reach",
-                "Secure Payments",
-                " Dedicated Support",
+                "Corp to Corp",
+                "Corp to Business",
+                "Corp to Consumer",
+                "Business to consumer",
+                "Business to Business",
               ].map((item, i) => (
                 <li
                   key={i}
-                  className="flex items-center gap-2 text-text-primary font-medium"
+                  className="flex items-center gap-2 text-sm md:text-base text-gray-800"
                 >
-                  <span className="w-2 h-2 bg-brand-primary rounded-full" />{" "}
+                  <span className="w-1.5 h-1.5  flex-shrink-0" />
                   {item}
                 </li>
               ))}
             </ul>
-            <div className="flex gap-4">
-              <Button className="bg-brand-primary text-text-inverse px-6">
-                Read More
-              </Button>
+          </div>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link href="/about">
+                <button className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  Subscribe Now
+                  <FiArrowRight />
+                </button>
+              </Link>
+              <Link href="/onboarding/role">
+                <button className="border border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  Learn More
+                  <FiArrowRight />
+                </button>
+              </Link>
             </div>
           </div>
-          <div className="w-full md:w-1/2">
-            <div className="relative  aspect-video">
-              <div className="w-full h-full flex items-center justify-center">
-                <Image
-                  src="/assets/images/aboutUs.png"
-                  alt="About"
-                  width={500}
-                  height={500}
-                />
-              </div>
+
+          <div className="w-full md:w-1/2 order-1 md:order-2">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg">
+              <img
+                src="/assets/images/aboutUs.png"
+                alt="About Us"
+                className="w-[624px] h-auto object-cover"
+              />
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row-reverse items-center gap-12">
+        {/* Header Section */}
+        <div className="text-center py-8">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-gray-900">
+            We Bring Your Vision To The
+            <br />
+            Global Marketplace
+          </h2>
+        </div>
+
+        {/* Vision Section */}
+        <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="w-full md:w-1/2">
-            <h2 className="text-3xl md:text-4xl font-bold text-brand-primary mb-6">
-              We Bring Your Vision To The Global Marketplace
-            </h2>
-            <h3 className="text-xl font-bold text-brand-primary mb-4">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg max-w-md">
+              <img
+                src="/assets/images/vision.png"
+                alt="Vision"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="w-full md:w-[516.5px]">
+            <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
               Vision
             </h3>
-            <p className="text-text-secondary leading-relaxed mb-6">
-              Our vision is to become the world's most trusted and efficient B2B
-              ecosystem, where verification builds confidence and connectivity
-              drives prosperity. We envision a world where any legitimate
-              business can seamlessly trade with any other, regardless of
-              borders.
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
+              360 Global Marketplace is dedicated to revolutionizing the way businesses connect with suppliers and customers. Our platform provides a seamless and efficient way to facilitate mutually beneficial relationships, driving growth and success for all parties involved.
             </p>
-          </div>
-          <div className="w-full md:w-1/2">
-            <div className="relative max-w-sm mx-auto">
-              <div className="w-full h-full flex items-center justify-center">
-                <Image
-                  src="/assets/images/vision.png"
-                  alt="Vision"
-                  width={500}
-                  height={500}
-                />
-              </div>
-            </div>
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+              360 GLOBAL MARKETPLACE is committed to linking businesses , fostering innovation, and connecting global markets that drive sustainable success
+            </p>
+            <Link href="/onboarding/role">
+                <button className="border mt-10 border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  Learn More
+                  <FiArrowRight />
+                </button>
+              </Link>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center gap-12">
+        {/* Mission Section */}
+        <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12">
           <div className="w-full md:w-1/2">
-            <h3 className="text-xl font-bold text-brand-primary mb-4">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg max-w-md md:ml-auto">
+              <img
+                src="/assets/images/mission.png"
+                alt="Mission"
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="w-full md:w-1/2">
+            <h3 className="text-xl md:text-4xl font-medium text-black mb-4">
               Mission
             </h3>
-            <p className="text-text-secondary leading-relaxed mb-6">
-              Our mission is to democratize global trade by removing barriers to
-              entry, reducing risk, and optimizing supply chains. We strive to
-              provide the tools, data, and security needed for businesses to
-              thrive in the digital age.
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
+              At 360 GLOBAL, we are dedicated to helping individuals, entreprenuers, businesses and corporations achieve their goals and realize their full potential.
             </p>
-            <Button className="bg-brand-primary text-text-inverse px-6">
-              Join Us Now
-            </Button>
-          </div>
-          <div className="w-full md:w-1/2">
-            <div className="relative max-w-sm mx-auto">
-              <div className="w-full h-full flex items-center justify-center">
-                <Image
-                  src="/assets/images/vision.png"
-                  alt="Mission"
-                  width={500}
-                  height={500}
-                />
-              </div>
-            </div>
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+              <span className="font-bold text-[#240457]">OUR MISSION</span> is to provide expert guidance and support to the small business owners as well as large corporations. We Bring Your Vision To The Global Marketplace. We strive to be the ultimate resource hub for business owners and entrepreneurs worldwide
+            </p>
+            <Link href="/about">
+                <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                  Learn More
+                  <FiArrowRight />
+                </button>
+              </Link>
           </div>
         </div>
       </div>

@@ -113,6 +113,68 @@ class ProductAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Get my products (for business dashboard)
+   */
+  async getMyProducts(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams
+      ? `/business-profile-management/my-products?${queryParams}`
+      : "/business-profile-management/my-products";
+
+    return await api.get({
+      url,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get filtered products by inventory status
+   */
+  async getInStockProducts(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams
+      ? `/business-profile-management/in-stock-products?${queryParams}`
+      : "/business-profile-management/in-stock-products";
+
+    return await api.get({
+      url,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  async getLowStockProducts(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams
+      ? `/business-profile-management/low-stock-products?${queryParams}`
+      : "/business-profile-management/low-stock-products";
+
+    return await api.get({
+      url,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  async getOutOfStockProducts(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams
+      ? `/business-profile-management/out-of-stock-products?${queryParams}`
+      : "/business-profile-management/out-of-stock-products";
+
+    return await api.get({
+      url,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const productAPI = new ProductAPI();

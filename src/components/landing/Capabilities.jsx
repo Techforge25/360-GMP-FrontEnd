@@ -7,38 +7,40 @@ const Capabilities = () => {
   const cards = [
     {
       title: "For Buyers",
-      icon: <FiShoppingBag className="w-6 h-6" />,
+      icon: <img src="/assets/images/buyerIcon.png" alt="" />,
       color: "bg-highlight-purple text-brand-primary",
       borderColor: "border-brand-primary",
       features: [
-        "Verified Sellers",
-        "Secure Escrow",
-        "Global Sourcing",
-        "Quality Assurance",
+        "Buy single or bulk products",
+        "View verified business catalogs",
+        "Chat with sellers",
+        "Apply for unlimited jobs",
+        "Follow communities"
       ],
     },
     {
       title: "For Businesses",
-      icon: <FiBriefcase className="w-6 h-6" />,
+      icon: <img src="/assets/images/businessIcon.png" alt="" />,
       color: "bg-highlight-blue text-brand-primary",
       borderColor: "border-brand-primary-light",
       features: [
-        "Global Exposure",
-        "Verified Badge",
-        "Deal Management",
-        "Smart Analytics",
+        "Create single or bulk products",
+        "View verified business catalogs",
+        "Chat with buyer",
+        "create unlimited jobs",
+        "create communities"
       ],
     },
     {
       title: "For Job Seekers",
-      icon: <FiUser className="w-6 h-6" />,
+      icon: <img src="/assets/images/jobseekIcon.png" alt="" />,
       color: "bg-highlight-yellow text-brand-primary",
       borderColor: "border-accent-warning",
       features: [
-        "Verified Employers",
-        "Skill Matching",
-        "Direct Applications",
-        "Career Growth",
+        "Explore jobs across industries",
+        "Apply with one click",
+        "Track application status",
+        "Receive instant updates",
       ],
     },
   ];
@@ -47,7 +49,7 @@ const Capabilities = () => {
     <section id="services" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold text-brand-primary mb-4">
+          <h2 className="text-3xl md:text-4xl font-semibold text-black mb-4">
             Core Platform Capabilities
           </h2>
         </div>
@@ -82,33 +84,33 @@ const Capabilities = () => {
         </div>
 
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-brand-primary mb-12">
+          <h2 className="text-3xl font-semibold max-w-md mx-auto text-black mb-12">
             How 360GMP Works Simple Steps
           </h2>
           <div className="flex flex-wrap justify-center gap-8 md:gap-16">
             {[
               {
                 step: 1,
-                title: "Create Account",
-                desc: "Sign up & choose role",
+                title: "choose your account",
+                desc: "Sign up in minutes and begin your Free Trial.",
               },
-              { step: 2, title: "Get Verified", desc: "Submit docs for trust" },
+              { step: 2, title: "Explore Everything", desc: "Browse the Marketplace, Job Portal, and Business Catalogs." },
               {
                 step: 3,
-                title: "Connect &Trade",
-                desc: "Access global market",
+                title: "Upgrade to Membership",
+                desc: "Unlock full features for unlimited scaling and access.",
               },
               {
                 step: 4,
-                title: "Grow & Succeed",
-                desc: "Expand your business",
+                title: "Start Earning / Hiring / Selling",
+                desc: "Execute global transactions and build your professional network.",
               },
             ].map((item, i) => (
-              <div key={i} className="flex flex-col items-center max-w-[200px]">
-                <div className="w-16 h-16 rounded-full bg-white border-2 border-brand-primary shadow-sm flex items-center justify-center text-xl font-bold text-brand-primary mb-4 relative z-10">
+              <div key={i} className="flex flex-col items-center max-w-[250px]">
+                <div className="w-10 h-10 rounded-full bg-[#ECEFF6] shadow-sm flex items-center justify-center text-xl font-semibold text-brand-primary mb-4 relative z-10">
                   {item.step}
                 </div>
-                <h4 className="font-bold text-brand-primary mb-1">
+                <h4 className="font-semibold capitalize text-black mb-1">
                   {item.title}
                 </h4>
                 <p className="text-xs text-text-secondary">{item.desc}</p>
