@@ -173,7 +173,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
               (url) => {
                 handleChange("profileImageUrl", url);
                 return url;
-              }
+              },
             )
           }
         />
@@ -189,7 +189,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
               (url) => {
                 handleChange("bannerImageUrl", url);
                 return url;
-              }
+              },
             )
           }
         />
@@ -250,7 +250,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
                 } else {
                   handleChange(
                     "compliances",
-                    formData.compliances.filter((c) => c !== cert)
+                    formData.compliances.filter((c) => c !== cert),
                   );
                 }
               }}
@@ -275,7 +275,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
             (url) => {
               handleChange("certificationDocUrl", url);
               return url;
-            }
+            },
           )
         }
       />
@@ -569,7 +569,13 @@ export default function BusinessProfilePage() {
   };
 
   const handleSuccessNext = () => {
-    router.push("/dashboard/business");
+    // Update user role in localStorage
+    if (typeof window !== "undefined") {
+      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      storedUser.role = "business";
+      localStorage.setItem("user", JSON.stringify(storedUser));
+      window.location.href = "/dashboard/business";
+    }
   };
 
   const handleBack = () => {
@@ -634,8 +640,8 @@ export default function BusinessProfilePage() {
               {isUploading
                 ? "Uploading..."
                 : currentStep === steps.length
-                ? "Submit Profile For Verification"
-                : "Next"}
+                  ? "Submit Profile For Verification"
+                  : "Next"}
               <FiArrowRight className="ml-2" />
             </Button>
           </div>

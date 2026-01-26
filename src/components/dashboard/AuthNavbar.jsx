@@ -21,6 +21,7 @@ import {
 import { useUserRole } from "@/context/UserContext";
 import { useCart } from "@/context/CartContext";
 import { MdOutlineMessage } from "react-icons/md";
+import api from "@/lib/axios";
 
 import ProfileSwitchModal from "./ProfileSwitchModal";
 import SignOutModal from "./SignOutModal";
@@ -35,24 +36,51 @@ const AuthNavbar = () => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const handleSwitch = () => {
-    // Logic to switch user role
-    // For now we can just redirect or simulate a switch if the real switch logic is not available in hook
-    // Usually this involves calling an API or updating context
-
-    // Assuming a simple role toggle for demo/UI match purposes as requested:
-    // In a real app, this might be: loginAsRole(targetRole)
+  const handleSwitch = async () => {
     const targetRole = user?.role === "business" ? "user" : "business";
-    const targetUrl =
-      targetRole === "business" ? "/dashboard/business" : "/dashboard/user";
 
-    // Create new user object with swapped role and update local storage/reload to simulate switch
-    // This is a rough simulation since I don't see a `switchRole` method in useUserRole context usage here
-    if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-      storedUser.role = targetRole;
-      localStorage.setItem("user", JSON.stringify(storedUser));
-      window.location.href = targetUrl;
+    try {
+      // Call the API to check and switch role
+      const response = await api.get({
+        url: `/auth/refreshToken/updateRole?role=${targetRole}`,
+        enableSuccessMessage: false,
+        enableErrorMessage: false,
+      });
+
+      if (response.success) {
+        // Update user context and redirect
+        const updatedUser = {
+          ...user,
+          role: targetRole,
+        };
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          // Use reload to ensure context updates properly
+          window.location.reload();
+        }
+      }
+    } catch (error) {
+      // Check if it's a profile not found error
+      const errorMessage = error?.message || "";
+      const isProfileMissing =
+        error?.statusCode === 404 &&
+        (errorMessage.includes("Business profile") ||
+          errorMessage.includes("User profile"));
+
+      if (isProfileMissing) {
+        // Redirect to profile creation page
+        const profileCreationUrl =
+          targetRole === "business"
+            ? "/onboarding/business-profile"
+            : "/onboarding/user-profile";
+
+        if (typeof window !== "undefined") {
+          window.location.href = profileCreationUrl;
+        }
+      } else {
+        console.error("Failed to switch role:", error);
+      }
     }
   };
 
@@ -118,23 +146,20 @@ const AuthNavbar = () => {
               {/* Icon Group */}
               <div className="flex items-center gap-4 border border-gray-200 rounded-full py-2 px-4">
                 {/* Cart Icon */}
-                {
-                  user?.role === "user" && (
-                    <button className=" relative">
-                  <img
-                    src="/assets/images/cartIcon.png"
-                    alt=""
-                    className="w-5 h-5"
-                  />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-600 text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
-                      {cartCount}
-                    </span>
-                  )}
-                </button>) 
-                
-                }
-                
+                {user?.role === "user" && (
+                  <button className=" relative">
+                    <img
+                      src="/assets/images/cartIcon.png"
+                      alt=""
+                      className="w-5 h-5"
+                    />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-600 text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
+                        {cartCount}
+                      </span>
+                    )}
+                  </button>
+                )}
 
                 <button className=" relative">
                   <img

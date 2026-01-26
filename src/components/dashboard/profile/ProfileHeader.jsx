@@ -18,7 +18,7 @@ import {
 import businessProfileAPI from "@/services/businessProfileAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 
-const ProfileHeader = () => {
+const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [newLogo, setNewLogo] = useState(null);
@@ -299,16 +299,42 @@ const ProfileHeader = () => {
           </div>
         </div>
 
-        {/* Navigation Tabs */}
         <div className="flex items-center justify-center border-t border-gray-200 pt-4 gap-8 overflow-x-auto pb-px scrollbar-hide">
-          <TabButton label="Home" src="/assets/images/homeIcon.png" active />
-          <TabButton label="About" src="/assets/images/aboutIcon.png" />
-          <TabButton label="Product" src="/assets/images/productIcon.png" />
-          <TabButton label="Orders" src="/assets/images/orderIcon.png" />
-          <TabButton label="Jobs" src="/assets/images/jobIcon.png" />
+          <TabButton
+            label="Home"
+            src="/assets/images/homeIcon.png"
+            active={activeTab === "Home"}
+            onClick={() => onTabChange("Home")}
+          />
+          <TabButton
+            label="About"
+            src="/assets/images/aboutIcon.png"
+            active={activeTab === "About"}
+            onClick={() => onTabChange("About")}
+          />
+          <TabButton
+            label="Product"
+            src="/assets/images/productIcon.png"
+            active={activeTab === "Product"}
+            onClick={() => onTabChange("Product")}
+          />
+          <TabButton
+            label="Orders"
+            src="/assets/images/orderIcon.png"
+            active={activeTab === "Orders"}
+            onClick={() => onTabChange("Orders")}
+          />
+          <TabButton
+            label="Jobs"
+            src="/assets/images/jobIcon.png"
+            active={activeTab === "Jobs"}
+            onClick={() => onTabChange("Jobs")}
+          />
           <TabButton
             label="Communities"
             src="/assets/images/communitiesIcon.png"
+            active={activeTab === "Communities"}
+            onClick={() => onTabChange("Communities")}
           />
         </div>
       </div>
@@ -316,8 +342,9 @@ const ProfileHeader = () => {
   );
 };
 
-const TabButton = ({ label, src, active }) => (
+const TabButton = ({ label, src, active, onClick }) => (
   <button
+    onClick={onClick}
     className={`flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${active ? "border-[#240457] text-[#240457]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
   >
     <img src={src} alt={label} className="w-4 h-4" />

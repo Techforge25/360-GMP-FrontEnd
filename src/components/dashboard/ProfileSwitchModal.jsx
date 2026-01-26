@@ -19,7 +19,8 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
         title: "Switch To Personal Profile?",
         description: (
           <span>
-            You are leaving the <strong className="text-gray-900">Global Manufacturing Co.</strong>{" "}
+            You are leaving the{" "}
+            <strong className="text-gray-900">Global Manufacturing Co.</strong>{" "}
             dashboard. Switch to your Personal Profile to continue shopping,
             message other suppliers, or track your job applications
           </span>
@@ -126,7 +127,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
                 {config.sourceLabel}
               </span>
             </div>
-    
+
             {/* Arrow */}
             <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500 mx-2">
               <FiArrowRight className="w-5 h-5" />
@@ -176,9 +177,15 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
 
           {/* Footer */}
           <div className="mt-8 text-sm text-gray-600 mb-8">
-            Don't Have A User Profile?{" "}
+            {isBusiness
+              ? "Don't Have A User Profile?"
+              : "Don't Have A Business Profile?"}{" "}
             <Link
-              href="/onboarding/user-profile"
+              href={
+                isBusiness
+                  ? "/onboarding/user-profile"
+                  : "/onboarding/business-profile"
+              }
               className="text-blue-600 hover:underline"
             >
               {config.footerLinkText}

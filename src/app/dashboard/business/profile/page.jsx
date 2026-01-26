@@ -5,29 +5,42 @@ import AnalyticsSection from "@/components/dashboard/profile/AnalyticsSection";
 import FeatureProduct from "@/components/dashboard/profile/FeatureProduct";
 import ActivitySidebar from "@/components/dashboard/profile/ActivitySidebar";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
+import ProductListContent from "@/components/dashboard/products/ProductListContent";
 
 export default function BusinessProfilePage() {
+  const [activeTab, setActiveTab] = React.useState("Home");
+
   return (
-    <div className="min-h-screen bg-gray-50/50">
+    <div className="bg-gray-50">
       {/* Profile Header */}
-      <ProfileHeader />
+      <ProfileHeader activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Main Content Column */}
-          <div className="flex-1 space-y-8">
-            {/* Analytics Section */}
-            <AnalyticsSection />
+        {activeTab === "Home" ? (
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main Content Column */}
+            <div className="flex-1 space-y-8">
+              {/* Analytics Section */}
+              <AnalyticsSection />
 
-            {/* Feature Products */}
-            <FeatureProduct />
-          </div>
+              {/* Feature Products */}
+              <FeatureProduct />
+            </div>
 
-          {/* Right Sidebar Column */}
-          <div className="w-full lg:w-[350px] space-y-8">
-            <ActivitySidebar />
+            {/* Right Sidebar Column */}
+            <div className="w-full lg:w-[350px] space-y-8">
+              <ActivitySidebar />
+            </div>
           </div>
-        </div>
+        ) : activeTab === "Product" ? (
+          <div className=" overflow-hidden p-4  rounded-xl">
+            <ProductListContent isProfileView={true} />
+          </div>
+        ) : (
+          <div className="bg-white p-12 rounded-xl text-center text-gray-500 shadow-sm border border-gray-100">
+            {activeTab} content coming soon
+          </div>
+        )}
       </div>
       <DashboardFooter />
     </div>

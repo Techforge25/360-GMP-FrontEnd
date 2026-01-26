@@ -381,7 +381,7 @@ const Step3 = ({ formData, handleChange }) => (
                 {type}
               </span>
             </label>
-          )
+          ),
         )}
       </div>
     </div>
@@ -563,7 +563,13 @@ export default function UserProfilePage() {
   };
 
   const handleSuccessNext = () => {
-    router.push("/dashboard/user");
+    // Update user role in localStorage
+    if (typeof window !== "undefined") {
+      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      storedUser.role = "user";
+      localStorage.setItem("user", JSON.stringify(storedUser));
+      window.location.href = "/dashboard/user";
+    }
   };
   const [isUploading, setIsUploading] = useState(false);
 
@@ -622,8 +628,8 @@ export default function UserProfilePage() {
               {isUploading
                 ? "Uploading..."
                 : currentStep === steps.length
-                ? "Submit"
-                : "Next"}{" "}
+                  ? "Submit"
+                  : "Next"}{" "}
               <FiArrowRight className="ml-2" />
             </Button>
           </div>
