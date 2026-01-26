@@ -69,7 +69,9 @@ function SubscriptionSuccessContent() {
     // Flow: Plans → Stripe → Profile Creation
     // - User role → User Profile creation
     // - Business role → Business Profile creation
-    role === "business" ? router.push("/onboarding/business-profile") : router.push("/onboarding/user-profile");
+    role === "user"
+      ? router.push("/onboarding/user-profile")
+      : router.push("/onboarding/business-profile");
   };
 
   return (

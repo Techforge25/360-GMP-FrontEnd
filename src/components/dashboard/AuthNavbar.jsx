@@ -56,8 +56,12 @@ const AuthNavbar = () => {
 
         if (typeof window !== "undefined") {
           localStorage.setItem("user", JSON.stringify(updatedUser));
-          // Use reload to ensure context updates properly
-          window.location.reload();
+          // Redirect to the appropriate dashboard based on the new role
+          const dashboardUrl =
+            targetRole === "business"
+              ? "/dashboard/business"
+              : "/dashboard/user";
+          window.location.href = dashboardUrl;
         }
       }
     } catch (error) {

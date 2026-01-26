@@ -359,6 +359,9 @@ function PlansList() {
             createdAt: new Date().toISOString(),
           };
 
+          console.log("Storing trial subscription with role:", role);
+          console.log("Full subscription data:", subscriptionData);
+
           subscriptionAPI.storeSubscription(subscriptionData);
 
           // Redirect to Stripe checkout
@@ -445,6 +448,9 @@ function PlansList() {
           status: "pending",
           createdAt: new Date().toISOString(),
         };
+
+        console.log("Storing paid subscription with role:", role);
+        console.log("Full subscription data:", subscriptionData);
 
         subscriptionAPI.storeSubscription(subscriptionData);
 
