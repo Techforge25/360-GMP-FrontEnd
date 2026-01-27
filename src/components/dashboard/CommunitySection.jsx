@@ -97,8 +97,26 @@ const CommunitySection = () => {
   if (!communities || communities.length === 0) return null;
 
   return (
-    <section className="py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 bg-white relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-12 left-12 w-4 h-4 border-4 border-purple-500 rounded-full opacity-60"></div>
+      <div className="absolute top-8 right-8 w-10 h-10 border-6 border-purple-600 rounded-full opacity-80"></div>
+      <div className="absolute bottom-4 left-64 opacity-80">
+        <svg
+          width="30"
+          height="30"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+            fill="#8B5CF6"
+          />
+        </svg>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-8">
           <h2 className="text-2xl font-bold text-indigo-950 mb-1">

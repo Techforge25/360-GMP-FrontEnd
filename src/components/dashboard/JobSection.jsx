@@ -47,10 +47,7 @@ const JobSection = () => {
 
           const mappedJobs = jobsData.map((job, index) => ({
             id: job._id,
-            company:
-              job.businessId?.profileName ||
-              job.businessId?.businessName ||
-              "Unknown Company",
+            company: job.businessId?.companyName || "Unknown Company",
             title: job.jobTitle,
             location: job.location
               ? `${job.location.city}, ${job.location.country}`
@@ -93,9 +90,29 @@ const JobSection = () => {
   if (!jobs.length) return null;
 
   return (
-    <section className="py-12 bg-gray-50/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
+    <section className="py-12 bg-gray-50/30 relative overflow-hidden">
+      {/* Decorative Elements */}
+      <div className="absolute top-12 left-8 w-4 h-4 border-4 border-purple-500 rounded-full opacity-60"></div>
+
+      {/* Right side gradient blur */}
+      <div
+        className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-20 pointer-events-none"
+        style={{
+          background: "linear-gradient(180deg, #8E47FF 0%, #FFC310 100%)",
+          filter: "blur(100px)",
+          transform: "translate(30%, -20%)",
+        }}
+      ></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-10 relative z-10">
+          <div className="absolute top-[150%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] -z-10 flex items-center justify-center opacity-100 pointer-events-none">
+            <img
+              src="/assets/images/bottle.png"
+              alt=""
+              className="w-[50%] h-[50%] object-contain"
+            />
+          </div>
           <h2 className="text-2xl font-semibold mx-auto text-black mb-2 max-w-sm">
             Latest Jobs Posted By Other Companies
           </h2>
@@ -105,7 +122,7 @@ const JobSection = () => {
           {jobs.map((job, i) => (
             <div
               key={i}
-              className="p-6 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white flex items-start gap-4"
+              className="p-6 rounded-2xl z-100 border border-gray-200 shadow-sm hover:shadow-md transition-shadow bg-white flex items-start gap-4"
             >
               {/* Company Logo */}
               <div
@@ -120,7 +137,7 @@ const JobSection = () => {
 
               {/* Job Details */}
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 text-base">
+                <h3 className="font-semibold mb-1 text-gray-900 text-base">
                   {job.title}
                 </h3>
                 <p className="text-sm text-[#240457] mb-3">{job.company}</p>

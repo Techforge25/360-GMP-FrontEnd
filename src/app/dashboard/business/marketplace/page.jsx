@@ -431,7 +431,7 @@ export default function MarketplacePage() {
                     featuredProducts.map((product, idx) => (
                       <div
                         key={idx}
-                        className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
+                        className="flex-shrink-0 w-[280px] sm:w-[300px] bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                       >
                         <div className="relative bg-gray-100 h-48">
                           <img
@@ -439,12 +439,10 @@ export default function MarketplacePage() {
                             alt={product.title}
                             className="w-full h-full object-cover"
                           />
+
                           <div className="absolute top-2 right-2 flex gap-1">
-                            <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                              ♡
-                            </button>
-                            <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                              ⋯
+                            <button className="absolute top-3 right-3 w-6 h-6 rounded-full bg-white/90 hover:bg-white flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm">
+                              <img src="/assets/images/star.png" alt="" />
                             </button>
                           </div>
                         </div>
@@ -455,15 +453,21 @@ export default function MarketplacePage() {
                           <p className="text-xs text-gray-600 mb-3 line-clamp-2">
                             {product.detail || product.description}
                           </p>
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-purple-600 font-semibold text-sm">
-                              ${product.pricePerUnit}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              Min: {product.minOrderQty}
-                            </span>
+                          {/* MOQ and Price */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="text-xs text-[#787878]">
+                              <span className="block">
+                                MOQ: {product.minOrderQty || 300} pc
+                              </span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-xs text-[#787878]">
+                                USD {product.pricePerUnit}
+                              </span>
+                            </div>
                           </div>
-                          <button className="w-full py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                          {/* View Product Button */}
+                          <button className="w-full py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-sm">
                             View Product
                           </button>
                         </div>
@@ -485,7 +489,7 @@ export default function MarketplacePage() {
                     View More <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-                <p className="text-purple-100 text-sm mb-6">
+                <p className="text-gray-300 text-sm mb-6">
                   Discover highly-rated products
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -510,6 +514,21 @@ export default function MarketplacePage() {
                             {product.detail || product.description}
                           </p>
                         </div>
+                        <div className="px-4">
+                          {/* MOQ and Price */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="text-xs text-[#787878]">
+                              <span className="block">
+                                MOQ: {product.moq || 300} pc
+                              </span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-xs text-[#787878]">
+                                USD {product.pricePerUnit}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     ))
                   ) : (
@@ -521,12 +540,12 @@ export default function MarketplacePage() {
               </div>
 
               {/* New Product */}
-              <div className="bg-gray-800 rounded-lg p-6 text-white">
+              <div className="bg-[#3A373E] rounded-lg p-6 text-white">
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h2 className="text-xl font-bold mb-1">New Product</h2>
-                    <p className="text-gray-400 text-sm">
-                      Browse newly-listed products
+                    <p className="text-gray-300 text-sm">
+                      stay ahead with the latest offering
                     </p>
                   </div>
                   <button className="text-sm hover:underline flex items-center gap-1">
@@ -535,7 +554,7 @@ export default function MarketplacePage() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {newProducts.length > 0 ? (
-                    newProducts.map((product, idx) => (
+                    newProducts.slice(0, 3).map((product, idx) => (
                       <div
                         key={idx}
                         className="bg-white rounded-lg overflow-hidden"
@@ -554,13 +573,18 @@ export default function MarketplacePage() {
                           <p className="text-xs text-gray-600 mb-3 line-clamp-2">
                             {product.detail || product.description}
                           </p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-purple-600 font-semibold text-sm">
-                              ${product.pricePerUnit}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              Min: {product.minOrderQty}
-                            </span>
+                          {/* MOQ and Price */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="text-xs text-[#787878]">
+                              <span className="block">
+                                MOQ: {product.minOrderQty || 300} pc
+                              </span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-xs text-[#787878]">
+                                USD {product.pricePerUnit}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -639,7 +663,7 @@ function TopDealsSection({ deals = [] }) {
   if (!deals || deals.length === 0) return null;
 
   return (
-    <div className="bg-white py-8 lg:py-12">
+    <div className="mt-16 py-8 lg:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Top Deals</h2>
@@ -649,55 +673,65 @@ function TopDealsSection({ deals = [] }) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-4">
-          {deals.map((deal, idx) => (
+          {deals.slice(0, 3).map((deal, idx) => (
             <div
               key={idx}
               className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <div className="relative bg-gray-100 h-48 flex items-center justify-center">
+              <div className="relative bg-white h-52 flex items-center justify-center overflow-hidden">
                 <img
                   src={deal.image}
                   alt={deal.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-2"
                 />
-                {deal.extras && (
-                  <div className="absolute top-2 left-2">
-                    <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded">
-                      {deal.extras}
-                    </span>
-                  </div>
-                )}
-                <div className="absolute top-2 right-2 flex gap-1">
-                  <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                    ♡
-                  </button>
-                  <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                    ↗
-                  </button>
+                <div className="absolute bottom-2 left-3">
+                  <span className="bg-[#240457] text-white text-[10px] px-3 py-1 rounded-full font-medium">
+                    Flash Deal
+                  </span>
                 </div>
               </div>
 
               <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm line-clamp-1">
+                <h3 className="font-semibold text-gray-900 mb-1 text-sm line-clamp-1">
                   {deal.title}
                 </h3>
-                <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                <p className="text-xs text-gray-500 mb-3 line-clamp-2 leading-tight">
                   {deal.detail || deal.description}
                 </p>
 
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-purple-600 font-bold text-base">
-                    ${deal.pricePerUnit}
-                  </span>
-                </div>
-
+                {/* MOQ and Price */}
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs text-gray-500">
-                    Min: {deal.minOrderQty}
+                  <div className="text-xs text-[#787878]">
+                    <span>MOQ: {deal.minOrderQty || 300} pc</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs text-[#787878]">
+                      USD ${deal.pricePerUnit}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Extras Tag */}
+                <div className="mb-3">
+                  <span className="bg-[#FF9432] text-white text-[10px] px-3 py-1.5 rounded-md font-medium">
+                    {deal.extras || "Extra 10% off"}
                   </span>
                 </div>
 
-                <button className="w-full py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+                {/* Ratings and Sold */}
+                <div className="flex items-center gap-1.5 text-[11px] text-gray-500 mb-4">
+                  <span className="font-semibold text-gray-700">5.0</span>
+                  <div className="flex text-[#FF9432]">
+                    {"★★★★★".split("").map((s, i) => (
+                      <span key={i}>{s}</span>
+                    ))}
+                  </div>
+                  <span>(02 Reviews)</span>
+                  <span className="text-gray-300">•</span>
+                  <span>103 (Sold)</span>
+                </div>
+
+                <button className="w-full border-[#240457] text-[#240457] py-2.5 border rounded-xl text-xs font-semibold hover:bg-[#240457] hover:text-white transition-all duration-200">
                   View Product
                 </button>
               </div>
