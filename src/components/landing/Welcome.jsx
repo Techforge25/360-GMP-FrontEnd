@@ -11,6 +11,8 @@ const Welcome = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center gap-12 mb-24">
           <div className="w-full md:w-1/2 flex justify-center">
+          <img className="absolute -bottom-130 left-0" src="/assets/images/threeLeft.png" alt="" />
+          <img className="absolute right-0" src="/assets/images/threeRight.png" alt="" />
             <div className="relative w-full max-w-md aspect-square">
               <div className="absolute inset-0 rounded-lg flex items-center justify-center overflow-hidden">
                 <img
@@ -88,7 +90,7 @@ const Welcome = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-10">
                 {/* Point 1 */}
-                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-500 border-dashed hover:shadow-md transition-all">
+                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-300 border-dashed hover:shadow-md transition-all">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
                       1
@@ -100,7 +102,7 @@ const Welcome = () => {
                 </div>
 
                 {/* Point 2 */}
-                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-500 border-dashed hover:shadow-md transition-all">
+                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-300 border-dashed hover:shadow-md transition-all">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
                       2
@@ -112,7 +114,7 @@ const Welcome = () => {
                 </div>
 
                 {/* Point 3 */}
-                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-500 border-dashed hover:shadow-md transition-all">
+                <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-300 border-dashed hover:shadow-md transition-all">
                   <div className="flex items-start gap-3">
                     <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
                       3

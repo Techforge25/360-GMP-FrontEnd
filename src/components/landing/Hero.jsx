@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
-import { FiArrowRight, FiChevronDown } from "react-icons/fi";
+import { GoArrowDown } from "react-icons/go";
+import { FiArrowRight } from "react-icons/fi";
 
 const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -11,13 +12,9 @@ const Hero = () => {
   return (
     <section className="relative w-full h-screen min-h-[600px] flex items-center overflow-hidden">
       {/* Background Image with Gradient Overlay */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 z-10 bg-gradient-to-r from-purple-900/40 via-purple-800/20 to-transparent" />
-        <img
-          src="/assets/images/landingBg.png"
-          alt="Hero Background"
-          className="w-full h-full object-cover"
-        />
+      <div className="absolute inset-0 z-0 m-4 mt-24 ">
+        <div className="absolute bg-[url('/assets/images/landingBg.png')] bg-cover bg-center rounded-xl inset-0 z-10 " />
+        <div className="absolute rounded-xl inset-0 z-10 bg-gradient-to-r from-purple-900/40 via-purple-800/20 to-transparent" />
       </div>
 
       {/* Content */}
@@ -52,7 +49,7 @@ const Hero = () => {
       </div>
 
       {/* Carousel Indicators */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 flex items-center gap-3">
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30 flex items-center gap-3">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <button
             key={index}
@@ -75,10 +72,10 @@ const Hero = () => {
             behavior: "smooth",
           });
         }}
-        className="absolute bottom-8 right-8 z-30 w-12 h-12 rounded-full bg-purple-700 hover:bg-purple-600 flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl"
+        className="absolute mx-auto bottom-0 right-[50%] translate-x-1/2 z-30 w-12 h-12 rounded-full bg-[#240457] flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl"
         aria-label="Scroll down"
       >
-        <FiChevronDown className="text-white text-2xl animate-bounce" />
+        <GoArrowDown className="text-white text-2xl" />
       </button>
     </section>
   );
