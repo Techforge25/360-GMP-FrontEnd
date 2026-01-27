@@ -17,12 +17,11 @@ const BusinessGrid = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await businessProfileAPI.getAll();
+      const response = await businessProfileAPI.getAll({ limit: 6 });
 
       if (response.success && response.data) {
-        const transformedData = Array.isArray(response.data)
-          ? response.data.map(transformBusinessProfile).slice(0, 6)
-          : [transformBusinessProfile(response.data)];
+        const businessesData = response.data.docs || [];
+        const transformedData = businessesData.map(transformBusinessProfile);
 
         setBusinesses(transformedData);
       }
@@ -110,16 +109,16 @@ const BusinessGrid = () => {
                 <div className="absolute -bottom-8 left-4">
                   <div className="flex items-center gap-2">
                     <div className="w-12  h-12 rounded-lg bg-white p-1 shadow-sm border border-gray-100 flex items-center justify-center">
-                    <img
-                      src={biz.logo}
-                      alt={biz.name}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = "/assets/images/profileLogo.png";
-                      }}
-                    />
-                  </div>
-                  <h1 className="text-lg text-black mt-6 ">TechVision</h1>
+                      <img
+                        src={biz.logo}
+                        alt={biz.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = "/assets/images/profileLogo.png";
+                        }}
+                      />
+                    </div>
+                    <h1 className="text-lg text-black mt-6 ">{biz.name}</h1>
                   </div>
                 </div>
               </div>
@@ -128,8 +127,12 @@ const BusinessGrid = () => {
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex flex-col">
                     <div className="flex items-center gap-1">
-                      <img src="/assets/images/companyIcon.png" alt="" className="w-4 h-4" />
-                    <h3 className="text-xs text-gray-500 mt-1">{biz.name}</h3>
+                      <img
+                        src="/assets/images/companyIcon.png"
+                        alt=""
+                        className="w-4 h-4"
+                      />
+                      <h3 className="text-xs text-gray-500 mt-1">{biz.name}</h3>
                     </div>
                     <div className="flex items-center text-xs text-gray-500 mt-1">
                       <FiMapPin className="mr-1 w-3 h-3 text-black" />

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LuCrown } from "react-icons/lu";
 import { PiGlobeBold } from "react-icons/pi";
 import { MdLockOutline } from "react-icons/md";
-import api from "@/lib/axios";
+import communityAPI from "@/services/communityAPI";
 import { useUserRole } from "@/context/UserContext";
 
 const CommunitySection = () => {
@@ -17,10 +17,9 @@ const CommunitySection = () => {
   useEffect(() => {
     const fetchCommunities = async () => {
       try {
-        const response = await api.get({
-          url: "/community?limit=4&status=active",
-          enableErrorMessage: false,
-          enableSuccessMessage: false,
+        const response = await communityAPI.getAll({
+          limit: 4,
+          status: "active",
         });
 
         // Backend returns paginated response with docs array
@@ -86,9 +85,7 @@ const CommunitySection = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center text-center mb-8">
             <h2 className="text-2xl font-bold text-indigo-950 mb-1">
-            {
-                    user?.role === "user" ? "Join Communities" : "Communities"
-                  } 
+              {user?.role === "user" ? "Join Communities" : "Communities"}
             </h2>
             <p className="text-sm text-gray-500">Loading communities...</p>
           </div>
@@ -105,9 +102,7 @@ const CommunitySection = () => {
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-8">
           <h2 className="text-2xl font-bold text-indigo-950 mb-1">
-          {
-                    user?.role === "user" ? "Join Communities" : "Communities"
-                  } 
+            {user?.role === "user" ? "Join Communities" : "Communities"}
           </h2>
           <p className="text-sm text-gray-500">
             Connect with businesses and professionals.
@@ -192,14 +187,14 @@ const CommunitySection = () => {
         </div>
       </div>
 
-        <div className="flex justify-center mt-10">
-          <Link
-            href="/dashboard/business/communities"
-            className="px-6 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-black hover:bg-gray-50 shadow-sm"
-          >
-            Explore all communities
-          </Link>
-        </div>
+      <div className="flex justify-center mt-10">
+        <Link
+          href="/dashboard/business/communities"
+          className="px-6 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-black hover:bg-gray-50 shadow-sm"
+        >
+          Explore all communities
+        </Link>
+      </div>
     </section>
   );
 };

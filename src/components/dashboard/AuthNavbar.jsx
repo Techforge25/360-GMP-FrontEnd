@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import {
   FiShoppingCart,
   FiMessageSquare,
@@ -33,6 +34,7 @@ const AuthNavbar = () => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const { user } = useUserRole();
   const { cartCount } = useCart();
+  const pathname = usePathname();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -134,15 +136,22 @@ const AuthNavbar = () => {
             {/* Desktop Navigation Links - Centered */}
             <div className="hidden lg:flex items-center justify-center flex-1 mx-8">
               <div className="flex items-center space-x-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="text-sm font-medium text-gray-700 hover:text-[#240457] transition-colors relative pb-1 hover:after:w-full after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-indigo-600 after:transition-all"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+                  return (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className={`text-sm font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:transition-all ${
+                        isActive
+                          ? "text-[#240457] after:w-full"
+                          : "text-gray-700 hover:text-[#240457] after:w-0"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 
@@ -338,16 +347,23 @@ const AuthNavbar = () => {
         {isOpen && (
           <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0">
             <div className="px-4 py-4 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="block text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50 px-3 py-2 rounded-md transition-colors"
-                  onClick={toggleMenu}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className={`block text-base font-medium px-3 py-2 rounded-md transition-colors ${
+                      isActive
+                        ? "text-[#240457] bg-gray-50"
+                        : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
+                    }`}
+                    onClick={toggleMenu}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
               <div className="border-t border-gray-100 pt-4 mt-4">
                 <Link
                   href={
