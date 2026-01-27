@@ -12,6 +12,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
+import { LuMinus } from "react-icons/lu";
 
 export default function SupportPage() {
   const [openIndex, setOpenIndex] = useState(null);
@@ -24,22 +25,22 @@ export default function SupportPage() {
     {
       question: "Why was 10% deducted from my total sale?",
       answer:
-        "A 10% platform fee is deducted from each sale to cover transaction processing and platform maintenance.",
+        "360GMP charges a standard 10% platform service fee on every successful transaction. This fee covers secure payment processing, platform maintenance, and the Guaranteed Fulfillment service.",
     },
     {
       question: 'What are "Pending Settlements" in my wallet?',
       answer:
-        "Pending settlements are funds that are currently being processed and will be available in your balance shortly.",
+        "When a buyer purchases an item like ANC Pro Earbuds, the funds are held in Escrow. This protects both parties. Once the buyer confirms receipt and inspection of the goods, the funds (minus the 10% fee) are released to your Net Balance.",
     },
     {
       question: "Why can't I buy products using my Business Profile?",
       answer:
-        "Business profiles are designed for selling. To purchase products, please switch to a personal account.",
+        "On 360GMP, a Business Profile (e.g., Global Manufacturing Co.) is strictly for Selling products and Posting Jobs. To buy products or apply for jobs, you must switch to your User Profile via the profile switcher in your settings.",
     },
     {
       question: "What happens if a buyer disputes an order?",
       answer:
-        "If a buyer disputes an order, the funds are held until the dispute is resolved by our support team.",
+        "If a buyer claims the Silent Block Suspension Parts are defective, the funds stay in Escrow. You will be asked to provide proof of quality and shipment in the Dispute Resolution Center.",
     },
   ];
 
@@ -63,8 +64,8 @@ export default function SupportPage() {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className={`border border-gray-200 rounded-xl transition-all duration-300 ${
-                openIndex === index ? "bg-purple-50/30" : "bg-white"
+              className={`border border-t-gray-200 border-r-gray-200 border-b-gray-200 border-l-gray-200 rounded-xl transition-all duration-300 ${
+                openIndex === index ? "bg-purple-50/30 border-b-4 border-b-purple-500" : "bg-white"
               }`}
             >
               <button
@@ -78,7 +79,7 @@ export default function SupportPage() {
                   className={`flex-shrink-0 ml-4 w-6 h-6 rounded-full border-2 border-black flex items-center justify-center transition-colors ${openIndex === index ? "bg-gray-900 border-gray-900 text-white" : "text-gray-500"}`}
                 >
                   {openIndex === index ? (
-                    <X size={14} />
+                    <LuMinus size={14} />
                   ) : (
                     <Plus size={14} className="text-black font-bold" />
                   )}

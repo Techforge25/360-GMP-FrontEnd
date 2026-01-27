@@ -242,7 +242,7 @@ export default function JobsPageContent() {
   return (
     <div className="min-h-screen">
       {/* Header Section */}
-      <div className="mx-auto mb-8 bg-gradient-to-r from-blue-100 to-green-100 rounded-xl p-18 text-center shadow-sm border border-border-light">
+      <div className="mx-auto mb-8  bg-gradient-to-r from-blue-100 to-green-100 rounded-xl p-18 text-center shadow-sm border border-border-light">
         <h1 className="text-3xl font-semibold text-text-primary mb-6">
           Find Your Next Opportunity
         </h1>
@@ -273,7 +273,7 @@ export default function JobsPageContent() {
                 alt=""
               />
               <Input
-                placeholder="Canada/USA"
+                placeholder="Canada"
                 className="pl-10 text-text-secondary h-11 border-0 focus:ring-0 rounded-none"
                 value={locationQuery}
                 onChange={(e) => setLocationQuery(e.target.value)}

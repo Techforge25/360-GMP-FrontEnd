@@ -54,7 +54,7 @@ export const JobCard = ({ job = dummyJob }) => {
   const jobData = {
     id: job?.id || job?._id || dummyJob.id,
     logo: job?.logo || job?.companyLogo || dummyJob.logo,
-    company: job?.company || job?.companyName || "Unknown Company",
+    company: job?.company || job?.businessId.companyName || "Unknown Company",
     isActive: job?.isActive !== undefined ? job.isActive : true,
     title: job?.title || job?.jobTitle || "Untitled Job",
     location: formatLocation(rawLocation),
@@ -99,19 +99,17 @@ export const JobCard = ({ job = dummyJob }) => {
             <img src="/assets/images/pinIcon.png" alt="" /> {jobData.location}
           </div>
           <div className="w-px h-4 bg-border-light" />
-          <div className="flex items-center gap-1">{jobData.category}</div>
-          <div className="w-px h-4 bg-border-light" />
           <div className="flex items-center gap-1">
             <img src="/assets/images/bagIcon.png" alt="" /> {jobData.type}
           </div>
           <div className="w-px h-4 bg-border-light" />
-          <div className="flex items-center gap-1">
+          <div className="flex capitalize items-center gap-1">
             <img src="/assets/images/clockIcon.png" alt="" /> {jobData.postedAt}
           </div>
           <div className="w-px h-4 bg-border-light" />
           <div className="flex items-center gap-1">
             <img src="/assets/images/dollarIcon.png" alt="" />{" "}
-            {jobData.salaryMin} - {jobData.salaryMax}
+            {jobData.salaryMin} - {jobData.salaryMax}/Month
           </div>
         </div>
       </div>

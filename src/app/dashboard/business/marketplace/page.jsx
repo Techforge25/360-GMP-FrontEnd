@@ -603,7 +603,7 @@ export default function MarketplacePage() {
         {/* Top Deals Section */}
         <TopDealsSection deals={flashDeals} />
 
-        <section className="w-full bg-white py-12 px-4 sm:px-6 lg:px-8">
+        <section className="w-full rounded-xl bg-white py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {filteredProducts.map((product, index) => (
@@ -625,17 +625,20 @@ export default function MarketplacePage() {
                     <p className="text-xs text-gray-600 mb-3 line-clamp-2">
                       {product.detail || product.description}
                     </p>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-sm font-bold text-gray-900">
-                        ${product.pricePerUnit}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-xs text-gray-500 line-through">
-                          {product.originalPrice}
-                        </span>
-                      )}
-                    </div>
-                    <button className="w-full bg-white border border-gray-300 text-gray-700 text-sm font-medium py-2 px-4 rounded hover:bg-gray-50 transition-colors duration-200">
+                    {/* MOQ and Price */}
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="text-xs text-[#787878]">
+                            <span className="block">
+                              MOQ: {product.minOrderQty || 300} pc
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-xs text-[#787878]">
+                              USD ${product.pricePerUnit}
+                            </span>
+                          </div>
+                        </div>
+                    <button className="w-full py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-sm">
                       View Product
                     </button>
                   </div>
@@ -650,7 +653,7 @@ export default function MarketplacePage() {
           </div>
         </section>
         <div className="flex justify-center mt-8">
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+          <button className="bg-[#240457] text-white px-8 py-3 rounded-lg font-medium transition-colors">
             Load More
           </button>
         </div>
