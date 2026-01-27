@@ -5,46 +5,54 @@ import { FiArrowRight } from "react-icons/fi";
 
 const AboutVision = () => {
   return (
-    <section
-      id="about"
-      className="py-16 md:py-20 "
-    >
+    <section id="about" className="py-16 md:py-20 relative overflow-hidden">
+      {/* Background Decoration */}
+      <div className="absolute top-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-[#A347FF] opacity-30 blur-[100px] md:blur-[150px] rounded-full -translate-y-1/3 translate-x-1/3 z-0 pointer-events-none" />
       <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8 space-y-16 md:space-y-20">
         {/* About Us Section */}
-         {/* bg-gradient-to-br from-purple-50 via-pink-50 to-white */}
+        {/* bg-gradient-to-br from-purple-50 via-pink-50 to-white */}
         <div className="flex p-4 rounded-2xl flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="w-full md:w-[40%] order-2 md:order-1">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               About Us
             </h2>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-6">
-              360 Global Marketplace is dedicated to revolutionizing the way businesses connect with suppliers and customers. Our platform provides a seamless and efficient way to facilitate mutually beneficial relationships, driving growth and success for all parties involved.
+              360 Global Marketplace is dedicated to revolutionizing the way
+              businesses connect with suppliers and customers. Our platform
+              provides a seamless and efficient way to facilitate mutually
+              beneficial relationships, driving growth and success for all
+              parties involved.
             </p>
 
             <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-6">
-              By joining 360 Global Marketplace LLC, you're taking a significant step towards empowering businesses and creating a more equitable and connected global business community.
+              By joining 360 Global Marketplace LLC, you're taking a significant
+              step towards empowering businesses and creating a more equitable
+              and connected global business community.
             </p>
-          <div className="flex items-center">
-            <img className="-mt-5 max-h-44" src="/assets/images/rangeDot.png" alt="" />
-            <ul className="space-y-[14px] mb-6">
-              
-              {[
-                "Corp to Corp",
-                "Corp to Business",
-                "Corp to Consumer",
-                "Business to consumer",
-                "Business to Business",
-              ].map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-center gap-2 text-sm md:text-base text-gray-800"
-                >
-                  <span className="w-1.5 h-1.5  flex-shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div className="flex items-center">
+              <img
+                className="-mt-5 max-h-44"
+                src="/assets/images/rangeDot.png"
+                alt=""
+              />
+              <ul className="space-y-[14px] mb-6">
+                {[
+                  "Corp to Corp",
+                  "Corp to Business",
+                  "Corp to Consumer",
+                  "Business to consumer",
+                  "Business to Business",
+                ].map((item, i) => (
+                  <li
+                    key={i}
+                    className="flex items-center gap-2 text-sm md:text-base text-gray-800"
+                  >
+                    <span className="w-1.5 h-1.5  flex-shrink-0" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Link href="/about">
@@ -67,7 +75,7 @@ const AboutVision = () => {
               <img
                 src="/assets/images/aboutUs.png"
                 alt="About Us"
-                className="w-[624px] h-auto object-cover"
+                className="w-[600px] h-auto object-cover"
               />
             </div>
           </div>
@@ -75,7 +83,7 @@ const AboutVision = () => {
 
         {/* Header Section */}
         <div className="text-center py-8">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-gray-900">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-medium text-black">
             We Bring Your Vision To The
             <br />
             Global Marketplace
@@ -99,17 +107,23 @@ const AboutVision = () => {
               Vision
             </h3>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
-              360 Global Marketplace is dedicated to revolutionizing the way businesses connect with suppliers and customers. Our platform provides a seamless and efficient way to facilitate mutually beneficial relationships, driving growth and success for all parties involved.
+              360 Global Marketplace is dedicated to revolutionizing the way
+              businesses connect with suppliers and customers. Our platform
+              provides a seamless and efficient way to facilitate mutually
+              beneficial relationships, driving growth and success for all
+              parties involved.
             </p>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-              360 GLOBAL MARKETPLACE is committed to linking businesses , fostering innovation, and connecting global markets that drive sustainable success
+              360 GLOBAL MARKETPLACE is committed to linking businesses ,
+              fostering innovation, and connecting global markets that drive
+              sustainable success
             </p>
             <Link href="/onboarding/role">
-                <button className="border mt-10 border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                  Learn More
-                  <FiArrowRight />
-                </button>
-              </Link>
+              <button className="border mt-10 border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                Learn More
+                <FiArrowRight />
+              </button>
+            </Link>
           </div>
         </div>
 
@@ -130,17 +144,23 @@ const AboutVision = () => {
               Mission
             </h3>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
-              At 360 GLOBAL, we are dedicated to helping individuals, entreprenuers, businesses and corporations achieve their goals and realize their full potential.
+              At 360 GLOBAL, we are dedicated to helping individuals,
+              entreprenuers, businesses and corporations achieve their goals and
+              realize their full potential.
             </p>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-              <span className="font-bold text-[#240457]">OUR MISSION</span> is to provide expert guidance and support to the small business owners as well as large corporations. We Bring Your Vision To The Global Marketplace. We strive to be the ultimate resource hub for business owners and entrepreneurs worldwide
+              <span className="font-bold text-[#240457]">OUR MISSION</span> is
+              to provide expert guidance and support to the small business
+              owners as well as large corporations. We Bring Your Vision To The
+              Global Marketplace. We strive to be the ultimate resource hub for
+              business owners and entrepreneurs worldwide
             </p>
             <Link href="/about">
-                <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
-                  Learn More
-                  <FiArrowRight />
-                </button>
-              </Link>
+              <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+                Learn More
+                <FiArrowRight />
+              </button>
+            </Link>
           </div>
         </div>
       </div>

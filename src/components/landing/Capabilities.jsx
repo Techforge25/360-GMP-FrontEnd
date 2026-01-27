@@ -1,7 +1,15 @@
 "use client";
 import React from "react";
-import { FaCheckCircle } from "react-icons/fa";
-import { FiShoppingBag, FiBriefcase, FiUser } from "react-icons/fi";
+import { FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
+import {
+  FiShoppingBag,
+  FiBriefcase,
+  FiUser,
+  FiLock,
+  FiCreditCard,
+} from "react-icons/fi";
+import { HiOutlineArrowNarrowRight } from "react-icons/hi";
+import { LuMinusSquare } from "react-icons/lu";
 
 const Capabilities = () => {
   const cards = [
@@ -15,7 +23,7 @@ const Capabilities = () => {
         "View verified business catalogs",
         "Chat with sellers",
         "Apply for unlimited jobs",
-        "Follow communities"
+        "Follow communities",
       ],
     },
     {
@@ -28,7 +36,7 @@ const Capabilities = () => {
         "View verified business catalogs",
         "Chat with buyer",
         "create unlimited jobs",
-        "create communities"
+        "create communities",
       ],
     },
     {
@@ -83,7 +91,7 @@ const Capabilities = () => {
           ))}
         </div>
 
-        <div className="text-center mb-12">
+        <div className="text-center border-b-[1px] border-gray-300 pb-15">
           <h2 className="text-3xl font-semibold max-w-md mx-auto text-black mb-12">
             How 360GMP Works Simple Steps
           </h2>
@@ -94,7 +102,11 @@ const Capabilities = () => {
                 title: "choose your account",
                 desc: "Sign up in minutes and begin your Free Trial.",
               },
-              { step: 2, title: "Explore Everything", desc: "Browse the Marketplace, Job Portal, and Business Catalogs." },
+              {
+                step: 2,
+                title: "Explore Everything",
+                desc: "Browse the Marketplace, Job Portal, and Business Catalogs.",
+              },
               {
                 step: 3,
                 title: "Upgrade to Membership",
@@ -116,6 +128,57 @@ const Capabilities = () => {
                 <p className="text-xs text-text-secondary">{item.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Built On Trust Section */}
+        <div className="mt-24">
+          <h2 className="text-3xl font-semibold text-center text-black mb-12">
+            Built On Trust And Security
+          </h2>
+
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {/* Verified Business */}
+            <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-green-500 bg-green-50/50 text-green-700 font-medium">
+              <img src="/assets/images/verifyCheck.png" alt="" />
+              <span>Verified Business</span>
+            </div>
+
+            {/* Secure Escrow Payments */}
+            <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-blue-400 bg-blue-50/50 text-blue-600 font-medium">
+              <img src="/assets/images/secureCheck.png" alt="" />
+              <span>Secure Escrow Payments</span>
+            </div>
+
+            {/* Free Trial Available */}
+            <div className="flex items-center gap-2 px-6 py-3 rounded-full border border-yellow-500 bg-yellow-50/50 text-yellow-700 font-medium">
+              <img src="/assets/images/freeCheck.png" alt="" />
+              <span>Free Trial Available</span>
+            </div>
+          </div>
+
+          <div className="bg-[#F8FAFC] rounded-2xl p-8 md:p-12 border border-gray-100">
+            <div className="flex flex-col gap-6 items-center text-sm md:text-base text-gray-600">
+              {/* Row 1 */}
+              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 text-center">
+                <span>Buyer pays</span>
+                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+                <span>Funds held securely</span>
+                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+                <span>Provider delivers service/goods</span>
+                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+                <span>Buyer approves</span>
+                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+              </div>
+
+              {/* Row 2 */}
+              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 text-center">
+                <span>Satisfaction</span>
+                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+                <span>Payment released to provider</span>
+                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+              </div>
+            </div>
           </div>
         </div>
       </div>

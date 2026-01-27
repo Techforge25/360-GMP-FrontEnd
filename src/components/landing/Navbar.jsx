@@ -4,24 +4,31 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { FiMenu, FiX } from "react-icons/fi";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
-  const navLinkClass = `
-  relative inline-block text-md text-text-secondary
-  transition-colors duration-300
-  hover:text-brand-primary-light
-  after:content-['']
-  after:absolute after:left-0 after:-bottom-1
-  after:h-[2px] after:w-full
-  after:bg-brand-primary-light
-  after:origin-left after:scale-x-0
-  after:transition-transform after:duration-300
-  hover:after:scale-x-100
-`;
+  const getNavLinkClass = (href) => {
+    const isActive = pathname === href;
+    return `
+      relative inline-block text-md transition-colors duration-300
+      ${
+        isActive
+          ? "text-brand-primary after:scale-x-100"
+          : "text-text-secondary hover:text-brand-primary-light after:scale-x-0 hover:after:scale-x-100"
+      }
+      after:content-['']
+      after:absolute after:left-0 after:-bottom-1
+      after:h-[2px] after:w-full
+      after:bg-brand-primary-light
+      after:origin-left 
+      after:transition-transform after:duration-300
+    `;
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white backdrop-blur-sm border-b border-border-light">
@@ -39,19 +46,31 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-12">
-            <Link href="/" className={navLinkClass}>
+            <Link href="/" className={getNavLinkClass("/")}>
               Home
             </Link>
-            <Link href="/landing/about" className={navLinkClass}>
+            <Link
+              href="/landing/about"
+              className={getNavLinkClass("/landing/about")}
+            >
               About
             </Link>
-            <Link href="/landing/why-us" className={navLinkClass}>
+            <Link
+              href="/landing/why-choose-us"
+              className={getNavLinkClass("/landing/why-choose-us")}
+            >
               Why Choose Us
             </Link>
-            <Link href="/landing/pricing" className={navLinkClass}>
+            <Link
+              href="/landing/pricing"
+              className={getNavLinkClass("/landing/pricing")}
+            >
               Prices
             </Link>
-            <Link href="/landing/contact-us" className={navLinkClass}>
+            <Link
+              href="/landing/contact-us"
+              className={getNavLinkClass("/landing/contact-us")}
+            >
               Contact Us
             </Link>
           </div>
@@ -86,35 +105,55 @@ const Navbar = () => {
           <div className="px-4 pt-2 pb-6 space-y-2">
             <Link
               href="/"
-              className="block px-3 py-2 rounded-md text-base font-medium text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                pathname === "/"
+                  ? "text-brand-primary bg-gray-50"
+                  : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              }`}
               onClick={toggleMenu}
             >
               Home
             </Link>
             <Link
-              href="/#about"
-              className="block px-3 py-2 rounded-md text-base font-medium text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              href="/landing/about"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                pathname === "/landing/about"
+                  ? "text-brand-primary bg-gray-50"
+                  : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              }`}
               onClick={toggleMenu}
             >
               About
             </Link>
             <Link
-              href="/#services"
-              className="block px-3 py-2 rounded-md text-base font-medium text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              href="/landing/why-choose-us"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                pathname === "/landing/why-choose-us"
+                  ? "text-brand-primary bg-gray-50"
+                  : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              }`}
               onClick={toggleMenu}
             >
-              Our Services
+              Why Choose Us
             </Link>
             <Link
               href="/landing/pricing"
-              className="block px-3 py-2 rounded-md text-base font-medium text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                pathname === "/landing/pricing"
+                  ? "text-brand-primary bg-gray-50"
+                  : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              }`}
               onClick={toggleMenu}
             >
               Prices
             </Link>
             <Link
               href="/landing/contact-us"
-              className="block px-3 py-2 rounded-md text-base font-medium text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+                pathname === "/landing/contact-us"
+                  ? "text-brand-primary bg-gray-50"
+                  : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
+              }`}
               onClick={toggleMenu}
             >
               Contact Us
@@ -126,7 +165,7 @@ const Navbar = () => {
                 </Button>
               </Link>
               <Link href="/signup" onClick={toggleMenu}>
-                <Button className="w-full bg-indigo-900 hover:bg-indigo-800 text-white justify-center">
+                <Button className="w-full bg-[#240457] hover:bg-indigo-800 text-white justify-center">
                   Sign Up
                 </Button>
               </Link>
