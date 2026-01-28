@@ -27,6 +27,19 @@ class CommunityAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Create a new community
+   */
+  async create(communityData) {
+    return await api.post({
+      url: "/community",
+      data: communityData,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const communityAPI = new CommunityAPI();

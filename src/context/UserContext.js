@@ -88,3 +88,4 @@ export const UserProvider = ({ children }) => {
 };
 
 export const useUserRole = () => useContext(UserContext);
+export const useUser = () => useContext(UserContext);
