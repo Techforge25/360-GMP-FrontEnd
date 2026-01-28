@@ -34,14 +34,25 @@ export default function BusinessesPage() {
       setError(null);
       const response = await businessProfileAPI.getAll();
 
+      console.log("Business Profile API Response:", response);
+
       if (response.success && response.data) {
+        // Backend returns paginated data: { docs: [...], totalDocs, hasNextPage, etc. }
+        const businessData = response.data.docs || response.data;
+
+        console.log("Extracted business data:", businessData);
+
         // Transform backend data to match component expectations
-        const transformedData = Array.isArray(response.data)
-          ? response.data.map(transformBusinessProfile)
-          : [transformBusinessProfile(response.data)];
+        const transformedData = Array.isArray(businessData)
+          ? businessData.map(transformBusinessProfile)
+          : [transformBusinessProfile(businessData)];
 
         setBusinesses(transformedData);
         setFilteredBusinesses(transformedData);
+      } else {
+        console.warn("No business profiles in response or invalid structure");
+        setBusinesses([]);
+        setFilteredBusinesses([]);
       }
     } catch (err) {
       console.error("Failed to fetch business profiles:", err);
