@@ -11,8 +11,8 @@ const AboutVision = () => {
       <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8 space-y-16 md:space-y-20">
         {/* About Us Section */}
         {/* bg-gradient-to-br from-purple-50 via-pink-50 to-white */}
-        <div className="flex p-4 rounded-2xl flex-col md:flex-row items-center gap-8 md:gap-12">
-          <div className="w-full md:w-[40%] order-2 md:order-1">
+        <div className="flex p-4 rounded-2xl flex-col sm:flex-row items-center gap-8 md:gap-12">
+          <div className="w-full md:w-[45%] order-2 md:order-1 text-center md:text-left">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               About Us
             </h2>
@@ -29,13 +29,13 @@ const AboutVision = () => {
               step towards empowering businesses and creating a more equitable
               and connected global business community.
             </p>
-            <div className="flex items-center">
+            <div className="flex justify-center md:justify-start items-center">
               <img
-                className="-mt-5 max-h-44"
+                className="-mt-5 max-h-44 hidden sm:block md:block"
                 src="/assets/images/rangeDot.png"
                 alt=""
               />
-              <ul className="space-y-[14px] mb-6">
+              <ul className="space-y-[14px] mb-6 text-left inline-block">
                 {[
                   "Corp to Corp",
                   "Corp to Business",
@@ -47,22 +47,22 @@ const AboutVision = () => {
                     key={i}
                     className="flex items-center gap-2 text-base md:text-xl text-gray-800"
                   >
-                    <span className="w-1.5 h-1.5  flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 bg-purple-600 rounded-full flex-shrink-0 sm:hidden" />
                     {item}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 items-center sm:items-start">
               <Link href="/about">
-                <button className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
+                <button className="bg-[#240457] text-white px-8 py-3 rounded-xl text-base font-semibold transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg whitespace-nowrap">
                   Subscribe Now
                   <FiArrowRight />
                 </button>
               </Link>
               <Link href="/onboarding/role">
-                <button className="border border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
+                <button className="border border-gray-300 hover:border-[#240457] text-gray-900 hover:text-[#240457] px-8 py-3 rounded-xl text-base font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap">
                   Learn More
                   <FiArrowRight />
                 </button>
@@ -70,12 +70,12 @@ const AboutVision = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-1/2 order-1 md:order-2">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg">
+          <div className="w-full md:w-1/2 order-1 md:order-2 flex justify-center">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-lg">
               <img
                 src="/assets/images/aboutUs.png"
                 alt="About Us"
-                className="w-[600px] h-auto object-cover"
+                className="w-full h-auto object-cover"
               />
             </div>
           </div>
@@ -92,8 +92,8 @@ const AboutVision = () => {
 
         {/* Vision Section */}
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-          <div className="w-full md:w-1/2">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg max-w-md">
+          <div className="w-full md:w-1/2 flex justify-center">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-md">
               <img
                 src="/assets/images/vision.png"
                 alt="Vision"
@@ -102,7 +102,7 @@ const AboutVision = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-[516.5px]">
+          <div className="w-full md:w-1/2 text-center md:text-left">
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
               Vision
             </h3>
@@ -118,19 +118,21 @@ const AboutVision = () => {
               fostering innovation, and connecting global markets that drive
               sustainable success
             </p>
-            <Link href="/onboarding/role">
-              <button className="border mt-10 border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
-                Learn More
-                <FiArrowRight />
-              </button>
-            </Link>
+            <div className="flex justify-center md:justify-start mt-10">
+              <Link href="/onboarding/role">
+                <button className="border border-gray-300 hover:border-[#240457] text-gray-900 hover:text-[#240457] px-8 py-3 rounded-xl text-base font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+                  Learn More
+                  <FiArrowRight />
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Mission Section */}
         <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12">
-          <div className="w-full md:w-1/2">
-            <div className="relative rounded-2xl overflow-hidden shadow-lg max-w-md md:ml-auto">
+          <div className="w-full md:w-1/2 flex justify-center md:justify-end">
+            <div className="relative rounded-2xl overflow-hidden shadow-lg w-full max-w-md">
               <img
                 src="/assets/images/mission.png"
                 alt="Mission"
@@ -139,8 +141,8 @@ const AboutVision = () => {
             </div>
           </div>
 
-          <div className="w-full md:w-1/2">
-            <h3 className="text-xl md:text-4xl font-medium text-black mb-4">
+          <div className="w-full md:w-1/2 text-center md:text-left">
+            <h3 className="text-xl md:text-4xl font-bold text-black mb-4">
               Mission
             </h3>
             <p className="text-base md:text-xl text-gray-700 leading-relaxed mb-4">
@@ -155,12 +157,14 @@ const AboutVision = () => {
               Global Marketplace. We strive to be the ultimate resource hub for
               business owners and entrepreneurs worldwide
             </p>
-            <Link href="/about">
-              <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
-                Learn More
-                <FiArrowRight />
-              </button>
-            </Link>
+            <div className="flex justify-center md:justify-start mt-8">
+              <Link href="/about">
+                <button className="bg-[#240457] text-white px-8 py-3 rounded-xl text-base font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 whitespace-nowrap">
+                  Learn More
+                  <FiArrowRight />
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -10,36 +10,37 @@ const Hero = () => {
   const totalSlides = 3;
 
   return (
-    <section className="relative w-full h-screen min-h-[600px] flex items-center overflow-hidden">
+    <section className="relative w-full h-[90vh] md:h-screen min-h-[500px] flex items-center overflow-hidden">
       {/* Background Image with Gradient Overlay */}
-      <div className="absolute inset-0 z-0 m-4 mt-24 ">
-        <div className="absolute bg-[url('/assets/images/landingBg.png')] bg-cover bg-center rounded-xl inset-0 z-10 " />
-        <div className="absolute rounded-xl inset-0 z-10 bg-gradient-to-r from-purple-900/40 via-purple-800/20 to-transparent" />
+      <div className="absolute inset-0 z-0 m-2 sm:m-4 mt-20 sm:mt-24">
+        <div className="absolute bg-[url('/assets/images/landingBg.png')] bg-cover bg-center rounded-xl inset-0 z-10" />
+        <div className="absolute rounded-xl inset-0 z-10 bg-gradient-to-r from-purple-900/60 via-purple-800/20 to-transparent" />
       </div>
 
       {/* Content */}
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-20 md:pt-0">
-        <div className="max-w-3xl text-center md:text-left">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.1]">
+      <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 w-full">
+        <div className="max-w-3xl text-center sm:text-left">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white mb-6 leading-[1.2] sm:leading-tight">
             Find Verified
-            <br className="hidden md:block" /> Businesses Across
-            <br className="hidden md:block" /> The Globe
+            <br className="hidden sm:block" />{" "}
+            <span className="sm:inline">Businesses Across</span>
+            <br className="hidden sm:block" /> The Globe
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-10 leading-relaxed max-w-2xl mx-auto md:mx-0">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-8 leading-relaxed max-w-xl mx-auto sm:mx-0">
             Discover thousands of trusted suppliers, unique product categories,
             verified corporations, and new business opportunities—all under one
             unified ecosystem designed to empower your success.
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
-            <Link href="/onboarding/role" className="w-full sm:w-auto">
+          <div className="flex sm:items-start items-center flex-col sm:flex-row gap-4 justify-center sm:justify-start">
+            <Link href="/onboarding/role">
               <Button
                 variant="secondary"
-                className="w-full sm:w-auto bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 px-8 py-4 rounded-md font-semibold flex items-center justify-center gap-2 text-lg"
+                className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 px-8 py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-lg"
               >
                 Join Now
-                <FiArrowRight className="text-xl" />
+                <FiArrowRight className="text-lg" />
               </Button>
             </Link>
           </div>
@@ -47,7 +48,7 @@ const Hero = () => {
       </div>
 
       {/* Carousel Indicators */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30 flex items-center gap-3">
+      <div className="absolute bottom-16 sm:bottom-20 left-1/2 transform -translate-x-1/2 z-30 flex items-center gap-2.5">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <button
             key={index}
@@ -63,18 +64,20 @@ const Hero = () => {
       </div>
 
       {/* Scroll Down Button */}
-      <button
-        onClick={() => {
-          window.scrollTo({
-            top: window.innerHeight,
-            behavior: "smooth",
-          });
-        }}
-        className="absolute mx-auto bottom-0 right-[50%] translate-x-1/2 z-30 w-12 h-12 rounded-full bg-[#240457] flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-xl"
-        aria-label="Scroll down"
-      >
-        <GoArrowDown className="text-white text-2xl" />
-      </button>
+      <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+        <button
+          onClick={() => {
+            window.scrollTo({
+              top: window.innerHeight,
+              behavior: "smooth",
+            });
+          }}
+          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#240457]/90 hover:bg-[#240457] flex items-center justify-center transition-all duration-300 shadow-xl border border-white/10"
+          aria-label="Scroll down"
+        >
+          <GoArrowDown className="text-white text-xl sm:text-2xl animate-bounce" />
+        </button>
+      </div>
     </section>
   );
 };
