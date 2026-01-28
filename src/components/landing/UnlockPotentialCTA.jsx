@@ -35,7 +35,7 @@ const UnlockPotentialCTA = () => {
                             Become a Premium Member <FaArrowRight className="ml-2" />
                         </Button>
                     </Link>
-                     <Link href="/onboarding/role">
+                     <Link >
                         <Button variant="outline" className=" px-6 border border-gray-900">
                             Start your 14 free trial <FaArrowRight className="ml-2" />
                         </Button>
