@@ -66,41 +66,41 @@ const ContactUsPage = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Decorative Image with Glass Card */}
-          <div className="lg:col-span-4 relative h-[600px] w-full rounded-3xl overflow-hidden shadow-sm">
+          <div className="lg:col-span-4 relative h-full w-full rounded-3xl overflow-hidden">
             <img
-              src="/assets/images/purpleBg.png"
+              src="/assets/images/contactBanner.png"
               alt="Decorative"
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 flex items-center justify-center p-6">
-              <div className="w-full max-w-[300px] backdrop-blur-md bg-white/20 border border-white/30 rounded-2xl p-8 text-black shadow-lg">
+              <div className="w-full max-w-[300px] backdrop-blur-md bg-white/20 border border-white rounded-2xl p-8 text-black shadow-lg">
                 <div className="space-y-8">
                   <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-sm bg-gray-200 flex items-center justify-center flex-shrink-0">
                       <FiPhone className="text-indigo-900" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-base">Call</h4>
+                      <h4 className="font-medium text-base">Call</h4>
                       <p className="text-sm text-black/70">+123456797-1</p>
                     </div>
                   </div>
 
                   <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-sm bg-gray-200 flex items-center justify-center flex-shrink-0">
                       <FiMail className="text-indigo-900" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-base">Message</h4>
+                      <h4 className="font-medium text-base">Message</h4>
                       <p className="text-sm text-black/70">info@gmail.com</p>
                     </div>
                   </div>
 
                   <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-sm bg-gray-200 flex items-center justify-center flex-shrink-0">
                       <FiMapPin className="text-indigo-900" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-base">Location</h4>
+                      <h4 className="font-medium text-base">Location</h4>
                       <p className="text-sm text-black/70 leading-relaxed">
                         70 Washington Square South, New York, NY 10012, United
                         States
@@ -113,8 +113,8 @@ const ContactUsPage = () => {
           </div>
 
           {/* Contact Form */}
-          <div className="lg:col-span-8 bg-white border border-gray-100 rounded-3xl p-8 md:p-12 shadow-sm">
-            <form className="space-y-8">
+          <div className="lg:col-span-8 bg-white border border-gray-100 rounded-3xl p-4 md:p-8 shadow-sm">
+            <form className="space-y-4">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-gray-700">
@@ -179,9 +179,9 @@ const ContactUsPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
+                <label className="text-sm font-sm text-[#444953]">
                   Please State Your Question/Concern And One Of Our Highly
-                  Skilled 360 Team Members Will Be In Contact With You.
+                  Skilled 360 Team Members Will Be In Contact With <br /> You.
                 </label>
                 <textarea
                   className="w-full bg-[#F3F4F6] border-none rounded-xl p-4 min-h-[150px] text-base focus:ring-1 focus:ring-purple-200 outline-none"
@@ -189,7 +189,7 @@ const ContactUsPage = () => {
                 />
               </div>
 
-              <Button className="w-full bg-[#240457] hover:bg-[#1a0340] text-white py-8 rounded-xl font-semibold text-base transition-all shadow-lg">
+              <Button className="w-full bg-[#240457] hover:bg-[#1a0340] text-white py-4 rounded-xl font-semibold text-base transition-all shadow-lg">
                 Submit
               </Button>
             </form>
