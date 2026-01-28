@@ -18,30 +18,28 @@ const Hero = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="max-w-2xl">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white mb-6 leading-tight">
+      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-20 md:pt-0">
+        <div className="max-w-3xl text-center md:text-left">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.1]">
             Find Verified
-            <br />
-            Businesses Across
-            <br />
-            The Globe
+            <br className="hidden md:block" /> Businesses Across
+            <br className="hidden md:block" /> The Globe
           </h1>
 
-          <p className="text-sm sm:text-xl md:text-lg text-white/90 mb-8 leading-relaxed max-w-xl">
+          <p className="text-base sm:text-lg md:text-xl text-white/90 mb-10 leading-relaxed max-w-2xl mx-auto md:mx-0">
             Discover thousands of trusted suppliers, unique product categories,
             verified corporations, and new business opportunities—all under one
             unified ecosystem designed to empower your success.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/onboarding/role">
+          <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+            <Link href="/onboarding/role" className="w-full sm:w-auto">
               <Button
                 variant="secondary"
-                className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 px-6 py-3 rounded-md font-medium flex items-center justify-center gap-2"
+                className="w-full sm:w-auto bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 px-8 py-4 rounded-md font-semibold flex items-center justify-center gap-2 text-lg"
               >
                 Join Now
-                <FiArrowRight className="text-lg" />
+                <FiArrowRight className="text-xl" />
               </Button>
             </Link>
           </div>
