@@ -30,7 +30,7 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
         <h1 className="text-3xl md:text-4xl font-bold mb-2">
           Discover Businesses Around the World
         </h1>
-        <p className="text-blue-100 mb-8 text-sm">
+        <p className="text-blue-100 mb-8 text-base">
           Search by Category, industry, or name and explore verified Businesses.
         </p>
 
@@ -40,7 +40,7 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
             <input
               type="text"
               placeholder="Reference / products, service..."
-              className="w-full bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
+              className="w-full bg-transparent border-none focus:outline-none text-base text-gray-700 placeholder:text-gray-400"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -51,7 +51,7 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
             <input
               type="text"
               placeholder="City or country..."
-              className="w-full bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
+              className="w-full bg-transparent border-none focus:outline-none text-base text-gray-700 placeholder:text-gray-400"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               onKeyDown={handleKeyDown}

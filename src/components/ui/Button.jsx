@@ -13,7 +13,7 @@ const Button = React.forwardRef(
       children,
       ...props
     },
-    ref
+    ref,
   ) => {
     const variants = {
       default: "bg-brand-primary text-text-inverse hover:opacity-90",
@@ -35,10 +35,10 @@ const Button = React.forwardRef(
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center whitespace-nowrap rounded-md text-base font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
           variants[variant],
           sizes[size],
-          className
+          className,
         )}
         ref={ref}
         disabled={disabled || isLoading}
@@ -50,7 +50,7 @@ const Button = React.forwardRef(
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = "Button";

@@ -79,22 +79,22 @@ export const JobCard = ({ job = dummyJob }) => {
       <div className="flex-1 min-w-0 flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4 mb-1">
           <div>
-            <h3 className="font-bold text-text-primary text-base truncate pr-2">
+            <h3 className="font-bold text-text-primary text-xl truncate pr-2">
               {jobData.title}
             </h3>
-            <div className="flex items-center gap-2 mt-2 text-sm">
+            <div className="flex items-center gap-2 mt-2 text-base">
               <span className="font-medium text-brand-primary">
                 {jobData.company}
               </span>
               •
-              <span className="text-sm text-green-600">
+              <span className="text-base text-green-600">
                 {jobData.isActive ? "Active" : "Inactive"}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-text-secondary">
+        <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-text-secondary">
           <div className="flex items-center gap-1">
             <img src="/assets/images/pinIcon.png" alt="" /> {jobData.location}
           </div>
@@ -119,7 +119,7 @@ export const JobCard = ({ job = dummyJob }) => {
           <Button
             variant="ghost"
             size="sm"
-            className="text-xs font-medium text-brand-primary hover:text-brand-primary/80"
+            className="text-sm font-medium text-brand-primary hover:text-brand-primary/80"
           >
             View Details &gt;
           </Button>

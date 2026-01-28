@@ -152,7 +152,7 @@ export default function BusinessesPage() {
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    className="bg-indigo-900 text-white text-xs"
+                    className="bg-indigo-900 text-white text-sm"
                   >
                     <span className="mr-1">
                       <CiMenuBurger />
@@ -174,12 +174,12 @@ export default function BusinessesPage() {
               {/* Error State */}
               {error && !loading && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                  <p className="text-red-600 text-sm">
+                  <p className="text-red-600 text-base">
                     <strong>Error:</strong> {error}
                   </p>
                   <button
                     onClick={fetchBusinessProfiles}
-                    className="mt-2 text-xs text-red-700 underline hover:text-red-800"
+                    className="mt-2 text-sm text-red-700 underline hover:text-red-800"
                   >
                     Try again
                   </button>
@@ -205,26 +205,26 @@ export default function BusinessesPage() {
               {/* Pagination */}
               {!loading && businesses.length > 0 && (
                 <div className="flex justify-center items-center mt-12 gap-2">
-                  <button className="px-3 py-1 bg-gray-100 rounded text-gray-500 text-sm hover:bg-gray-200">
+                  <button className="px-3 py-1 bg-gray-100 rounded text-gray-500 text-base hover:bg-gray-200">
                     Prev
                   </button>
-                  <button className="px-3 py-1 bg-indigo-900 text-white rounded text-sm">
+                  <button className="px-3 py-1 bg-indigo-900 text-white rounded text-base">
                     1
                   </button>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-sm hover:bg-gray-50">
+                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
                     2
                   </button>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-sm hover:bg-gray-50">
+                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
                     3
                   </button>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-sm hover:bg-gray-50">
+                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
                     4
                   </button>
                   <span className="text-gray-400">...</span>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-sm hover:bg-gray-50">
+                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
                     352
                   </button>
-                  <button className="px-3 py-1 bg-gray-100 rounded text-gray-500 text-sm hover:bg-gray-200">
+                  <button className="px-3 py-1 bg-gray-100 rounded text-gray-500 text-base hover:bg-gray-200">
                     Next &gt;
                   </button>
                 </div>

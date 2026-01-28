@@ -87,7 +87,7 @@ const CommunitySection = () => {
             <h2 className="text-2xl font-bold text-indigo-950 mb-1">
               {user?.role === "user" ? "Join Communities" : "Communities"}
             </h2>
-            <p className="text-sm text-gray-500">Loading communities...</p>
+            <p className="text-base text-gray-500">Loading communities...</p>
           </div>
         </div>
       </section>
@@ -122,7 +122,7 @@ const CommunitySection = () => {
           <h2 className="text-2xl font-bold text-indigo-950 mb-1">
             {user?.role === "user" ? "Join Communities" : "Communities"}
           </h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-base text-gray-500">
             Connect with businesses and professionals.
           </p>
         </div>
@@ -158,17 +158,17 @@ const CommunitySection = () => {
                 </div>
 
                 {/* Title */}
-                <h3 className="font-bold text-gray-900 text-sm mb-1 truncate">
+                <h3 className="font-bold text-gray-900 text-base mb-1 truncate">
                   {comm.name}
                 </h3>
-                <p className="text-xs text-gray-500 mb-4 line-clamp-2">
+                <p className="text-sm text-gray-500 mb-4 line-clamp-2">
                   {comm.description || comm.purpose || "Join this community"}
                 </p>
 
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <img src="/assets/images/communityIcon.png" alt="" />
-                    <p className="text-xs text-gray-500 ">
+                    <p className="text-sm text-gray-500 ">
                       {comm.memberCount || 0} Members
                     </p>
                   </div>
@@ -208,7 +208,7 @@ const CommunitySection = () => {
       <div className="flex justify-center mt-10">
         <Link
           href="/dashboard/business/communities"
-          className="px-6 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-black hover:bg-gray-50 shadow-sm"
+          className="px-6 py-2 bg-white border border-gray-300 rounded-full text-base font-medium text-black hover:bg-gray-50 shadow-sm"
         >
           Explore all communities
         </Link>

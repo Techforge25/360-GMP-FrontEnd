@@ -24,7 +24,6 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-
   const handleSignup = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -46,7 +45,7 @@ export default function SignupPage() {
       if (res.ok) {
         // Backend returns userId in data.data
         const userId = data.data;
-        
+
         // Redirect to OTP verification page with userId and email
         router.push(
           `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
@@ -78,7 +77,7 @@ export default function SignupPage() {
 
       <CardContent className="space-y-6 pt-6">
         {error && (
-          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-3 text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
@@ -87,7 +86,7 @@ export default function SignupPage() {
           <div className="space-y-2">
             <label
               htmlFor="email"
-              className="text-sm font-medium text-text-primary"
+              className="text-base font-medium text-text-primary"
             >
               Email
             </label>
@@ -106,7 +105,7 @@ export default function SignupPage() {
           <div className="space-y-2">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-text-primary"
+              className="text-base font-medium text-text-primary"
             >
               Password
             </label>
@@ -133,7 +132,7 @@ export default function SignupPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-base mt-2 shadow-lg shadow-brand-primary/20"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-xl mt-2 shadow-lg shadow-brand-primary/20"
           >
             Sign Up
           </Button>
@@ -143,7 +142,7 @@ export default function SignupPage() {
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border-light" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
+          <div className="relative flex justify-center text-sm uppercase">
             <span className="bg-surface-elevated px-2 text-text-secondary rounded-full border border-border-light">
               or
             </span>
@@ -161,7 +160,7 @@ export default function SignupPage() {
           Continue with Google
         </Button>
 
-        <div className="text-center text-sm text-text-secondary mt-4">
+        <div className="text-center text-base text-text-secondary mt-4">
           Already have an account?{" "}
           <Link
             href="/login"

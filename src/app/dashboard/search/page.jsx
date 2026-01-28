@@ -130,7 +130,7 @@ function SearchResults() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
             <Icon className="text-brand-primary" /> {title}
-            <span className="text-sm font-normal text-gray-500 ml-2">
+            <span className="text-base font-normal text-gray-500 ml-2">
               ({items.length} found)
             </span>
           </h2>
@@ -174,7 +174,7 @@ function SearchResults() {
                   </h3>
 
                   {/* Subtitle / Meta */}
-                  <p className="text-sm text-gray-500 mb-2 truncate">
+                  <p className="text-base text-gray-500 mb-2 truncate">
                     {type === "businesses" && (item.industry || item.email)}
                     {type === "products" &&
                       `$${item.price} • ${item.category || "General"}`}
@@ -190,7 +190,7 @@ function SearchResults() {
 
                   <div className="flex items-center gap-2">
                     <Link href={`${linkPrefix}/${item._id}`}>
-                      <span className="text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
+                      <span className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
                         View Details
                       </span>
                     </Link>
@@ -258,7 +258,7 @@ function SearchResults() {
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={`
-                flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap
+                flex items-center gap-2 px-5 py-2.5 rounded-full text-base font-medium transition-all whitespace-nowrap
                 ${
                   activeTab === tab.id
                     ? "bg-indigo-900 text-white shadow-md"

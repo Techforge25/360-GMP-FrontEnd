@@ -66,10 +66,10 @@ const BusinessCard = ({ business }) => {
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-1">
             <h3 className="text-lg font-bold text-gray-900">{name}</h3>
-            {verified && <FaCheckCircle className="text-blue-500 text-sm" />}
+            {verified && <FaCheckCircle className="text-blue-500 text-base" />}
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500 mb-2">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-2">
             <div className="flex items-center gap-1 text-yellow-500">
               <FaStar />{" "}
               <span className="font-bold text-gray-700">{rating}</span>
@@ -84,7 +84,7 @@ const BusinessCard = ({ business }) => {
             </span>
           </div>
 
-          <p className="text-sm text-gray-600 leading-relaxed mb-4">
+          <p className="text-base text-gray-600 leading-relaxed mb-4">
             {description}
           </p>
         </div>
@@ -96,13 +96,13 @@ const BusinessCard = ({ business }) => {
           <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">
             Min Order
           </p>
-          <p className="text-xs font-bold text-gray-900">{stats.minOrder}</p>
+          <p className="text-sm font-bold text-gray-900">{stats.minOrder}</p>
         </div>
         <div>
           <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">
             Response Rate
           </p>
-          <p className="text-xs font-bold text-gray-900">
+          <p className="text-sm font-bold text-gray-900">
             {stats.responseRate}
           </p>
         </div>
@@ -110,7 +110,7 @@ const BusinessCard = ({ business }) => {
           <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">
             On-time Del
           </p>
-          <p className="text-xs font-bold text-gray-900">{stats.onTime}</p>
+          <p className="text-sm font-bold text-gray-900">{stats.onTime}</p>
         </div>
         <div>
           <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">
@@ -124,7 +124,7 @@ const BusinessCard = ({ business }) => {
           <p className="text-[10px] text-gray-500 font-bold uppercase mb-1">
             Products
           </p>
-          <p className="text-xs font-bold text-gray-900">{stats.products}</p>
+          <p className="text-sm font-bold text-gray-900">{stats.products}</p>
         </div>
       </div>
 
@@ -132,28 +132,28 @@ const BusinessCard = ({ business }) => {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         <Button
           variant="outline"
-          className="h-9 text-xs font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
+          className="h-9 text-sm font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
           disabled={isFreeTrial}
         >
           <FiGlobe className="mr-2" /> Website
         </Button>
         <Button
           variant="outline"
-          className="h-9 text-xs font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
+          className="h-9 text-sm font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
           disabled={isFreeTrial}
         >
           <FiMapPin className="mr-2" /> Get Directions
         </Button>
         <Button
           variant="outline"
-          className="h-9 text-xs font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
+          className="h-9 text-sm font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
           disabled={isFreeTrial && role !== "business"}
         >
           <FiPhone className="mr-2" /> Contact
         </Button>
         <Button
           variant="outline"
-          className="h-9 text-xs font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
+          className="h-9 text-sm font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
         >
           <FiFolder className="mr-2" /> View Profile
         </Button>

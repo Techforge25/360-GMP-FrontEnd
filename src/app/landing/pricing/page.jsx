@@ -127,7 +127,7 @@ const PricingPage = () => {
           <h2 className="text-3xl md:text-4xl font-semibold text-black mb-4">
             Choose Your Plan
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base">
+          <p className="text-gray-500 max-w-2xl mx-auto text-base md:text-xl">
             Select the perfect plan for your business needs. Upgrade anytime to
             unlock more features.
           </p>
@@ -144,7 +144,7 @@ const PricingPage = () => {
                 <div className="w-full border-t border-purple-200"></div>
               </div>
               <div className="relative">
-                <span className="bg-[#240457] text-white px-8 py-2 rounded-full text-xs font-semibold">
+                <span className="bg-[#240457] text-white px-8 py-2 rounded-full text-sm font-semibold">
                   For {section.role}
                 </span>
               </div>
@@ -165,18 +165,18 @@ const PricingPage = () => {
                     {/* Badge */}
                     <div className="h-8 mb-4">
                       {plan.name === "14 Day Trial" && (
-                        <span className="bg-gray-100 text-gray-400 px-4 py-1 rounded-full text-xs font-medium">
+                        <span className="bg-gray-100 text-gray-400 px-4 py-1 rounded-full text-sm font-medium">
                           14 Day Trial
                         </span>
                       )}
                       {plan.name === "Silver" && (
-                        <span className="bg-[#FFF8E6] text-[#F3A531] px-4 py-1 rounded-full text-xs font-medium">
+                        <span className="bg-[#FFF8E6] text-[#F3A531] px-4 py-1 rounded-full text-sm font-medium">
                           Silver
                         </span>
                       )}
                       {plan.badge === "Premium" && (
-                        <span className="bg-[#F3E8FF] text-[#A855F7] px-4 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                          <MdStars className="text-sm" /> Premium
+                        <span className="bg-[#F3E8FF] text-[#A855F7] px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                          <MdStars className="text-base" /> Premium
                         </span>
                       )}
                     </div>
@@ -185,16 +185,18 @@ const PricingPage = () => {
                       <span className="text-3xl md:text-5xl font-semibold text-black">
                         ${plan.price}
                       </span>
-                      <span className="text-gray-400 text-sm mt-4">/month</span>
+                      <span className="text-gray-400 text-base mt-4">
+                        /month
+                      </span>
                     </div>
-                    <p className="text-gray-500 text-sm leading-relaxed max-w-[180px] mb-8">
+                    <p className="text-gray-500 text-base leading-relaxed max-w-[180px] mb-8">
                       {plan.description}
                     </p>
 
                     <Button
                       variant={plan.ctaVariant}
                       disabled={plan.disabled}
-                      className={`w-full py-6 rounded-lg font-medium text-sm transition-all ${
+                      className={`w-full py-6 rounded-lg font-medium text-base transition-all ${
                         plan.accent
                           ? "bg-[#240457] hover:bg-[#1a0340] text-white"
                           : plan.disabled
@@ -211,12 +213,12 @@ const PricingPage = () => {
                       {plan.features.map((feat, fIdx) => (
                         <li key={fIdx} className="flex items-start gap-3">
                           {feat.included ? (
-                            <FiCheck className="text-green-500 mt-1 flex-shrink-0 text-sm" />
+                            <FiCheck className="text-green-500 mt-1 flex-shrink-0 text-base" />
                           ) : (
-                            <FiX className="text-red-500 mt-1 flex-shrink-0 text-sm" />
+                            <FiX className="text-red-500 mt-1 flex-shrink-0 text-base" />
                           )}
                           <span
-                            className={`text-sm leading-tight ${feat.included ? "text-gray-600" : "text-gray-400"}`}
+                            className={`text-base leading-tight ${feat.included ? "text-gray-600" : "text-gray-400"}`}
                           >
                             {feat.text}
                           </span>
@@ -231,7 +233,7 @@ const PricingPage = () => {
         ))}
 
         {/* Footer Note */}
-        <div className="flex items-center justify-center gap-2 text-gray-500 text-sm mt-12 pb-20">
+        <div className="flex items-center justify-center gap-2 text-gray-500 text-base mt-12 pb-20">
           <FiInfo className="text-gray-400" />
           <span>
             All plans include a 14-day free trial. Credit/Debit Card Required

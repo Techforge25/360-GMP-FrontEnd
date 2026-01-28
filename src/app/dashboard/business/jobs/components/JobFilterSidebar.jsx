@@ -17,7 +17,7 @@ const FilterSection = ({
         onClick={() => setOpen(!open)}
         className="flex items-center justify-between w-full mb-3 group"
       >
-        <h4 className="font-semibold text-text-primary text-sm group-hover:text-brand-primary transition-colors">
+        <h4 className="font-semibold text-text-primary text-base group-hover:text-brand-primary transition-colors">
           {title}
         </h4>
         {open ? (
@@ -37,7 +37,7 @@ const FilterSection = ({
                 onChange={() => onToggle(opt.value)}
                 className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-brand-primary cursor-pointer"
               />
-              <span className="text-sm text-text-secondary hover:text-text-primary transition-colors">
+              <span className="text-base text-text-secondary hover:text-text-primary transition-colors">
                 {opt.label}
               </span>
             </label>
@@ -114,7 +114,7 @@ export const JobFilterSidebar = ({ onFilterChange }) => {
         {hasActiveFilters && (
           <button
             onClick={clearAll}
-            className="text-xs text-brand-primary hover:underline font-medium"
+            className="text-sm text-brand-primary hover:underline font-medium"
           >
             Clear All
           </button>
@@ -192,7 +192,7 @@ export const JobFilterSidebar = ({ onFilterChange }) => {
       <div className="pt-4 text-center flex justify-center">
         <button
           onClick={() => setShowAllFilters(!showAllFilters)}
-          className="text-sm text-brand-primary font-medium hover:underline flex items-center justify-center gap-1"
+          className="text-base text-brand-primary font-medium hover:underline flex items-center justify-center gap-1"
         >
           All Filters {showAllFilters ? <FiChevronUp /> : <FiChevronDown />}
         </button>

@@ -139,7 +139,7 @@ const ProductSections = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin h-8 w-8 border-2 border-brand-primary border-t-transparent rounded-full mx-auto"></div>
-            <p className="text-sm text-gray-500 mt-4">Loading products...</p>
+            <p className="text-base text-gray-500 mt-4">Loading products...</p>
           </div>
         </div>
       </div>
@@ -160,7 +160,7 @@ const ProductSections = () => {
       {error && (
         <div className="max-w-7xl relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-600 text-sm text-center">
+            <p className="text-red-600 text-base text-center">
               <strong>Error:</strong> {error}
             </p>
           </div>
@@ -177,7 +177,7 @@ const ProductSections = () => {
                 <h2 className="text-2xl font-semibold text-black mb-3">
                   Feature Product
                 </h2>
-                <p className="text-sm text-gray-600 mb-6">
+                <p className="text-base text-gray-600 mb-6">
                   Continue your search and access 140+ million product on 360GMP
                 </p>
               </div>
@@ -259,26 +259,26 @@ const ProductSections = () => {
                         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1">
                           {prod.name}
                         </h3>
-                        <p className="text-xs text-gray-500 mb-3 line-clamp-2 leading-relaxed">
+                        <p className="text-sm text-gray-500 mb-3 line-clamp-2 leading-relaxed">
                           {prod.desc}
                         </p>
 
                         {/* MOQ and Price */}
                         <div className="flex items-center justify-between mb-4">
-                          <div className="text-xs text-[#787878]">
+                          <div className="text-sm text-[#787878]">
                             <span className="block">
                               MOQ: {prod.minOrder || 300} pc
                             </span>
                           </div>
                           <div className="text-right">
-                            <span className="text-xs text-[#787878]">
+                            <span className="text-sm text-[#787878]">
                               USD {prod.price.replace("$", "")}
                             </span>
                           </div>
                         </div>
 
                         {/* View Product Button */}
-                        <button className="w-full py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-sm">
+                        <button className="w-full py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base">
                           View Product
                         </button>
                       </div>
@@ -301,11 +301,11 @@ const ProductSections = () => {
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h2 className="text-xl font-semibold">Top Ranking</h2>
-                    <p className="text-white/80 text-xs">
+                    <p className="text-white/80 text-sm">
                       Highest priced premium products
                     </p>
                   </div>
-                  <span className="text-xs flex items-center gap-1 font-bold cursor-pointer hover:underline">
+                  <span className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline">
                     View More <ChevronRight />
                   </span>
                 </div>
@@ -326,15 +326,15 @@ const ProductSections = () => {
                           }}
                         />
                       </div>
-                      <h3 className="font-bold text-sm truncate mb-1">
+                      <h3 className="font-bold text-base truncate mb-1">
                         {item.name}
                       </h3>
-                      <p className="text-xs text-gray-500 mb-3 truncate">
+                      <p className="text-sm text-gray-500 mb-3 truncate">
                         {item.desc}
                       </p>
-                      <div className="flex justify-between items-center text-xs text-gray-600">
+                      <div className="flex justify-between items-center text-sm text-gray-600">
                         <span>MOQ: {item.minOrder || 100}</span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-sm text-gray-500">
                           USD {item.price}
                         </span>
                       </div>
@@ -353,11 +353,11 @@ const ProductSections = () => {
                 <div className="flex justify-between items-center mb-6 relative z-10">
                   <div>
                     <h2 className="text-xl font-semibold">New Product</h2>
-                    <p className="text-[#D9D9D9] text-xs">
+                    <p className="text-[#D9D9D9] text-sm">
                       stay ahead with the latest offering
                     </p>
                   </div>
-                  <span className="text-xs flex items-center gap-1 font-bold cursor-pointer hover:underline">
+                  <span className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline">
                     View More <ChevronRight />
                   </span>
                 </div>
@@ -399,15 +399,15 @@ const ProductSections = () => {
                             }}
                           />
                         </div>
-                        <h3 className="font-bold text-sm truncate text-black mb-1">
+                        <h3 className="font-bold text-base truncate text-black mb-1">
                           {item.name}
                         </h3>
-                        <p className="text-xs text-gray-500 mb-3 truncate">
+                        <p className="text-sm text-gray-500 mb-3 truncate">
                           {item.desc}
                         </p>
-                        <div className="flex justify-between items-center text-xs text-gray-600">
+                        <div className="flex justify-between items-center text-sm text-gray-600">
                           <span>MOQ: {item.minOrder || 100}</span>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-sm text-gray-500">
                             USD {item.price}
                           </span>
                         </div>

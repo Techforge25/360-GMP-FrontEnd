@@ -67,7 +67,7 @@ const Welcome = () => {
             <h2 className="text-3xl font-semibold text-black mb-4">
               In A Nutshell
             </h2>
-            <p className="text-sm md:text-base text-black max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base md:text-xl text-black max-w-3xl mx-auto leading-relaxed">
               360 Global Marketplace revolutionizes the supply chain by giving
               small business owners direct access to manufacturers—removing
               middlemen, reducing costs, and accelerating growth.
@@ -97,27 +97,30 @@ const Welcome = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 relative z-10">
-                
                 {/* Point 1 */}
                 <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-300 border-dashed hover:shadow-md transition-all">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-base">
                       1
                     </div>
-                    <p className="text-xs md:text-base text-black font-sm">
+                    <p className="text-sm md:text-xl text-black font-sm">
                       Eliminating inefficiencies
                     </p>
                   </div>
                 </div>
 
                 {/* Point 2 */}
-                <img className="absolute top-15 left-25" src="/assets/images/downArrow.png" alt="" />
+                <img
+                  className="absolute top-15 left-25"
+                  src="/assets/images/downArrow.png"
+                  alt=""
+                />
                 <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-300 border-dashed hover:shadow-md transition-all">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-base">
                       2
                     </div>
-                    <p className="text-xs md:text-base text-black font-sm">
+                    <p className="text-sm md:text-xl text-black font-sm">
                       Supporting global expansion
                     </p>
                   </div>
@@ -126,14 +129,18 @@ const Welcome = () => {
                 {/* Point 3 */}
                 <div className="bg-[#ECEFF6] backdrop-blur-sm py-4 px-3 rounded-xl shadow-sm border border-gray-300 border-dashed hover:shadow-md transition-all">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                    <div className="w-6 h-6 bg-[#240457] text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-base">
                       3
                     </div>
-                    <p className="text-xs md:text-base text-black font-sm">
+                    <p className="text-sm md:text-xl text-black font-sm">
                       Increasing visibility and collaboration
                     </p>
                   </div>
-                <img className="absolute bottom-15 right-80" src="/assets/images/upArrow.png" alt="" />
+                  <img
+                    className="absolute bottom-15 right-80"
+                    src="/assets/images/upArrow.png"
+                    alt=""
+                  />
                 </div>
               </div>
             </div>

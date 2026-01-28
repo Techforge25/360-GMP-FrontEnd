@@ -9,7 +9,7 @@ const FilterSection = ({ title, children, isOpen: defaultOpen = true }) => {
   return (
     <div className="border-b py-4 last:border-0">
       <button
-        className="flex w-full items-center justify-between text-sm font-semibold"
+        className="flex w-full items-center justify-between text-base font-semibold"
         onClick={() => setIsOpen(!isOpen)}
       >
         {title}
@@ -28,8 +28,8 @@ const CheckboxItem = ({ label, checked, onChange, count }) => (
       onChange={onChange}
       className="h-4 w-4 rounded border-border-light text-brand-primary focus:ring-brand-primary"
     />
-    <span className="flex-1 text-sm text-text-secondary">{label}</span>
-    {count && <span className="text-xs text-text-secondary">({count})</span>}
+    <span className="flex-1 text-base text-text-secondary">{label}</span>
+    {count && <span className="text-sm text-text-secondary">({count})</span>}
   </label>
 );
 
@@ -38,7 +38,7 @@ const FilterSidebar = ({ className, onClose }) => {
     <div
       className={cn(
         "w-full max-w-xs rounded-xl border border-border-light bg-surface-elevated p-4",
-        className
+        className,
       )}
     >
       <div className="mb-4 flex items-center justify-between">

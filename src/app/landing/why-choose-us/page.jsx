@@ -29,9 +29,10 @@ const WhyChooseUsPage = () => {
         {/* Intro Section */}
         <div className="max-w-7xl mb-16">
           <h2 className="text-2xl md:text-3xl font-sm text-[#240457] mb-6 leading-tight">
-            Your Trusted Partner For Global Trade, Growth & Business Connectivity
+            Your Trusted Partner For Global Trade, Growth & Business
+            Connectivity
           </h2>
-          <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-12">
+          <p className="text-gray-600 text-base md:text-xl leading-relaxed mb-12">
             360 Global Marketplace isn't just another platform. It is a complete
             digital ecosystem built to empower businesses, corporations,
             suppliers, and entrepreneurs worldwide. Here's why thousands of
@@ -49,7 +50,7 @@ const WhyChooseUsPage = () => {
                 <h4 className="font-medium text-gray-900 mb-2">
                   One Membership. All Features
                 </h4>
-                <p className="text-gray-500 text-sm leading-relaxed">
+                <p className="text-gray-500 text-base leading-relaxed">
                   No complicated pricing. No confusing upgrades. One premium
                   membership unlocks everything.
                 </p>
@@ -66,7 +67,7 @@ const WhyChooseUsPage = () => {
                 <h4 className="font-medium text-gray-900 mb-2">
                   14-Day Free Trial
                 </h4>
-                <p className="text-gray-500 text-sm leading-relaxed">
+                <p className="text-gray-500 text-base leading-relaxed">
                   Try every feature. No restrictions. No payment required until
                   the trial ends.
                 </p>
@@ -83,7 +84,7 @@ const WhyChooseUsPage = () => {
               <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
                 A True All-In-One Business Ecosystem
               </h3>
-              <p className="text-gray-500 text-sm md:text-base">
+              <p className="text-gray-500 text-base md:text-xl">
                 Most platforms offer one feature. We offer everything:
               </p>
             </div>
@@ -103,7 +104,7 @@ const WhyChooseUsPage = () => {
               ].map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <FaCheckCircle className="text-[#22C55E] text-lg flex-shrink-0" />
-                  <span className="text-gray-700 font-medium text-sm md:text-base whitespace-nowrap">
+                  <span className="text-gray-700 font-medium text-base md:text-xl whitespace-nowrap">
                     {feature}
                   </span>
                 </div>
@@ -134,7 +135,7 @@ const WhyChooseUsPage = () => {
               <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
                 Escrow-Based Payments For Trusted Transactions
               </h3>
-              <p className="text-gray-500 text-sm md:text-base max-w-2xl leading-relaxed">
+              <p className="text-gray-500 text-base md:text-xl max-w-2xl leading-relaxed">
                 Online transactions can involve risks — fraud, delays,
                 non-delivery, or disputes. Our Escrow Payment System protects
                 both buyers and suppliers.
@@ -152,7 +153,7 @@ const WhyChooseUsPage = () => {
               ].map((step, idx) => (
                 <div key={idx} className="flex items-center gap-3">
                   <FaCheckCircle className="text-[#3B82F6] text-lg flex-shrink-0" />
-                  <span className="text-gray-700 font-medium text-sm md:text-base leading-tight">
+                  <span className="text-gray-700 font-medium text-base md:text-xl leading-tight">
                     {step}
                   </span>
                 </div>

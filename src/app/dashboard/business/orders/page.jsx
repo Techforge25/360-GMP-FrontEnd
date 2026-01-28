@@ -140,7 +140,7 @@ const BusinessOrdersPage = () => {
         <div className="flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10 max-w-7xl mx-auto">
           <div className="w-full md:w-1/2 space-y-4">
             <h1 className="text-3xl font-bold text-white">Seller Dashboard</h1>
-            <p className="text-sm">
+            <p className="text-base">
               360GMP Escrow Protection: Seller is paid only after you confirm
               delivery.
             </p>
@@ -148,7 +148,7 @@ const BusinessOrdersPage = () => {
               <input
                 type="text"
                 placeholder="Order Number, Buyer..."
-                className="w-full px-4 py-3 rounded-lg text-sm text-gray-900 border-none focus:ring-2 focus:ring-indigo-500 pl-10"
+                className="w-full px-4 py-3 rounded-lg text-base text-gray-900 border-none focus:ring-2 focus:ring-indigo-500 pl-10"
               />
               <svg
                 className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
@@ -182,11 +182,11 @@ const BusinessOrdersPage = () => {
           <h1 className="text-2xl font-medium text-gray-900">My Orders</h1>
 
           <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
+            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-base text-gray-600 hover:bg-gray-50">
               <span>Filter By Date</span>
               <FiCalendar className="w-4 h-4 text-black" />
             </button>
-            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-600 hover:bg-gray-50">
+            <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-base text-gray-600 hover:bg-gray-50">
               <span>All Status</span>
               <FiChevronDown className="w-4 h-4 text-black" />
             </button>
@@ -200,7 +200,7 @@ const BusinessOrdersPage = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`text-sm font-sm px-3 py-2 rounded-xl whitespace-nowrap transition-colors ${
+                className={`text-base font-sm px-3 py-2 rounded-xl whitespace-nowrap transition-colors ${
                   activeTab === tab
                     ? "bg-[#240457] text-white"
                     : "text-gray-500"
@@ -218,25 +218,25 @@ const BusinessOrdersPage = () => {
             <table className="w-full">
               <thead className="bg-[#F0F0F0]">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Order ID
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Buyer
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Order Date
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Total
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Order Type
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Delivery Status
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-right text-sm font-medium text-gray-500 uppercase tracking-wider">
                     Action
                   </th>
                 </tr>
@@ -248,33 +248,33 @@ const BusinessOrdersPage = () => {
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-base font-semibold text-gray-900">
                         {order.id}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-600">
+                      <span className="text-base text-gray-600">
                         {order.buyer}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-600">
+                      <span className="text-base text-gray-600">
                         {order.date}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-semibold text-gray-900">
+                      <span className="text-base font-semibold text-gray-900">
                         {order.total}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-600">
+                      <span className="text-base text-gray-600">
                         {order.type}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                           order.status,
                         )}`}
                       >
@@ -299,7 +299,7 @@ const BusinessOrdersPage = () => {
 
           {/* Load More */}
           <div className="px-6 py-6 border-t border-gray-200 flex justify-center">
-            <button className="px-6 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            <button className="px-6 py-2 bg-white border border-gray-200 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors">
               Load more
             </button>
           </div>

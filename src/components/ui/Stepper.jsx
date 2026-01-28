@@ -29,10 +29,10 @@ export const Stepper = ({ currentStep, steps }) => {
             <div key={step.id} className="flex flex-col items-center gap-2">
               <div
                 className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold border-2 transition-all duration-300 bg-surface",
+                  "w-10 h-10 rounded-full flex items-center justify-center text-base font-semibold border-2 transition-all duration-300 bg-surface",
                   isActive
                     ? "border-accent-success bg-accent-success text-white"
-                    : "border-border-light text-text-secondary"
+                    : "border-border-light text-text-secondary",
                 )}
               >
                 {step.id}
@@ -40,8 +40,8 @@ export const Stepper = ({ currentStep, steps }) => {
 
               <span
                 className={cn(
-                  "text-xs font-medium whitespace-nowrap text-center",
-                  isActive ? "text-text-primary" : "text-text-secondary"
+                  "text-sm font-medium whitespace-nowrap text-center",
+                  isActive ? "text-text-primary" : "text-text-secondary",
                 )}
               >
                 {step.label}

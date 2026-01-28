@@ -54,7 +54,7 @@ const Zones = () => {
               <h3 className="font-bold text-lg text-black mb-2">
                 {zone.title}
               </h3>
-              <p className="text-sm text-text-secondary leading-relaxed">
+              <p className="text-base text-text-secondary leading-relaxed">
                 {zone.desc}
               </p>
             </div>
@@ -96,7 +96,7 @@ const Zones = () => {
                   {feature.title}
                 </h4>
 
-                <p className="text-sm text-text-secondary">{feature.desc}</p>
+                <p className="text-base text-text-secondary">{feature.desc}</p>
               </div>
             ))}
           </div>

@@ -14,7 +14,7 @@ const RoleSelectionCard = ({ type = "business", selected, onSelect }) => {
         "cursor-pointer transition-all duration-200 hover:border-brand-primary/50",
         isSelected
           ? "border-brand-primary bg-brand-primary/5 ring-1 ring-brand-primary"
-          : "border-border-light bg-surface-elevated"
+          : "border-border-light bg-surface-elevated",
       )}
     >
       <div className="flex items-start p-6">
@@ -23,7 +23,7 @@ const RoleSelectionCard = ({ type = "business", selected, onSelect }) => {
             "mr-4 flex h-10 w-10 items-center justify-center rounded-lg border",
             isSelected
               ? "bg-surface text-brand-primary"
-              : "bg-surface-muted text-text-secondary"
+              : "bg-surface-muted text-text-secondary",
           )}
         >
           {isBusiness ? (
@@ -37,7 +37,7 @@ const RoleSelectionCard = ({ type = "business", selected, onSelect }) => {
           <h3 className="mb-1 font-semibold">
             {isBusiness ? "Business/Company" : "User"}
           </h3>
-          <p className="text-sm text-text-secondary">
+          <p className="text-base text-text-secondary">
             {isBusiness
               ? "Post Jobs, Manage Leads & List Products."
               : "Buy Products & Find Jobs, Build Your Career."}
@@ -47,7 +47,7 @@ const RoleSelectionCard = ({ type = "business", selected, onSelect }) => {
         <div
           className={cn(
             "ml-4 flex h-5 w-5 items-center justify-center rounded-full border",
-            isSelected ? "border-brand-primary" : "border-text-secondary"
+            isSelected ? "border-brand-primary" : "border-text-secondary",
           )}
         >
           {isSelected && (

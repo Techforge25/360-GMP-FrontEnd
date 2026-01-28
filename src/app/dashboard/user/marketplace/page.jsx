@@ -194,7 +194,7 @@ export default function MarketplacePage() {
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
               Find Verified supplier Across the Globe
             </h1>
-            <p className="text-purple-100 text-base sm:text-lg max-w-3xl mx-auto px-4">
+            <p className="text-purple-100 text-xl sm:text-lg max-w-3xl mx-auto px-4">
               Connect with top-rated verified suppliers. Low MOQ, Fast Shipping,
               and Trade Assurance.
             </p>
@@ -221,7 +221,7 @@ export default function MarketplacePage() {
             </div>
             <button
               onClick={handleSearch}
-              className="bg-purple-950 cursor-pointer hover:bg-purple-900 text-white px-8 py-3 rounded-xl font-medium transition-colors duration-200 whitespace-nowrap"
+              className="bg-brand-primary cursor-pointer hover:bg-brand-primary/90 text-white px-8 py-3 rounded-xl font-medium transition-colors duration-200 whitespace-nowrap"
             >
               Search
             </button>
@@ -232,7 +232,7 @@ export default function MarketplacePage() {
               {popularCategories.map((category, index) => (
                 <button
                   key={index}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-xs sm:text-sm font-medium transition-colors duration-200"
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm sm:text-base font-medium transition-colors duration-200"
                 >
                   {category}
                 </button>
@@ -263,7 +263,7 @@ export default function MarketplacePage() {
                     onClick={() => toggleCategory("product")}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50"
                   >
-                    <span className="font-medium text-gray-900 text-sm">
+                    <span className="font-medium text-gray-900 text-base">
                       Product / Category
                     </span>
                     {expandedCategories.product ? (
@@ -285,13 +285,13 @@ export default function MarketplacePage() {
                             checked={selectedCategories.includes(cat.name)}
                             onChange={() => handleCategoryToggle(cat.name)}
                           />
-                          <span className="text-sm text-gray-700 flex-1">
+                          <span className="text-base text-gray-700 flex-1">
                             {cat.name}
                           </span>
                           <ChevronRight className="w-3 h-3 text-gray-400" />
                         </label>
                       ))}
-                      <button className="text-purple-600 text-sm mt-2 hover:text-purple-700">
+                      <button className="text-purple-600 text-base mt-2 hover:text-purple-700">
                         More
                       </button>
                     </div>
@@ -304,7 +304,7 @@ export default function MarketplacePage() {
                     onClick={() => toggleCategory("country")}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
                   >
-                    <span className="font-bold text-gray-900 text-sm">
+                    <span className="font-bold text-gray-900 text-base">
                       Country
                     </span>
                     {expandedCategories.country ? (
@@ -322,14 +322,14 @@ export default function MarketplacePage() {
                           <input
                             type="text"
                             placeholder="Search Location"
-                            className="w-full py-1.5 text-sm focus:outline-none placeholder:text-gray-400 text-gray-700"
+                            className="w-full py-1.5 text-base focus:outline-none placeholder:text-gray-400 text-gray-700"
                             value={countrySearchQuery}
                             onChange={(e) =>
                               setCountrySearchQuery(e.target.value)
                             }
                           />
                         </div>
-                        <button className="bg-[#1D064F] hover:bg-[#2D0A75] text-white px-4 py-1.5 rounded-md text-xs font-semibold transition-colors">
+                        <button className="bg-[#1D064F] hover:bg-[#2D0A75] text-white px-4 py-1.5 rounded-md text-sm font-semibold transition-colors">
                           Search
                         </button>
                       </div>
@@ -356,7 +356,7 @@ export default function MarketplacePage() {
                                 {country.flag}
                               </span>
                               <span
-                                className={`text-sm flex-1 text-left ${
+                                className={`text-base flex-1 text-left ${
                                   selectedCountry === country.name
                                     ? "text-gray-900 font-medium"
                                     : "text-gray-600 group-hover:text-gray-900"
@@ -377,7 +377,7 @@ export default function MarketplacePage() {
                     onClick={() => toggleCategory("ratings")}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50"
                   >
-                    <span className="font-medium text-gray-900 text-sm">
+                    <span className="font-medium text-gray-900 text-base">
                       Ratings
                     </span>
                     {expandedCategories.ratings ? (
@@ -398,7 +398,7 @@ export default function MarketplacePage() {
                             name="rating"
                             className="w-4 h-4 text-purple-600"
                           />
-                          <span className="text-sm text-gray-700">
+                          <span className="text-base text-gray-700">
                             ★ {rating}
                           </span>
                         </label>
@@ -409,7 +409,9 @@ export default function MarketplacePage() {
                           name="rating"
                           className="w-4 h-4 text-purple-600"
                         />
-                        <span className="text-sm text-gray-700">No rating</span>
+                        <span className="text-base text-gray-700">
+                          No rating
+                        </span>
                       </label>
                     </div>
                   )}
@@ -447,28 +449,28 @@ export default function MarketplacePage() {
                           </div>
                         </div>
                         <div className="p-4">
-                          <h3 className="font-semibold text-gray-900 mb-2 text-sm line-clamp-1">
+                          <h3 className="font-semibold text-gray-900 mb-2 text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                             {product.detail || product.description}
                           </p>
                           <div className="flex items-center justify-between mb-3">
-                            <span className="text-purple-600 font-semibold text-sm">
+                            <span className="text-purple-600 font-semibold text-base">
                               ${product.pricePerUnit}
                             </span>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-sm text-gray-500">
                               Min: {product.minOrderQty}
                             </span>
                           </div>
-                          <button className="w-full py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors">
+                          <button className="w-full py-2 border border-gray-300 rounded-lg text-base hover:bg-gray-50 transition-colors">
                             View Product
                           </button>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-sm text-gray-500">
+                    <div className="text-base text-gray-500">
                       No featured products found
                     </div>
                   )}
@@ -479,11 +481,11 @@ export default function MarketplacePage() {
               <div className="mb-8 bg-gradient-to-r from-purple-600 to-purple-500 rounded-lg p-6 text-white">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-bold">Top Ranking</h2>
-                  <button className="text-sm hover:underline flex items-center gap-1">
+                  <button className="text-base hover:underline flex items-center gap-1">
                     View More <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-                <p className="text-purple-100 text-sm mb-6">
+                <p className="text-purple-100 text-base mb-6">
                   Discover highly-rated products
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -501,17 +503,17 @@ export default function MarketplacePage() {
                           />
                         </div>
                         <div className="p-4">
-                          <h3 className="font-semibold text-gray-900 mb-2 text-sm line-clamp-1">
+                          <h3 className="font-semibold text-gray-900 mb-2 text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-xs text-gray-600 line-clamp-2">
+                          <p className="text-sm text-gray-600 line-clamp-2">
                             {product.detail || product.description}
                           </p>
                         </div>
                       </div>
                     ))
                   ) : (
-                    <div className="text-sm text-purple-100 col-span-3">
+                    <div className="text-base text-purple-100 col-span-3">
                       No top ranking products found
                     </div>
                   )}
@@ -523,11 +525,11 @@ export default function MarketplacePage() {
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h2 className="text-xl font-bold mb-1">New Product</h2>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-gray-400 text-base">
                       Browse newly-listed products
                     </p>
                   </div>
-                  <button className="text-sm hover:underline flex items-center gap-1">
+                  <button className="text-base hover:underline flex items-center gap-1">
                     View More <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -546,17 +548,17 @@ export default function MarketplacePage() {
                           />
                         </div>
                         <div className="p-4">
-                          <h3 className="font-semibold text-gray-900 mb-2 text-sm line-clamp-1">
+                          <h3 className="font-semibold text-gray-900 mb-2 text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                             {product.detail || product.description}
                           </p>
                           <div className="flex items-center justify-between">
-                            <span className="text-purple-600 font-semibold text-sm">
+                            <span className="text-purple-600 font-semibold text-base">
                               ${product.pricePerUnit}
                             </span>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-sm text-gray-500">
                               Min: {product.minOrderQty}
                             </span>
                           </div>
@@ -564,7 +566,7 @@ export default function MarketplacePage() {
                       </div>
                     ))
                   ) : (
-                    <div className="text-sm text-gray-400 col-span-3">
+                    <div className="text-base text-gray-400 col-span-3">
                       No new products found
                     </div>
                   )}
@@ -593,23 +595,23 @@ export default function MarketplacePage() {
                     />
                   </div>
                   <div className="p-4">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-2">
+                    <h3 className="text-base font-semibold text-gray-900 mb-2 line-clamp-2">
                       {product.title}
                     </h3>
-                    <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                       {product.detail || product.description}
                     </p>
                     <div className="flex items-center gap-2 mb-3">
-                      <span className="text-sm font-bold text-gray-900">
+                      <span className="text-base font-bold text-gray-900">
                         ${product.pricePerUnit}
                       </span>
                       {product.originalPrice && (
-                        <span className="text-xs text-gray-500 line-through">
+                        <span className="text-sm text-gray-500 line-through">
                           {product.originalPrice}
                         </span>
                       )}
                     </div>
-                    <button className="w-full bg-white border border-gray-300 text-gray-700 text-sm font-medium py-2 px-4 rounded hover:bg-gray-50 transition-colors duration-200">
+                    <button className="w-full bg-white border border-gray-300 text-gray-700 text-base font-medium py-2 px-4 rounded hover:bg-gray-50 transition-colors duration-200">
                       View Product
                     </button>
                   </div>
@@ -624,7 +626,7 @@ export default function MarketplacePage() {
           </div>
         </section>
         <div className="flex justify-center mt-8">
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+          <button className="bg-brand-primary hover:bg-brand-primary/90 text-white px-8 py-3 rounded-lg font-medium transition-colors">
             Load More
           </button>
         </div>
@@ -641,7 +643,7 @@ function TopDealsSection({ deals = [] }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Top Deals</h2>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-base">
             All our season products on curated marketing
           </p>
         </div>
@@ -660,7 +662,7 @@ function TopDealsSection({ deals = [] }) {
                 />
                 {deal.extras && (
                   <div className="absolute top-2 left-2">
-                    <span className="bg-purple-600 text-white text-xs px-2 py-1 rounded">
+                    <span className="bg-brand-primary text-white text-sm px-2 py-1 rounded">
                       {deal.extras}
                     </span>
                   </div>
@@ -676,26 +678,26 @@ function TopDealsSection({ deals = [] }) {
               </div>
 
               <div className="p-4">
-                <h3 className="font-semibold text-gray-900 mb-2 text-sm line-clamp-1">
+                <h3 className="font-semibold text-gray-900 mb-2 text-base line-clamp-1">
                   {deal.title}
                 </h3>
-                <p className="text-xs text-gray-600 mb-3 line-clamp-2">
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                   {deal.detail || deal.description}
                 </p>
 
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-purple-600 font-bold text-base">
+                  <span className="text-purple-600 font-bold text-xl">
                     ${deal.pricePerUnit}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs text-gray-500">
+                  <span className="text-sm text-gray-500">
                     Min: {deal.minOrderQty}
                   </span>
                 </div>
 
-                <button className="w-full py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+                <button className="w-full py-2 border border-gray-300 rounded-lg text-base font-medium hover:bg-gray-50 transition-colors">
                   View Product
                 </button>
               </div>

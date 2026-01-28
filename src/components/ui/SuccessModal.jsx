@@ -25,7 +25,7 @@ export const SuccessModal = ({
 
           <h2 className="text-2xl font-bold mb-3 text-text-primary">{title}</h2>
 
-          <p className="text-sm text-text-secondary leading-relaxed mb-8 max-w-[300px]">
+          <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-[300px]">
             {description}
           </p>
 

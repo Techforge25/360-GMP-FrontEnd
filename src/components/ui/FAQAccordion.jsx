@@ -23,8 +23,8 @@ const FAQItem = ({ question, answer }) => {
       </button>
       <div
         className={cn(
-          "px-6 text-sm text-text-secondary transition-all duration-300 ease-in-out",
-          isOpen ? "max-h-40 py-4 opacity-100" : "max-h-0 py-0 opacity-0"
+          "px-6 text-base text-text-secondary transition-all duration-300 ease-in-out",
+          isOpen ? "max-h-40 py-4 opacity-100" : "max-h-0 py-0 opacity-0",
         )}
       >
         {answer}

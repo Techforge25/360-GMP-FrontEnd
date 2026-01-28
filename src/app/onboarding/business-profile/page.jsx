@@ -62,7 +62,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div className="grid md:grid-cols-2 gap-6">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Company Name</label>
+        <label className="text-base font-medium">Company Name</label>
         <Input
           placeholder="Global Manufacturing Co."
           value={formData.companyName}
@@ -70,10 +70,10 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
         />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Select Primary Industry</label>
+        <label className="text-base font-medium">Select Primary Industry</label>
         <div className="relative">
           <select
-            className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+            className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
             value={formData.industry || ""}
             onChange={(e) => handleChange("industry", e.target.value)}
           >
@@ -90,7 +90,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
         </div>
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Business Type</label>
+        <label className="text-base font-medium">Business Type</label>
         <Input
           placeholder="Private Corporation"
           value={formData.businessType || ""}
@@ -98,10 +98,10 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
         />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Company Size</label>
+        <label className="text-base font-medium">Company Size</label>
         <div className="relative">
           <select
-            className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+            className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
             value={formData.companySize || ""}
             onChange={(e) => handleChange("companySize", e.target.value)}
           >
@@ -118,7 +118,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
         </div>
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Founded Date</label>
+        <label className="text-base font-medium">Founded Date</label>
         <div className="relative">
           <Input
             type="date"
@@ -129,7 +129,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
         </div>
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Operating Hours</label>
+        <label className="text-base font-medium">Operating Hours</label>
         <div className="relative">
           <Input
             type="time"
@@ -143,7 +143,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
     </div>
 
     <div className="space-y-2">
-      <label className="text-sm font-medium">Official Company Website</label>
+      <label className="text-base font-medium">Official Company Website</label>
       <Input
         placeholder="https://www.example.com"
         value={formData.website || ""}
@@ -152,9 +152,9 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
     </div>
 
     <div className="space-y-2">
-      <label className="text-sm font-medium">Company Mission And Bio</label>
+      <label className="text-base font-medium">Company Mission And Bio</label>
       <textarea
-        className="w-full min-h-[120px] rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+        className="w-full min-h-[120px] rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
         placeholder="..."
         value={formData.bio || ""}
         onChange={(e) => handleChange("bio", e.target.value)}
@@ -163,7 +163,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
 
     <div className="grid md:grid-cols-2 gap-6">
       <div className="space-y-2">
-        <label className="text-sm font-medium">Profile Image</label>
+        <label className="text-base font-medium">Profile Image</label>
         <FileUpload
           label="Upload Profile Image"
           subLabel="JPG, PNG (Max 10MB)"
@@ -179,7 +179,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
         />
       </div>
       <div className="space-y-2">
-        <label className="text-sm font-medium">Banner Image</label>
+        <label className="text-base font-medium">Banner Image</label>
         <FileUpload
           label="Upload Banner Image"
           subLabel="Dimension 1440×300 (Max 10MB)"
@@ -204,7 +204,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
       <h3 className="text-lg font-semibold mb-4">Company Location</h3>
       <div className="grid md:grid-cols-3 gap-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Country</label>
+          <label className="text-base font-medium">Country</label>
           <Input
             placeholder="e.g Canada"
             value={formData.country || ""}
@@ -212,7 +212,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">City</label>
+          <label className="text-base font-medium">City</label>
           <Input
             placeholder="Ottawa"
             value={formData.city || ""}
@@ -220,7 +220,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Address Line</label>
+          <label className="text-base font-medium">Address Line</label>
           <Input
             placeholder="street address"
             value={formData.address || ""}
@@ -256,14 +256,14 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
               }}
               className="rounded border-gray-300 text-brand-primary"
             />
-            <span className="text-sm text-text-secondary">{cert}</span>
+            <span className="text-base text-text-secondary">{cert}</span>
           </label>
         ))}
       </div>
     </div>
 
     <div className="space-y-2">
-      <label className="text-sm font-medium">
+      <label className="text-base font-medium">
         Upload Certification Document
       </label>
       <FileUpload
@@ -285,28 +285,28 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
       <h3 className="text-lg font-semibold mb-4">Primary B2B Contact</h3>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Contact Person Name</label>
+          <label className="text-base font-medium">Contact Person Name</label>
           <Input
             value={formData.contactName || ""}
             onChange={(e) => handleChange("contactName", e.target.value)}
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Title</label>
+          <label className="text-base font-medium">Title</label>
           <Input
             value={formData.contactTitle || ""}
             onChange={(e) => handleChange("contactTitle", e.target.value)}
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Phone</label>
+          <label className="text-base font-medium">Phone</label>
           <Input
             value={formData.contactPhone || ""}
             onChange={(e) => handleChange("contactPhone", e.target.value)}
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Support Email</label>
+          <label className="text-base font-medium">Support Email</label>
           <Input
             value={formData.contactEmail || ""}
             onChange={(e) => handleChange("contactEmail", e.target.value)}
@@ -354,13 +354,13 @@ const Step3 = ({ formData }) => (
       <h2 className="text-2xl font-bold">
         {formData.companyName || "Global Manufacturing Co."}
       </h2>
-      <div className="flex justify-center gap-6 mt-2 text-sm text-text-secondary">
+      <div className="flex justify-center gap-6 mt-2 text-base text-text-secondary">
         <span className="flex items-center gap-1">
           <BsBuilding /> {formData.industry || "Custom Manufacturer"}
         </span>
         <span className="flex items-center gap-1">
           <FiCalendar />{" "}
-          <p className="text-sm text-text-secondary">
+          <p className="text-base text-text-secondary">
             {formData.foundedDate
               ? formatYearMonth(formData.foundedDate)
               : "August 2021"}
@@ -375,37 +375,37 @@ const Step3 = ({ formData }) => (
 
     <div className="p-6 border border-border-light rounded-lg bg-white">
       <h3 className="font-bold mb-2">Overview</h3>
-      <p className="text-sm text-text-secondary leading-relaxed">
+      <p className="text-base text-text-secondary leading-relaxed">
         {formData.bio || "Company overview placeholder..."}
       </p>
 
       <div className="grid grid-cols-3 gap-6 mt-6 pt-6 border-t border-border-light">
         <div>
-          <p className="text-xs font-bold text-text-primary mb-1">
+          <p className="text-sm font-bold text-text-primary mb-1">
             Business Type
           </p>
-          <p className="text-sm text-text-secondary">
+          <p className="text-base text-text-secondary">
             {formData.businessType || "Private Corporation"}
           </p>
         </div>
         <div>
-          <p className="text-xs font-bold text-text-primary mb-1">Founded</p>
-          <p className="text-sm text-text-secondary">
+          <p className="text-sm font-bold text-text-primary mb-1">Founded</p>
+          <p className="text-base text-text-secondary">
             {formData.foundedDate || "2021"}
           </p>
         </div>
         <div>
-          <p className="text-xs font-bold text-text-primary mb-1">
+          <p className="text-sm font-bold text-text-primary mb-1">
             Operating Hours
           </p>
-          <p className="text-sm text-text-secondary">
+          <p className="text-base text-text-secondary">
             {formData.operatingHours || "09:00 - 18:00"}
           </p>
         </div>
       </div>
     </div>
 
-    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-sm text-orange-800">
+    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-base text-orange-800">
       <div className="pt-0.5">
         <div className="w-4 h-4 rounded-full bg-orange-200 flex items-center justify-center text-[10px] font-bold">
           !
@@ -601,7 +601,7 @@ export default function BusinessProfilePage() {
 
         <CardContent className="p-8 pt-4">
           {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm text-center">
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-base text-center">
               {error}
             </div>
           )}

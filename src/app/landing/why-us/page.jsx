@@ -54,7 +54,7 @@ const WhyUsPage = () => {
         </div>
 
         <div className="flex justify-center mb-24">
-          <Button className="bg-indigo-900 text-white px-8 py-3 rounded-md font-medium text-sm">
+          <Button className="bg-indigo-900 text-white px-8 py-3 rounded-md font-medium text-base">
             JOIN NOW →
           </Button>
         </div>
@@ -78,30 +78,30 @@ const WhyUsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
               {/* Item 1 */}
               <div className="bg-indigo-50/50 rounded-xl p-4 flex items-center justify-center gap-2 border border-indigo-100 shadow-sm">
-                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-xs font-bold">
+                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-sm font-bold">
                   1
                 </div>
-                <span className="text-sm font-medium text-indigo-900">
+                <span className="text-base font-medium text-indigo-900">
                   Eliminating Inefficiencies
                 </span>
               </div>
 
               {/* Item 2 */}
               <div className="bg-indigo-50/50 rounded-xl p-4 flex items-center justify-center gap-2 border border-indigo-100 shadow-sm">
-                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-xs font-bold">
+                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-sm font-bold">
                   2
                 </div>
-                <span className="text-sm font-medium text-indigo-900">
+                <span className="text-base font-medium text-indigo-900">
                   Supporting global expansion
                 </span>
               </div>
 
               {/* Item 3 */}
               <div className="bg-indigo-50/50 rounded-xl p-4 flex items-center justify-center gap-2 border border-indigo-100 shadow-sm">
-                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-xs font-bold">
+                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-sm font-bold">
                   3
                 </div>
-                <span className="text-sm font-medium text-indigo-900">
+                <span className="text-base font-medium text-indigo-900">
                   Increasing visibility and collaboration
                 </span>
               </div>
@@ -115,7 +115,7 @@ const WhyUsPage = () => {
         </div>
 
         <div className="max-w-4xl mx-auto text-center mb-12">
-          <p className="text-text-secondary text-sm leading-relaxed border-l-4 border-indigo-500 pl-6 italic bg-gray-50 py-4 rounded-r-lg">
+          <p className="text-text-secondary text-base leading-relaxed border-l-4 border-indigo-500 pl-6 italic bg-gray-50 py-4 rounded-r-lg">
             360GMP is not just a marketplace—it's a global business ecosystem.
             360GMP is a unified digital ecosystem that connects buyers, sellers,
             job seekers, and companies in a single platform. With one account,

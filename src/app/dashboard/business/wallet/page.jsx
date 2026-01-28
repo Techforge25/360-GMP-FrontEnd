@@ -150,7 +150,7 @@ const WalletPage = () => {
   return (
     <div className="bg-gray-50">
       {/* 1. Header Section */}
-      <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <p className="text-gray-500 text-base max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         My Wallet
       </p>
       <div className="relative bg-[#8B5CF6] h-48 overflow-hidden flex items-center justify-center">
@@ -173,7 +173,7 @@ const WalletPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  mt-6 relative z-10 space-y-8">
         {/* 2. Tabs & Withdraw */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-6 text-sm font-medium border-b border-transparent md:border-none w-full md:w-auto overflow-x-auto">
+          <div className="flex items-center gap-6 text-base font-medium border-b border-transparent md:border-none w-full md:w-auto overflow-x-auto">
             {["Wallet", "Earning", "Transactions"].map((tab) => (
               <button
                 key={tab}
@@ -184,7 +184,7 @@ const WalletPage = () => {
               </button>
             ))}
           </div>
-          <button className="flex items-center gap-2 bg-[#2e1065] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#1e0a45] transition-colors shadow-sm">
+          <button className="flex items-center gap-2 bg-[#2e1065] text-white px-4 py-2 rounded-lg text-base font-semibold hover:bg-[#1e0a45] transition-colors shadow-sm">
             {/* Using Download icon as placeholder for Withdraw or similar */}
             Withdraw
             <img src="/assets/images/withdrawIcon.png" alt="" />
@@ -203,7 +203,7 @@ const WalletPage = () => {
                   <h2 className="text-2xl font-medium text-black">
                     {stat.amount}
                   </h2>
-                  <p className="text-xs text-gray-500 mt-1">{stat.label}</p>
+                  <p className="text-sm text-gray-500 mt-1">{stat.label}</p>
                 </div>
                 <div className={`p-2 rounded-lg ${stat.bg}`}>
                   <img
@@ -229,10 +229,10 @@ const WalletPage = () => {
             {/* Messaging Widget Overlay (Matches design) */}
             {/* <div className="hidden md:flex absolute top-4 right-4 items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-1.5 shadow-sm z-10">
               <div className="w-8 h-8 bg-orange-100 rounded flex items-center justify-center text-orange-600">
-                <span className="font-bold text-xs">M</span>
+                <span className="font-bold text-sm">M</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xs font-semibold text-gray-900">
+                <span className="text-sm font-semibold text-gray-900">
                   Messaging
                 </span>
                 <span className="text-[10px] text-gray-500">
@@ -257,18 +257,18 @@ const WalletPage = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900 flex items-center gap-2">
+                  <p className="text-base font-semibold text-gray-900 flex items-center gap-2">
                     Mastercard{" "}
-                    <span className="text-[#240457] text-xs font-normal">
+                    <span className="text-[#240457] text-sm font-normal">
                       • Default Method
                     </span>
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm text-gray-500">
                     globalmanufacturing@gmail.com
                   </p>
                 </div>
               </div>
-              <button className="text-xs text-[#FF383C] font-medium mt-2 sm:mt-0 opacity-100 transition-opacity underline">
+              <button className="text-sm text-[#FF383C] font-medium mt-2 sm:mt-0 opacity-100 transition-opacity underline">
                 Disconnect
               </button>
             </div>
@@ -280,13 +280,13 @@ const WalletPage = () => {
                   VISA
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-900">
+                  <p className="text-base font-semibold text-gray-900">
                     visa ****2125
                   </p>
-                  <p className="text-xs text-gray-500">Expiry - 12/27</p>
+                  <p className="text-sm text-gray-500">Expiry - 12/27</p>
                 </div>
               </div>
-              <button className="text-xs text-[#240457] font-medium underline mt-2 sm:mt-0">
+              <button className="text-sm text-[#240457] font-medium underline mt-2 sm:mt-0">
                 Set as Default
               </button>
             </div>
@@ -299,13 +299,13 @@ const WalletPage = () => {
             <h3 className="text-lg font-medium text-gray-900">
               Recent Transactions
             </h3>
-            <button className="text-xs font-medium text-[#2e1065] flex items-center gap-1 hover:underline">
+            <button className="text-sm font-medium text-[#2e1065] flex items-center gap-1 hover:underline">
               View All <FiArrowUpRight className="rotate-45" />
             </button>
           </div>
 
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 text-xs font-semibold text-gray-500">
+          <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 text-sm font-semibold text-gray-500">
             <div className="col-span-1">
               <input
                 type="checkbox"
@@ -332,12 +332,12 @@ const WalletPage = () => {
                   </div>
                 </div>
                 <div className="col-span-4">
-                  <p className="text-sm font-semibold text-gray-900 mb-0.5">
+                  <p className="text-base font-semibold text-gray-900 mb-0.5">
                     {tx.desc}
                   </p>
                   <p className="text-[10px] text-gray-500">{tx.date}</p>
                 </div>
-                <div className="col-span-3 text-xs text-gray-600">
+                <div className="col-span-3 text-sm text-gray-600">
                   {tx.method}
                 </div>
                 <div className="col-span-2">
@@ -351,7 +351,7 @@ const WalletPage = () => {
                   </span>
                 </div>
                 <div
-                  className={`col-span-2 flex items-center justify-end text-right text-sm font-medium ${tx.isIncoming ? "text-green-600" : "text-gray-900"}`}
+                  className={`col-span-2 flex items-center justify-end text-right text-base font-medium ${tx.isIncoming ? "text-green-600" : "text-gray-900"}`}
                 >
                   <h4 className="flex items-center gap-2">
                     {tx.amount}{" "}
@@ -372,14 +372,14 @@ const WalletPage = () => {
               <img src="/assets/images/helpIcon.png" alt="help" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-gray-900">Need Help?</h4>
-              <p className="text-xs text-gray-500">
+              <h4 className="text-base font-bold text-gray-900">Need Help?</h4>
+              <p className="text-sm text-gray-500">
                 your payment information is processed securely. for any billing
                 questions, please contact our support center.
               </p>
             </div>
           </div>
-          <button className="bg-[#240457] text-white px-6 py-2 rounded-md text-xs font-semibold hover:bg-[#1a0340] transition-colors whitespace-nowrap">
+          <button className="bg-[#240457] text-white px-6 py-2 rounded-md text-sm font-semibold hover:bg-[#1a0340] transition-colors whitespace-nowrap">
             Contact Support
           </button>
         </div>

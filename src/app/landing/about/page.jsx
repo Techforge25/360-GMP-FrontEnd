@@ -29,7 +29,7 @@ const AboutPage = () => {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         {/* Intro Text */}
-        <div className="max-w-5xl mx-auto text-left md:text-center mb-16 text-sm md:text-[15px]">
+        <div className="max-w-5xl mx-auto text-left md:text-center mb-16 text-base md:text-[15px]">
           <p className="text-black/80 leading-relaxed mb-6">
             360 Global Marketplace is dedicated to revolutionizing the way
             businesses connect with suppliers and customers. Our platform
@@ -55,7 +55,7 @@ const AboutPage = () => {
           ].map((label, i) => (
             <div
               key={i}
-              className="px-6 py-2.5 rounded-full border border-gray-400 text-sm md:text-base font-semibold text-black transition-colors cursor-default bg-white"
+              className="px-6 py-2.5 rounded-full border border-gray-400 text-base md:text-xl font-semibold text-black transition-colors cursor-default bg-white"
             >
               {label}
             </div>
@@ -74,7 +74,7 @@ const AboutPage = () => {
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#240457]/80 via-transparent to-transparent flex items-end justify-center pb-8 md:pb-16">
-            <Button className="bg-white text-black hover:bg-gray-100 px-10 py-4 rounded-xl font-semibold text-sm shadow-lg">
+            <Button className="bg-white text-black hover:bg-gray-100 px-10 py-4 rounded-xl font-semibold text-base shadow-lg">
               Join Us Now →
             </Button>
           </div>
@@ -105,20 +105,20 @@ const AboutPage = () => {
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
               Vision
             </h3>
-            <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
+            <p className="text-base md:text-xl text-gray-700 leading-relaxed mb-4">
               360 Global Marketplace is dedicated to revolutionizing the way
               businesses connect with suppliers and customers. Our platform
               provides a seamless and efficient way to facilitate mutually
               beneficial relationships, driving growth and success for all
               parties involved.
             </p>
-            <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+            <p className="text-base md:text-xl text-gray-700 leading-relaxed">
               360 GLOBAL MARKETPLACE is committed to linking businesses ,
               fostering innovation, and connecting global markets that drive
               sustainable success
             </p>
             <Link href="/onboarding/role">
-              <button className="border mt-10 border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+              <button className="border mt-10 border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
                 Learn More
                 <FiArrowRight />
               </button>
@@ -142,12 +142,12 @@ const AboutPage = () => {
             <h3 className="text-xl md:text-4xl font-medium text-black mb-4">
               Mission
             </h3>
-            <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-4">
+            <p className="text-base md:text-xl text-gray-700 leading-relaxed mb-4">
               At 360 GLOBAL, we are dedicated to helping individuals,
               entreprenuers, businesses and corporations achieve their goals and
               realize their full potential.
             </p>
-            <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+            <p className="text-base md:text-xl text-gray-700 leading-relaxed">
               <span className="font-bold text-[#240457]">OUR MISSION</span> is
               to provide expert guidance and support to the small business
               owners as well as large corporations. We Bring Your Vision To The
@@ -155,7 +155,7 @@ const AboutPage = () => {
               business owners and entrepreneurs worldwide
             </p>
             <Link href="/about">
-              <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-2">
+              <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
                 Learn More
                 <FiArrowRight />
               </button>

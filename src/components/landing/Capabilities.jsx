@@ -80,7 +80,7 @@ const Capabilities = () => {
                 {card.features.map((feat, j) => (
                   <li
                     key={j}
-                    className="flex items-center gap-3 text-text-secondary text-sm"
+                    className="flex items-center gap-3 text-text-secondary text-base"
                   >
                     <FaCheckCircle className="text-accent-success" />
                     {feat}
@@ -125,7 +125,7 @@ const Capabilities = () => {
                 <h4 className="font-semibold capitalize text-black mb-1">
                   {item.title}
                 </h4>
-                <p className="text-xs text-text-secondary">{item.desc}</p>
+                <p className="text-sm text-text-secondary">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -158,7 +158,7 @@ const Capabilities = () => {
           </div>
 
           <div className="bg-[#F8FAFC] rounded-2xl p-8 md:p-12 border border-gray-100">
-            <div className="flex flex-col gap-6 items-center text-sm md:text-base text-gray-600">
+            <div className="flex flex-col gap-6 items-center text-base md:text-xl text-gray-600">
               {/* Row 1 */}
               <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 text-center">
                 <span>Buyer pays</span>

@@ -30,7 +30,7 @@ export default function ForgotPasswordPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -63,13 +63,13 @@ export default function ForgotPasswordPage() {
           <h3 className="font-bold text-lg mb-2 text-text-primary">
             Forgot Password
           </h3>
-          <p className="text-sm text-text-secondary">
+          <p className="text-base text-text-secondary">
             Please Enter Your Registered Email Address
           </p>
         </div>
 
         {error && (
-          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-3 text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
           <div className="space-y-2">
             <label
               htmlFor="email"
-              className="text-sm font-medium text-text-primary"
+              className="text-base font-medium text-text-primary"
             >
               Enter Your Email
             </label>
@@ -96,13 +96,13 @@ export default function ForgotPasswordPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-base shadow-lg shadow-brand-primary/20"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-xl shadow-lg shadow-brand-primary/20"
           >
             Request OTP
           </Button>
         </form>
 
-        <div className="text-center text-sm text-text-secondary">
+        <div className="text-center text-base text-text-secondary">
           Take me back to{" "}
           <Link
             href="/login"

@@ -142,7 +142,7 @@ const AuthNavbar = () => {
                     <Link
                       key={link.label}
                       href={link.href}
-                      className={`text-sm font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:transition-all ${
+                      className={`text-base font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:transition-all ${
                         isActive
                           ? "text-[#240457] after:w-full"
                           : "text-gray-700 hover:text-[#240457] after:w-0"
@@ -168,7 +168,7 @@ const AuthNavbar = () => {
                       className="w-5 h-5"
                     />
                     {cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-600 text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
+                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-brand-primary text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
                         {cartCount}
                       </span>
                     )}
@@ -181,7 +181,7 @@ const AuthNavbar = () => {
                     alt=""
                     className="w-4 h-5"
                   />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-600 text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#9747FF] text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
                     2
                   </span>
                 </button>
@@ -199,7 +199,7 @@ const AuthNavbar = () => {
                     alt=""
                     className="w-5 h-5"
                   />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-purple-600 text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
+                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#9747FF] text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
                     1
                   </span>
                 </Link>
@@ -210,7 +210,7 @@ const AuthNavbar = () => {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
                 >
-                  <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
+                  <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base">
                     M
                   </div>
                   <FiChevronDown
@@ -233,7 +233,7 @@ const AuthNavbar = () => {
                               ? "/dashboard/business/profile"
                               : "/dashboard/user/profile"
                           }
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiUser className="w-5 h-5 text-gray-900" />
@@ -243,7 +243,7 @@ const AuthNavbar = () => {
                         {user?.role === "business" && (
                           <Link
                             href="/dashboard/business/products"
-                            className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                            className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                             onClick={() => setIsProfileOpen(false)}
                           >
                             <FiBox className="w-5 h-5 text-gray-900" />
@@ -253,7 +253,7 @@ const AuthNavbar = () => {
 
                         <Link
                           href="/dashboard/business/wallet"
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiCreditCard className="w-5 h-5 text-gray-900" />
@@ -266,7 +266,7 @@ const AuthNavbar = () => {
                               ? "/dashboard/business/orders"
                               : "/dashboard/user/orders"
                           }
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiShoppingBag className="w-5 h-5 text-gray-900" />
@@ -279,7 +279,7 @@ const AuthNavbar = () => {
                               ? "/dashboard/business/subscriptions"
                               : "/dashboard/user/subscriptions"
                           }
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiLayers className="w-5 h-5 text-gray-900" />
@@ -288,7 +288,7 @@ const AuthNavbar = () => {
 
                         <Link
                           href="/dashboard/business/support"
-                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiHelpCircle className="w-5 h-5 text-gray-900" />
@@ -298,7 +298,7 @@ const AuthNavbar = () => {
                         <div className="h-px bg-gray-100 my-1 mx-4" />
 
                         <button
-                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
                           onClick={() => {
                             setIsProfileOpen(false);
                             setIsSwitchModalOpen(true);
@@ -309,7 +309,7 @@ const AuthNavbar = () => {
                         </button>
 
                         <button
-                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
+                          className="w-full flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
                           onClick={() => {
                             setIsProfileOpen(false);
                             setIsSignOutModalOpen(true);
@@ -329,7 +329,7 @@ const AuthNavbar = () => {
             <div className="lg:hidden flex items-center gap-4">
               <button className="text-gray-600 hover:text-indigo-600 relative">
                 <FiBell className="w-5 h-5 text-[#240457]" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-600 text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
                   2
                 </span>
               </button>
@@ -353,7 +353,7 @@ const AuthNavbar = () => {
                   <Link
                     key={link.label}
                     href={link.href}
-                    className={`block text-base font-medium px-3 py-2 rounded-md transition-colors ${
+                    className={`block text-xl font-medium px-3 py-2 rounded-md transition-colors ${
                       isActive
                         ? "text-[#240457] bg-gray-50"
                         : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
@@ -371,7 +371,7 @@ const AuthNavbar = () => {
                       ? "/dashboard/business/messages"
                       : "/dashboard/user/messages"
                   }
-                  className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md hover:bg-gray-50"
+                  className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md hover:bg-gray-50"
                   onClick={toggleMenu}
                 >
                   <MdOutlineMessage className="w-5 h-5" />
@@ -383,7 +383,7 @@ const AuthNavbar = () => {
                       ? "/dashboard/business/settings"
                       : "/dashboard/user/profile"
                   }
-                  className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md hover:bg-gray-50 mt-2"
+                  className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md hover:bg-gray-50 mt-2"
                   onClick={toggleMenu}
                 >
                   <FiUser className="w-5 h-5" />

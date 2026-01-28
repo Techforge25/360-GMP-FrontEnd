@@ -48,13 +48,13 @@ const UserMenu = ({ user }) => {
           <AvatarFallback>{name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div className="hidden text-left md:block">
-          <p className="text-sm font-semibold text-text-primary">{name}</p>
-          <p className="text-xs text-text-secondary">{role}</p>
+          <p className="text-base font-semibold text-text-primary">{name}</p>
+          <p className="text-sm text-text-secondary">{role}</p>
         </div>
         <FiChevronDown
           className={cn(
             "ml-2 transition-transform",
-            isOpen ? "rotate-180" : ""
+            isOpen ? "rotate-180" : "",
           )}
         />
       </Button>
@@ -65,7 +65,7 @@ const UserMenu = ({ user }) => {
             {menuItems.map((item, index) => (
               <button
                 key={index}
-                className="flex w-full items-center px-4 py-3 text-sm text-text-primary hover:bg-surface-muted"
+                className="flex w-full items-center px-4 py-3 text-base text-text-primary hover:bg-surface-muted"
                 onClick={() => setIsOpen(false)}
               >
                 <span className="mr-3 text-lg">{item.icon}</span>
@@ -74,7 +74,7 @@ const UserMenu = ({ user }) => {
             ))}
             <div className="my-1 h-px bg-border-light" />
             <button
-              className="flex w-full items-center px-4 py-3 text-sm text-text-primary hover:bg-surface-muted"
+              className="flex w-full items-center px-4 py-3 text-base text-text-primary hover:bg-surface-muted"
               onClick={() => setIsOpen(false)}
             >
               <span className="mr-3 text-lg">
@@ -83,7 +83,7 @@ const UserMenu = ({ user }) => {
               Switch
             </button>
             <button
-              className="flex w-full items-center px-4 py-3 text-sm text-accent-danger hover:bg-surface-muted"
+              className="flex w-full items-center px-4 py-3 text-base text-accent-danger hover:bg-surface-muted"
               onClick={() => setIsOpen(false)}
             >
               <span className="mr-3 text-lg">

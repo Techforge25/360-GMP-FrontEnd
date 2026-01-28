@@ -59,7 +59,7 @@ const ContactUsPage = () => {
           <h2 className="text-3xl md:text-4xl font-semibold text-black mb-4">
             Contact Us
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto text-sm md:text-base">
+          <p className="text-gray-500 max-w-2xl mx-auto text-base md:text-xl">
             We're here to help with demos, support, partnerships, and inquiries.
           </p>
         </div>
@@ -80,8 +80,8 @@ const ContactUsPage = () => {
                       <FiPhone className="text-indigo-900" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm">Call</h4>
-                      <p className="text-xs text-black/70">+123456797-1</p>
+                      <h4 className="font-bold text-base">Call</h4>
+                      <p className="text-sm text-black/70">+123456797-1</p>
                     </div>
                   </div>
 
@@ -90,8 +90,8 @@ const ContactUsPage = () => {
                       <FiMail className="text-indigo-900" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm">Message</h4>
-                      <p className="text-xs text-black/70">info@gmail.com</p>
+                      <h4 className="font-bold text-base">Message</h4>
+                      <p className="text-sm text-black/70">info@gmail.com</p>
                     </div>
                   </div>
 
@@ -100,8 +100,8 @@ const ContactUsPage = () => {
                       <FiMapPin className="text-indigo-900" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm">Location</h4>
-                      <p className="text-xs text-black/70 leading-relaxed">
+                      <h4 className="font-bold text-base">Location</h4>
+                      <p className="text-sm text-black/70 leading-relaxed">
                         70 Washington Square South, New York, NY 10012, United
                         States
                       </p>
@@ -117,7 +117,7 @@ const ContactUsPage = () => {
             <form className="space-y-8">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700">
                     First Name
                   </label>
                   <Input
@@ -126,7 +126,7 @@ const ContactUsPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700">
                     Last Name
                   </label>
                   <Input
@@ -138,7 +138,7 @@ const ContactUsPage = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700">
                     Email
                   </label>
                   <Input
@@ -148,7 +148,7 @@ const ContactUsPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-gray-700">
                     Phone
                   </label>
                   <Input
@@ -159,7 +159,7 @@ const ContactUsPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-700">
+                <label className="text-sm font-semibold text-gray-700">
                   Position
                 </label>
                 <Input
@@ -169,7 +169,7 @@ const ContactUsPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-700">
+                <label className="text-sm font-semibold text-gray-700">
                   Position
                 </label>
                 <Input
@@ -179,17 +179,17 @@ const ContactUsPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-semibold text-gray-700">
+                <label className="text-sm font-semibold text-gray-700">
                   Please State Your Question/Concern And One Of Our Highly
                   Skilled 360 Team Members Will Be In Contact With You.
                 </label>
                 <textarea
-                  className="w-full bg-[#F3F4F6] border-none rounded-xl p-4 min-h-[150px] text-sm focus:ring-1 focus:ring-purple-200 outline-none"
+                  className="w-full bg-[#F3F4F6] border-none rounded-xl p-4 min-h-[150px] text-base focus:ring-1 focus:ring-purple-200 outline-none"
                   placeholder="*"
                 />
               </div>
 
-              <Button className="w-full bg-[#240457] hover:bg-[#1a0340] text-white py-8 rounded-xl font-semibold text-sm transition-all shadow-lg">
+              <Button className="w-full bg-[#240457] hover:bg-[#1a0340] text-white py-8 rounded-xl font-semibold text-base transition-all shadow-lg">
                 Submit
               </Button>
             </form>
@@ -211,7 +211,7 @@ const ContactUsPage = () => {
                   onClick={() => toggleFaq(i)}
                   className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors group"
                 >
-                  <span className="text-sm md:text-base font-medium text-gray-900">
+                  <span className="text-base md:text-xl font-medium text-gray-900">
                     {item.q}
                   </span>
                   <div
@@ -223,7 +223,7 @@ const ContactUsPage = () => {
                   </div>
                 </button>
                 {openFaq === i && (
-                  <div className="px-6 pb-6 text-sm text-gray-500 leading-relaxed animate-in slide-in-from-top-2">
+                  <div className="px-6 pb-6 text-base text-gray-500 leading-relaxed animate-in slide-in-from-top-2">
                     {item.a}
                   </div>
                 )}

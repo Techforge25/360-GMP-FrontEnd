@@ -21,8 +21,10 @@ export const ChatWidget = () => {
               <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
             </div>
             <div>
-              <h4 className="text-sm font-bold text-text-primary">Messaging</h4>
-              <p className="text-xs text-text-secondary">
+              <h4 className="text-base font-bold text-text-primary">
+                Messaging
+              </h4>
+              <p className="text-sm text-text-secondary">
                 Global Manufacturing Co.
               </p>
             </div>

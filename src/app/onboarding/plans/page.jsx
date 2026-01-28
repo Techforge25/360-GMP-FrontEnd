@@ -16,7 +16,7 @@ import subscriptionAPI from "@/services/subscriptionAPI";
 const CheckItem = ({ children }) => (
   <div className="flex items-start gap-3">
     <FiCheck className="h-5 w-5 text-accent-success shrink-0 mt-0.5" />
-    <span className="text-sm text-text-secondary">{children}</span>
+    <span className="text-base text-text-secondary">{children}</span>
   </div>
 );
 
@@ -65,7 +65,7 @@ const PlanCard = ({
           <div className="flex justify-center mb-6">
             <span
               className={cn(
-                "px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1",
+                "px-4 py-1.5 rounded-full text-base font-medium flex items-center gap-1",
                 currentVariant.badge,
               )}
             >
@@ -100,7 +100,7 @@ const PlanCard = ({
         </Button>
 
         {disabled && disabledMessage && (
-          <div className="mb-6 flex items-center gap-2 text-xs text-red-500 justify-center font-medium">
+          <div className="mb-6 flex items-center gap-2 text-sm text-red-500 justify-center font-medium">
             <FiX /> {disabledMessage}
           </div>
         )}
@@ -111,7 +111,7 @@ const PlanCard = ({
         {/* Features List */}
         <div className="space-y-4">
           {features.length === 0 ? (
-            <p className="text-sm text-gray-400 italic text-center">
+            <p className="text-base text-gray-400 italic text-center">
               No features listed
             </p>
           ) : (
@@ -140,7 +140,7 @@ const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {
             Get Ready To{" "}
             <span className="text-brand-primary">Unlock {planName}</span>
           </h2>
-          <p className="text-sm text-text-secondary mb-8">
+          <p className="text-base text-text-secondary mb-8">
             Select Payment Method
           </p>
 
@@ -232,15 +232,15 @@ const ConfirmationModal = ({
           </div>
 
           <h2 className="text-xl font-bold mb-2">Subscription Confirmed!</h2>
-          <p className="text-sm text-text-secondary mb-6">{message}</p>
+          <p className="text-base text-text-secondary mb-6">{message}</p>
 
           <div className="border border-indigo-100 rounded-lg p-4 bg-indigo-50/30 mb-6">
-            <div className="text-sm font-medium mb-4 pb-2 border-b border-indigo-100">
+            <div className="text-base font-medium mb-4 pb-2 border-b border-indigo-100">
               Featured Activated
             </div>
 
             {isError ? (
-              <div className="flex items-center justify-center gap-3 text-sm text-text-secondary py-4">
+              <div className="flex items-center justify-center gap-3 text-base text-text-secondary py-4">
                 <FiX className="text-red-500 font-bold" />
                 <span className="max-w-[200px] leading-tight">
                   Business account cannot be created during trial.
@@ -248,17 +248,17 @@ const ConfirmationModal = ({
               </div>
             ) : (
               <div className="space-y-3 text-left pl-4">
-                <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <div className="flex items-center gap-2 text-base text-text-secondary">
                   <FiCheck className="text-green-500" /> Create up to 10
                   communities
                 </div>
-                <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <div className="flex items-center gap-2 text-base text-text-secondary">
                   <FiCheck className="text-green-500" /> Unlimited job postings
                 </div>
-                <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <div className="flex items-center gap-2 text-base text-text-secondary">
                   <FiCheck className="text-green-500" /> List up to 20 products
                 </div>
-                <div className="flex items-center gap-2 text-sm text-text-secondary">
+                <div className="flex items-center gap-2 text-base text-text-secondary">
                   <FiCheck className="text-green-500" /> Analytics access
                 </div>
               </div>
@@ -609,7 +609,7 @@ function PlansList() {
         ))}
       </div>
 
-      <div className="text-center mt-12 text-sm text-text-secondary flex items-center justify-center gap-2">
+      <div className="text-center mt-12 text-base text-text-secondary flex items-center justify-center gap-2">
         <IoMdInformationCircleOutline size={18} className="inline" />
         <p>All plans include a 14-day money-back guarantee.</p>
       </div>

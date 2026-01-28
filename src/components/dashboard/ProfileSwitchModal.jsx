@@ -123,7 +123,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
             {/* Source */}
             <div className="flex flex-col items-center">
               {config.sourceIcon}
-              <span className="text-sm font-medium text-gray-600 tracking-wider">
+              <span className="text-base font-medium text-gray-600 tracking-wider">
                 {config.sourceLabel}
               </span>
             </div>
@@ -136,7 +136,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
             {/* Target */}
             <div className="flex flex-col items-center">
               {config.targetIcon}
-              <span className="text-sm font-medium text-gray-600 tracking-wider">
+              <span className="text-base font-medium text-gray-600 tracking-wider">
                 {config.targetLabel}
               </span>
             </div>
@@ -151,7 +151,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
           </div>
 
           {/* Success Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-500 rounded-lg text-green-700 text-sm font-semibold mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-500 rounded-lg text-green-700 text-base font-semibold mb-8">
             <div className="bg-green-600 rounded-full p-0.5">
               <FiCheck className="w-3 h-3 text-white" />
             </div>
@@ -176,7 +176,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
           </div>
 
           {/* Footer */}
-          <div className="mt-8 text-sm text-gray-600 mb-8">
+          <div className="mt-8 text-base text-gray-600 mb-8">
             {isBusiness
               ? "Don't Have A User Profile?"
               : "Don't Have A Business Profile?"}{" "}

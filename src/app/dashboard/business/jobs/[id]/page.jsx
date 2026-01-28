@@ -48,7 +48,7 @@ export default function JobDetailsPage() {
           <div>
             <button
               onClick={() => router.back()}
-              className="flex items-center text-text-secondary hover:text-text-primary transition-colors text-sm font-medium gap-2"
+              className="flex items-center text-text-secondary hover:text-text-primary transition-colors text-base font-medium gap-2"
             >
               <FiArrowLeft /> Back
             </button>
@@ -69,7 +69,7 @@ export default function JobDetailsPage() {
                 <h1 className="text-2xl font-bold text-text-primary mb-2">
                   {job.title}
                 </h1>
-                <div className="flex flex-wrap items-center gap-x-2 text-sm">
+                <div className="flex flex-wrap items-center gap-x-2 text-base">
                   <span className="font-semibold text-brand-primary underline cursor-pointer">
                     {job.company}
                   </span>
@@ -84,7 +84,7 @@ export default function JobDetailsPage() {
                 </div>
 
                 <div className="mt-4">
-                  <div className="flex flex-wrap items-center bg-white/60 backdrop-blur-sm border border-white/50 rounded-lg overflow-hidden text-sm text-text-secondary">
+                  <div className="flex flex-wrap items-center bg-white/60 backdrop-blur-sm border border-white/50 rounded-lg overflow-hidden text-base text-text-secondary">
                     <div className="flex items-center gap-1.5 px-4 py-2">
                       <FiMapPin className="text-brand-primary" />
                       {job.location}
@@ -199,7 +199,7 @@ export default function JobDetailsPage() {
             <div className="mt-12 pt-6 border-t border-border-light">
               <Button
                 variant="outline"
-                className="text-sm font-medium flex items-center gap-2 transition-colors  px-4 py-2 rounded-lg"
+                className="text-base font-medium flex items-center gap-2 transition-colors  px-4 py-2 rounded-lg"
               >
                 Report A Job
               </Button>

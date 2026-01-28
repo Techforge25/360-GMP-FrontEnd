@@ -117,7 +117,7 @@ export default function LoginPage() {
 
       <CardContent className="space-y-6 pt-6">
         {error && (
-          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-3 text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
@@ -125,7 +125,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <label
               htmlFor="email"
-              className="text-sm font-medium text-text-primary"
+              className="text-base font-medium text-text-primary"
             >
               Enter Your Email
             </label>
@@ -143,7 +143,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-text-primary"
+              className="text-base font-medium text-text-primary"
             >
               Password
             </label>
@@ -166,12 +166,12 @@ export default function LoginPage() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="rounded border-gray-300 text-brand-primary focus:ring-brand-primary h-4 w-4"
               />
-              <span className="text-sm text-text-secondary">Remember me</span>
+              <span className="text-base text-text-secondary">Remember me</span>
             </label>
 
             <Link
               href="/forgot-password"
-              className="text-sm font-medium text-text-secondary hover:text-brand-primary"
+              className="text-base font-medium text-text-secondary hover:text-brand-primary"
             >
               Forgot password?
             </Link>
@@ -180,7 +180,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-base"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-xl"
           >
             Sign In
           </Button>
@@ -190,7 +190,7 @@ export default function LoginPage() {
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border-light" />
           </div>
-          <div className="relative flex justify-center text-xs">
+          <div className="relative flex justify-center text-sm">
             <span className="bg-surface-elevated px-2 text-text-secondary rounded-full border border-border-light">
               or
             </span>
@@ -208,7 +208,7 @@ export default function LoginPage() {
           Continue with Google
         </Button>
 
-        <div className="text-center text-sm text-text-secondary mt-4">
+        <div className="text-center text-base text-text-secondary mt-4">
           New to360GMP{" "}
           <Link
             href="/signup"

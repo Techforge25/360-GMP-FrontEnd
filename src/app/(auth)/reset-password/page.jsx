@@ -75,13 +75,13 @@ function ResetPasswordForm() {
           <h3 className="font-bold text-lg text-gray-800">
             Reset Your Password
           </h3>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 mt-1">
             Almost Done, Please Create A New Password
           </p>
         </div>
 
         {error && (
-          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-3 text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
@@ -91,7 +91,7 @@ function ResetPasswordForm() {
           <div className="space-y-2">
             <label
               htmlFor="password"
-              className="text-sm font-medium text-gray-700"
+              className="text-base font-medium text-gray-700"
             >
               New Password
             </label>
@@ -119,7 +119,7 @@ function ResetPasswordForm() {
           <div className="space-y-2">
             <label
               htmlFor="confirmPassword"
-              className="text-sm font-medium text-gray-700"
+              className="text-base font-medium text-gray-700"
             >
               Confirm Password
             </label>
@@ -146,13 +146,13 @@ function ResetPasswordForm() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-[#240457] hover:bg-[#1a0340] text-white h-11 text-base font-medium mt-4 transition-colors"
+            className="w-full bg-[#240457] hover:bg-[#1a0340] text-white h-11 text-xl font-medium mt-4 transition-colors"
           >
             Reset Password
           </Button>
         </form>
 
-        <div className="text-center text-sm text-gray-500 mt-6">
+        <div className="text-center text-base text-gray-500 mt-6">
           Take me back to{" "}
           <Link
             href="/login"

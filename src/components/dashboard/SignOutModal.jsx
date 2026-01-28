@@ -37,7 +37,7 @@ const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
           </h2>
 
           {/* Description */}
-          <p className="text-sm text-gray-600 mb-6 sm:mb-8 leading-relaxed max-w-sm mx-auto px-2">
+          <p className="text-base text-gray-600 mb-6 sm:mb-8 leading-relaxed max-w-sm mx-auto px-2">
             Logging out will end your current session. You can sign back in at
             any time to track your earnings and job posts
           </p>

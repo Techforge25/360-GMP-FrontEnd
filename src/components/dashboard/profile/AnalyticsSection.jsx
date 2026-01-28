@@ -123,7 +123,7 @@ const AnalyticsSection = () => {
         <h2 className="text-lg font-medium text-black">
           Core Profile Analytics
         </h2>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-xs font-semibold hover:bg-indigo-100 transition-colors">
+        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-sm font-semibold hover:bg-indigo-100 transition-colors">
           <p>Business Analytics</p>
           <img src="/assets/images/analyticsIcon.png" alt="" />
         </button>
@@ -143,7 +143,7 @@ const AnalyticsSection = () => {
                 <div className={`text-2xl font-semibold ${stat.iconColor}`}>
                   {stat.value}
                 </div>
-                <div className="text-xs text-black font-medium mt-1 mb-2">
+                <div className="text-sm text-black font-medium mt-1 mb-2">
                   {stat.label}
                 </div>
               </div>

@@ -170,7 +170,7 @@ const ActivitySidebar = () => {
     <div className="space-y-6">
       {/* Recent Critical Activity */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 className="text-sm font-bold text-gray-900 mb-4">
+        <h3 className="text-base font-bold text-gray-900 mb-4">
           Recent Critical Activity
         </h3>
         <div className="space-y-3">
@@ -187,14 +187,14 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-xs text-gray-500">No critical alerts</p>
+            <p className="text-sm text-gray-500">No critical alerts</p>
           )}
         </div>
       </div>
 
       {/* Recent Applicant */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 className="text-sm font-bold text-gray-900 mb-4">
+        <h3 className="text-base font-bold text-gray-900 mb-4">
           Recent Applicant
         </h3>
         <div className="space-y-4">
@@ -207,7 +207,7 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-xs text-gray-500">No recent applicants</p>
+            <p className="text-sm text-gray-500">No recent applicants</p>
           )}
         </div>
       </div>
@@ -222,7 +222,7 @@ const ActivitySidebar = () => {
             className={`w-3.5 h-3.5 ${isEditing ? "text-indigo-600" : ""}`}
           />
         </button>
-        <h3 className="text-sm font-bold text-gray-900 mb-4">Contact Info</h3>
+        <h3 className="text-base font-bold text-gray-900 mb-4">Contact Info</h3>
 
         {isEditing ? (
           <div className="space-y-3 bg-[#B4B4B433] p-3 rounded-lg">
@@ -238,7 +238,7 @@ const ActivitySidebar = () => {
                 value={formData.supportEmail}
                 onChange={handleInputChange}
                 placeholder="Support Email"
-                className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                className="flex-1 text-sm p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -253,7 +253,7 @@ const ActivitySidebar = () => {
                 value={formData.phone}
                 onChange={handleInputChange}
                 placeholder="Phone"
-                className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                className="flex-1 text-sm p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
               />
             </div>
             <div className="flex items-center gap-2">
@@ -268,7 +268,7 @@ const ActivitySidebar = () => {
                 value={formData.website}
                 onChange={handleInputChange}
                 placeholder="Website"
-                className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                className="flex-1 text-sm p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
               />
             </div>
             <div className="space-y-2 pt-2 border-t border-gray-200">
@@ -280,7 +280,7 @@ const ActivitySidebar = () => {
                   value={formData.addressLine}
                   onChange={handleInputChange}
                   placeholder="Address Line"
-                  className="flex-1 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                  className="flex-1 text-sm p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
                 />
               </div>
               <div className="flex gap-2 pl-6">
@@ -290,7 +290,7 @@ const ActivitySidebar = () => {
                   value={formData.city}
                   onChange={handleInputChange}
                   placeholder="City"
-                  className="w-1/2 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                  className="w-1/2 text-sm p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
                 />
                 <input
                   type="text"
@@ -298,13 +298,13 @@ const ActivitySidebar = () => {
                   value={formData.country}
                   onChange={handleInputChange}
                   placeholder="Country"
-                  className="w-1/2 text-xs p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
+                  className="w-1/2 text-sm p-1 text-black rounded border border-gray-300 focus:outline-none focus:border-indigo-500"
                 />
               </div>
             </div>
             <button
               onClick={handleSaveContact}
-              className="w-full mt-2 bg-[#240457] text-white py-1.5 rounded text-xs font-semibold hover:bg-indigo-900 transition-colors"
+              className="w-full mt-2 bg-[#240457] text-white py-1.5 rounded text-sm font-semibold hover:bg-indigo-900 transition-colors"
             >
               Save Changes
             </button>
@@ -331,7 +331,7 @@ const ActivitySidebar = () => {
         )}
 
         <div className="mt-6 mb-2">
-          <p className="text-xs text-[#556179] mb-3">Social Media</p>
+          <p className="text-sm text-[#556179] mb-3">Social Media</p>
           <div className="flex flex-wrap gap-2">
             {socialLinks.map((link) => {
               const Icon = getSocialIcon(link.platformName);
@@ -361,9 +361,9 @@ const ActivitySidebar = () => {
 
         {isEditing2 ? (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-xs font-semibold mb-2">Add Social Link</p>
+            <p className="text-sm font-semibold mb-2">Add Social Link</p>
             <select
-              className="w-full text-black text-xs p-1 mb-2 rounded border border-gray-300"
+              className="w-full text-black text-sm p-1 mb-2 rounded border border-gray-300"
               value={newSocialLink.platformName}
               onChange={(e) =>
                 setNewSocialLink({
@@ -381,7 +381,7 @@ const ActivitySidebar = () => {
             <input
               type="text"
               placeholder="URL"
-              className="w-full text-xs p-1 text-black mb-2 rounded border border-gray-300"
+              className="w-full text-sm p-1 text-black mb-2 rounded border border-gray-300"
               value={newSocialLink.url}
               onChange={(e) =>
                 setNewSocialLink({ ...newSocialLink, url: e.target.value })
@@ -389,7 +389,7 @@ const ActivitySidebar = () => {
             />
             <button
               onClick={handleAddSocialLink}
-              className="w-full bg-[#240457] text-white py-1 rounded text-xs"
+              className="w-full bg-[#240457] text-white py-1 rounded text-sm"
             >
               Add
             </button>
@@ -397,7 +397,7 @@ const ActivitySidebar = () => {
         ) : (
           <button
             onClick={() => setIsEditing2(true)}
-            className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-xs font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2"
+            className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2"
           >
             Add Social Link <span>+</span>
           </button>
@@ -411,7 +411,7 @@ const ActivitySidebar = () => {
             </div>
           </div>
         </div>
-        <button className="w-full py-3 bg-[#240457] text-white text-xs font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg">
+        <button className="w-full py-3 bg-[#240457] text-white text-sm font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg">
           Update Location <FiMapPin className="w-3 h-3" />
         </button>
       </div>
@@ -428,7 +428,7 @@ const ActivityItem = ({ title, time, action, severity }) => (
         className={`w-5 h-5 mt-4 mr-1 flex-shrink-0 ${severity === "high" ? "text-red-500" : "text-gray-500"}`}
       />
       <div>
-        <p className="text-xs font-semibold text-gray-800">{title}</p>
+        <p className="text-sm font-semibold text-gray-800">{title}</p>
         <div className="flex items-center gap-2">
           <span className="text-[10px] text-gray-500">({time})</span>
           <span className="text-[30px] text-gray-500">•</span>
@@ -446,7 +446,7 @@ const ActivityItem = ({ title, time, action, severity }) => (
 const ApplicantItem = ({ name, time }) => (
   <div className="flex items-center justify-between p-3 bg-green-50 border border-green-100 rounded-lg">
     <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-full flex items-center justify-center text-green-700 text-xs font-bold -mt-2">
+      <div className="w-8 h-8 rounded-full flex items-center justify-center text-green-700 text-sm font-bold -mt-2">
         <img
           src="/assets/images/newApplicantIcon.png"
           alt="alert"
@@ -476,7 +476,7 @@ const ContactItem = ({ icon: Icon, text }) => (
     <div className="mt-0.5 text-purple-900">
       <img src={Icon} alt="icon" className="w-[16px] h-[16px]" />
     </div>
-    <span className="text-xs text-[#40444C] break-all">{text}</span>
+    <span className="text-sm text-[#40444C] break-all">{text}</span>
   </li>
 );
 

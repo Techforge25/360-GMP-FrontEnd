@@ -19,23 +19,25 @@ const Footer = () => {
             <Link href="/" className="flex-shrink-0 flex items-center">
               <div className="bg-white p-2 rounded-lg">
                 <Image
-                src="/assets/images/Logo.png"
-                alt="3SIXTY Logo"
-                width={100}
-                height={50}
-                className="h-auto w-full object-contain rounded-lg min-w-[100px]"
-                priority
-              />
+                  src="/assets/images/Logo.png"
+                  alt="3SIXTY Logo"
+                  width={100}
+                  height={50}
+                  className="h-auto w-full object-contain rounded-lg min-w-[100px]"
+                  priority
+                />
               </div>
             </Link>
-            <p className="text-[#FFFFFF99] text-sm leading-relaxed max-w-[400px]">
-              Our mission is to make global trade easier, faster, safer, and more accessible for every buyer, seller, and job seeker, eliminating friction through a unified digital platform.
+            <p className="text-[#FFFFFF99] text-base leading-relaxed max-w-[400px]">
+              Our mission is to make global trade easier, faster, safer, and
+              more accessible for every buyer, seller, and job seeker,
+              eliminating friction through a unified digital platform.
             </p>
           </div>
 
           <div>
             <h3 className="font-medium text-white text-lg mb-6">Quick Links</h3>
-            <ul className="space-y-4 text-white text-sm">
+            <ul className="space-y-4 text-white text-base">
               <li>
                 <Link
                   href="/dashboard/business/businesses"
@@ -72,12 +74,14 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-medium text-white text-lg mb-6 uppercase">resources/legal</h3>
-            <ul className="space-y-4 text-white text-sm">
+            <h3 className="font-medium text-white text-lg mb-6 capitalize">
+              resources/legal
+            </h3>
+            <ul className="space-y-4 text-white text-base">
               <li className="">
                 <Link
                   href="/dashboard/business/businesses"
-                  className="hover:text-white transition-colors uppercase"
+                  className="hover:text-white transition-colors "
                 >
                   help center
                 </Link>
@@ -85,7 +89,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/dashboard/business/marketplace"
-                  className="hover:text-white transition-colors uppercase"
+                  className="hover:text-white transition-colors "
                 >
                   community guidelines
                 </Link>
@@ -93,7 +97,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/dashboard/business/jobs"
-                  className="hover:text-white transition-colors uppercase"
+                  className="hover:text-white transition-colors "
                 >
                   privacy policy
                 </Link>
@@ -101,7 +105,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/dashboard/business/community"
-                  className="hover:text-white transition-colors uppercase"
+                  className="hover:text-white transition-colors "
                 >
                   disclaimer
                 </Link>
@@ -110,8 +114,10 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="font-medium text-white text-lg mb-6 uppercase">contact us</h3>
-            <ul className="space-y-4 text-white text-sm">
+            <h3 className="font-medium text-white text-lg mb-6 capitalize">
+              contact us
+            </h3>
+            <ul className="space-y-4 text-white text-base">
               <li className="">
                 <Link
                   href="/dashboard/business/businesses"
@@ -130,31 +136,33 @@ const Footer = () => {
                 </Link>
               </li>
               <div className="flex gap-2">
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
-              >
-                <FaLinkedinIn className="text-white w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
-              >
-                <FaFacebookF className="text-white w-4 h-4" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
-              >
-                <FaInstagram className="text-white w-4 h-4" />
-              </a>
-            </div>
+                <a
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
+                >
+                  <FaLinkedinIn className="text-white w-4 h-4" />
+                </a>
+                <a
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
+                >
+                  <FaFacebookF className="text-white w-4 h-4" />
+                </a>
+                <a
+                  href="#"
+                  className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
+                >
+                  <FaInstagram className="text-white w-4 h-4" />
+                </a>
+              </div>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-indigo-900/50 pt-8 gap-4 text-xs text-[#FFFFFF99]">
-          <p className="text-center">© 2024 3SIXTY Global Marketplace. All rights reserved.</p>
+        <div className="border-t border-indigo-900/50 pt-8 gap-4 text-sm text-[#FFFFFF99]">
+          <p className="text-center">
+            © 2024 3SIXTY Global Marketplace. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

@@ -65,7 +65,9 @@ export default function SupportPage() {
             <div
               key={index}
               className={`border border-t-gray-200 border-r-gray-200 border-b-gray-200 border-l-gray-200 rounded-xl transition-all duration-300 ${
-                openIndex === index ? "bg-purple-50/30 border-b-4 border-b-purple-500" : "bg-white"
+                openIndex === index
+                  ? "bg-purple-50/30 border-b-4 border-b-purple-500"
+                  : "bg-white"
               }`}
             >
               <button
@@ -93,7 +95,7 @@ export default function SupportPage() {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <p className="text-gray-500 text-sm leading-relaxed">
+                  <p className="text-gray-500 text-base leading-relaxed">
                     {faq.answer}
                   </p>
                 </div>
@@ -117,11 +119,11 @@ export default function SupportPage() {
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               Live Chat
             </h3>
-            <p className="text-sm text-black mb-6 flex-grow leading-relaxed">
+            <p className="text-base text-black mb-6 flex-grow leading-relaxed">
               Our Team Is Available 24/7 To Offer Quick Help And Guidance With
               Any Questions Or Issues You Might Have.
             </p>
-            <button className="w-full bg-[#1E0B5D] text-white rounded-lg py-2 text-sm font-medium hover:bg-[#150840] transition-colors">
+            <button className="w-full bg-[#1E0B5D] text-white rounded-lg py-2 text-base font-medium hover:bg-[#150840] transition-colors">
               Start Chat
             </button>
           </div>
@@ -134,11 +136,11 @@ export default function SupportPage() {
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               Email Support
             </h3>
-            <p className="text-sm text-black mb-6 flex-grow leading-relaxed">
+            <p className="text-base text-black mb-6 flex-grow leading-relaxed">
               Expect A Response Within 24 Hours. Email Support Is Ideal For
               Non-Urgent Issues, Detailed Questions, Or Follow-Up Requests.
             </p>
-            <button className="w-full bg-white border border-gray-200 text-[#1E0B5D] rounded-lg py-2 text-sm font-medium hover:bg-gray-50 transition-colors">
+            <button className="w-full bg-white border border-gray-200 text-[#1E0B5D] rounded-lg py-2 text-base font-medium hover:bg-gray-50 transition-colors">
               Email us
             </button>
           </div>
@@ -151,11 +153,11 @@ export default function SupportPage() {
             <h3 className="text-lg font-semibold text-gray-800 mb-2">
               Call Support
             </h3>
-            <p className="text-sm text-black mb-6 flex-grow leading-relaxed">
+            <p className="text-base text-black mb-6 flex-grow leading-relaxed">
               Call Our Support Team Monday-Friday, 9 AM-5 PM EST At+1 (555)
               123-4567. We're Here To Help With Any Questions.
             </p>
-            <button className="w-full bg-white border border-gray-200 text-[#1E0B5D] rounded-lg py-2 text-sm font-medium hover:bg-gray-50 transition-colors">
+            <button className="w-full bg-white border border-gray-200 text-[#1E0B5D] rounded-lg py-2 text-base font-medium hover:bg-gray-50 transition-colors">
               Call Us Now
             </button>
           </div>
@@ -169,22 +171,24 @@ export default function SupportPage() {
         <form className="space-y-6 border-t pt-6 border-gray-200">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-900">
+              <label className="text-base font-semibold text-gray-900">
                 Subject
               </label>
               <input
                 type="text"
                 placeholder="10% Platform Fee Calculation Error - Order #GMP-8821"
-                className="w-full border border-gray-200 rounded-lg p-3 mt-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1E0B5D] focus:border-transparent transition-all"
+                className="w-full border border-gray-200 rounded-lg p-3 mt-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1E0B5D] focus:border-transparent transition-all"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-900">
+              <label className="text-base font-semibold text-gray-900">
                 Category
               </label>
               <div className="relative mt-2 text-gray-900">
-                <select className="w-full text-xs appearance-none border border-gray-200 rounded-lg p-3 text-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#1E0B5D] focus:border-transparent transition-all pr-10">
-                  <option className="text-gray-900">Wallet & Payments (Billing)</option>
+                <select className="w-full text-sm appearance-none border border-gray-200 rounded-lg p-3 text-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-[#1E0B5D] focus:border-transparent transition-all pr-10">
+                  <option className="text-gray-900">
+                    Wallet & Payments (Billing)
+                  </option>
                   <option className="text-gray-900">Order Issues</option>
                   <option className="text-gray-900">Profile & Account</option>
                   <option className="text-gray-900">Other</option>
@@ -198,26 +202,26 @@ export default function SupportPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-900">
+            <label className="text-base font-semibold text-gray-900">
               Description
             </label>
             <textarea
               rows={4}
               placeholder="I Am Writing Regarding Order #GMP-8821 For The Industrial Smart Watch Units. The Gross Sale Was $5,000, So The 10% Fee Should Be $500, Leaving A Net Balance Of $4,500. However, My Wallet Is Showing A Net Credit Of Only $4,350. Please Review The Transaction Ledger And Correct The Discrepancy. I Have Attached A Screenshot Of The Order Summary For Your Reference."
-              className="w-full mt-2 border border-gray-200 rounded-lg p-3 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1E0B5D] focus:border-transparent transition-all resize-none"
+              className="w-full mt-2 border border-gray-200 rounded-lg p-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1E0B5D] focus:border-transparent transition-all resize-none"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-gray-900">
+            <label className="text-base font-semibold text-gray-900">
               Attached File (Optional)
             </label>
             <div className="border-2 mt-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:border-gray-400 hover:bg-gray-50 transition-colors cursor-pointer">
               <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 mb-3">
                 <Upload size={20} />
               </div>
-              <p className="text-xs font-medium text-gray-900">Upload a file</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-sm font-medium text-gray-900">Upload a file</p>
+              <p className="text-sm text-gray-500 mt-1">
                 PNG, JPG, PDF up to 10MB
               </p>
               <input type="file" className="hidden" />
@@ -227,7 +231,7 @@ export default function SupportPage() {
           <div className="flex justify-center pt-2">
             <button
               type="submit"
-              className="bg-[#1E0B5D] text-white rounded-lg px-8 py-3 text-sm font-medium hover:bg-[#150840] transition-colors flex items-center gap-2"
+              className="bg-[#1E0B5D] text-white rounded-lg px-8 py-3 text-base font-medium hover:bg-[#150840] transition-colors flex items-center gap-2"
             >
               Submit <ArrowRight size={16} />
             </button>

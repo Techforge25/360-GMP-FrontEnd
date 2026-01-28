@@ -47,8 +47,10 @@ const FeatureProduct = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semiboldz text-gray-900">Feature Product</h2>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#240457] rounded-md text-xs font-medium hover:bg-gray-100 transition-colors">
+        <h2 className="text-xl font-semiboldz text-gray-900">
+          Feature Product
+        </h2>
+        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#240457] rounded-md text-sm font-medium hover:bg-gray-100 transition-colors">
           Manage Featured Products
           <img src="/assets/images/manageIcon.png" alt="" />
         </button>
@@ -80,26 +82,26 @@ const FeatureProduct = () => {
 
               <div className="w-32 h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
                 {/* Placeholder for Product Image */}
-                <span className="text-xs">Product Image</span>
+                <span className="text-sm">Product Image</span>
               </div>
             </div>
 
             <div className="p-4">
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">
+              <h3 className="font-semibold text-gray-900 text-base mb-1">
                 {product.name}
               </h3>
-              <p className="text-xs text-gray-500 line-clamp-2 mb-3">
+              <p className="text-sm text-gray-500 line-clamp-2 mb-3">
                 {product.desc}
               </p>
 
-              <div className="flex items-center justify-between text-xs mb-4">
+              <div className="flex items-center justify-between text-sm mb-4">
                 <span className="text-gray-500">MOQ: {product.moq}</span>
                 <span className="text-gray-500 font-semibold">
                   USD {product.price}
                 </span>
               </div>
 
-              <button className="w-full py-2 border border-[#240457] rounded-lg text-xs font-semibold text-[#240457] hover:bg-gray-50 transition-all">
+              <button className="w-full py-2 border border-[#240457] rounded-lg text-sm font-semibold text-[#240457] hover:bg-gray-50 transition-all">
                 View Product
               </button>
             </div>

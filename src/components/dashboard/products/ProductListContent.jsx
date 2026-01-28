@@ -139,7 +139,7 @@ const ProductListContent = ({ isProfileView = false }) => {
     <div className={isProfileView ? "bg-gray-50" : "bg-gray-50"}>
       {!isProfileView && (
         <>
-          <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <p className="text-gray-500 text-base max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             My Product
           </p>
           {/* Hero / Header Section */}
@@ -158,7 +158,7 @@ const ProductListContent = ({ isProfileView = false }) => {
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
                 My Products Management
               </h1>
-              <p className="text-white text-sm md:text-base mt-4">
+              <p className="text-white text-base md:text-xl mt-4">
                 Manage Your Product & See Product Peformance
               </p>
 
@@ -174,7 +174,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                     />
                   </div>
                   <div className="flex items-center pr-2">
-                    <button className="h-10 px-8 bg-[#2e1065] text-white text-sm font-semibold rounded-md hover:bg-[#1e0a45] transition-colors">
+                    <button className="h-10 px-8 bg-[#2e1065] text-white text-base font-semibold rounded-md hover:bg-[#1e0a45] transition-colors">
                       Search
                     </button>
                   </div>
@@ -195,15 +195,15 @@ const ProductListContent = ({ isProfileView = false }) => {
             <div className="flex items-start gap-3 mb-4 md:mb-0">
               <FiAlertCircle className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
               <div>
-                <h3 className="text-red-600 font-semibold text-sm mb-1">
+                <h3 className="text-red-600 font-semibold text-base mb-1">
                   Inventory Alert
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-gray-600 text-base">
                   Check for products below minimum safety stock levels.
                 </p>
               </div>
             </div>
-            <button className="px-4 py-3 bg-red-100 text-red-600 text-xs font-semibold rounded hover:bg-red-200 transition-colors border border-red-600">
+            <button className="px-4 py-3 bg-red-100 text-red-600 text-sm font-semibold rounded hover:bg-red-200 transition-colors border border-red-600">
               Update Inventory
             </button>
           </div>
@@ -213,7 +213,7 @@ const ProductListContent = ({ isProfileView = false }) => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
             <h2 className="text-xl font-semibold text-gray-900">My Products</h2>
-            <span className="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs rounded-full flex items-center gap-1">
+            <span className="px-3 py-1 bg-white border border-gray-200 text-gray-600 text-sm rounded-full flex items-center gap-1">
               {products.length} records found{" "}
               <span className="cursor-pointer hover:text-gray-800">×</span>
             </span>
@@ -221,9 +221,9 @@ const ProductListContent = ({ isProfileView = false }) => {
 
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-black">Inventory Status</span>
+              <span className="text-base text-black">Inventory Status</span>
               <select
-                className="border border-gray-300 rounded-md text-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white"
+                className="border border-gray-300 rounded-md text-base py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white"
                 value={stockLevelFilter}
                 onChange={(e) => setStockLevelFilter(e.target.value)}
               >
@@ -234,9 +234,9 @@ const ProductListContent = ({ isProfileView = false }) => {
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-black">Product Category</span>
+              <span className="text-base text-black">Product Category</span>
               <select
-                className="border border-gray-300 rounded-md text-sm py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white"
+                className="border border-gray-300 rounded-md text-base py-1.5 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white"
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
@@ -262,7 +262,7 @@ const ProductListContent = ({ isProfileView = false }) => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                   activeTab === tab.id
                     ? "bg-[#2e1065] text-white"
                     : "bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100"
@@ -278,7 +278,7 @@ const ProductListContent = ({ isProfileView = false }) => {
               setEditingProduct(null);
               setIsAddModalOpen(true);
             }}
-            className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center gap-2"
+            className="flex-shrink-0 bg-[#2e1065] text-white text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center gap-2"
           >
             Create A New Product <span>→</span>
           </button>
@@ -287,7 +287,7 @@ const ProductListContent = ({ isProfileView = false }) => {
         {/* Product List Table */}
         <div className="bg-white shadow-sm overflow-hidden mb-8">
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-[#F0F0F0] border-b border-gray-100 text-xs font-semibold text-gray-500">
+          <div className="grid grid-cols-12 gap-4 px-6 py-4 bg-[#F0F0F0] border-b border-gray-100 text-sm font-semibold text-gray-500">
             <div className="col-span-1 flex items-center">
               <input
                 type="checkbox"
@@ -339,7 +339,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                     )}
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 leading-tight mb-0.5">
+                    <h3 className="text-base font-medium text-gray-900 leading-tight mb-0.5">
                       {product.title}
                     </h3>
                     <p className="text-[12px] text-[#240457] truncate">
@@ -349,7 +349,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                 </div>
 
                 {/* MOQ & Price */}
-                <div className="col-span-2 text-xs">
+                <div className="col-span-2 text-sm">
                   <p className="text-gray-600 mb-1">
                     MOQ:{product.minOrderQty}
                   </p>
@@ -361,7 +361,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                 {/* Status */}
                 <div className="col-span-2">
                   <span
-                    className={`inline-flex items-center px-3 py-2 rounded-full text-xs font-medium capitalize
+                    className={`inline-flex items-center px-3 py-2 rounded-full text-sm font-medium capitalize
                     ${product.status === "approved" ? "bg-green-100 text-green-800" : ""}
                     ${product.status === "pending" ? "bg-yellow-100 text-yellow-800" : ""}
                     ${product.status === "rejected" ? "bg-red-100 text-red-800" : ""}
@@ -373,7 +373,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                 </div>
 
                 {/* Stock */}
-                <div className="col-span-2 text-xs">
+                <div className="col-span-2 text-sm">
                   <span
                     className={`inline-block px-3 py-2 rounded font-medium mb-1 capitalize
                      ${product.stockFlag === "out-of-stock" ? "bg-red-100 text-red-800" : ""}
@@ -387,7 +387,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                 </div>
 
                 {/* SKU / Units */}
-                <div className="col-span-1 text-xs text-gray-600 font-medium">
+                <div className="col-span-1 text-sm text-gray-600 font-medium">
                   {product.stockQty} Units
                 </div>
 
@@ -426,7 +426,7 @@ const ProductListContent = ({ isProfileView = false }) => {
             <button
               onClick={handleLoadMore}
               disabled={loading}
-              className="flex-shrink-0 bg-[#2e1065] text-white text-xs font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              className="flex-shrink-0 bg-[#2e1065] text-white text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? "Loading..." : "Load More"}
             </button>

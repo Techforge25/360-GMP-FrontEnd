@@ -60,7 +60,7 @@ const BusinessGrid = () => {
             <h2 className="text-2xl font-bold text-indigo-950 mb-2">
               Businesses
             </h2>
-            <p className="text-sm text-gray-500">Loading businesses...</p>
+            <p className="text-base text-gray-500">Loading businesses...</p>
           </div>
         </div>
       </section>
@@ -76,14 +76,14 @@ const BusinessGrid = () => {
           <h2 className="text-2xl font-semibold mx-auto text-black mb-2 max-w-sm mb-2">
             Businesses
           </h2>
-          <p className="text-sm text-gray-900">
+          <p className="text-base text-gray-900">
             Explore verified businesses around the world.
           </p>
         </div>
 
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 max-w-2xl mx-auto">
-            <p className="text-red-600 text-sm text-center">
+            <p className="text-red-600 text-base text-center">
               <strong>Error:</strong> {error}
             </p>
           </div>
@@ -132,9 +132,9 @@ const BusinessGrid = () => {
                         alt=""
                         className="w-4 h-4"
                       />
-                      <h3 className="text-xs text-gray-500 mt-1">{biz.name}</h3>
+                      <h3 className="text-sm text-gray-500 mt-1">{biz.name}</h3>
                     </div>
-                    <div className="flex items-center text-xs text-gray-500 mt-1">
+                    <div className="flex items-center text-sm text-gray-500 mt-1">
                       <FiMapPin className="mr-1 w-3 h-3 text-black" />
                       {biz.location}
                     </div>
@@ -178,7 +178,7 @@ const BusinessGrid = () => {
         <div className="flex justify-center mt-10">
           <Link
             href="/dashboard/business/businesses"
-            className="px-6 py-2 bg-white border border-gray-300 rounded-xl  text-sm font-medium text-gray-900 hover:bg-gray-50 shadow-sm"
+            className="px-6 py-2 bg-white border border-gray-300 rounded-xl  text-base font-medium text-gray-900 hover:bg-gray-50 shadow-sm"
           >
             Browse All Businesses
           </Link>

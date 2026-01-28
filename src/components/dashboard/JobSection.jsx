@@ -137,13 +137,13 @@ const JobSection = () => {
 
               {/* Job Details */}
               <div className="flex-1">
-                <h3 className="font-semibold mb-1 text-gray-900 text-base">
+                <h3 className="font-semibold mb-1 text-gray-900 text-xl">
                   {job.title}
                 </h3>
-                <p className="text-sm text-[#240457] mb-3">{job.company}</p>
+                <p className="text-base text-[#240457] mb-3">{job.company}</p>
 
                 {/* Job Meta Info */}
-                <div className="flex flex-wrap gap-3 text-xs text-gray-600 mb-4">
+                <div className="flex flex-wrap gap-3 text-sm text-gray-600 mb-4">
                   <span className="flex items-center gap-1">
                     <img src="/assets/images/pinIcon.png" alt="" />
                     {job.location}
@@ -159,7 +159,7 @@ const JobSection = () => {
                 </div>
 
                 {/* View Details Button */}
-                <button className="px-4 mt-6 py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-sm flex items-center gap-2">
+                <button className="px-4 mt-6 py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base flex items-center gap-2">
                   View Details
                   <svg
                     className="w-4 h-4"

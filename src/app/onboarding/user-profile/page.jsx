@@ -36,7 +36,7 @@ const Step1 = ({ formData, handleChange }) => (
     <div>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-sm font-medium">Full Name</label>
+          <label className="text-base font-medium">Full Name</label>
           <Input
             placeholder="Alex Morgan"
             value={formData.fullName}
@@ -44,10 +44,10 @@ const Step1 = ({ formData, handleChange }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Current Title / Role</label>
+          <label className="text-base font-medium">Current Title / Role</label>
           <div className="relative">
             <select
-              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
               placeholder="e.g Supply Chain Analyst"
               value={formData.currentTitle || ""}
               onChange={(e) => handleChange("currentTitle", e.target.value)}
@@ -63,7 +63,7 @@ const Step1 = ({ formData, handleChange }) => (
           </div>
         </div>
         <div className="space-y-2">
-          <label className="text-sm font-medium">Contact Phone Number</label>
+          <label className="text-base font-medium">Contact Phone Number</label>
           <Input
             placeholder="+128895949965"
             value={formData.phone || ""}
@@ -71,13 +71,13 @@ const Step1 = ({ formData, handleChange }) => (
           />
         </div>
         <div className="space-y-2">
-          {/* <label className="text-sm font-medium">
+          {/* <label className="text-base font-medium">
             Location (City,State,Country)
           </label> */}
           <div>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Country</label>
+                <label className="text-base font-medium">Country</label>
                 <Input
                   placeholder="e.g Canada"
                   value={formData.country || ""}
@@ -85,7 +85,7 @@ const Step1 = ({ formData, handleChange }) => (
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">City</label>
+                <label className="text-base font-medium">City</label>
                 <Input
                   placeholder="Ottawa"
                   value={formData.city || ""}
@@ -93,7 +93,7 @@ const Step1 = ({ formData, handleChange }) => (
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Address Line</label>
+                <label className="text-base font-medium">Address Line</label>
                 <Input
                   placeholder="street address"
                   value={formData.address || ""}
@@ -107,9 +107,9 @@ const Step1 = ({ formData, handleChange }) => (
     </div>
 
     <div className="space-y-2">
-      <label className="text-sm font-medium">Description</label>
+      <label className="text-base font-medium">Description</label>
       <textarea
-        className="w-full min-h-[150px] rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+        className="w-full min-h-[150px] rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
         placeholder="..."
         value={formData.bio || ""}
         onChange={(e) => handleChange("bio", e.target.value)}
@@ -190,7 +190,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium">
+        <label className="text-base font-medium">
           Key Skills/Expertise(Mandatory)
         </label>
         <Input
@@ -201,20 +201,20 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
       </div>
 
       <div className="space-y-4">
-        <label className="text-sm font-medium">Education</label>
+        <label className="text-base font-medium">Education</label>
 
-        <p className="text-xs text-text-secondary">
+        <p className="text-sm text-text-secondary">
           {formData.education.length} Education Entries Added
         </p>
 
         <div className="space-y-2">
           {formData.education.map((edu, index) => (
             <div key={index} className="border rounded-lg p-4 bg-surface">
-              <p className="text-sm font-medium">
+              <p className="text-base font-medium">
                 {edu.degree} in {edu.fieldOfStudy}
               </p>
-              <p className="text-xs text-text-secondary">{edu.institution}</p>
-              <p className="text-xs text-text-secondary">
+              <p className="text-sm text-text-secondary">{edu.institution}</p>
+              <p className="text-sm text-text-secondary">
                 {edu.startDate} – {edu.isCurrent ? "Present" : edu.endDate}
               </p>
             </div>
@@ -230,7 +230,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
             <div className="w-8 h-8 rounded-md bg-gray-100 flex items-center justify-center">
               <FiPlus />
             </div>
-            <span className="text-sm font-medium">Add Education</span>
+            <span className="text-base font-medium">Add Education</span>
           </button>
         )}
 
@@ -290,7 +290,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               />
             </div>
 
-            <label className="flex items-center gap-2 text-sm">
+            <label className="flex items-center gap-2 text-base">
               <input
                 type="checkbox"
                 checked={educationDraft.isCurrent}
@@ -314,7 +314,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
             />
 
             <textarea
-              className="w-full min-h-[80px] rounded-md border border-border-light px-3 py-2 text-sm"
+              className="w-full min-h-[80px] rounded-md border border-border-light px-3 py-2 text-base"
               placeholder="Description"
               value={educationDraft.description}
               onChange={(e) =>
@@ -344,19 +344,21 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
 const Step3 = ({ formData, handleChange }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div className="space-y-2">
-      <label className="text-sm font-medium">Target Job Title</label>
+      <label className="text-base font-medium">Target Job Title</label>
       <Input
         placeholder="e.g Supply Chain Analyst"
         value={formData.jobTitle || ""}
         onChange={(e) => handleChange("jobTitle", e.target.value)}
       />
-      <p className="text-xs text-text-secondary">
+      <p className="text-sm text-text-secondary">
         This Focus Your Job Recomendation
       </p>
     </div>
 
     <div>
-      <label className="text-sm font-medium mb-3 block">Employment Type</label>
+      <label className="text-base font-medium mb-3 block">
+        Employment Type
+      </label>
       <div className="space-y-3">
         {["Full Time", "Remote", "Contract", "Hybrid", "Part-Time"].map(
           (type) => (
@@ -377,7 +379,7 @@ const Step3 = ({ formData, handleChange }) => (
                   }}
                 />
               </div>
-              <span className="text-sm text-text-secondary font-medium">
+              <span className="text-base text-text-secondary font-medium">
                 {type}
               </span>
             </label>
@@ -387,7 +389,7 @@ const Step3 = ({ formData, handleChange }) => (
     </div>
 
     <div>
-      <label className="text-sm font-medium mb-2 block">
+      <label className="text-base font-medium mb-2 block">
         Preferred Annual Salary Range (USD)
       </label>
       <div className="grid grid-cols-2 gap-4">
@@ -404,9 +406,9 @@ const Step3 = ({ formData, handleChange }) => (
       </div>
     </div>
 
-    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-sm text-orange-800">
+    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-base text-orange-800">
       <div className="pt-0.5">
-        <div className="w-4 h-4 rounded-full bg-orange-200 flex items-center justify-center text-xs font-bold">
+        <div className="w-4 h-4 rounded-full bg-orange-200 flex items-center justify-center text-sm font-bold">
           !
         </div>
       </div>
@@ -589,7 +591,7 @@ export default function UserProfilePage() {
 
         <CardContent className="p-8 pt-4">
           {error && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm text-center">
+            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-base text-center">
               {error}
             </div>
           )}

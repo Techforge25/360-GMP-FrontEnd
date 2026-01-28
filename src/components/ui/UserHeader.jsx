@@ -36,16 +36,16 @@ const UserHeader = ({ user }) => {
           <div className="flex items-center justify-center gap-2 md:justify-start">
             <h2 className="text-2xl font-bold">{name}</h2>
             {isVerified && (
-              <span className="flex items-center text-xs text-blue-600">
+              <span className="flex items-center text-sm text-blue-600">
                 <MdVerified className="mr-1" /> Verified ({verificationYears}yr)
               </span>
             )}
-            <span className="text-xs text-muted-foreground">
+            <span className="text-sm text-muted-foreground">
               | CAN {rating}/{5.0} ({reviewCount})
             </span>
           </div>
 
-          <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground md:justify-start">
+          <div className="mt-1 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-base text-muted-foreground md:justify-start">
             <span className="flex items-center gap-1">{role}</span>
             <span className="hidden md:inline">•</span>
             <span className="flex items-center gap-1">{industry}</span>

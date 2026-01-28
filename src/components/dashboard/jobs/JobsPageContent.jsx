@@ -298,11 +298,11 @@ export default function JobsPageContent() {
                   Showing {jobs.length} of {totalJobs} Jobs
                 </p>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-700">Sort By</span>
+                  <span className="text-base text-gray-700">Sort By</span>
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="text-sm bg-transparent font-medium border border-gray-200 rounded-md p-2 text-text-primary focus:ring-0 cursor-pointer outline-none"
+                    className="text-base bg-transparent font-medium border border-gray-200 rounded-md p-2 text-text-primary focus:ring-0 cursor-pointer outline-none"
                   >
                     <option value="newest">Newest</option>
                     <option value="oldest">Oldest</option>
@@ -332,7 +332,7 @@ export default function JobsPageContent() {
                   <button
                     onClick={loadMoreJobs}
                     disabled={loadingMore}
-                    className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-6 py-2 bg-white border border-gray-300 rounded-lg text-base font-medium text-gray-700 hover:bg-gray-50 hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
                     {loadingMore ? (
                       <>

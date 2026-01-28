@@ -33,7 +33,7 @@ const ProfileCard = ({
     <Card
       className={cn(
         "group relative w-full max-w-sm overflow-hidden transition-all duration-300 hover:shadow-lg",
-        className
+        className,
       )}
     >
       <div
@@ -53,13 +53,13 @@ const ProfileCard = ({
           {role}
         </Badge>
 
-        <p className="line-clamp-3 text-sm text-text-secondary">
+        <p className="line-clamp-3 text-base text-text-secondary">
           {description}
         </p>
 
         {/* Hover overlay or action could go here if needed per design */}
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          <button className="rounded-full bg-white px-6 py-2 text-sm font-semibold text-black transition-transform duration-200 hover:scale-105">
+          <button className="rounded-full bg-white px-6 py-2 text-base font-semibold text-black transition-transform duration-200 hover:scale-105">
             View Profile
           </button>
         </div>

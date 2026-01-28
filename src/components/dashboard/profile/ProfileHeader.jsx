@@ -166,7 +166,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 
   return (
     <div className="bg-white border-b border-gray-200">
-      <p className="text-gray-500 text-sm max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <p className="text-gray-500 text-base max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         Home <span className="text-[#240457]">/ {profileData.companyName}</span>
       </p>
       {/* Cover Image */}
@@ -182,7 +182,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           className="object-cover"
         />
         {newBanner && (
-          <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-medium">
+          <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium">
             New banner selected - Click "Update Profile" to save
           </div>
         )}
@@ -194,14 +194,14 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           className="hidden"
         />
         <div className="absolute bottom-4 right-4 flex gap-3">
-          <button className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-2">
+          <button className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-2">
             <img src="/assets/images/eyeIcon.png" alt="" />
             View as a user
           </button>
           <button
             onClick={handleBannerClick}
             disabled={isUploadingBanner}
-            className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             <img src="/assets/images/cameraIcon.png" alt="" />
             {isUploadingBanner ? "Uploading..." : "Update cover"}
@@ -210,7 +210,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
             <button
               onClick={handleUpdateProfile}
               disabled={isUpdating || (!newLogo && !newBanner)}
-              className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-900 transition-colors shadow-sm flex items-center gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-base font-medium hover:bg-indigo-900 transition-colors shadow-sm flex items-center gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <img src="/assets/images/updateProfileIcon.png" alt="" />
               {isUpdating ? "Updating..." : "Update Profile"}
@@ -236,7 +236,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                 />
                 {newLogo && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white text-xs font-medium text-center px-2">
+                    <span className="text-white text-sm font-medium text-center px-2">
                       New logo
                     </span>
                   </div>
@@ -263,7 +263,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         </div>
         <div className="flex-1 pt-4 text-center sm:text-left">
           <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-4">
-            <div className="flex flex-col flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-3 text-sm text-gray-500">
+            <div className="flex flex-col flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-3 text-base text-gray-500">
               <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center sm:justify-start gap-2">
                 {profileData.companyName}
                 {profileData.isVerified && (
@@ -271,7 +271,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                 )}
               </h1>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-2 text-sm text-gray-500 mb-12">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-2 text-base text-gray-500 mb-12">
                 <div className="flex items-center gap-1.5">
                   <img src="/assets/images/employeesIcon.png" alt="" />
                   <span>{profileData.companySize || "N/A"}</span>
@@ -345,7 +345,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 const TabButton = ({ label, src, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${active ? "border-[#240457] text-[#240457]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+    className={`flex items-center gap-2 pb-4 text-base font-medium border-b-2 transition-colors whitespace-nowrap ${active ? "border-[#240457] text-[#240457]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
   >
     <img src={src} alt={label} className="w-4 h-4" />
     {label}

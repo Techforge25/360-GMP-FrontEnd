@@ -218,7 +218,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
+                    className="flex-1 bg-transparent border-none focus:outline-none text-base text-gray-700 placeholder:text-gray-400"
                   />
                 </div>
 
@@ -228,7 +228,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   <select
                     value={industry}
                     onChange={(e) => setIndustry(e.target.value)}
-                    className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 appearance-none cursor-pointer"
+                    className="flex-1 bg-transparent border-none focus:outline-none text-base text-gray-700 appearance-none cursor-pointer"
                   >
                     <option value="">Industry</option>
                     <option value="technology">Technology</option>
@@ -244,7 +244,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   <select
                     value={region}
                     onChange={(e) => setRegion(e.target.value)}
-                    className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 appearance-none cursor-pointer"
+                    className="flex-1 bg-transparent border-none focus:outline-none text-base text-gray-700 appearance-none cursor-pointer"
                   >
                     <option value="">Region</option>
                     <option value="north-america">North America</option>
@@ -257,7 +257,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                 {/* Search Button */}
                 <button
                   onClick={handleSearch}
-                  className="px-4 py-3 cursor-pointer bg-purple-900 hover:bg-purple-800 text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 sm:w-auto w-full"
+                  className="px-4 py-3 cursor-pointer bg-brand-primary hover:bg-brand-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 sm:w-auto w-full"
                 >
                   <FaChevronRight className="w-4 h-4" />
                 </button>
@@ -275,17 +275,17 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
               <h2 className="text-3xl font-semibold text-gray-900">
                 Communities
               </h2>
-              <p className="text-gray-600 mt-1 text-sm">
+              <p className="text-gray-600 mt-1 text-base">
                 Discover Active Groups Matching Your Expertise
               </p>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Sort By</span>
+                <span className="text-base text-gray-600">Sort By</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 bg-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                  className="px-4 py-2 border border-gray-300 bg-white rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                 >
                   <option value="all">All</option>
                   <option value="public">Public</option>
@@ -294,7 +294,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                 </select>
               </div>
               {canCreateCommunity && (
-                <button className="px-6 py-2 bg-purple-900 text-white rounded-lg font-medium hover:bg-purple-800 transition-colors">
+                <button className="px-6 py-2 bg-brand-primary text-white rounded-lg font-medium hover:bg-brand-primary/90 transition-colors">
                   Create a Community
                 </button>
               )}
@@ -378,7 +378,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                       </div>
                     </div>
 
-                    <p className="text-sm text-gray-600 mb-6 line-clamp-2 min-h-[40px]">
+                    <p className="text-base text-gray-600 mb-6 line-clamp-2 min-h-[40px]">
                       {community.description ||
                         community.purpose ||
                         "Creating sustainable place for tech and it professional and corporates."}
@@ -401,7 +401,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
                     {/* View Community Button */}
                     <Link href={`/community/${community._id}`}>
-                      <button className="w-full py-2.5 border-2 border-[#240457] rounded-xl text-sm font-bold text-[#240457] hover:bg-[#240457] hover:text-white transition-all duration-200">
+                      <button className="w-full py-2.5 border-2 border-[#240457] rounded-xl text-base font-bold text-[#240457] hover:bg-[#240457] hover:text-white transition-all duration-200">
                         View Community
                       </button>
                     </Link>
@@ -416,7 +416,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                 <button
                   onClick={loadMoreCommunities}
                   disabled={loadingMore}
-                  className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="px-8 py-3 bg-white border border-gray-300 rounded-full text-base font-medium text-gray-700 hover:bg-gray-50 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 >
                   {loadingMore ? (
                     <>

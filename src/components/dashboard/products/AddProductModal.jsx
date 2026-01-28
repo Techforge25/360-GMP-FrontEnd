@@ -193,11 +193,11 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     <div className="flex justify-between items-center mb-6">
       <button
         onClick={currentStep > 1 ? handleBack : onClose}
-        className="flex items-center text-gray-500 text-sm hover:text-gray-700"
+        className="flex items-center text-gray-500 text-base hover:text-gray-700"
       >
         ← Back
       </button>
-      <span className="text-xs font-medium text-gray-500">
+      <span className="text-sm font-medium text-gray-500">
         Step {currentStep} Of 3
       </span>
     </div>
@@ -207,14 +207,14 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
             Product Category
           </label>
           <select
             name="category"
             value={formData.category}
             onChange={handleInputChange}
-            className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="">Select Category</option>
             <option value="Metals & Fabrication">Metals & Fabrication</option>
@@ -224,7 +224,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           </select>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
             Title
           </label>
           <input
@@ -233,14 +233,14 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             value={formData.title}
             onChange={handleInputChange}
             placeholder="Product Title"
-            className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
             Minimum Order Quantity
           </label>
           <input
@@ -249,11 +249,11 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             value={formData.minOrderQty}
             onChange={handleInputChange}
             placeholder="e.g 100 Units"
-            className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
             Pricing Model (Price Per Unit)
           </label>
           <input
@@ -262,13 +262,13 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             value={formData.pricePerUnit}
             onChange={handleInputChange}
             placeholder="$50 USD"
-            className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Tiered Pricing (Q: Price, Q: Price)
         </label>
         <input
@@ -277,12 +277,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           value={formData.tieredPricing}
           onChange={handleInputChange}
           placeholder="e.g., 100:150.00, 500:120.00"
-          className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Single Product
         </label>
         <select
@@ -294,7 +294,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
               isSingleProductAvailable: e.target.value === "true",
             })
           }
-          className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
           <option value="false">Bulk Only</option>
           <option value="true">Single Product Available</option>
@@ -302,7 +302,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Low Stock Threshold
         </label>
         <input
@@ -311,12 +311,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           value={formData.lowStockThreshold}
           onChange={handleInputChange}
           placeholder="10 units"
-          className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Description
         </label>
         <textarea
@@ -324,7 +324,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           value={formData.description}
           onChange={handleInputChange}
           rows={4}
-          className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
         ></textarea>
       </div>
     </div>
@@ -332,12 +332,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
   const renderStep2 = () => (
     <div className="space-y-6">
-      <h3 className="text-sm font-semibold text-gray-900 border-b border-gray-100 pb-2">
+      <h3 className="text-base font-semibold text-gray-900 border-b border-gray-100 pb-2">
         Logistics
       </h3>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Lead Time
         </label>
         <input
@@ -346,19 +346,19 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           value={formData.estimatedDeliveryDays}
           onChange={handleInputChange}
           placeholder="Estimated Production Days Based On Order Quantity (e.g., 'Ready To Ship In 7 Days')"
-          className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Shipping Terms
         </label>
         <select
           name="shippingMethod"
           value={formData.shippingMethod}
           onChange={handleInputChange}
-          className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
           <option value="FOB (Free On Board)">FOB (Free On Board)</option>
           <option value="CIF (Cost, Insurance, and Freight)">
@@ -372,7 +372,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Current Stock Quantity
         </label>
         <input
@@ -381,7 +381,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           value={formData.stockQty}
           onChange={handleInputChange}
           placeholder="e.g. 1000"
-          className="w-full text-black text-sm p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
       </div>
     </div>
@@ -390,7 +390,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   const renderStep3 = () => (
     <div className="space-y-6">
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-1">
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
           Main Product Image
         </label>
         <p className="text-[10px] text-gray-400 mb-2">
@@ -415,7 +415,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
               <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-2">
                 <FiUpload className="w-5 h-5 text-gray-400" />
               </div>
-              <p className="text-xs text-indigo-600 font-semibold mb-1">
+              <p className="text-sm text-indigo-600 font-semibold mb-1">
                 Click To Upload Img{" "}
                 <span className="text-gray-400 font-normal">
                   • Drag & drop here
@@ -435,7 +435,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-gray-700 mb-2">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
           Image Gallery
         </label>
         <p className="text-[10px] text-gray-400 mb-2">
@@ -491,7 +491,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             className="text-indigo-600 focus:ring-indigo-500"
             defaultChecked
           />
-          <span className="text-xs font-medium text-gray-700">
+          <span className="text-sm font-medium text-gray-700">
             Set as featured
           </span>
         </label>
@@ -501,7 +501,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             name="publishStatus"
             className="text-gray-400  focus:ring-gray-400"
           />
-          <span className="text-xs font-medium text-gray-700">
+          <span className="text-sm font-medium text-gray-700">
             Save as draft
           </span>
         </label>
@@ -536,7 +536,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         <div className="p-6 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl flex justify-end gap-3">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 border border-gray-200 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-6 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors"
           >
             Cancel
           </button>
@@ -544,7 +544,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           {currentStep < 3 ? (
             <button
               onClick={handleNext}
-              className="px-8 py-2.5 bg-[#2e1065] text-white text-xs font-bold rounded-lg hover:bg-[#1e0a45] transition-colors"
+              className="px-8 py-2.5 bg-[#2e1065] text-white text-sm font-bold rounded-lg hover:bg-[#1e0a45] transition-colors"
             >
               Next
             </button>
@@ -552,7 +552,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             <button
               onClick={handleSubmit}
               disabled={loading || uploading}
-              className="px-8 py-2.5 bg-[#2e1065] text-white text-xs font-bold rounded-lg hover:bg-[#1e0a45] transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="px-8 py-2.5 bg-[#2e1065] text-white text-sm font-bold rounded-lg hover:bg-[#1e0a45] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? "Creating..." : "Submit"}
             </button>

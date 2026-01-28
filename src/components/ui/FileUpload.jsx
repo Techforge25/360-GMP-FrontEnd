@@ -49,10 +49,10 @@ export const FileUpload = ({
         <div className="w-10 h-10 mx-auto mb-3 flex items-center justify-center rounded-lg border">
           <FiUpload />
         </div>
-        <p className="text-sm font-medium">
+        <p className="text-base font-medium">
           {uploading ? "Uploading..." : label}
         </p>
-        <p className="text-xs text-text-secondary">{subLabel}</p>
+        <p className="text-sm text-text-secondary">{subLabel}</p>
       </label>
 
       {uploading && (

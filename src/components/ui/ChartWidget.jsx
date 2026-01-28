@@ -34,11 +34,11 @@ const ChartWidget = ({ data }) => {
           <div className="flex h-5 w-5 items-center justify-center rounded bg-highlight-green">
             <div className="h-3 w-3 rounded-full bg-accent-success" />
           </div>
-          <CardTitle className="text-base font-semibold">
+          <CardTitle className="text-xl font-semibold">
             Content Health & Moderation
           </CardTitle>
         </div>
-        <Button variant="outline" size="sm" className="h-8 text-xs font-normal">
+        <Button variant="outline" size="sm" className="h-8 text-sm font-normal">
           This Month <FiChevronDown className="ml-1" />
         </Button>
       </CardHeader>
@@ -99,7 +99,7 @@ const ChartWidget = ({ data }) => {
           </ResponsiveContainer>
         </div>
 
-        <div className="mt-4 flex items-center justify-center gap-6 text-xs">
+        <div className="mt-4 flex items-center justify-center gap-6 text-sm">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-accent-danger" />
             <span>Reported Content</span>

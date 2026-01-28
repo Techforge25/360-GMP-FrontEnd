@@ -90,7 +90,9 @@ function OTPForm() {
           data = await res.json();
         } catch (parseError) {
           // If response is not valid JSON, show a more helpful error
-          setError("Server error: Invalid response from server. Please check your backend code.");
+          setError(
+            "Server error: Invalid response from server. Please check your backend code.",
+          );
           setLoading(false);
           return;
         }
@@ -151,19 +153,19 @@ function OTPForm() {
           <h3 className="font-bold text-lg mb-2 text-text-primary">
             Verify OTP
           </h3>
-          <p className="text-sm text-text-secondary">
+          <p className="text-base text-text-secondary">
             Enter The 6 Digit Code Sent To Your Email And Phone.
           </p>
         </div>
 
         {error && (
-          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-3 text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
 
         <div className="space-y-4">
-          <label className="text-sm font-medium text-text-primary block">
+          <label className="text-base font-medium text-text-primary block">
             Enter Verification Code
           </label>
           <div className="flex justify-between gap-2">
@@ -185,19 +187,19 @@ function OTPForm() {
         <Button
           onClick={handleVerify}
           isLoading={loading}
-          className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-base shadow-lg shadow-brand-primary/20"
+          className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-xl shadow-lg shadow-brand-primary/20"
         >
           Verify
         </Button>
 
-        <div className="text-center text-sm text-text-secondary">
+        <div className="text-center text-base text-text-secondary">
           <p className="mb-2">
             Resend OTP in{" "}
             <span className="font-bold text-brand-primary">
               {formatTime(timer)}
             </span>
           </p>
-          <button className="text-text-secondary underline decoration-text-secondary/50 hover:text-brand-primary text-xs">
+          <button className="text-text-secondary underline decoration-text-secondary/50 hover:text-brand-primary text-sm">
             Resend OTP
           </button>
         </div>

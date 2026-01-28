@@ -28,7 +28,7 @@ const Hero = () => {
             The Globe
           </h1>
 
-          <p className="text-xs sm:text-base md:text-lg text-white/90 mb-8 leading-relaxed max-w-xl">
+          <p className="text-sm sm:text-xl md:text-lg text-white/90 mb-8 leading-relaxed max-w-xl">
             Discover thousands of trusted suppliers, unique product categories,
             verified corporations, and new business opportunities—all under one
             unified ecosystem designed to empower your success.

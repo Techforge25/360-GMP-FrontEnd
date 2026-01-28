@@ -107,10 +107,10 @@ function SubscriptionSuccessContent() {
         {/* Subscription Details */}
         {status === "active" && subscriptionData && (
           <div className="bg-indigo-50 border border-indigo-100 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-sm mb-3 text-indigo-900">
+            <h3 className="font-semibold text-base mb-3 text-indigo-900">
               Subscription Details
             </h3>
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-base">
               <div className="flex justify-between">
                 <span className="text-gray-600">Plan:</span>
                 <span className="font-medium text-gray-900">
@@ -172,7 +172,7 @@ function SubscriptionSuccessContent() {
         )}
 
         {status === "pending" && (
-          <p className="text-xs text-center text-gray-500">
+          <p className="text-sm text-center text-gray-500">
             Please wait while we confirm your payment...
           </p>
         )}
