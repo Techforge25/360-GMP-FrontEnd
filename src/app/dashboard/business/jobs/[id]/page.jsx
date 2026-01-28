@@ -15,15 +15,11 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { ChatWidget } from "../../../../../components/dashboard/chat/ChatWidget";
-import { mockJobs } from "@/data/mockJobs";
 
 export default function JobDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const { id } = params;
-
-  // Find job from mock data
-  const job = mockJobs.find((j) => j.id === id);
 
   if (!job) {
     return (
