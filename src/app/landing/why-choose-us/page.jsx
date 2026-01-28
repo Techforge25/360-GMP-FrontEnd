@@ -117,12 +117,9 @@ const WhyChooseUsPage = () => {
         <div className="mb-20">
           <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-xl">
             <img
-              src="/assets/images/whybanner.png"
+              src="/assets/images/whyBanner.png"
               alt="Global Business Collaboration"
               className="w-full h-full object-cover"
-              onError={(e) => {
-                e.target.src = "/assets/images/placeholderBanner.jpg";
-              }}
             />
           </div>
         </div>
