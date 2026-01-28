@@ -132,7 +132,7 @@ export default function SignupPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-xl mt-2 shadow-lg shadow-brand-primary/20"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-md mt-2 shadow-lg shadow-brand-primary/20"
           >
             Sign Up
           </Button>

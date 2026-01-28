@@ -339,40 +339,65 @@ function PlansList() {
         );
 
         console.log("Free Trial Stripe response:", response);
-        console.log("Response data:", response.data);
-        console.log("Response success:", response.success);
-        console.log("Full response object:", JSON.stringify(response, null, 2));
 
-        // Check if data contains url property or IS the url string
-        const checkoutUrl =
-          typeof response.data === "string"
-            ? response.data
-            : response.data?.url;
+        // Robust check for checkout URL - only accept strings starting with http
+        const isUrl = (str) =>
+          typeof str === "string" &&
+          (str.startsWith("http://") || str.startsWith("https://"));
+        const checkoutUrl = isUrl(response.data)
+          ? response.data
+          : isUrl(response.data?.url)
+            ? response.data.url
+            : null;
 
-        if (response.success && checkoutUrl) {
-          // Store trial info before redirecting
+        // Detect if this is a trial activation
+        const isTrialPlan = plan.name?.toLowerCase().includes("trial");
+        const isTrialSuccess =
+          response.success &&
+          (isTrialPlan ||
+            response.message?.toLowerCase().includes("trial") ||
+            (typeof response.data === "string" &&
+              response.data.toLowerCase().includes("trial")) ||
+            !checkoutUrl);
+
+        if (isTrialSuccess) {
+          console.log(
+            "Trial started successfully, redirecting to success page",
+          );
+
+          // Store as 'pending' so the success page can 'activate' it locally
           const subscriptionData = {
             planId: plan.backendId,
             planName: plan.name,
             role: role,
-            status: "trial",
+            status: "pending",
             createdAt: new Date().toISOString(),
           };
 
-          console.log("Storing trial subscription with role:", role);
-          console.log("Full subscription data:", subscriptionData);
-
           subscriptionAPI.storeSubscription(subscriptionData);
 
-          // Redirect to Stripe checkout
-          console.log("Redirecting to Free Trial checkout:", checkoutUrl);
+          // Redirect to success page on frontend
+          router.push(`/subscription/success?session_id=trial`);
+        } else if (response.success && checkoutUrl) {
+          // Paid plan with valid Stripe URL
+          const subscriptionData = {
+            planId: plan.backendId,
+            planName: plan.name,
+            role: role,
+            status: "pending",
+            createdAt: new Date().toISOString(),
+          };
+          subscriptionAPI.storeSubscription(subscriptionData);
+
+          console.log("Redirecting to Stripe checkout:", checkoutUrl);
           window.location.href = checkoutUrl;
         } else {
-          console.error("Invalid response from Free Trial API:", response);
+          console.error("Failed to handle plan selection:", response);
           setConfirmationData({
             featureName: plan.name,
             isError: true,
-            message: "Failed to start trial. Please try again.",
+            message:
+              response.message || "Failed to process plan. Please try again.",
           });
         }
       } catch (error) {

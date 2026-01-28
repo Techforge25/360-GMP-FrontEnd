@@ -180,7 +180,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-xl"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-md"
           >
             Sign In
           </Button>
