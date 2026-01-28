@@ -1,0 +1,655 @@
+"use client";
+import React, { useState } from "react";
+import { FiUpload, FiPlus, FiX, FiGlobe, FiLock } from "react-icons/fi";
+import { LuCrown } from "react-icons/lu";
+import { IoChevronBack } from "react-icons/io5";
+import Link from "next/link";
+
+export default function CreateCommunityPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    logo: null,
+    industry: "",
+    shortDescription: "",
+    purpose: "",
+    tags: [],
+    rules: "",
+    privacyType: "public",
+    postingPermissions: "all",
+    allowExternalLinks: true,
+    allowFileUploads: true,
+    coverImage: null,
+    accentColor: "#3F82EE",
+    bannerTagline: "",
+    admins: [],
+  });
+
+  const [currentTag, setCurrentTag] = useState("");
+  const [currentAdmin, setCurrentAdmin] = useState("");
+
+  const popularTags = [
+    "Innovation",
+    "Networking",
+    "Industry News",
+    "Best Practices",
+    "Technology",
+  ];
+
+  const exampleCommunities = [
+    {
+      name: "Automotive Manufacturing Network",
+      industry: "Auto Parts & Manufacturing",
+      description:
+        "Connect with automotive professionals and suppliers worldwide",
+    },
+    {
+      name: "Precision Engineering Community",
+      industry: "Engineering",
+      description:
+        "Share technical insights and innovations in precision engineering",
+    },
+    {
+      name: "Logistics & Supply Chain Hub",
+      industry: "Logistics",
+      description: "Optimize your supply chain with industry experts",
+    },
+  ];
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAddTag = () => {
+    if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        tags: [...prev.tags, currentTag.trim()],
+      }));
+      setCurrentTag("");
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
+    }));
+  };
+
+  const handleAddAdmin = () => {
+    if (currentAdmin.trim() && !formData.admins.includes(currentAdmin.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        admins: [...prev.admins, currentAdmin.trim()],
+      }));
+      setCurrentAdmin("");
+    }
+  };
+
+  const handleFileUpload = (field, file) => {
+    if (file) {
+      handleInputChange(field, file);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+    // TODO: Implement API call
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 overflow-hidden">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-[url('/assets/images/community-hero.png')] bg-cover bg-center"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-gray-700 mb-6">
+            <Link
+              href="/dashboard"
+              className="hover:text-gray-900 flex items-center gap-1"
+            >
+              <IoChevronBack className="w-4 h-4" />
+              Back
+            </Link>
+            <span className="text-gray-400">›</span>
+            <Link href="/dashboard/communities" className="hover:text-gray-900">
+              Home
+            </Link>
+            <span className="text-gray-400">›</span>
+            <span className="text-gray-900 font-medium">
+              Global Manufacturing Co.
+            </span>
+          </div>
+
+          {/* Title */}
+          <div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+              Create a Community
+            </h1>
+            <p className="text-lg text-gray-700">
+              Build a space for professionals to connect, learn, and
+              collaborate.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Form Section */}
+          <div className="lg:col-span-2">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Community Info */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                  Community Info
+                </h2>
+
+                {/* Community Name */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Community Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="eg. Automotive Manufacturing Network"
+                    value={formData.name}
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                    required
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    Short, clear and brand-friendly
+                  </p>
+                </div>
+
+                {/* Community Logo */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Community Logo <span className="text-red-500">*</span>
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                    <input
+                      type="file"
+                      id="logo-upload"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleFileUpload("logo", e.target.files[0])
+                      }
+                    />
+                    <label htmlFor="logo-upload" className="cursor-pointer">
+                      <FiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm font-medium text-gray-700">
+                        Upload
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Recommended: Square image, at least 400×400px
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        SVG, JPG, or PNG. Max file size 5MB.
+                      </p>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Industry/Category */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Industry / Category <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.industry}
+                    onChange={(e) =>
+                      handleInputChange("industry", e.target.value)
+                    }
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                    required
+                  >
+                    <option value="">Select an industry</option>
+                    <option value="technology">Technology</option>
+                    <option value="manufacturing">Manufacturing</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="finance">Finance</option>
+                    <option value="engineering">Engineering</option>
+                    <option value="logistics">Logistics</option>
+                    <option value="automotive">Automotive</option>
+                  </select>
+                </div>
+
+                {/* Short Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Short Description <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    placeholder="One-line explanation of what is this community about"
+                    value={formData.shortDescription}
+                    onChange={(e) =>
+                      handleInputChange("shortDescription", e.target.value)
+                    }
+                    maxLength={120}
+                    rows={2}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none"
+                    required
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    {formData.shortDescription.length}/120 characters
+                  </p>
+                </div>
+              </div>
+
+              {/* Community Details */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                  Community Details
+                </h2>
+
+                {/* Community Purpose */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Community Purpose <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    placeholder="Why does this community exists? Who is it for? What value does it provide?"
+                    value={formData.purpose}
+                    onChange={(e) =>
+                      handleInputChange("purpose", e.target.value)
+                    }
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none"
+                    required
+                  />
+                </div>
+
+                {/* Tags/Topics */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Tags / Topics (Optional)
+                  </label>
+                  <div className="flex gap-2 mb-3">
+                    <input
+                      type="text"
+                      placeholder="Add a tag and press enter"
+                      value={currentTag}
+                      onChange={(e) => setCurrentTag(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddTag();
+                        }
+                      }}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddTag}
+                      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                    >
+                      <FiPlus className="w-5 h-5 text-gray-700" />
+                    </button>
+                  </div>
+
+                  {/* Added Tags */}
+                  {formData.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {formData.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveTag(tag)}
+                            className="hover:text-red-600"
+                          >
+                            <FiX className="w-4 h-4" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Popular Tags */}
+                  <div>
+                    <p className="text-sm text-gray-600 mb-2">Popular Tags:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {popularTags.map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => {
+                            if (!formData.tags.includes(tag)) {
+                              setFormData((prev) => ({
+                                ...prev,
+                                tags: [...prev.tags, tag],
+                              }));
+                            }
+                          }}
+                          className="px-3 py-1.5 bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-lg text-sm text-gray-700 transition-colors"
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rules & Guidelines */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Rules & Guidelines <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    placeholder="Set clear expectation for community behavior and content..."
+                    value={formData.rules}
+                    onChange={(e) => handleInputChange("rules", e.target.value)}
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Membership Settings */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                  Membership Settings
+                </h2>
+
+                {/* Privacy Settings */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-3">
+                    Privacy Settings <span className="text-red-500">*</span>
+                  </label>
+                  <div className="space-y-3">
+                    {/* Public */}
+                    <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 transition-colors has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                      <input
+                        type="radio"
+                        name="privacy"
+                        value="public"
+                        checked={formData.privacyType === "public"}
+                        onChange={(e) =>
+                          handleInputChange("privacyType", e.target.value)
+                        }
+                        className="mt-1 w-5 h-5 text-blue-600"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <FiGlobe className="w-5 h-5 text-blue-600" />
+                          <span className="font-medium text-gray-900">
+                            Public
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          Viewable by all, anyone can join to participate
+                        </p>
+                      </div>
+                    </label>
+
+                    {/* Restricted */}
+                    <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 transition-colors has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                      <input
+                        type="radio"
+                        name="privacy"
+                        value="restricted"
+                        checked={formData.privacyType === "restricted"}
+                        onChange={(e) =>
+                          handleInputChange("privacyType", e.target.value)
+                        }
+                        className="mt-1 w-5 h-5 text-blue-600"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <FiLock className="w-5 h-5 text-purple-600" />
+                          <span className="font-medium text-gray-900">
+                            Restricted
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          Join requests require approval from moderators
+                        </p>
+                      </div>
+                    </label>
+
+                    {/* Premium Only */}
+                    <label className="flex items-start gap-3 p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-blue-400 transition-colors has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
+                      <input
+                        type="radio"
+                        name="privacy"
+                        value="premium"
+                        checked={formData.privacyType === "premium"}
+                        onChange={(e) =>
+                          handleInputChange("privacyType", e.target.value)
+                        }
+                        className="mt-1 w-5 h-5 text-blue-600"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <LuCrown className="w-5 h-5 text-yellow-600" />
+                          <span className="font-medium text-gray-900">
+                            Premium Only
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                          Only Silver and Premium members can access
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Posting Permissions */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Posting Permissions <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.postingPermissions}
+                    onChange={(e) =>
+                      handleInputChange("postingPermissions", e.target.value)
+                    }
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                  >
+                    <option value="all">All members</option>
+                    <option value="moderators">Moderators only</option>
+                    <option value="approved">Approved members</option>
+                  </select>
+                </div>
+
+              </div>
+
+              {/* Community Appearance */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-6">
+                  Community Appearance
+                </h2>
+
+                {/* Cover Image */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Cover Image <span className="text-red-500">*</span>
+                  </label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                    <input
+                      type="file"
+                      id="cover-upload"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={(e) =>
+                        handleFileUpload("coverImage", e.target.files[0])
+                      }
+                    />
+                    <label htmlFor="cover-upload" className="cursor-pointer">
+                      <FiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-sm font-medium text-gray-700">
+                        Click to upload cover image
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Recommended: 1200×300px
+                      </p>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Highlight Color */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Highlight Color / Accent Color (Optional)
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <input
+                        type="color"
+                        value={formData.accentColor}
+                        onChange={(e) =>
+                          handleInputChange("accentColor", e.target.value)
+                        }
+                        className="w-12 h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      value={formData.accentColor}
+                      onChange={(e) =>
+                        handleInputChange("accentColor", e.target.value)
+                      }
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      placeholder="#3F82EE"
+                    />
+                  </div>
+                </div>
+
+                {/* Banner Tagline */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Banner Tagline (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="A catchy tagline for your community header"
+                    value={formData.bannerTagline}
+                    onChange={(e) =>
+                      handleInputChange("bannerTagline", e.target.value)
+                    }
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                  />
+                </div>
+
+                
+              </div>
+
+              {/* Form Actions */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-red-600">
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span className="text-sm font-medium">
+                      Fill in all required fields
+                    </span>
+                  </div>
+                  <div className="flex gap-3">
+                    <Link
+                      href="/dashboard/communities"
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                    >
+                      Cancel
+                    </Link>
+                    <button
+                      type="button"
+                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                    >
+                      View as Public
+                    </button>
+                    <button
+                      type="submit"
+                      className="px-6 py-3 bg-[#240457] text-white rounded-lg font-medium hover:bg-[#1a0340] transition-colors"
+                    >
+                      Create a Community
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Sidebar - Example Communities */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Example Communities
+              </h3>
+              <div className="space-y-4">
+                {exampleCommunities.map((community, index) => (
+                  <div
+                    key={index}
+                    className="pb-4 border-b border-gray-200 last:border-0 last:pb-0"
+                  >
+                    <h4 className="font-semibold text-gray-900 mb-1">
+                      {community.name}
+                    </h4>
+                    <p className="text-sm text-blue-600 italic mb-2">
+                      {community.industry}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      {community.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className="bg-[#1a1a2e] text-white py-6 mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-gray-400">
+              © 2025 360GMP. All rights reserved.
+            </p>
+            <div className="flex gap-6 text-sm">
+              <Link
+                href="/terms"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Terms
+              </Link>
+              <Link
+                href="/privacy"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Privacy
+              </Link>
+              <Link
+                href="/cookies"
+                className="text-gray-400 hover:text-white transition-colors"
+              >
+                Cookies
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}

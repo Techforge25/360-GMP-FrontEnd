@@ -36,7 +36,6 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         limit: 4,
         status: "active",
         search: searchQuery,
-        keyword: searchQuery,
         industry: industry,
         region: region,
       });
@@ -46,23 +45,37 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         queryParams.append("type", sortBy);
       }
 
+      console.log(
+        "🔍 Fetching communities with params:",
+        queryParams.toString(),
+      );
+
       const response = await api.get({
         url: `/community?${queryParams.toString()}`,
         enableErrorMessage: false,
         enableSuccessMessage: false,
       });
 
+      console.log("📦 Community API Full Response:", response);
+
       if (response.success && response.data?.docs) {
+        console.log("✅ Communities found:", response.data.docs.length);
+        console.log("📄 First community sample:", response.data.docs[0]);
+        console.log(
+          "⚠️ Check if fields like 'name', 'description', 'coverImage' exist in the sample above",
+        );
+
         setCommunities(response.data.docs);
         setHasMore(response.data.hasNextPage);
         // Next page to fetch will be 2
         setPage(2);
       } else {
+        console.warn("❌ No communities found or invalid response structure");
         setCommunities([]);
         setHasMore(false);
       }
     } catch (error) {
-      console.error("Failed to fetch communities:", error);
+      console.error("💥 Failed to fetch communities:", error);
       setCommunities([]);
     } finally {
       setLoading(false);
@@ -85,7 +98,6 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         limit: 4,
         status: "active",
         search: searchQuery,
-        keyword: searchQuery,
         industry: industry,
         region: region,
       });
@@ -113,7 +125,6 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
             limit: 4,
             status: "active",
             search: searchQuery,
-            keyword: searchQuery,
             industry: industry,
             region: region,
           });
@@ -294,9 +305,11 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                 </select>
               </div>
               {canCreateCommunity && (
-                <button className="px-6 py-2 bg-brand-primary text-white rounded-lg font-medium hover:bg-brand-primary/90 transition-colors">
-                  Create a Community
-                </button>
+                <Link href="/dashboard/business/create-community">
+                  <button className="px-6 py-2 bg-brand-primary text-white rounded-lg font-medium hover:bg-brand-primary/90 transition-colors">
+                    Create a Community
+                  </button>
+                </Link>
               )}
             </div>
           </div>
