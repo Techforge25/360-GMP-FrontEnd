@@ -191,7 +191,7 @@ export default function MarketplacePage() {
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
           <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
+            <h1 className="text-3xl  font-bold text-white mb-4 sm:mb-6">
               Find Verified supplier Across the Globe
             </h1>
             <p className="text-purple-100 text-xl sm:text-lg max-w-3xl mx-auto px-4">
@@ -203,7 +203,7 @@ export default function MarketplacePage() {
       </div>
 
       {/* Search Section - Overlapping */}
-      <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24">
+      <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24">
         <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-10">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mb-6">
             <div className="relative w-full max-w-lg">
