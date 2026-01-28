@@ -64,7 +64,7 @@ const Hero = () => {
       </div>
 
       {/* Scroll Down Button */}
-      <div className="absolute bottom-6 sm:bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 z-30">
         <button
           onClick={() => {
             window.scrollTo({
@@ -75,7 +75,7 @@ const Hero = () => {
           className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#240457]/90 hover:bg-[#240457] flex items-center justify-center transition-all duration-300 shadow-xl border border-white/10"
           aria-label="Scroll down"
         >
-          <GoArrowDown className="text-white text-xl sm:text-2xl animate-bounce" />
+          <GoArrowDown className="text-white text-xl sm:text-2xl" />
         </button>
       </div>
     </section>

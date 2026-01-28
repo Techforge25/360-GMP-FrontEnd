@@ -11,16 +11,16 @@ const Welcome = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center gap-12 mb-16 md:mb-24 relative">
           <div className="w-full md:w-1/2 flex justify-center relative">
-            <img
-              className="absolute -bottom-20 md:-bottom-40 left-0 w-24 md:w-auto opacity-50 md:opacity-100 hidden lg:block"
+            {/* <img
+              className="absolute -bottom-20  left-0 w-24 md:w-auto opacity-50  hidden lg:block"
               src="/assets/images/threeLeft.png"
               alt=""
             />
             <img
-              className="absolute top-0 right-0 w-24 md:w-auto opacity-50 md:opacity-100 hidden lg:block"
+              className="absolute top-0 right-0 w-24 md:w-auto opacity-50  hidden lg:block"
               src="/assets/images/threeRight.png"
               alt=""
-            />
+            /> */}
             <div className="relative w-full max-w-md aspect-square">
               <div className="absolute inset-0 rounded-lg flex items-center justify-center overflow-hidden">
                 <img

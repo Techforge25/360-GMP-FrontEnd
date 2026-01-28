@@ -43,7 +43,7 @@ export default function Home() {
                              <li className="flex items-center gap-2"><FaCheckCircle className="text-brand-primary shrink-0" /> Access to special suppliers networks</li>
                          </ul>
                      </div>
-                <div className="flex flex-col md:flex-row justify-center gap-4 mt-8">
+                <div className="flex flex-col md:flex-row justify-center items-center sm:items-start gap-4 mt-8">
                     <Link href="/landing/pricing">
                         <Button variant="default" className=" px-6">
                             Become a Premium Member <FaArrowRight className="ml-2" />
