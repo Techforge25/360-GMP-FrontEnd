@@ -9,7 +9,6 @@ const TABS = [
   { id: "applied", label: "Applied", showBadge: true },
   { id: "saved", label: "Saved" },
   { id: "hired", label: "Hired" },
-  { id: "close", label: "Close" },
 ];
 
 export default function UserApplications() {
