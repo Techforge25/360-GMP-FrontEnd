@@ -20,7 +20,7 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 w-full">
         <div className="max-w-3xl text-center sm:text-left">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold text-white mb-6 leading-[1.2] sm:leading-tight">
+          <h1 className="text-xl sm:text-3xl md:text-4xl lg:text-6xl font-semibold text-white mb-6 leading-[1.2] sm:leading-tight pt-6">
             Find Verified
             <br className="hidden sm:block" />{" "}
             <span className="sm:inline">Businesses Across</span>
