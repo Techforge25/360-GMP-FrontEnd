@@ -17,6 +17,19 @@ class JobAPI {
   }
 
   /**
+   * Create a new job
+   */
+  async create(jobData) {
+    return await api.post({
+      url: "/jobs",
+      payload: jobData,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
    * Get latest jobs
    * @param {number} limit - Number of jobs to fetch
    */
@@ -50,6 +63,18 @@ class JobAPI {
       payload: data,
       activateLoader: true,
       enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get my job applications
+   */
+  async getMyApplications(jobId) {
+    return await api.get({
+      url: `/jobApplication/${jobId}`,
+      activateLoader: true,
+      enableSuccessMessage: false,
       enableErrorMessage: true,
     });
   }

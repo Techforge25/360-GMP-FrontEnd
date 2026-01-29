@@ -6,6 +6,7 @@ import FeatureProduct from "@/components/dashboard/profile/FeatureProduct";
 import ActivitySidebar from "@/components/dashboard/profile/ActivitySidebar";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import ProductListContent from "@/components/dashboard/products/ProductListContent";
+import BusinessJobsTab from "@/components/dashboard/profile/BusinessJobsTab";
 
 export default function BusinessProfilePage() {
   const [activeTab, setActiveTab] = React.useState("Home");
@@ -36,6 +37,8 @@ export default function BusinessProfilePage() {
           <div className=" overflow-hidden p-4  rounded-xl">
             <ProductListContent isProfileView={true} />
           </div>
+        ) : activeTab === "Jobs" ? (
+          <BusinessJobsTab />
         ) : (
           <div className="bg-white p-12 rounded-xl text-center text-gray-500 shadow-sm border border-gray-100">
             {activeTab} content coming soon
