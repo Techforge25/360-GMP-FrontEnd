@@ -6,6 +6,7 @@ import businessProfileAPI from "@/services/businessProfileAPI";
 import jobAPI from "@/services/jobAPI";
 
 import CreateJobModal from "@/components/dashboard/jobs/CreateJobModal";
+import CandidatesView from "@/components/dashboard/jobs/CandidatesView";
 
 export default function BusinessJobsTab() {
   const router = useRouter();
@@ -13,6 +14,8 @@ export default function BusinessJobsTab() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateJobModal, setShowCreateJobModal] = useState(false);
+  const [showCandidates, setShowCandidates] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
   const [businessProfile, setBusinessProfile] = useState(null);
   const [hiringStats, setHiringStats] = useState({
     views: { count: 0, period: "30d" },
@@ -81,6 +84,16 @@ export default function BusinessJobsTab() {
     setShowCreateJobModal(true);
   };
 
+  const handleViewCandidates = (job) => {
+    setSelectedJob(job);
+    setShowCandidates(true);
+  };
+
+  const handleBackToJobs = () => {
+    setShowCandidates(false);
+    setSelectedJob(null);
+  };
+
   const handleStatusChange = (jobId, newStatus) => {
     setJobs((prevJobs) =>
       prevJobs.map((job) =>
@@ -91,7 +104,10 @@ export default function BusinessJobsTab() {
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      {showCandidates && selectedJob ? (
+        <CandidatesView job={selectedJob} onBack={handleBackToJobs} />
+      ) : (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 md:p-8 border-b border-gray-200">
           <h2 className="text-xl font-bold text-gray-900">Jobs</h2>
@@ -214,7 +230,11 @@ export default function BusinessJobsTab() {
                     </tr>
                   ) : (
                     jobs.map((job) => (
-                      <tr key={job._id} className="hover:bg-gray-50">
+                      <tr
+                        key={job._id}
+                        className="hover:bg-gray-50 cursor-pointer"
+                        onClick={() => handleViewCandidates(job)}
+                      >
                         <td className="py-4">
                           <input
                             type="checkbox"
@@ -295,6 +315,7 @@ export default function BusinessJobsTab() {
           </div>
         </div>
       </div>
+      )}
       <CreateJobModal
         isOpen={showCreateJobModal}
         onClose={() => setShowCreateJobModal(false)}

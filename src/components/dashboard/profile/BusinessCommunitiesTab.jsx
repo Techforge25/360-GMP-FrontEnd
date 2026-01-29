@@ -168,7 +168,7 @@ const BusinessCommunitiesTab = () => {
 
       {/* Right Sidebar - Suggested Communities */}
       <div className="w-full lg:w-[320px] xl:w-[350px]">
-        <div className="mb-4 flex ">
+        <div className="mb-4 flex justify-between items-center">
             <Link href="/dashboard/business/create-community">
             <button className="flex items-center gap-2 px-5 py-2.5 bg-[#240457] text-white rounded-lg font-semibold hover:bg-[#1a0340] transition-colors text-sm">
               Create a Community
