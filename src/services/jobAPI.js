@@ -70,9 +70,23 @@ class JobAPI {
   /**
    * Get my job applications
    */
-  async getMyApplications(jobId) {
+  async getMyApplications(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
     return await api.get({
-      url: `/jobApplication/${jobId}`,
+      url: `/jobs/user/applied${queryParams ? `?${queryParams}` : ""}`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get my hired jobs
+   */
+  async getMyHiredJobs(params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    return await api.get({
+      url: `/jobs/user/hired${queryParams ? `?${queryParams}` : ""}`,
       activateLoader: true,
       enableSuccessMessage: false,
       enableErrorMessage: true,
