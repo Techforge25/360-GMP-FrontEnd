@@ -230,6 +230,7 @@ export default function JobDetailsPage() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           jobTitle={job.jobTitle}
+          jobId={job._id}
           onSubmit={(data) => {
             console.log("Application Submitted:", data);
             // Modal handles success state internally

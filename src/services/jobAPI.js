@@ -40,6 +40,19 @@ class JobAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Apply for a job
+   */
+  async apply(jobId, data) {
+    return await api.post({
+      url: `/jobApplication/${jobId}`,
+      payload: data,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const jobAPI = new JobAPI();

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   FiX,
   FiCheck,
@@ -10,6 +11,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { cn } from "@/lib/utils";
+import { uploadToCloudinary } from "@/lib/cloudinary";
+import jobAPI from "@/services/jobAPI";
 
 const STEP_FORM = 1;
 const STEP_REVIEW = 2;
@@ -19,11 +22,15 @@ export default function JobApplicationModal({
   isOpen,
   onClose,
   jobTitle = "Job Title",
+  jobId,
   onSubmit,
 }) {
+  const router = useRouter();
   const [step, setStep] = useState(STEP_FORM);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    resume: null,
+    resumeUrl: "",
+    resumeName: "",
     portfolio: "",
     experience: "",
     urgentJoining: "",
@@ -43,26 +50,56 @@ export default function JobApplicationModal({
   if (!isOpen) return null;
 
   const handleNext = () => {
+    if (!formData.resumeUrl) {
+      alert("Please upload a resume first.");
+      return;
+    }
     setStep(STEP_REVIEW);
   };
 
-  const handleSubmit = () => {
-    if (onSubmit) {
-      onSubmit(formData);
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const payload = {
+        resumeUrl: formData.resumeUrl,
+        portfolioLink: formData.portfolio,
+        yearsOfExperience: Number(formData.experience),
+        immediateJoiningStatus: formData.urgentJoining,
+        expectedSalary: formData.salaryExpectation,
+      };
+
+      await jobAPI.apply(jobId, payload);
+
+      if (onSubmit) {
+        onSubmit(payload);
+      }
+      setStep(STEP_SUCCESS);
+    } catch (error) {
+      console.error(error);
+      alert(error.message || "Failed to submit application");
+    } finally {
+      setLoading(false);
     }
-    setStep(STEP_SUCCESS);
   };
 
   const handleResumeUpload = async (file, onProgress) => {
-    // Simulate upload
-    onProgress(10);
-    await new Promise((r) => setTimeout(r, 500));
-    onProgress(50);
-    await new Promise((r) => setTimeout(r, 500));
-    onProgress(100);
+    try {
+      const url = await uploadToCloudinary(file, "resumes", onProgress);
+      setFormData((prev) => ({
+        ...prev,
+        resumeUrl: url,
+        resumeName: file.name,
+      }));
+      return url;
+    } catch (error) {
+      console.error("Upload failed", error);
+      throw error;
+    }
+  };
 
-    setFormData((prev) => ({ ...prev, resume: file }));
-    return URL.createObjectURL(file); // Mock URL
+  const handleSuccessRedirect = () => {
+    onClose();
+    router.push("/dashboard/business/jobs");
   };
 
   const renderStep1 = () => (
@@ -71,7 +108,7 @@ export default function JobApplicationModal({
         <h3 className="text-base font-medium text-text-primary">
           Upload your resume
         </h3>
-        {formData.resume ? (
+        {formData.resumeUrl ? (
           <div className="flex items-center justify-between p-4 border border-green-200 bg-green-50 rounded-lg">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white rounded-md border border-green-100">
@@ -79,7 +116,7 @@ export default function JobApplicationModal({
               </div>
               <div>
                 <p className="font-medium text-text-primary text-sm">
-                  {formData.resume.name}
+                  {formData.resumeName}
                 </p>
                 <p className="text-xs text-text-secondary">
                   Uploaded Successfully
@@ -87,7 +124,13 @@ export default function JobApplicationModal({
               </div>
             </div>
             <button
-              onClick={() => setFormData((prev) => ({ ...prev, resume: null }))}
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  resumeUrl: "",
+                  resumeName: "",
+                }))
+              }
               className="text-text-secondary hover:text-red-500"
             >
               <FiX />
@@ -107,6 +150,7 @@ export default function JobApplicationModal({
           Your Profolio Link
         </label>
         <Input
+        className="text-black"
           placeholder=""
           value={formData.portfolio}
           onChange={(e) =>
@@ -120,6 +164,7 @@ export default function JobApplicationModal({
           How many year of experience
         </label>
         <Input
+        className="text-black"
           placeholder="4"
           value={formData.experience}
           onChange={(e) =>
@@ -133,6 +178,7 @@ export default function JobApplicationModal({
           This is urgent role to fill can you join immediatley?
         </label>
         <Input
+        className="text-black"
           placeholder="Yes"
           value={formData.urgentJoining}
           onChange={(e) =>
@@ -146,6 +192,7 @@ export default function JobApplicationModal({
           What is your salary expectation for this role?
         </label>
         <Input
+        className="text-black"
           placeholder="$1000-1500"
           value={formData.salaryExpectation}
           onChange={(e) =>
@@ -259,11 +306,9 @@ export default function JobApplicationModal({
           </div>
           <div>
             <p className="text-base font-medium text-text-primary">
-              {formData.resume?.name || "My Cv.Pdf"}
+              {formData.resumeName || "My Cv.Pdf"}
             </p>
-            <p className="text-sm text-text-secondary">
-              Uploaded Today 11:23 PM
-            </p>
+            <p className="text-sm text-text-secondary">Uploaded Today</p>
           </div>
         </div>
       </section>
@@ -271,9 +316,16 @@ export default function JobApplicationModal({
       <div className="flex justify-center pt-4">
         <Button
           onClick={handleSubmit}
+          disabled={loading}
           className="w-full sm:w-auto px-12 h-12 bg-[#2E1065] hover:bg-[#4c1d95] text-white rounded-lg flex items-center justify-center gap-2"
         >
-          Submit your application <FiArrowRight />
+          {loading ? (
+            "Submitting..."
+          ) : (
+            <>
+              Submit your application <FiArrowRight />
+            </>
+          )}
         </Button>
       </div>
     </div>
@@ -301,7 +353,7 @@ export default function JobApplicationModal({
       </div>
 
       <Button
-        onClick={onClose}
+        onClick={handleSuccessRedirect}
         className="w-full max-w-sm h-12 bg-[#2E1065] hover:bg-[#4c1d95] text-white rounded-lg"
       >
         Return To Job Search
