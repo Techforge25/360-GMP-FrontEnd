@@ -12,6 +12,7 @@ import FeedInput from "@/components/community/FeedInput";
 import FeedTabs from "@/components/community/FeedTabs";
 import PostCard from "@/components/community/PostCard";
 import { IoChevronBack } from "react-icons/io5";
+import Footer from "@/components/landing/Footer";
 
 export default function CommunityDetailsPage() {
   const params = useParams();
@@ -28,12 +29,13 @@ export default function CommunityDetailsPage() {
       author: {
         name: "Michael Torres",
         role: "Senior Sustainability Consultant",
-        image: "/assets/images/user1.png",
+        image: "/assets/images/Portrait_Placeholder.png",
       },
       timeAgo: "1 minute ago",
       title:
         "What is the BEST strategy for negotiating salary after receiving a verbal job offer in the Manufacturing sector?",
       type: "question",
+      tag: "Question",
       options: [
         { text: "Focus Solely On A Higher Base Salary" },
         { text: "Negotiate A Higher Bonus Structure" },
@@ -47,49 +49,109 @@ export default function CommunityDetailsPage() {
       author: {
         name: "David Kim",
         role: "Environmental Policy Analyst",
-        image: "/assets/images/user5.png",
+        image: "/assets/images/Portrait_Placeholder.png",
       },
       timeAgo: "4 hours ago",
-      title: "What are best practices for carbon footprint tracking?",
+      tag: "Discussions",
       content:
         "Looking for recommendations on tools and methodologies for accurate carbon footprint measurement. What are your experiences with different platforms?",
-      likes: 24,
+      likes: 22,
       comments: 22,
-      shares: 2,
+      shares: 0,
+      commentsList: [
+        {
+          author: "Sarah Chen",
+          content: "We have been using CarbonTrack Pro..."
+        }
+      ]
     },
     {
       id: 3,
       author: {
         name: "Michael Torres",
         role: "Senior Sustainability Consultant",
-        image: "/assets/images/user1.png",
+        image: "/assets/images/Portrait_Placeholder.png",
       },
       timeAgo: "1 day ago",
-      title: "Just completed a major renewable energy project...",
       content:
-        "Just completed a major renewable energy project with a Fortune 500 company. The transition to sustainable practices is accelerating faster than ever. Happy to share insights and answer questions about implementation",
-      image:
-        "",
-      likes: 134,
-      comments: 16,
-      shares: 10,
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      image: "/assets/images/handshake.jpg",
+      readMore: true,
+      likes: 14,
+      comments: 6,
+      shares: 0,
+    },
+    {
+      id: 4,
+      type: "event",
+      title: "Virtual Sustainability Summit 2025",
+      date: "DEC 25",
+      description: "Join industry leaders for a day of insights, networking, and innovative solutions for sustainable business practices.",
+      time: "10:00 AM - 4:00 PM EST",
+      location: "Virtual Event",
+      attendees: 156,
+      tag: "Event",
+    },
+    {
+      id: 5,
+      type: "document",
+      author: {
+        name: "David Kim",
+        role: "Environmental Policy Analyst",
+        image: "/assets/images/Portrait_Placeholder.png",
+      },
+      timeAgo: "1 day ago",
+      title: "Sustainability Metrics Dashboard Template",
+      fileType: "EXCEL",
+      description: "Comprehensive template for tracking and visualizing key sustainability metrics across your organization.",
+      downloads: 36,
+    },
+    {
+      id: 6,
+      author: {
+        name: "David Kim",
+        role: "Environmental Policy Analyst",
+        image: "/assets/images/Portrait_Placeholder.png",
+      },
+      timeAgo: "1 day ago",
+      content:
+        "Michael Torres shared a video",
+      videoTitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+      videoThumbnail: "/assets/images/steve-jobs-book.jpg",
+      readMore: true,
+      likes: 14,
+      comments: 6,
+      shares: 0,
     },
   ]);
 
   useEffect(() => {
     const fetchCommunity = async () => {
       try {
-        if (!params.id) return;
-
-        // Check if params.id is a mock ID or real MongoID
-        // In real app, always fetch. For existing bad links, handle gracefully.
-
-        const response = await communityAPI.getById(params.id);
-        if (response.success) {
-          setCommunity(response.data);
-        } else {
-          console.error("Failed to load community");
-        }
+        setLoading(true);
+        // Using dummy data for now
+        const dummyCommunity = {
+          _id: params.id,
+          name: "Job Search Support Group",
+          description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+          shortDescription: "Job search support you to find the best jobs according to your expertise",
+          category: "General",
+          type: "public",
+          profileImage: "/assets/images/Portrait_Placeholder.png",
+          coverImage: "/assets/images/community-cover.jpg",
+          memberCount: 66300,
+          postsCount: 324,
+          founded: "Jan 2023",
+          isVerified: false,
+        };
+        
+        setCommunity(dummyCommunity);
+        
+        // Uncomment this when API is ready
+        // const response = await communityAPI.getById(params.id);
+        // if (response.success) {
+        //   setCommunity(response.data);
+        // }
       } catch (error) {
         console.error("Error fetching community:", error);
       } finally {
@@ -146,25 +208,14 @@ export default function CommunityDetailsPage() {
       <AuthNavbar />
 
       <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+        {/* Back Button */}
+        <div className="mb-4">
           <Link
-            href="/dashboard"
-            className="flex items-center gap-1 hover:text-gray-800"
+            href="/dashboard/user/profile"
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
           >
-            <IoChevronBack /> Back
+            <IoChevronBack className="w-4 h-4" /> Back
           </Link>
-          <span>/</span>
-          <Link
-            href="/dashboard/business/communities"
-            className="hover:text-gray-800"
-          >
-            Home
-          </Link>
-          <span>/</span>
-          <span className="text-gray-900 font-medium truncate max-w-[200px]">
-            {community.name}
-          </span>
         </div>
 
         {/* Header */}
@@ -176,7 +227,7 @@ export default function CommunityDetailsPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Sidebar */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-3 space-y-6">
             <CommunityInfoCard community={community} />
             <CommunityMembersWidget
               totalCount={community.memberCount}
@@ -185,18 +236,18 @@ export default function CommunityDetailsPage() {
           </div>
 
           {/* Main Feed */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-9">
             <FeedInput />
 
             <FeedTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-            <div className="space-y-4">
+            <div className="space-y-4 mt-6">
               {posts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
 
               <div className="flex justify-center mt-8 mb-12">
-                <button className="px-6 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
+                <button className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
                   Load more
                 </button>
               </div>
@@ -204,6 +255,8 @@ export default function CommunityDetailsPage() {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </div>
   );
 }

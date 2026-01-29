@@ -6,6 +6,8 @@ import UserAbout from "@/components/dashboard/userProfile/UserAbout";
 import UserExperience from "@/components/dashboard/userProfile/UserExperience";
 import UserSidebar from "@/components/dashboard/userProfile/UserSidebar";
 import UserApplications from "@/components/dashboard/userProfile/UserApplications";
+import UserCommunities from "@/components/dashboard/userProfile/UserCommunities";
+import UserOrders from "@/components/dashboard/userProfile/UserOrders";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 
 export default function UserProfilePage() {
@@ -38,6 +40,10 @@ export default function UserProfilePage() {
           </div>
         ) : activeTab === "Jobs" ? (
           <UserApplications />
+        ) : activeTab === "Communities" ? (
+          <UserCommunities />
+        ) : activeTab === "Orders" ? (
+          <UserOrders />
         ) : (
           <div className="bg-white p-12 rounded-xl text-center text-gray-500 shadow-sm border border-gray-100 min-h-[400px] flex flex-col items-center justify-center">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
