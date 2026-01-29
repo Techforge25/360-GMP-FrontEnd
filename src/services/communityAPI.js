@@ -34,7 +34,7 @@ class CommunityAPI {
   async create(communityData) {
     return await api.post({
       url: "/community",
-      data: communityData,
+      payload: communityData,
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,
