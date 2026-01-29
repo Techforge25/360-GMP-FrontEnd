@@ -252,7 +252,11 @@ const AuthNavbar = () => {
                         )}
 
                         <Link
-                          href="/dashboard/business/wallet"
+                          href={
+                            user?.role === "business"
+                              ? "/dashboard/business/wallet"
+                              : "/dashboard/user/wallet"
+                          }
                           className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setIsProfileOpen(false)}
                         >
@@ -287,7 +291,11 @@ const AuthNavbar = () => {
                         </Link>
 
                         <Link
-                          href="/dashboard/business/support"
+                          href={
+                            user?.role === "business"
+                              ? "/dashboard/business/support"
+                              : "/dashboard/user/support"
+                          }
                           className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
                           onClick={() => setIsProfileOpen(false)}
                         >
