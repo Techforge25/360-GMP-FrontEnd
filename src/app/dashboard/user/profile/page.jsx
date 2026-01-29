@@ -15,7 +15,7 @@ export default function UserProfilePage() {
       {/* Profile Header */}
       <UserProfileHeader activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
         {activeTab === "Profile" ? (
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Main Content Column */}
