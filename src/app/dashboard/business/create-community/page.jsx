@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import communityAPI from "@/services/communityAPI";
 import { useUser } from "@/context/UserContext";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export default function CreateCommunityPage() {
   const router = useRouter();
@@ -112,13 +113,25 @@ export default function CreateCommunityPage() {
           region: formData.region,
         };
 
-        // Handle file uploads (for now, using placeholder URLs)
-        // TODO: Implement actual file upload to cloud storage
-        if (formData.coverImage) {
-          payload.coverImage = "https://example.com/cover.jpg"; // Placeholder
+        // Upload images to Cloudinary
+        if (formData.coverImage instanceof File) {
+          console.log("📤 Uploading cover image to Cloudinary...");
+          const coverImageUrl = await uploadToCloudinary(
+            formData.coverImage,
+            "communities/covers"
+          );
+          payload.coverImage = coverImageUrl;
+          console.log("✅ Cover image uploaded:", coverImageUrl);
         }
-        if (formData.logo) {
-          payload.profileImage = "https://example.com/profile.jpg"; // Placeholder
+        
+        if (formData.logo instanceof File) {
+          console.log("📤 Uploading profile image to Cloudinary...");
+          const profileImageUrl = await uploadToCloudinary(
+            formData.logo,
+            "communities/profiles"
+          );
+          payload.profileImage = profileImageUrl;
+          console.log("✅ Profile image uploaded:", profileImageUrl);
         }
       }
 

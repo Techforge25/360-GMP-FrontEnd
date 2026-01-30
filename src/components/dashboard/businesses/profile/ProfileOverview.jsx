@@ -27,7 +27,7 @@ export default function ProfileOverview({ business }) {
       {/* Left Column: Overview */}
       <div className="flex-1 bg-white rounded-xl p-6 border border-gray-100 flex flex-col justify-between">
          <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Overview</h2>
+            <h2 className="text-3xl font-medium text-black mb-4">Overview</h2>
             <p className="text-gray-600 leading-relaxed mb-10 text-sm">
                 {description}
             </p>
@@ -54,7 +54,7 @@ export default function ProfileOverview({ business }) {
         
         {/* Certifications Box */}
         <div className="bg-white rounded-xl p-6 border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Certifications</h3>
+            <h3 className="text-2xl font-medium text-black mb-4">Certifications</h3>
             <div className="space-y-3">
                 {certifications.map((cert, index) => (
                     <div key={index} className="bg-gray-50 rounded-lg p-3 flex items-start gap-3">
@@ -72,7 +72,7 @@ export default function ProfileOverview({ business }) {
 
         {/* Contact Info Box */}
         <div className="bg-gray-50/50 rounded-xl p-6 border border-gray-100">
-             <h3 className="text-lg font-bold text-gray-900 mb-4">Contact Info</h3>
+             <h3 className="text-2xl font-medium text-black mb-4">Contact Info</h3>
              <ul className="space-y-4 mb-6">
                 <li className="flex items-start gap-3 text-sm text-gray-600">
                     <HiOutlineMail className="text-lg mt-0.5 text-indigo-900"/>

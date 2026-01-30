@@ -173,6 +173,18 @@ class BusinessProfileAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * View a business profile (tracks views and returns complete profile data)
+   */
+  async viewBusinessProfile(businessProfileId) {
+    return await api.get({
+      url: `/business-profile-management/view/${businessProfileId}`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const businessProfileAPI = new BusinessProfileAPI();

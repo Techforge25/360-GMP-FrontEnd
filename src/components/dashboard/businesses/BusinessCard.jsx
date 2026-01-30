@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
 
 const BusinessCard = ({ business }) => {
-  const { role } = useUserRole();
-  const isFreeTrial = role === "free_trial";
+  const { user } = useUserRole();
+  const isFreeTrial = user?.role === "free_trial";
   
-  const basePath = role === "business" ? "/dashboard/business" : "/dashboard/user";
+  const basePath = user?.role === "business" ? "/dashboard/business" : "/dashboard/user";
   const profileUrl = `${basePath}/businesses/${business?.id || 'mock-id'}`;
 
   // Mock data handling if props not provided

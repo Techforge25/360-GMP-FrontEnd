@@ -1,10 +1,50 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FiMapPin, FiClock } from "react-icons/fi";
 import { BsBagCheck } from "react-icons/bs";
-import { Button } from "@/components/ui/Button"; // Check if Button exists, otherwise standard button
+import { Button } from "@/components/ui/Button";
+import jobAPI from "@/services/jobAPI";
 
-export default function ProfileJobs({ jobs }) {
+export default function ProfileJobs({ jobs, businessId }) {
+  const [recentJobs, setRecentJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (businessId) {
+      fetchRecentJobs();
+    }
+  }, [businessId]);
+
+  const fetchRecentJobs = async () => {
+    try {
+      setLoading(true);
+      const response = await jobAPI.getAll({ businessId, limit: 2 });
+      
+      console.log("Recent Jobs API Response:", response);
+
+      if (response.success && response.data) {
+        const jobsData = response.data.docs || response.data || [];
+        setRecentJobs(jobsData);
+      }
+    } catch (error) {
+      console.error("Failed to fetch recent jobs:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatTimeAgo = (date) => {
+    if (!date) return "Recently";
+    const now = new Date();
+    const posted = new Date(date);
+    const diffTime = Math.abs(now - posted);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 7) return `${diffDays} Days Ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)} Weeks Ago`;
+    return `${Math.floor(diffDays / 30)} Months Ago`;
+  };
+
   const dummyJobs = [
     {
       id: 1,
@@ -26,32 +66,60 @@ export default function ProfileJobs({ jobs }) {
     }
   ];
 
-  const jobsList = jobs || dummyJobs;
+  const jobsList = recentJobs.length > 0 ? recentJobs : (jobs || dummyJobs);
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-xl p-6 border border-gray-100 mb-10">
+        <h2 className="text-3xl font-medium text-black mb-6">Recent Jobs Posted</h2>
+        <div className="flex justify-center items-center py-8">
+          <div className="text-gray-500">Loading jobs...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (recentJobs.length === 0 && !jobs) {
+    return (
+      <div className="bg-white rounded-xl p-6 border border-gray-100 mb-10">
+        <h2 className="text-3xl font-medium text-black mb-6">Recent Jobs Posted</h2>
+        <div className="text-center py-8 text-gray-500">
+          No jobs posted yet
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl p-6 border border-gray-100 mb-10">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Jobs Posted By TechVision Solutions</h2>
+      <h2 className="text-3xl font-medium text-black mb-6">Recent Jobs Posted</h2>
       
       <div className="space-y-4">
         {jobsList.map((job) => (
-          <div key={job.id} className="border border-gray-100 rounded-lg p-5 flex flex-col md:flex-row gap-4 hover:border-indigo-100 hover:shadow-sm transition-all">
+          <div key={job.id || job._id} className="border border-gray-100 rounded-lg p-5 flex flex-col md:flex-row gap-4 hover:border-indigo-100 hover:shadow-sm transition-all">
              <div className="w-16 h-16 bg-cyan-50 rounded-lg flex items-center justify-center p-2 flex-shrink-0">
-                 <img src={job.logo} alt={job.company} className="w-10 h-10 object-contain" />
+                 <img 
+                   src={job.businessId?.logo || job.logo || "/assets/images/profileLogo.png"} 
+                   alt={job.businessId?.companyName || job.company || "Company"} 
+                   className="w-10 h-10 object-contain" 
+                 />
              </div>
              
              <div className="flex-1">
-                 <h3 className="text-lg font-bold text-gray-900 mb-1">{job.title}</h3>
-                 <p className="text-sm text-indigo-900 font-medium mb-3">{job.company}</p>
+                 <h3 className="text-lg font-bold text-gray-900 mb-1">{job.jobTitle || job.title}</h3>
+                 <p className="text-sm text-indigo-900 font-medium mb-3">{job.businessId?.companyName || job.company || "Company"}</p>
                  
                  <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                      <div className="flex items-center gap-1">
-                         <FiMapPin /> {job.location}
+                         <FiMapPin /> {job.location?.city && job.location?.country 
+                           ? `${job.location.city}-${job.location.country}` 
+                           : job.location || "Remote"}
                      </div>
                      <div className="flex items-center gap-1">
-                         <BsBagCheck /> {job.type}
+                         <BsBagCheck /> {job.employmentType || job.type || "Full Time"}
                      </div>
                      <div className="flex items-center gap-1">
-                         <FiClock /> {job.posted}
+                         <FiClock /> {formatTimeAgo(job.createdAt) || job.posted || "Recently"}
                      </div>
                  </div>
              </div>

@@ -61,7 +61,7 @@ export default function ProfileHeader({ business }) {
         {/* Main Text Info */}
         <div className="pt-16 text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
-                <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
+                <h1 className="text-2xl font-medium text-black">{name}</h1>
                 {verified && <MdVerified className="text-blue-500 text-xl" />}
             </div>
 

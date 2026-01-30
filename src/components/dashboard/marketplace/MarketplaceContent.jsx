@@ -425,7 +425,7 @@ export default function MarketplaceContent() {
 
             {/* Main Content */}
             <div className="flex-1">
-              {/* Featured Products */}
+             {/* Featured Products */}
               <div className="mb-8">
                 <h2 className="text-xl font-bold text-gray-900 mb-4">
                   Featured Products
@@ -444,12 +444,9 @@ export default function MarketplaceContent() {
                             className="w-full h-full object-cover"
                           />
                           <div className="absolute top-2 right-2 flex gap-1">
-                            <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                              ♡
-                            </button>
-                            <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                              ⋯
-                            </button>
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center shadow bg-white">
+                              <img className="w-3 h-3 object-contain" src="/assets/images/star.png" alt="" />
+                            </div>
                           </div>
                         </div>
                         <div className="p-4">
@@ -717,14 +714,6 @@ function TopDealsSection({ deals = [], isBusinessUser = false }) {
                     </span>
                   </div>
                 )}
-                <div className="absolute top-2 right-2 flex gap-1">
-                  <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                    ♡
-                  </button>
-                  <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow hover:bg-gray-50">
-                    ↗
-                  </button>
-                </div>
               </div>
 
               <div className="p-4">

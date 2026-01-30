@@ -53,27 +53,38 @@ export const JobCard = ({ job = dummyJob }) => {
 
   const jobData = {
     id: job?.id || job?._id || dummyJob.id,
-    logo: job?.logo || job?.companyLogo || dummyJob.logo,
-    company: job?.company || job?.businessId.companyName || "Unknown Company",
-    isActive: job?.isActive !== undefined ? job.isActive : true,
+    logo: job?.businessId?.logo || job?.companyLogo || job?.logo || dummyJob.logo,
+    company: job?.company || job?.businessId?.companyName || "Unknown Company",
+    isActive: job?.status === "open" || job?.isActive !== false,
     title: job?.title || job?.jobTitle || "Untitled Job",
     location: formatLocation(rawLocation),
     type: job?.type || job?.jobType || job?.employmentType || "Full-time",
     postedAt: formatPostedAt(rawPostedAt),
-    salaryMin: job?.salaryMin || job?.salaryMin || "Not specified",
-    salaryMax: job?.salaryMax || job?.salaryMax || "Not specified",
+    salaryMin: job?.salaryMin || "Not specified",
+    salaryMax: job?.salaryMax || "Not specified",
     category: job?.category || job?.jobCategory || "General",
   };
 
   return (
     <div className="bg-white border border-border-light rounded-lg p-5 hover:shadow-md transition-shadow flex flex-col md:flex-row gap-4 items-start relative">
       <div className="w-24 h-24 rounded-lg bg-gray-50 border border-border-light flex-shrink-0 relative overflow-hidden">
-        <Image
-          src={jobData.logo}
-          alt={jobData.company}
-          fill
-          className="object-cover"
-        />
+        {jobData.logo ? (
+          <img
+            src={jobData.logo}
+            alt={jobData.company}
+            className="w-full h-full object-contain p-2"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/assets/images/Logo.png";
+            }}
+          />
+        ) : (
+          <img
+            src="/assets/images/Logo.png"
+            alt={jobData.company}
+            className="w-full h-full object-contain p-2"
+          />
+        )}
       </div>
 
       <div className="flex-1 min-w-0 flex flex-col gap-4">

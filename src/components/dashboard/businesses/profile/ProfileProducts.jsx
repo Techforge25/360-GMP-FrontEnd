@@ -1,121 +1,118 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
 import { useUserRole } from "@/context/UserContext";
+import productAPI from "@/services/productAPI";
 
 export default function ProfileProducts({ products, businessId }) {
   const { role } = useUserRole();
   const basePath = role === "business" ? "/dashboard/business" : "/dashboard/user";
   const productsUrl = `${basePath}/businesses/${businessId || 'mock-id'}/products`;
+  
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const dummyProducts = [
-    {
-      id: 1,
-      name: "ANC Pro Wireless Earbuds",
-      description: "High-fidelity audio with Active Noise Cancellation for professional use.",
-      moq: "100 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/earbuds.png"
-    },
-     {
-      id: 2,
-      name: "Industrial Smart Watch",
-      description: "Rugged, silent block suspension parts for vibration control in heavy machinery.",
-      moq: "200 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/watch.png"
-    },
-     {
-      id: 3,
-      name: "High-Speed USB-C Data Cable",
-      description: "Precision machined cable for high-bandwidth data transfer and quick charging",
-      moq: "100 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/cable.png"
-    },
-    {
-      id: 4,
-      name: "Power Steering Rack & Pinion",
-      description: "Precision steering assembly for modern electric vehicle (EV) platforms.",
-      moq: "100 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/rack.png"
-    },
-    // Row 2
-    {
-      id: 5,
-      name: "Precision Disc Brake System",
-      description: "Precision milling and turning of complex geometries (3-axis, 5-axis) for critic...",
-      moq: "12 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/disc.png"
-    },
-    {
-      id: 6,
-      name: "Noise Reduction Headset",
-      description: "Over-ear solution providing passive noise cancellation for operator..",
-      moq: "12 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/headset.png"
-    },
-    {
-      id: 7,
-      name: "Multi-Port Industrial IoT Gateway",
-      description: "DIN rail mountable system with Ethernet and CAN bus for data acquisition and control",
-      moq: "10 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/gateway.png"
-    },
-    {
-      id: 8,
-      name: "Wired QC/Inspection Headphone",
-      description: "Entry-level wired headset for quality control stations and standardized audio testing.",
-      moq: "12 pc",
-      price: "USD $120 - $980",
-      image: "/assets/images/products/wired-headphone.png"
+  useEffect(() => {
+    if (businessId) {
+      fetchFeaturedProducts();
     }
+  }, [businessId]);
 
-  ];
+  const fetchFeaturedProducts = async () => {
+    try {
+      setLoading(true);
+      const response = await productAPI.getFeatured(8);
+      
+      console.log("Featured Products API Response:", response);
 
-  const productList = products || dummyProducts;
+      if (response.success && response.data) {
+        const productsData = response.data.docs || response.data || [];
+        // Filter products by businessId if available
+        const filteredProducts = productsData.filter(
+          (product) => product.businessProfileId === businessId || product.businessProfile === businessId
+        );
+        setFeaturedProducts(filteredProducts.length > 0 ? filteredProducts : productsData.slice(0, 8));
+      }
+    } catch (error) {
+      console.error("Failed to fetch featured products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const productList = featuredProducts.length > 0 ? featuredProducts : (products);
+
+  if (loading) {
+    return (
+      <div className="mb-10">
+        <h2 className="text-3xl font-medium text-black mb-6">Featured Products</h2>
+        <div className="flex justify-center items-center py-12">
+          <div className="text-gray-500">Loading products...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mb-10">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Featured Products</h2>
+      <h2 className="text-3xl font-medium text-black mb-6">Featured Products</h2>
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {productList.map((product) => (
-              <div key={product.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="h-40 bg-gray-100 relative group">
-                       <div className="absolute top-2 right-2 text-orange-400 bg-white p-1 rounded-full shadow-sm">
-                           <FaStar className="text-xs" />
-                       </div>
-                       {/* Placeholder for image */}
-                       <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
-                            {/* In real app use Image component */}
+              <div key={product.id || product._id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                  <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+                       {product.images && product.images.length > 0 ? (
+                         <img 
+                           src={product.images[0] || product.image} 
+                           alt={product.name || product.title}
+                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                           onError={(e) => {
+                             e.target.onerror = null;
+                             e.target.src = "/assets/images/products/placeholder.png";
+                           }}
+                         />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
                            <span className="text-xs">Product Image</span>
-                       </div>
+                         </div>
+                       )}
                   </div>
                   
                   <div className="p-4">
-                      <h3 className="font-bold text-gray-900 mb-1 truncate" title={product.name}>{product.name}</h3>
-                      <p className="text-xs text-gray-500 mb-4 line-clamp-2 h-8 leading-4">{product.description}</p>
+                      <h3 className="text-base font-semibold text-black mb-2 line-clamp-2">
+                        {product.title || product.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                        {product.detail || product.description}
+                      </p>
                       
-                      <div className="flex justify-between items-center text-xs text-gray-500 mb-3">
-                          <span>MOQ: {product.moq}</span>
-                          <span>{product.price}</span>
+                      <div className="flex items-center gap-2 mb-3">
+                          <span className="text-base font-bold text-black">
+                            ${product.pricePerUnit || product.minPrice || 0}
+                          </span>
+                          {product.originalPrice && (
+                            <span className="text-sm text-gray-500 line-through">
+                              ${product.originalPrice}
+                            </span>
+                          )}
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-2">
-                           <button className="border border-indigo-900 text-indigo-900 rounded py-1.5 text-xs font-semibold hover:bg-slate-50 transition-colors">
+                      {role === "business" ? (
+                        <button className="w-full py-2 border border-[#240457] text-[#240457] rounded-lg text-base hover:bg-[#240457] hover:text-white transition-colors">
+                          View Product
+                        </button>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-2">
+                           <button className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm hover:bg-[#240457] hover:text-white transition-colors">
                                Add To Cart
                            </button>
-                           <button className="bg-[#110026] text-white rounded py-1.5 text-xs font-semibold hover:bg-[#2a0b4d] transition-colors">
+                           <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
                                Chat Now
                            </button>
-                      </div>
+                        </div>
+                      )}
                   </div>
               </div>
           ))}

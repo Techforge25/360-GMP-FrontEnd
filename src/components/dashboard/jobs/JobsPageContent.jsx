@@ -350,7 +350,7 @@ export default function JobsPageContent() {
         </div>
       </div>
 
-      <ChatWidget />
+      {/* <ChatWidget /> */}
     </div>
   );
 }

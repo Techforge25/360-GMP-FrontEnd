@@ -115,3 +115,7 @@ body {
     animation: slideInRight 0.3s ease-out forwards;
   }
 }
+
+button {
+  cursor: pointer;
+}

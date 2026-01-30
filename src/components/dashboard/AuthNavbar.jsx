@@ -210,9 +210,21 @@ const AuthNavbar = () => {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
                 >
-                  <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base">
-                    M
-                  </div>
+                  {user?.logo ? (
+                    <img
+                      src={user.logo}
+                      alt="Profile"
+                      className="w-9 h-9 rounded-md object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/assets/images/Logo.png";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base">
+                      {user?.companyName?.[0]?.toUpperCase() || user?.firstName?.[0]?.toUpperCase() || "M"}
+                    </div>
+                  )}
                   <FiChevronDown
                     className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
                   />

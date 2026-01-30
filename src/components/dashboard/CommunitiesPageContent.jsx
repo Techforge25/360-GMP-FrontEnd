@@ -335,7 +335,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300 p-3 flex flex-col"
                 >
                   {/* Community Cover Section */}
-                  <div className="relative aspect-[16/10] bg-[#ECECEC] rounded-xl overflow-hidden flex items-center justify-center mb-4">
+                  <div className="relative aspect-[16/10] rounded-xl overflow-hidden flex items-center justify-center mb-4">
                     {community.coverImage || community.profileImage ? (
                       <img
                         src={community.coverImage || community.profileImage}

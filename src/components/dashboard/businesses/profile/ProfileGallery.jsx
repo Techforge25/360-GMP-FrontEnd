@@ -7,7 +7,7 @@ export default function ProfileGallery() {
 
   return (
     <div className="mb-12">
-      <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">Gallery</h2>
+      <h2 className="text-center text-3xl font-semibold text-black mb-8">Gallery</h2>
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="h-64 bg-gray-200 rounded-lg overflow-hidden relative group">
