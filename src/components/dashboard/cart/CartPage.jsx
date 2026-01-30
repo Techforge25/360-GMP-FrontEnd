@@ -43,13 +43,18 @@ const CartPage = () => {
     };
 
     fetchCartProducts();
-  }, [cartItems]);
+  }, [cartItems.length]); // Only refetch when items are added/removed, not quantity changes
 
   const incrementQuantity = (productId) => {
-    
     const item = cartItems.find((i) => i.productId === productId);
     if (item) {
       updateQuantity(productId, item.quantity + 1);
+      // Update local products state immediately
+      setProducts(prevProducts => 
+        prevProducts.map(p => 
+          p._id === productId ? { ...p, quantity: p.quantity + 1 } : p
+        )
+      );
     }
   };
 
@@ -57,6 +62,12 @@ const CartPage = () => {
     const item = cartItems.find((i) => i.productId === productId);
     if (item && item.quantity > 1) {
       updateQuantity(productId, item.quantity - 1);
+      // Update local products state immediately
+      setProducts(prevProducts => 
+        prevProducts.map(p => 
+          p._id === productId ? { ...p, quantity: p.quantity - 1 } : p
+        )
+      );
     }
   };
 
