@@ -1,26 +1,18 @@
 "use client";
 import React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
+import productAPI from "@/services/productAPI";
 
 export default function ProductListCard({ product }) {
-  const { role } = useUserRole();
+  const router = useRouter();
+  const { user } = useUserRole();
+  const role = user?.role;
   const basePath = role === "business" ? "/dashboard/business" : "/dashboard/user";
-  // Assuming we are inside a business context, we might need the business ID. 
-  // For now, let's use a placeholder or assume it's passed or available in context. 
-  // Ideally, product object should contain businessId or we retrieve it from params if available.
-  // Since this component is used in a list where the business ID is known (ProductListingContent), we can assume it's passed or we use a fallback.
-  // BUT: The component doesn't currently receive businessId. 
-  // Let's assume for this specific flow, we are in a known business context "mock-id".
-  // Or simpler: Just append /products/[id] to the current URL if we can, but Link needs absolute or relative properly.
-  // Safest: pass businessId prop or use a hardcoded fallback for the demo until wired up.
-  
-  // Let's modify the component to accept businessId or extract it from window location (not safe in SSR)
-  // Better: Component usage should pass businessId.
-  // I'll update usage in ProductListingContent.jsx and RelatedProducts.jsx next.
   
   const businessId = product.businessId || "mock-id"; 
-  const productUrl = `${basePath}/businesses/${businessId}/products/${product.id}`;
+  const productId = product.id || product._id;
+  const productUrl = `${basePath}/businesses/${businessId}/products/${productId}`;
 
   const {
       name,
@@ -30,6 +22,17 @@ export default function ProductListCard({ product }) {
       image,
       isNew
   } = product;
+
+  const handleViewProduct = async (e) => {
+    e.preventDefault();
+    try {
+      await productAPI.getById(productId);
+      router.push(productUrl);
+    } catch (error) {
+      console.error("Failed to fetch product:", error);
+      router.push(productUrl);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow bg-opacity-50">
@@ -65,9 +68,12 @@ export default function ProductListCard({ product }) {
               </div>
           </div>
 
-          <Link href={productUrl} className="block w-full text-center border border-indigo-900 text-indigo-900 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors uppercase">
+          <button 
+            onClick={handleViewProduct}
+            className="block w-full text-center border border-indigo-900 text-indigo-900 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors uppercase"
+          >
               View Product
-          </Link>
+          </button>
       </div>
     </div>
   );

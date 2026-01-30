@@ -6,20 +6,44 @@ import { BsShieldCheck, BsCashCoin, BsHeadset } from "react-icons/bs";
 import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
+import ActionRequiredModal from "./ProfileSwitchModal";
+import ProfileSwitchModal from "@/components/dashboard/ProfileSwitchModal";
 
 export default function ProductInfo({ product }) {
   const router = useRouter();
-  const { user } = useUserRole();
+  const { user, setOnboardingRole } = useUserRole();
   const { addToCart } = useCart();
   const isBusinessUser = user?.role === "business";
   
   const [quantity, setQuantity] = useState(product?.minOrderQty || 1);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [showSwitchModal, setShowSwitchModal] = useState(false);
   
   if (!product) return null;
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
-    router.push('/dashboard/user/cart');
+    if (isBusinessUser) {
+      setShowActionModal(true);
+    } else {
+      addToCart(product, quantity);
+      router.push('/dashboard/user/cart');
+    }
+  };
+
+  const handleProceedToSwitch = () => {
+    setShowActionModal(false);
+    setShowSwitchModal(true);
+  };
+
+  const handleProfileSwitch = async () => {
+    try {
+      await setOnboardingRole("user");
+      setShowSwitchModal(false);
+      addToCart(product, quantity);
+      router.push('/dashboard/user/cart');
+    } catch (error) {
+      console.error("Failed to switch profile:", error);
+    }
   };
 
   return (
@@ -96,19 +120,17 @@ export default function ProductInfo({ product }) {
       </div>
 
       {/* Buttons */}
-      {!isBusinessUser && (
-        <div className="flex gap-4 mb-8">
-            <button 
-              onClick={handleAddToCart}
-              className="flex-1 bg-[#110026] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors"
-            >
-                Add To Cart <FaShoppingCart />
-            </button>
-            <button className="flex-1 border border-gray-200 text-gray-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
-                Chat Now <FaCommentAlt />
-            </button>
-        </div>
-      )}
+      <div className="flex gap-4 mb-8">
+          <button 
+            onClick={handleAddToCart}
+            className="flex-1 bg-[#110026] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors"
+          >
+              Add To Cart <FaShoppingCart />
+          </button>
+          <button className="flex-1 border border-gray-200 text-gray-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+              Chat Now <FaCommentAlt />
+          </button>
+      </div>
 
       {/* Trust Badges */}
       <div className="space-y-4">
@@ -140,6 +162,22 @@ export default function ProductInfo({ product }) {
               </div>
           </div>
       </div>
+
+      {/* Action Required Modal */}
+      <ActionRequiredModal 
+        isOpen={showActionModal} 
+        onClose={() => setShowActionModal(false)}
+        onProceed={handleProceedToSwitch}
+        businessName={user?.businessName}
+      />
+
+      {/* Profile Switch Modal */}
+      <ProfileSwitchModal 
+        isOpen={showSwitchModal} 
+        onClose={() => setShowSwitchModal(false)}
+        userRole={user?.role}
+        onSwitch={handleProfileSwitch}
+      />
 
     </div>
   );
