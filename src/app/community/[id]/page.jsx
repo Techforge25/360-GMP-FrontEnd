@@ -15,8 +15,8 @@ import PostCard from "@/components/community/PostCard";
 import { IoChevronBack } from "react-icons/io5";
 import Footer from "@/components/landing/Footer";
 
-export default function CommunityDetailsPage() {
-  const params = useParams();
+export default function CommunityDetailsPage({ params: paramsPromise }) {
+  const params = React.use(paramsPromise);
   const router = useRouter();
   const { user } = useUserRole();
   const [community, setCommunity] = useState(null);

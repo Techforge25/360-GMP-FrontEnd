@@ -5,11 +5,10 @@ import CompanyProductHeader from "./CompanyProductHeader";
 import ProductFilterSidebar from "./ProductFilterSidebar";
 import ProductListCard from "./ProductListCard";
 
-export default function ProductListingContent({ businessId }) {
+export default function ProductListingContent() {
   const products = [
     {
       id: 1,
-      businessId: businessId || "mock-id",
       name: "ANC Pro Wireless Earbuds",
       description: "High-fidelity audio with Active Noise Cancellation for professional use.",
       moq: "100 pc",

@@ -1,100 +1,66 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ProductListCard from "../ProductListCard";
+import productAPI from "@/services/productAPI";
 
-export default function RelatedProducts({ businessId }) {
-  // reusing the same card component but maybe simplified or same structure
-  const products = [
-    {
-        id: 101,
-        businessId: businessId || "mock-id",
-        name: "Noise Reduction Headset",
-        description: "Over-ear solution providing passive noise cancellation for operator..",
-        moq: "12 pc",
-        price: "USD $120 - $980",
-        image: "/assets/images/products/headset.png",
-        isNew: false
-      },
-      {
-        id: 102,
-        name: "Industrial Smart Watch",
-        description: "Rugged, silent block suspension parts for vibration control in heavy machinery.",
-        moq: "200 pc",
-        price: "USD $120 - $980",
-        image: "/assets/images/products/watch.png",
-        isNew: false
-      },
-       {
-        id: 103,
-        name: "Multi-Port Industrial IoT Gateway",
-        description: "DIN rail mountable system with Ethernet and CAN bus for data acquisition and control",
-        moq: "10 pc",
-        price: "USD $120 - $980",
-        image: "/assets/images/products/gateway.png",
-        isNew: false
-      },
-      {
-          id: 104,
-          name: "High-Speed USB-C Data Cable",
-          description: "Precision machined cable for high-bandwidth data transfer and quick charging",
-          moq: "100 pc",
-          price: "USD $120 - $980",
-          image: "/assets/images/products/cable.png",
-          isNew: false
-      },
-       {
-        id: 105,
-        name: "Power Steering Rack & Pinion",
-        description: "Precision steering assembly for modern electric vehicle (EV) platforms.",
-        moq: "100 pc",
-        price: "USD $120 - $980",
-        image: "/assets/images/products/rack.png",
-        isNew: false
-      },
-      {
-        id: 106,
-        name: "Precision Disc Brake System",
-        description: "Precision milling and turning of complex geometries (3-axis, 5-axis) for critic...",
-        moq: "12 pc",
-        price: "USD $120 - $980",
-        image: "/assets/images/products/disc.png",
-        isNew: false
-      },
-      {
-          id: 107,
-          name: "High-Speed USB-C Data Cable",
-          description: "Precision machined cable for high-bandwidth data transfer and quick charging",
-          moq: "100 pc",
-          price: "USD $120 - $980",
-          image: "/assets/images/products/cable.png",
-          isNew: false
-      },
-       {
-        id: 108,
-        name: "Noise Reduction Headset",
-        description: "Over-ear solution providing passive noise cancellation for operator..",
-        moq: "12 pc",
-        price: "USD $120 - $980",
-        image: "/assets/images/products/headset.png",
-        isNew: false
-      },
-  ];
+export default function RelatedProducts({ businessId, currentProductId }) {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      if (!businessId) return;
+      
+      try {
+        setLoading(true);
+        const response = await productAPI.getAll({ limit: 4 });
+        if (response.success) {
+          const allProducts = response.data.docs || response.data || [];
+          // Filter out the current product
+          const filtered = allProducts.filter(p => p._id !== currentProductId).slice(0, 4);
+          setProducts(filtered);
+        }
+      } catch (error) {
+        console.error("Failed to fetch related products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [businessId, currentProductId]);
+
+  if (loading) {
+    return (
+      <div className="py-8">
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Related Products</h2>
+        <div className="flex justify-center py-10">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-900"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (products.length === 0) return null;
 
   return (
     <div className="border-t border-gray-100 pt-10">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Product</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((p) => (
-                <ProductListCard key={p.id} product={p} />
+                <ProductListCard 
+                  key={p._id} 
+                  product={{
+                    ...p,
+                    name: p.title,
+                    description: p.detail,
+                    moq: `${p.minOrderQty} pc`,
+                    price: `USD $${p.pricePerUnit}`
+                  }} 
+                />
             ))}
       </div>
-
-       <div className="flex justify-center mt-8">
-            <button className="bg-[#110026] text-white px-8 py-3 rounded-lg font-semibold text-sm hover:bg-[#2a0b4d] transition-colors shadow-sm">
-                Load More
-            </button>
-        </div>
     </div>
   );
 }

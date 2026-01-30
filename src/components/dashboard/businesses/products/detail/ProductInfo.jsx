@@ -3,16 +3,30 @@ import React, { useState } from "react";
 import { FaStar, FaMinus, FaPlus, FaShoppingCart, FaCommentAlt } from "react-icons/fa";
 import { MdVerified } from "react-icons/md";
 import { BsShieldCheck, BsCashCoin, BsHeadset } from "react-icons/bs";
+import { useCart } from "@/context/CartContext";
+import { useRouter } from "next/navigation";
+import { useUserRole } from "@/context/UserContext";
 
-export default function ProductInfo() {
-  const [quantity, setQuantity] = useState(100);
-  const pricePerUnit = 98.00;
+export default function ProductInfo({ product }) {
+  const router = useRouter();
+  const { user } = useUserRole();
+  const { addToCart } = useCart();
+  const isBusinessUser = user?.role === "business";
+  
+  const [quantity, setQuantity] = useState(product?.minOrderQty || 1);
+  
+  if (!product) return null;
+
+  const handleAddToCart = () => {
+    addToCart(product, quantity);
+    router.push('/dashboard/user/cart');
+  };
 
   return (
     <div className="w-full">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">ANC Pro Wireless Earbuds</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
       <p className="text-gray-500 text-sm mb-4">
-        High-fidelity audio with Active Noise Cancellation for hands-free factory communication.
+        {product.detail}
       </p>
 
       {/* Ratings */}
@@ -21,18 +35,18 @@ export default function ProductInfo() {
         <div className="flex text-orange-400 text-xs">
             <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
         </div>
-        <span className="text-gray-500 underline">(2 Reviews)</span>
+        <span className="text-gray-500 underline">({product.viewsCount || 0} Views)</span>
         <span className="text-gray-300">•</span>
-        <span className="text-gray-500">103 (Sold)</span>
+        <span className="text-gray-500">{product.stockQty || 0} (In Stock)</span>
       </div>
 
       {/* Price */}
       <div className="flex justify-between items-end mb-6 border-b border-gray-100 pb-6">
           <div className="flex items-baseline gap-1">
-             <span className="text-3xl font-bold text-gray-900">${pricePerUnit.toFixed(2)}</span>
+             <span className="text-3xl font-bold text-gray-900">${product.pricePerUnit.toFixed(2)}</span>
              <span className="text-gray-500 text-sm font-medium">/Pc</span>
           </div>
-          <span className="text-gray-500 text-sm">MOQ: 100 pc</span>
+          <span className="text-gray-500 text-sm">MOQ: {product.minOrderQty} pc</span>
       </div>
 
       {/* Supplier Card */}
@@ -42,7 +56,7 @@ export default function ProductInfo() {
                   {/* Logo Placeholder */}
                   <div className="text-cyan-500 text-lg">🌐</div>
               </div>
-              <span className="font-semibold text-gray-900 text-sm">Tech Vision Solution</span>
+              <span className="font-semibold text-gray-900 text-sm">{product.businessId?.name || 'Business'}</span>
           </div>
           <div className="border-l border-gray-300 h-6 mx-2"></div>
           <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
@@ -56,7 +70,7 @@ export default function ProductInfo() {
               <span className="text-gray-600 text-sm font-medium">Quantity :</span>
               <div className="flex items-center border border-gray-200 rounded-lg bg-white">
                   <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    onClick={() => setQuantity(Math.max(product.minOrderQty, quantity - 1))}
                     className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-l-lg"
                   >
                       <FaMinus className="text-[10px]" />
@@ -64,7 +78,7 @@ export default function ProductInfo() {
                   <input 
                     type="number" 
                     value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    onChange={(e) => setQuantity(Math.max(product.minOrderQty, Number(e.target.value)))}
                     className="w-12 text-center text-sm font-bold text-gray-900 border-x border-gray-200 py-1 outline-none"
                   />
                   <button 
@@ -77,19 +91,24 @@ export default function ProductInfo() {
           </div>
           
           <div className="text-gray-600 text-sm font-medium">
-              Sub Total: <span className="text-gray-900 font-bold">${(quantity * pricePerUnit).toLocaleString()}</span>
+              Sub Total: <span className="text-gray-900 font-bold">${(quantity * product.pricePerUnit).toLocaleString()}</span>
           </div>
       </div>
 
       {/* Buttons */}
-      <div className="flex gap-4 mb-8">
-          <button className="flex-1 bg-[#110026] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors">
-              Add To Cart <FaShoppingCart />
-          </button>
-          <button className="flex-1 border border-gray-200 text-gray-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
-              Chat Now <FaCommentAlt />
-          </button>
-      </div>
+      {!isBusinessUser && (
+        <div className="flex gap-4 mb-8">
+            <button 
+              onClick={handleAddToCart}
+              className="flex-1 bg-[#110026] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors"
+            >
+                Add To Cart <FaShoppingCart />
+            </button>
+            <button className="flex-1 border border-gray-200 text-gray-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+                Chat Now <FaCommentAlt />
+            </button>
+        </div>
+      )}
 
       {/* Trust Badges */}
       <div className="space-y-4">

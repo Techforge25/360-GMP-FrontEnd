@@ -1,15 +1,18 @@
 "use client";
 import React, { useState } from "react";
 
-export default function ProductSpecs() {
+export default function ProductSpecs({ product }) {
   const [activeTab, setActiveTab] = useState("specs");
 
+  if (!product) return null;
+
   const specs = [
-    { label: "Model Number", value: "ANC-X200 Pro" },
-    { label: "Bluetooth Version", value: "V5.3 + EDR" },
-    { label: "Battery Life", value: "30 Hours (with Case)" },
-    { label: "Waterproof Standard", value: "IPX5" },
-    { label: "Certification", value: "CE, RoHS, FCC" },
+    { label: "Category", value: product.category },
+    { label: "Shipping Method", value: product.shippingMethod },
+    { label: "Shipping Cost", value: `$${product.shippingCost}` },
+    { label: "Estimated Delivery", value: product.estimatedDeliveryDays },
+    { label: "Stock Quantity", value: product.stockQty },
+    { label: "Min Order Qty", value: product.minOrderQty },
   ];
 
   return (
@@ -20,7 +23,7 @@ export default function ProductSpecs() {
                 onClick={() => setActiveTab("specs")}
                 className={`pb-3 pr-6 text-sm font-bold border-b-2 transition-colors ${activeTab === 'specs' ? 'border-indigo-900 text-indigo-900' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
             >
-                Technical Specifications
+                Product Specifications
             </button>
             <button 
                 onClick={() => setActiveTab("company")}
@@ -46,20 +49,13 @@ export default function ProductSpecs() {
 
             {/* Highlights */}
             <div className="w-full md:w-1/2 bg-gray-50/50 rounded-lg p-6 border border-gray-100">
-                <h3 className="font-bold text-gray-900 mb-4 text-sm">Product Highlights</h3>
-                <ul className="space-y-2">
-                    {[
-                        "Active Noise Cancellation up to 35dB",
-                        "Transparency Mode for ambient awareness",
-                        "Dual-mic ENC for crystal clear calls",
-                        "Low latency gaming mode (60ms)"
-                    ].map((item, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
-                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-gray-400 flex-shrink-0"></span>
-                            {item}
-                        </li>
-                    ))}
-                </ul>
+                <h3 className="font-bold text-gray-900 mb-4 text-sm">Product Details</h3>
+                <p className="text-sm text-gray-600 leading-relaxed">{product.detail}</p>
+                {product.extras && (
+                  <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                    <span className="text-sm font-bold text-orange-600">{product.extras}</span>
+                  </div>
+                )}
             </div>
         </div>
     </div>

@@ -16,9 +16,9 @@ import { useCart } from "@/context/CartContext";
 
 export default function MarketplaceContent() {
   const router = useRouter();
-  const { role } = useUserRole();
+  const { user } = useUserRole();
   const { addToCart } = useCart();
-  const isBusinessUser = role === "business";
+  const isBusinessUser = user?.role === "business";
   const [expandedCategories, setExpandedCategories] = useState({
     product: true,
     country: false,
