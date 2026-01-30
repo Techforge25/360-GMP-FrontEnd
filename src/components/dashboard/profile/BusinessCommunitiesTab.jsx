@@ -242,7 +242,7 @@ const OwnedCommunityCard = ({ community, onDelete, formatMemberCount }) => {
                 <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
                   <FiEdit2 className="w-4 h-4" />
                 </button>
-                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap ml-auto sm:ml-0">
+                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-full whitespace-nowrap ml-auto sm:ml-0">
                   {community.category || "General"}
                 </span>
               </div>
@@ -279,7 +279,7 @@ const OwnedCommunityCard = ({ community, onDelete, formatMemberCount }) => {
                   </div>
                 ))}
             </div>
-            <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+            <span className="text-sm font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
               {formatMemberCount(community.memberCount) || "4k"}
             </span>
           </div>
@@ -341,7 +341,7 @@ const SuggestedCommunityItem = ({ community, formatMemberCount }) => {
             <h4 className="text-sm font-semibold text-gray-900 truncate">
               {community.name}
             </h4>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm text-gray-500">
               {formatMemberCount(community.memberCount)} Members
               {community.type === "featured" && (
                 <span className="text-[#240457] font-medium"> • Premium</span>

@@ -257,7 +257,7 @@ export default function BusinessJobsTab() {
                             <span className="text-gray-400">|</span>
                             <span className="text-gray-700">
                               New •{" "}
-                              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-green-100 text-green-700 rounded text-xs font-medium">
+                              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-green-100 text-green-700 rounded text-sm font-medium">
                                 00
                               </span>
                             </span>

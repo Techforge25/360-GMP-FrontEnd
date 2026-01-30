@@ -118,7 +118,7 @@ export default function JobApplicationModal({
                 <p className="font-medium text-text-primary text-sm">
                   {formData.resumeName}
                 </p>
-                <p className="text-xs text-text-secondary">
+                <p className="text-sm text-text-secondary">
                   Uploaded Successfully
                 </p>
               </div>

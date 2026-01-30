@@ -311,7 +311,7 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
                 <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate">
                   {community.name}
                 </h3>
-                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full whitespace-nowrap">
+                <span className="px-3 py-1 bg-gray-100 text-gray-600 text-sm font-medium rounded-full whitespace-nowrap">
                   {community.category || "General"}
                 </span>
               </div>
@@ -342,7 +342,7 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
                   </div>
                 ))}
             </div>
-            <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+            <span className="text-sm font-semibold text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
               {formatMemberCount(community.memberCount) || "4k"}
             </span>
           </div>
@@ -404,7 +404,7 @@ const SuggestedCommunityItem = ({ community, formatMemberCount }) => {
             <h4 className="text-sm font-semibold text-gray-900 truncate">
               {community.name}
             </h4>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm text-gray-500">
               {formatMemberCount(community.memberCount)} Members
               {community.type === "featured" && (
                 <span className="text-[#240457] font-medium"> • Premium</span>

@@ -161,10 +161,10 @@ const AuthNavbar = () => {
               <div className="flex items-center gap-4 border border-gray-200 rounded-full py-2 px-4">
                 {/* Cart Icon */}
                 {user?.role === "user" && (
-                  <button className=" relative">
+                  <Link href="/dashboard/user/cart" className="block relative">
                     <img
                       src="/assets/images/cartIcon.png"
-                      alt=""
+                      alt="Cart"
                       className="w-5 h-5"
                     />
                     {cartCount > 0 && (
@@ -172,7 +172,7 @@ const AuthNavbar = () => {
                         {cartCount}
                       </span>
                     )}
-                  </button>
+                  </Link>
                 )}
 
                 <button className=" relative">

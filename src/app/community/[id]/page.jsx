@@ -8,6 +8,7 @@ import AuthNavbar from "@/components/dashboard/AuthNavbar";
 import CommunityHeader from "@/components/community/CommunityHeader";
 import CommunityInfoCard from "@/components/community/CommunityInfoCard";
 import CommunityMembersWidget from "@/components/community/CommunityMembersWidget";
+import CommunityMembersView from "@/components/community/CommunityMembersView";
 import FeedInput from "@/components/community/FeedInput";
 import FeedTabs from "@/components/community/FeedTabs";
 import PostCard from "@/components/community/PostCard";
@@ -21,6 +22,7 @@ export default function CommunityDetailsPage() {
   const [community, setCommunity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("recent");
+  const [showMembersView, setShowMembersView] = useState(false);
 
   // Mock Posts Data
   const [posts] = useState([
@@ -231,27 +233,37 @@ export default function CommunityDetailsPage() {
             <CommunityInfoCard community={community} />
             <CommunityMembersWidget
               totalCount={community.memberCount}
-              members={[]} // Pass actual members here
+              members={[]}
+              onViewAll={() => setShowMembersView(true)}
             />
           </div>
 
           {/* Main Feed */}
           <div className="lg:col-span-9">
-            <FeedInput />
+            {showMembersView ? (
+              <CommunityMembersView
+                onBack={() => setShowMembersView(false)}
+                communityName={community.name}
+              />
+            ) : (
+              <>
+                <FeedInput />
 
-            <FeedTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                <FeedTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-            <div className="space-y-4 mt-6">
-              {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
+                <div className="space-y-4 mt-6">
+                  {posts.map((post) => (
+                    <PostCard key={post.id} post={post} />
+                  ))}
 
-              <div className="flex justify-center mt-8 mb-12">
-                <button className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
-                  Load more
-                </button>
-              </div>
-            </div>
+                  <div className="flex justify-center mt-8 mb-12">
+                    <button className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
+                      Load more
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>

@@ -27,7 +27,7 @@ const PostCard = ({ post }) => {
           <div className="flex gap-4">
             {/* Date Badge */}
             <div className="flex-shrink-0 w-14 h-14 bg-blue-500 rounded-lg flex flex-col items-center justify-center text-white">
-              <span className="text-xs font-semibold">
+              <span className="text-sm font-semibold">
                 {post.date.split(" ")[0]}
               </span>
               <span className="text-xl font-bold">
@@ -41,7 +41,7 @@ const PostCard = ({ post }) => {
                 <h3 className="text-base font-bold text-gray-900">
                   {post.title}
                 </h3>
-                <span className="px-3 py-1 bg-blue-50 text-blue-600 text-xs font-semibold rounded-full whitespace-nowrap">
+                <span className="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-semibold rounded-full whitespace-nowrap">
                   Event
                 </span>
               </div>
@@ -102,7 +102,7 @@ const PostCard = ({ post }) => {
                 <h4 className="text-sm font-bold text-gray-900">
                   {post.author?.name}
                 </h4>
-                <div className="flex items-center text-xs text-gray-500 gap-1">
+                <div className="flex items-center text-sm text-gray-500 gap-1">
                   <span>{post.author?.role}</span>
                   <span>•</span>
                   <span>{post.timeAgo}</span>
@@ -119,7 +119,7 @@ const PostCard = ({ post }) => {
         <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
           {/* File Icon */}
           <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-green-600 text-xs font-bold">
+            <span className="text-green-600 text-sm font-bold">
               {post.fileType}
             </span>
           </div>
@@ -132,7 +132,7 @@ const PostCard = ({ post }) => {
             <p className="text-sm text-gray-600 mb-3 line-clamp-2">
               {post.description}
             </p>
-            <div className="flex items-center gap-1 text-xs text-gray-500">
+            <div className="flex items-center gap-1 text-sm text-gray-500">
               <FiDownload className="w-3 h-3" />
               <span>{post.downloads} Downloads</span>
             </div>
@@ -180,12 +180,12 @@ const PostCard = ({ post }) => {
                 {post.author?.name}
               </h4>
               {post.tag && (
-                <span className="px-2.5 py-0.5 bg-green-50 text-green-600 text-xs font-semibold rounded-full">
+                <span className="px-2.5 py-0.5 bg-green-50 text-green-600 text-sm font-semibold rounded-full">
                   {post.tag}
                 </span>
               )}
             </div>
-            <div className="flex items-center text-xs text-gray-500 gap-1">
+            <div className="flex items-center text-sm text-gray-500 gap-1">
               <span>{post.author?.role}</span>
               <span>•</span>
               <span>{post.timeAgo}</span>
@@ -268,7 +268,7 @@ const PostCard = ({ post }) => {
       )}
 
       {/* Interactions Stats */}
-      <div className="flex items-center gap-3 text-xs text-gray-500 mb-4 pb-4 border-b border-gray-100">
+      <div className="flex items-center gap-3 text-sm text-gray-500 mb-4 pb-4 border-b border-gray-100">
         <span>{post.likes || 0} Likes</span>
         <span>•</span>
         <span>{post.comments || 0} Comments</span>

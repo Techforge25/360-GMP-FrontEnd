@@ -247,10 +247,10 @@ export default function CreateCommunityPage() {
                       <p className="text-sm font-medium text-gray-700">
                         Upload
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-sm text-gray-500 mt-1">
                         Recommended: Square image, at least 400×400px
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         SVG, JPG, or PNG. Max file size 5MB.
                       </p>
                     </label>
@@ -573,7 +573,7 @@ export default function CreateCommunityPage() {
                       <p className="text-sm font-medium text-gray-700">
                         Click to upload cover image
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-sm text-gray-500 mt-1">
                         Recommended: 1200×300px
                       </p>
                     </label>

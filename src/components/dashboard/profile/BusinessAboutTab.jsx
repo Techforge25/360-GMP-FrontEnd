@@ -126,7 +126,7 @@ const BusinessAboutTab = () => {
 
               {/* Center Label */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center bg-white px-3 py-2 rounded-lg shadow-sm border border-gray-100">
-                <p className="text-xs text-gray-500">European Union</p>
+                <p className="text-sm text-gray-500">European Union</p>
                 <p className="text-lg font-bold text-orange-500">30</p>
               </div>
             </div>
@@ -139,7 +139,7 @@ const BusinessAboutTab = () => {
                     className="w-3 h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-xs text-gray-600">{item.name}</span>
+                  <span className="text-sm text-gray-600">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -226,7 +226,7 @@ const BusinessAboutTab = () => {
                     <span className="text-lg">🏅</span>
                   ) : (
                     <div className="w-6 h-6 bg-[#240457] rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">✓</span>
+                      <span className="text-white text-sm">✓</span>
                     </div>
                   )}
                 </div>
@@ -234,7 +234,7 @@ const BusinessAboutTab = () => {
                   <h4 className="text-sm font-bold text-gray-900">
                     {cert.name}
                   </h4>
-                  <p className="text-xs text-gray-500">{cert.description}</p>
+                  <p className="text-sm text-gray-500">{cert.description}</p>
                 </div>
               </div>
             ))}

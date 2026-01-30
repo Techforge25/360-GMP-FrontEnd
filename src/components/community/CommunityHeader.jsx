@@ -43,7 +43,7 @@ const CommunityHeader = ({ community, isOwner, isMember }) => {
             <p className="text-sm sm:text-base text-gray-600 mt-1 line-clamp-2">
               {community.shortDescription || community.description}
             </p>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 text-xs sm:text-sm text-gray-500">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2 text-sm sm:text-sm text-gray-500">
               <span className="font-medium text-gray-700">
                 {formatMemberCount(community.memberCount)} members
               </span>

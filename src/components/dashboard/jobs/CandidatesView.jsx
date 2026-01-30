@@ -323,15 +323,15 @@ const CandidatesView = ({ job, onBack }) => {
                     <h3 className="font-semibold text-gray-900 text-sm truncate">
                       {candidate.name}
                     </h3>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-sm text-gray-500 truncate">
                       {candidate.location} • {candidate.experience}
                     </p>
-                    <p className="text-xs text-blue-600 mt-1">
+                    <p className="text-sm text-blue-600 mt-1">
                       Applied {candidate.appliedAgo}
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 px-2 py-0.5 rounded text-xs font-medium ${getMatchColor(
+                    className={`shrink-0 px-2 py-0.5 rounded text-sm font-medium ${getMatchColor(
                       candidate.matchPercentage
                     )}`}
                   >
@@ -392,7 +392,7 @@ const CandidatesView = ({ job, onBack }) => {
 
                 <div className="space-y-4">
                   <div>
-                    <label className="text-xs text-gray-500 block mb-1">
+                    <label className="text-sm text-gray-500 block mb-1">
                       Full Name
                     </label>
                     <p className="text-sm text-gray-900 font-medium">
@@ -401,7 +401,7 @@ const CandidatesView = ({ job, onBack }) => {
                   </div>
 
                   <div>
-                    <label className="text-xs text-gray-500 block mb-1">
+                    <label className="text-sm text-gray-500 block mb-1">
                       Email Address
                     </label>
                     <p className="text-sm text-gray-900 font-medium">
@@ -410,7 +410,7 @@ const CandidatesView = ({ job, onBack }) => {
                   </div>
 
                   <div>
-                    <label className="text-xs text-gray-500 block mb-1">
+                    <label className="text-sm text-gray-500 block mb-1">
                       About
                     </label>
                     <p className="text-sm text-gray-600 leading-relaxed">
@@ -419,7 +419,7 @@ const CandidatesView = ({ job, onBack }) => {
                   </div>
 
                   <div>
-                    <label className="text-xs text-gray-500 block mb-1">
+                    <label className="text-sm text-gray-500 block mb-1">
                       City , State
                     </label>
                     <p className="text-sm text-gray-900 font-medium">
@@ -428,7 +428,7 @@ const CandidatesView = ({ job, onBack }) => {
                   </div>
 
                   <div>
-                    <label className="text-xs text-gray-500 block mb-1">
+                    <label className="text-sm text-gray-500 block mb-1">
                       Phone
                     </label>
                     <p className="text-sm text-gray-900 font-medium">
@@ -447,7 +447,7 @@ const CandidatesView = ({ job, onBack }) => {
                 <div className="space-y-4">
                   {currentCandidate.employerQuestions.map((item, index) => (
                     <div key={index}>
-                      <label className="text-xs text-gray-500 block mb-1">
+                      <label className="text-sm text-gray-500 block mb-1">
                         {item.question}
                       </label>
                       <p className="text-sm text-gray-900 font-medium">
@@ -470,7 +470,7 @@ const CandidatesView = ({ job, onBack }) => {
                       <p className="text-sm font-medium text-gray-900">
                         {currentCandidate.resume.name}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         Uploaded {currentCandidate.resume.uploadedAt}
                       </p>
                     </div>

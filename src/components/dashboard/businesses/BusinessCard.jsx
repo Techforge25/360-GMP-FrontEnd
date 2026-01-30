@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { FiMapPin, FiGlobe, FiPhone, FiCheck, FiFolder } from "react-icons/fi";
 import { FaCheckCircle, FaStar } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
@@ -8,6 +9,9 @@ import { useUserRole } from "@/context/UserContext";
 const BusinessCard = ({ business }) => {
   const { role } = useUserRole();
   const isFreeTrial = role === "free_trial";
+  
+  const basePath = role === "business" ? "/dashboard/business" : "/dashboard/user";
+  const profileUrl = `${basePath}/businesses/${business?.id || 'mock-id'}`;
 
   // Mock data handling if props not provided
   const {
@@ -65,7 +69,9 @@ const BusinessCard = ({ business }) => {
 
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <h3 className="text-lg font-bold text-gray-900">{name}</h3>
+            <Link href={profileUrl} className="hover:underline text-gray-900">
+                <h3 className="text-lg font-bold">{name}</h3>
+            </Link>
             {verified && <FaCheckCircle className="text-blue-500 text-base" />}
           </div>
 
@@ -151,12 +157,12 @@ const BusinessCard = ({ business }) => {
         >
           <FiPhone className="mr-2" /> Contact
         </Button>
-        <Button
-          variant="outline"
-          className="h-9 text-sm font-medium border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200"
+        <Link
+          href={profileUrl}
+          className="h-9 text-sm font-medium border border-indigo-100 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200 inline-flex items-center justify-center rounded-md px-4 whitespace-nowrap"
         >
           <FiFolder className="mr-2" /> View Profile
-        </Button>
+        </Link>
       </div>
     </div>
   );

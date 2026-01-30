@@ -93,6 +93,7 @@ export default function BusinessesPage() {
   // Transform backend schema to component schema
   const transformBusinessProfile = (profile) => {
     return {
+      id: profile._id || profile.id || "mock-id", // Add ID for routing
       name: profile.companyName || "Unknown Company",
       description: profile.description || "No description available",
       verified: profile.certifications?.length > 0 || false,

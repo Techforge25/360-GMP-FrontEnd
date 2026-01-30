@@ -72,7 +72,7 @@ const UserStats = () => {
                 <h3 className="text-3xl font-bold text-gray-900 mb-1">
                   {stat.value}
                 </h3>
-                <p className="text-xs font-semibold text-gray-900 mb-4">
+                <p className="text-sm font-semibold text-gray-900 mb-4">
                   {stat.label}
                 </p>
                 <p className="text-[10px] text-gray-500">{stat.subLabel}</p>

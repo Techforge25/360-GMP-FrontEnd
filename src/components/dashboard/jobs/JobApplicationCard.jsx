@@ -70,7 +70,7 @@ export const JobApplicationCard = ({ application }) => {
             {/* Status Pill (Desktop) */}
             <div
               className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold capitalize hidden md:block",
+                "px-3 py-1 rounded-full text-sm font-semibold capitalize hidden md:block",
                 getStatusColor(status),
               )}
             >
@@ -79,7 +79,7 @@ export const JobApplicationCard = ({ application }) => {
           </div>
 
           {/* Info Row */}
-          <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-text-secondary">
+          <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-text-secondary">
             <div className="flex items-center gap-1.5">
               <FiMapPin className="text-text-tertiary" /> {location}
             </div>
@@ -101,7 +101,7 @@ export const JobApplicationCard = ({ application }) => {
           <div className="mt-4 md:hidden">
             <span
               className={cn(
-                "px-3 py-1 rounded-full text-xs font-semibold capitalize",
+                "px-3 py-1 rounded-full text-sm font-semibold capitalize",
                 getStatusColor(status),
               )}
             >

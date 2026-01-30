@@ -111,7 +111,7 @@ const UserSidebar = () => {
               );
             })}
           </div>
-          <button className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-xs font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-1">
+          <button className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-1">
             Add Social Link <FiPlus className="w-3 h-3" />
           </button>
         </div>
@@ -142,7 +142,7 @@ const UserSidebar = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900">Resume</p>
-              <p className="text-xs text-gray-500">Uploaded On 12-1-2025</p>
+              <p className="text-sm text-gray-500">Uploaded On 12-1-2025</p>
             </div>
           </div>
           <button className="text-red-500 hover:text-red-700 p-1">

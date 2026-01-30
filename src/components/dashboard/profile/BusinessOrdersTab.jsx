@@ -182,25 +182,25 @@ const BusinessOrdersTab = () => {
           <table className="w-full">
             <thead className="bg-[#F0F0F0]">
               <tr>
-                <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Order ID
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Buyer
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                   Order Date
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Total
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Order Type
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Delivery Status
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-right text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-4 sm:px-6 py-4 text-right text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Action
                 </th>
               </tr>
@@ -235,7 +235,7 @@ const BusinessOrdersTab = () => {
                   </td>
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${getStatusColor(
+                      className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-sm sm:text-sm font-medium ${getStatusColor(
                         order.status
                       )}`}
                     >

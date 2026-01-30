@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
-import Link from "next/link";
 import { FiArrowRight } from "react-icons/fi";
 
-const CommunityMembersWidget = ({ members = [], totalCount = 0 }) => {
+const CommunityMembersWidget = ({ members = [], totalCount = 0, onViewAll }) => {
   // Mock members if none provided
   const displayMembers =
     members.length > 0
@@ -73,7 +72,7 @@ const CommunityMembersWidget = ({ members = [], totalCount = 0 }) => {
               <h4 className="text-sm font-semibold text-gray-900 truncate">
                 {member.name}
               </h4>
-              <p className="text-xs text-gray-500 truncate">
+              <p className="text-sm text-gray-500 truncate">
                 {member.role || "Member"}
               </p>
             </div>
@@ -81,13 +80,13 @@ const CommunityMembersWidget = ({ members = [], totalCount = 0 }) => {
         ))}
       </div>
 
-      <Link
-        href="#"
-        className="flex items-center justify-center gap-1 mt-5 pt-4 border-t border-gray-100 text-[#240457] font-semibold text-sm hover:underline"
+      <button
+        onClick={onViewAll}
+        className="flex items-center justify-center gap-1 mt-5 pt-4 border-t border-gray-100 text-[#240457] font-semibold text-sm hover:underline w-full"
       >
         View All Members
         <FiArrowRight className="w-4 h-4" />
-      </Link>
+      </button>
     </div>
   );
 };

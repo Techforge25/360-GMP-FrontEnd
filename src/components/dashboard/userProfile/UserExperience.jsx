@@ -37,7 +37,7 @@ const UserExperience = () => {
           </span>
           Work Experience
         </h2>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-xs font-semibold hover:bg-gray-100 transition-colors">
+        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-sm font-semibold hover:bg-gray-100 transition-colors">
           Edit Work Experience
           <svg
             width="12"
@@ -67,7 +67,7 @@ const UserExperience = () => {
               <p className="text-sm font-medium text-[#556179] mb-1">
                 {exp.company}
               </p>
-              <p className="text-xs text-purple-600 mb-2">{exp.duration}</p>
+              <p className="text-sm text-purple-600 mb-2">{exp.duration}</p>
             </div>
 
             <ul className="space-y-3">
