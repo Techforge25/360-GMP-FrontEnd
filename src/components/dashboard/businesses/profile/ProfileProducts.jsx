@@ -1,9 +1,15 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { FaStar } from "react-icons/fa";
+import { useUserRole } from "@/context/UserContext";
 
-export default function ProfileProducts({ products }) {
+export default function ProfileProducts({ products, businessId }) {
+  const { role } = useUserRole();
+  const basePath = role === "business" ? "/dashboard/business" : "/dashboard/user";
+  const productsUrl = `${basePath}/businesses/${businessId || 'mock-id'}/products`;
+
   const dummyProducts = [
     {
       id: 1,
@@ -116,9 +122,9 @@ export default function ProfileProducts({ products }) {
       </div>
 
        <div className="mt-8 flex justify-center">
-           <button className="bg-white border border-gray-200 text-gray-700 px-6 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
+           <Link href={productsUrl} className="bg-white border border-gray-200 text-gray-700 px-6 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
                View All Product &rarr;
-           </button>
+           </Link>
        </div>
     </div>
   );

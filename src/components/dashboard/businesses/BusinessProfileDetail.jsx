@@ -20,7 +20,7 @@ export default function BusinessProfileDetail({ businessId }) {
          <ProfileHeader business={businessData} />
          <ProfileOverview business={businessData} />
          <ProfileJobs />
-         <ProfileProducts />
+         <ProfileProducts businessId={businessId} />
          <ProfileCommunities />
          <ProfileGallery />
          <ProfileTestimonials />
