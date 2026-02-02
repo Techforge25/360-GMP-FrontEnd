@@ -35,15 +35,15 @@ export default function ProfileOverview({ business }) {
 
          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6">
             <div>
-                <p className="text-xs font-bold text-gray-900 mb-1">Business Type</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">Business Type</p>
                 <p className="text-gray-500 text-sm">{businessType}</p>
             </div>
             <div>
-                <p className="text-xs font-bold text-gray-900 mb-1">Founded</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">Founded</p>
                 <p className="text-gray-500 text-sm">{founded}</p>
             </div>
              <div>
-                <p className="text-xs font-bold text-gray-900 mb-1">Operating Hours</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">Operating Hours</p>
                 <p className="text-gray-500 text-sm">{operatingHours}</p>
             </div>
          </div>
@@ -63,7 +63,7 @@ export default function ProfileOverview({ business }) {
                          </div>
                          <div>
                              <p className="text-sm font-bold text-gray-900">{cert.name}</p>
-                             <p className="text-xs text-gray-500">{cert.desc}</p>
+                             <p className="text-sm text-gray-500">{cert.desc}</p>
                          </div>
                     </div>
                 ))}

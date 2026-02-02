@@ -52,7 +52,7 @@ const DashboardHero = () => {
           </h1>
 
           {/* Subheading */}
-          <p className="text-base  text-gray-600 mb-10 max-w-4xl mx-auto text-center leading-relaxed">
+          <p className="text-base  text-[#444953] mb-10 max-w-[805px] mx-auto text-center leading-relaxed">
             Discover trusted businesses, connect with global communities, and
             grow your network with 360 Global Marketplace. Your gateway to
             worldwide business opportunities.

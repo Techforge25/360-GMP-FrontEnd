@@ -55,7 +55,7 @@ export default function ProfileTestimonials() {
                          <div>
                              <h4 className="font-bold text-gray-900">{t.name}</h4>
                              <div className="flex items-center gap-2">
-                                 <div className="flex text-yellow-400 text-xs">
+                                 <div className="flex text-yellow-400 text-sm">
                                      <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
                                  </div>
                                  <span className="bg-indigo-50 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-medium">
@@ -64,7 +64,7 @@ export default function ProfileTestimonials() {
                              </div>
                          </div>
                      </div>
-                     <span className="text-xs text-gray-400">{t.date}</span>
+                     <span className="text-sm text-gray-400">{t.date}</span>
                  </div>
 
                  <p className="text-gray-600 text-sm leading-relaxed mb-6">
@@ -72,10 +72,10 @@ export default function ProfileTestimonials() {
                  </p>
 
                  <div className="flex items-center gap-4">
-                     <span className="bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1 rounded text-xs">
+                     <span className="bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1 rounded text-sm">
                          {t.company}
                      </span>
-                     <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700 text-xs border border-gray-200 px-3 py-1 rounded hover:bg-gray-50">
+                     <button className="flex items-center gap-1 text-gray-500 hover:text-gray-700 text-sm border border-gray-200 px-3 py-1 rounded hover:bg-gray-50">
                          <BiLike /> Like ({t.likes})
                      </button>
                  </div>

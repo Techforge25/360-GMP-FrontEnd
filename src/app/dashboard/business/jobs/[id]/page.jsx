@@ -99,7 +99,7 @@ export default function JobDetailsPage() {
     <div className="min-h-screen pb-20">
       {/* Gradient Header Section containing Back Button & Job Info */}
       <div className="bg-gradient-to-r from-blue-50 to-green-50 pb-10 pt-6">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div>
             <button
               onClick={() => router.back()}

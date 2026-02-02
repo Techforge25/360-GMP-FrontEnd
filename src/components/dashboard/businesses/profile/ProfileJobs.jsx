@@ -109,7 +109,7 @@ export default function ProfileJobs({ jobs, businessId }) {
                  <h3 className="text-lg font-bold text-gray-900 mb-1">{job.jobTitle || job.title}</h3>
                  <p className="text-sm text-indigo-900 font-medium mb-3">{job.businessId?.companyName || job.company || "Company"}</p>
                  
-                 <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-500">
                      <div className="flex items-center gap-1">
                          <FiMapPin /> {job.location?.city && job.location?.country 
                            ? `${job.location.city}-${job.location.country}` 

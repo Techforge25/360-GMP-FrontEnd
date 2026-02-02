@@ -7,8 +7,12 @@ import { BsBuildings, BsCalendar3, BsGlobe } from "react-icons/bs";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { FiShare2 } from "react-icons/fi";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
+import { useUserRole } from "@/context/UserContext";
 
 export default function ProfileHeader({ business }) {
+  const { user } = useUserRole();
+  const isUserRole = user?.role === "user";
+  
   const {
     name = "TechVision Solutions.",
     banner = "/assets/images/business-banner.jpg", // You might need a placeholder or create one
@@ -30,7 +34,7 @@ export default function ProfileHeader({ business }) {
   } = business || {};
 
   return (
-    <div className="bg-white rounded-xl overflow-hidden mb-6">
+    <div className="rounded-xl overflow-hidden mb-6">
       {/* Banner */}
       <div className="h-48 md:h-64 relative bg-gray-900">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-blue-900/50 mix-blend-multiply"></div>
@@ -38,9 +42,11 @@ export default function ProfileHeader({ business }) {
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-60"></div>
         
         <div className="absolute bottom-4 right-4 flex gap-3">
-             <button className="bg-[#f2994a] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-[#e08a3e] transition-colors">
-                 Post A Review <FiShare2 />
-             </button>
+             {isUserRole && (
+               <button className="bg-[#f2994a] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-[#e08a3e] transition-colors">
+                   Post A Review <FiShare2 />
+               </button>
+             )}
              <button className="bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-gray-100 transition-colors">
                  Report <MdReportGmailerrorred className="text-lg"/>
              </button>
@@ -96,23 +102,23 @@ export default function ProfileHeader({ business }) {
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-5 divide-x divide-gray-100 border-t border-gray-100 pt-6">
             <div className="px-4 text-center md:text-left">
-                <p className="text-xs font-bold text-gray-900 mb-1">On-time delivery</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">On-time delivery</p>
                 <p className="text-gray-500 text-sm">{stats.delivery}</p>
             </div>
             <div className="px-4 text-center md:text-left">
-                <p className="text-xs font-bold text-gray-900 mb-1">Reorder rate</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">Reorder rate</p>
                 <p className="text-gray-500 text-sm">{stats.reorder}</p>
             </div>
             <div className="px-4 text-center md:text-left">
-                <p className="text-xs font-bold text-gray-900 mb-1">Response time</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">Response time</p>
                 <p className="text-gray-500 text-sm">{stats.response}</p>
             </div>
              <div className="px-4 text-center md:text-left">
-                <p className="text-xs font-bold text-gray-900 mb-1">Online revenue</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">Online revenue</p>
                 <p className="text-gray-500 text-sm">{stats.revenue}</p>
             </div>
              <div className="px-4 text-center md:text-left border-r-0">
-                <p className="text-xs font-bold text-gray-900 mb-1">Products Types</p>
+                <p className="text-sm font-bold text-gray-900 mb-1">Products Types</p>
                 <p className="text-gray-500 text-sm">{stats.products}</p>
             </div>
         </div>

@@ -75,7 +75,7 @@ export default function ProfileProducts({ products, businessId }) {
                          />
                        ) : (
                          <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-50">
-                           <span className="text-xs">Product Image</span>
+                           <span className="text-sm">Product Image</span>
                          </div>
                        )}
                   </div>

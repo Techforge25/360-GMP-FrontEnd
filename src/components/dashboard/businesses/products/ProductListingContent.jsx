@@ -112,7 +112,7 @@ export default function ProductListingContent() {
     <div className="bg-gray-50 min-h-screen pb-24">
        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Breadcrumb */}
-            <div className="text-xs text-gray-500 mb-6 font-medium">
+            <div className="text-sm text-gray-500 mb-6 font-medium">
                 Business List <span className="mx-1">&gt;</span> Techvision Solutions <span className="mx-1 font-bold text-gray-900">&gt; Product List</span>
             </div>
 

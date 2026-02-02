@@ -135,7 +135,7 @@ const CartPage = () => {
                   <div key={product._id}>
                     {/* Supplier Info */}
                     <div className="flex items-center gap-2 mb-4">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-xs font-medium border border-blue-100">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 text-sm font-medium border border-blue-100">
                             <div className="w-3 h-3 bg-blue-600 rounded-full flex items-center justify-center">
                                 <FiCheck className="w-2 h-2 text-white" />
                             </div>
@@ -221,7 +221,7 @@ const CartPage = () => {
                                 onError={(e) => {e.target.src = "https://placehold.co/50x50?text=Item"}}
                             />
                         </div>
-                        <span className="absolute -top-2 -right-2 bg-[#240457] text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+                        <span className="absolute -top-2 -right-2 bg-[#240457] text-white text-sm font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
                             {products.length}
                         </span>
                     </div>
@@ -263,7 +263,7 @@ const CartPage = () => {
                     </div>
                     <div>
                         <h3 className="font-semibold text-gray-900 text-sm mb-1">Secure payments</h3>
-                        <p className="text-xs text-gray-500 leading-relaxed">
+                        <p className="text-sm text-gray-500 leading-relaxed">
                             Escrow Protection Assurance: Full B2B protection benefits are exclusively provided for orders successfully placed and paid through the secure 360GMP Escrow Service.
                         </p>
                     </div>
@@ -275,7 +275,7 @@ const CartPage = () => {
                     </div>
                     <div>
                         <h3 className="font-semibold text-gray-900 text-sm mb-1">Money-back protection</h3>
-                        <p className="text-xs text-gray-500 leading-relaxed">
+                        <p className="text-sm text-gray-500 leading-relaxed">
                              360GMP Order Protection: Claim a full refund if your goods were not shipped, are missing, or arrive with verified quality or product defects
                         </p>
                     </div>
@@ -287,7 +287,7 @@ const CartPage = () => {
                     </div>
                     <div>
                         <h3 className="font-semibold text-gray-900 text-sm mb-1">24/7 support</h3>
-                        <p className="text-xs text-gray-500 leading-relaxed">
+                        <p className="text-sm text-gray-500 leading-relaxed">
                             Dedicated Global Support: Access our comprehensive virtual help center 24/7 or connect with a live B2B support agent for immediate assistance.
                         </p>
                     </div>

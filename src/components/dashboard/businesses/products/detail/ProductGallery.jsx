@@ -25,7 +25,7 @@ export default function ProductGallery({ images }) {
     <div className="w-full">
       {/* Main Image */}
       <div className="relative bg-gray-100 rounded-xl overflow-hidden mb-4 h-[400px] flex items-center justify-center group">
-        <span className="absolute top-4 right-4 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+        <span className="absolute top-4 right-4 bg-orange-500 text-white text-sm font-bold px-3 py-1 rounded-full z-10">
             Hot Seller
         </span>
         
@@ -33,7 +33,7 @@ export default function ProductGallery({ images }) {
             onClick={handlePrev}
             className="absolute left-4 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 z-10"
         >
-            <FaArrowLeft className="text-xs" />
+            <FaArrowLeft className="text-sm" />
         </button>
         
         <img 
@@ -47,7 +47,7 @@ export default function ProductGallery({ images }) {
             onClick={handleNext}
             className="absolute right-4 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 z-10"
         >
-            <FaArrowRight className="text-xs" />
+            <FaArrowRight className="text-sm" />
         </button>
       </div>
 

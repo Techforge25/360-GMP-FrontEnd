@@ -23,11 +23,11 @@ const BusinessGrid = () => {
       // Call the view API to track view and get complete business data
       await businessProfileAPI.viewBusinessProfile(businessId);
       // Navigate to the business profile page
-      router.push(`/dashboard/business-profile/${businessId}`);
+      router.push(`/dashboard/business/businesses/${businessId}`);
     } catch (error) {
       console.error("Failed to view business profile:", error);
       // Still navigate even if tracking fails
-      router.push(`/dashboard/business-profile/${businessId}`);
+      router.push(`/dashboard/business/businesses/${businessId}`);
     }
   };
 

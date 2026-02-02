@@ -48,15 +48,15 @@ export default function ProductInfo({ product }) {
 
   return (
     <div className="w-full">
-      <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
-      <p className="text-gray-500 text-sm mb-4">
+      <h1 className="text-xl font-medium text-black mb-2">{product.title}</h1>
+      <p className="text-gray-900 text-md mb-4">
         {product.detail}
       </p>
 
       {/* Ratings */}
       <div className="flex items-center gap-2 text-sm mb-6">
         <span className="font-bold text-gray-900">5.0</span>
-        <div className="flex text-orange-400 text-xs">
+        <div className="flex text-orange-400 text-sm">
             <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
         </div>
         <span className="text-gray-500 underline">({product.viewsCount || 0} Views)</span>
@@ -67,14 +67,14 @@ export default function ProductInfo({ product }) {
       {/* Price */}
       <div className="flex justify-between items-end mb-6 border-b border-gray-100 pb-6">
           <div className="flex items-baseline gap-1">
-             <span className="text-3xl font-bold text-gray-900">${product.pricePerUnit.toFixed(2)}</span>
-             <span className="text-gray-500 text-sm font-medium">/Pc</span>
+             <span className="text-3xl font-semibold text-black">${product.pricePerUnit.toFixed(2)}</span>
+             <span className="text-gray-500 text-base font-semibold">/Pc</span>
           </div>
           <span className="text-gray-500 text-sm">MOQ: {product.minOrderQty} pc</span>
       </div>
 
       {/* Supplier Card */}
-      <div className="bg-gray-50 rounded-lg p-4 mb-6 flex items-center justify-between">
+      <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded bg-white flex items-center justify-center border border-green-200">
                   {/* Logo Placeholder */}
@@ -83,8 +83,8 @@ export default function ProductInfo({ product }) {
               <span className="font-semibold text-gray-900 text-sm">{product.businessId?.name || 'Business'}</span>
           </div>
           <div className="border-l border-gray-300 h-6 mx-2"></div>
-          <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-              <MdVerified /> Verified Supplier
+          <span className="bg-blue-100 text-[#185ADB] border border-[#185ADB] px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+              <MdVerified /> <span className="text-gray-800">Verified Supplier</span> 
           </span>
       </div>
 
@@ -115,7 +115,7 @@ export default function ProductInfo({ product }) {
           </div>
           
           <div className="text-gray-600 text-sm font-medium">
-              Sub Total: <span className="text-gray-900 font-bold">${(quantity * product.pricePerUnit).toLocaleString()}</span>
+              Sub Total: <span className="">${(quantity * product.pricePerUnit).toLocaleString()}</span>
           </div>
       </div>
 
@@ -123,7 +123,7 @@ export default function ProductInfo({ product }) {
       <div className="flex gap-4 mb-8">
           <button 
             onClick={handleAddToCart}
-            className="flex-1 bg-[#110026] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors"
+            className="flex-1 bg-[#240457] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors"
           >
               Add To Cart <FaShoppingCart />
           </button>
@@ -138,7 +138,7 @@ export default function ProductInfo({ product }) {
               <BsShieldCheck className="text-indigo-600 text-xl flex-shrink-0 mt-0.5" />
               <div>
                   <h4 className="font-bold text-gray-900 text-sm mb-1">Secure payments</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">
+                  <p className="text-sm text-gray-500 leading-relaxed">
                       Escrow Protection Assurance: Full B2B protection benefits are exclusively provided for orders successfully placed and paid through the secure 360GMP Escrow Service.
                   </p>
               </div>
@@ -147,7 +147,7 @@ export default function ProductInfo({ product }) {
               <BsCashCoin className="text-indigo-600 text-xl flex-shrink-0 mt-0.5" />
               <div>
                   <h4 className="font-bold text-gray-900 text-sm mb-1">Money-back protection</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">
+                  <p className="text-sm text-gray-500 leading-relaxed">
                       360GMP Order Protection: Claim a full refund if your goods were not shipped, are missing, or arrive with verified quality or product defects
                   </p>
               </div>
@@ -156,7 +156,7 @@ export default function ProductInfo({ product }) {
               <BsHeadset className="text-indigo-600 text-xl flex-shrink-0 mt-0.5" />
               <div>
                   <h4 className="font-bold text-gray-900 text-sm mb-1">24/7 support</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">
+                  <p className="text-sm text-gray-500 leading-relaxed">
                       Dedicated Global Support: Access our comprehensive virtual help center 24/7 or connect with a live B2B support agent for immediate assistance.
                   </p>
               </div>

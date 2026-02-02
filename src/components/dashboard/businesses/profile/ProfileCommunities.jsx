@@ -116,7 +116,7 @@ export default function ProfileCommunities({ businessId }) {
                        )}
                        
                        {comm.category && (
-                         <span className="absolute top-3 right-3 bg-white px-2 py-1 rounded text-xs font-semibold shadow-sm">
+                         <span className="absolute top-3 right-3 bg-white px-2 py-1 rounded text-sm font-semibold shadow-sm">
                              {comm.category}
                          </span>
                        )}
@@ -143,7 +143,7 @@ export default function ProfileCommunities({ businessId }) {
                           {comm.description || comm.purpose}
                       </p>
 
-                      <div className="flex justify-between items-center text-xs text-gray-400 pt-4 border-t border-gray-100 mb-4">
+                      <div className="flex justify-between items-center text-sm text-gray-400 pt-4 border-t border-gray-100 mb-4">
                           <span>{formatLastActive(comm.updatedAt) || comm.active || "Active recently"}</span>
                           <span className="flex items-center gap-1"><HiOutlineUserGroup /> {comm.memberCount ? `${comm.memberCount} Members` : comm.members || "0 Members"}</span>
                       </div>

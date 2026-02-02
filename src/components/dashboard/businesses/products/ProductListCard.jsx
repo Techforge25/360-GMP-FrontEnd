@@ -55,7 +55,7 @@ export default function ProductListCard({ product }) {
 
       <div className="p-4">
           <h3 className="font-bold text-gray-900 text-sm mb-2">{name}</h3>
-          <p className="text-xs text-gray-500 mb-4 line-clamp-2 h-8 leading-4">
+          <p className="text-sm text-gray-500 mb-4 line-clamp-2 h-8 leading-4">
               {description}
           </p>
 
@@ -70,7 +70,7 @@ export default function ProductListCard({ product }) {
 
           <button 
             onClick={handleViewProduct}
-            className="block w-full text-center border border-indigo-900 text-indigo-900 py-2 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors uppercase"
+            className="block w-full text-center border border-indigo-900 text-indigo-900 py-2 rounded-lg text-sm font-bold hover:bg-slate-50 transition-colors uppercase"
           >
               View Product
           </button>

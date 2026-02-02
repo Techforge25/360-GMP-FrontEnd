@@ -27,7 +27,7 @@ export default function ProductFilterSidebar() {
           onClick={() => toggleSection("category")}
         >
           <h4 className="font-bold text-gray-900 text-sm">Product Category</h4>
-          {expandedSections.category ? <FaChevronUp className="text-gray-400 text-xs" /> : <FaChevronDown className="text-gray-400 text-xs" />}
+          {expandedSections.category ? <FaChevronUp className="text-gray-400 text-sm" /> : <FaChevronDown className="text-gray-400 text-sm" />}
         </div>
         
         {expandedSections.category && (
@@ -62,7 +62,7 @@ export default function ProductFilterSidebar() {
           onClick={() => toggleSection("moq")}
         >
           <h4 className="font-bold text-gray-900 text-sm">MOQ Range</h4>
-          {expandedSections.moq ? <FaChevronUp className="text-gray-400 text-xs" /> : <FaChevronDown className="text-gray-400 text-xs" />}
+          {expandedSections.moq ? <FaChevronUp className="text-gray-400 text-sm" /> : <FaChevronDown className="text-gray-400 text-sm" />}
         </div>
 
         {expandedSections.moq && (
@@ -96,7 +96,7 @@ export default function ProductFilterSidebar() {
           onClick={() => toggleSection("ratings")}
         >
           <h4 className="font-bold text-gray-900 text-sm">Ratings</h4>
-          {expandedSections.ratings ? <FaChevronUp className="text-gray-400 text-xs" /> : <FaChevronDown className="text-gray-400 text-xs" />}
+          {expandedSections.ratings ? <FaChevronUp className="text-gray-400 text-sm" /> : <FaChevronDown className="text-gray-400 text-sm" />}
         </div>
 
         {expandedSections.ratings && (

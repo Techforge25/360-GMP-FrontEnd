@@ -66,7 +66,7 @@ export default function BusinessProfileDetail({ businessId }) {
 
   if (loading) {
     return (
-      <div className="bg-gray-50 min-h-screen pb-24">
+      <div className="bg-gray-50 min-h-screen">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-center items-center py-20">
             <div className="text-gray-500 text-lg">Loading business profile...</div>
@@ -78,7 +78,7 @@ export default function BusinessProfileDetail({ businessId }) {
 
   if (error) {
     return (
-      <div className="bg-gray-50 min-h-screen pb-24">
+      <div className="bg-gray-50 min-h-screen">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <p className="text-red-600 text-lg mb-4">
@@ -98,7 +98,7 @@ export default function BusinessProfileDetail({ businessId }) {
 
   if (!businessData) {
     return (
-      <div className="bg-gray-50 min-h-screen pb-24">
+      <div className="bg-gray-50 min-h-screen">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-20">
             <p className="text-gray-500 text-lg">Business profile not found</p>
@@ -109,7 +109,7 @@ export default function BusinessProfileDetail({ businessId }) {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-24">
+    <div className="bg-gray-50 min-h-screen">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
          <ProfileHeader business={businessData} />
          <ProfileOverview business={businessData} />
