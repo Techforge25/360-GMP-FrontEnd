@@ -40,6 +40,7 @@ const Step1 = ({ formData, handleChange }) => (
           <Input
             placeholder="Alex Morgan"
             value={formData.fullName}
+            required
             onChange={(e) => handleChange("fullName", e.target.value)}
           />
         </div>

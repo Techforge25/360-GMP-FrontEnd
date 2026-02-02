@@ -30,6 +30,13 @@ function OTPForm() {
     return () => clearInterval(interval);
   }, []);
 
+  // Auto focus first input on component mount
+  useEffect(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, []);
+
   const handleChange = (index, value) => {
     if (isNaN(value)) return;
     const newOtp = [...otp];
@@ -45,6 +52,12 @@ function OTPForm() {
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1].focus();
+    } else if (e.key === "Enter") {
+      // Trigger verify on Enter key press
+      const code = otp.join("");
+      if (code.length === 6) {
+        handleVerify();
+      }
     }
   };
 

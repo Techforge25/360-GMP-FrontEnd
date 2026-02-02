@@ -318,119 +318,8 @@ function PlansList() {
       return;
     }
 
-    // For paid plans, show payment modal first
-    if (plan.price > 0) {
-      setPaymentPlan({ id: plan.backendId, name: plan.name });
-    } else {
-      // For free trial, directly create Stripe session and redirect
-      try {
-        console.log("Creating Free Trial Stripe checkout session...");
-        console.log("Plan ID:", plan.backendId);
-        console.log("Role:", role);
-
-        const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
-        const cancelUrl = `${window.location.origin}/onboarding/plans`;
-
-        const response = await subscriptionAPI.createStripeCheckout(
-          plan.backendId,
-          role,
-          successUrl,
-          cancelUrl,
-        );
-
-        console.log("Free Trial Stripe response:", response);
-
-        // Robust check for checkout URL - only accept strings starting with http
-        const isUrl = (str) =>
-          typeof str === "string" &&
-          (str.startsWith("http://") || str.startsWith("https://"));
-        const checkoutUrl = isUrl(response.data)
-          ? response.data
-          : isUrl(response.data?.url)
-            ? response.data.url
-            : null;
-
-        // Detect if this is a trial activation
-        const isTrialPlan = plan.name?.toLowerCase().includes("trial");
-        const isTrialSuccess =
-          response.success &&
-          (isTrialPlan ||
-            response.message?.toLowerCase().includes("trial") ||
-            (typeof response.data === "string" &&
-              response.data.toLowerCase().includes("trial")) ||
-            !checkoutUrl);
-
-        if (isTrialSuccess) {
-          console.log(
-            "Trial started successfully, redirecting to success page",
-          );
-
-          // Store as 'pending' so the success page can 'activate' it locally
-          const subscriptionData = {
-            planId: plan.backendId,
-            planName: plan.name,
-            role: role,
-            status: "pending",
-            createdAt: new Date().toISOString(),
-          };
-
-          subscriptionAPI.storeSubscription(subscriptionData);
-
-          // Redirect to success page on frontend
-          router.push(`/subscription/success?session_id=trial`);
-        } else if (response.success && checkoutUrl) {
-          // Paid plan with valid Stripe URL
-          const subscriptionData = {
-            planId: plan.backendId,
-            planName: plan.name,
-            role: role,
-            status: "pending",
-            createdAt: new Date().toISOString(),
-          };
-          subscriptionAPI.storeSubscription(subscriptionData);
-
-          console.log("Redirecting to Stripe checkout:", checkoutUrl);
-          window.location.href = checkoutUrl;
-        } else {
-          console.error("Failed to handle plan selection:", response);
-          setConfirmationData({
-            featureName: plan.name,
-            isError: true,
-            message:
-              response.message || "Failed to process plan. Please try again.",
-          });
-        }
-      } catch (error) {
-        console.error("Failed to create Free Trial - Full error:", error);
-        console.error("Error details:", {
-          message: error.message,
-          statusCode: error.statusCode,
-          data: error.data,
-          stack: error.stack,
-        });
-
-        let errorMessage = "Failed to start trial. Please try again.";
-
-        if (error.statusCode === 404) {
-          errorMessage =
-            "Subscription endpoint not found. Please check the API configuration.";
-        } else if (error.statusCode === 401 || error.statusCode === 403) {
-          errorMessage = "Authentication required. Please log in first.";
-        } else if (error.statusCode >= 500) {
-          errorMessage = "Server error. Please try again later.";
-        } else if (error.message) {
-          errorMessage = error.message;
-        } else if (!navigator.onLine) {
-          errorMessage = "No internet connection. Please check your network.";
-        }
-
-        setConfirmationData({
-          featureName: plan.name,
-          isError: true,
-          message: errorMessage,
-        });
-      }
-    }
+    // For all plans (including free trial), show payment modal first
+    setPaymentPlan({ id: plan.backendId, name: plan.name, price: plan.price });
   };
 
   const handlePaymentConfirm = async () => {
@@ -441,13 +330,13 @@ function PlansList() {
       console.log("Creating Stripe checkout session...");
       console.log("Plan object:", plan);
       console.log("Plan ID:", plan.id);
-      console.log("Plan backendId:", plan.backendId);
+      console.log("Plan price:", plan.price);
       console.log("Role:", role);
 
       const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = `${window.location.origin}/onboarding/plans`;
 
-      // Call backend to create Stripe checkout session
+      // Call backend to create Stripe checkout session for all plans
       const response = await subscriptionAPI.createStripeCheckout(
         plan.id,
         role,
@@ -456,13 +345,16 @@ function PlansList() {
       );
 
       console.log("Stripe checkout response:", response);
-      console.log("Response data:", response.data);
-      console.log("Response success:", response.success);
-      console.log("Full response object:", JSON.stringify(response, null, 2));
 
-      // Check if data contains url property or IS the url string
-      const checkoutUrl =
-        typeof response.data === "string" ? response.data : response.data?.url;
+      // Robust check for checkout URL - only accept strings starting with http
+      const isUrl = (str) =>
+        typeof str === "string" &&
+        (str.startsWith("http://") || str.startsWith("https://"));
+      const checkoutUrl = isUrl(response.data)
+        ? response.data
+        : isUrl(response.data?.url)
+          ? response.data.url
+          : null;
 
       if (response.success && checkoutUrl) {
         // Store plan info before redirecting
@@ -474,12 +366,10 @@ function PlansList() {
           createdAt: new Date().toISOString(),
         };
 
-        console.log("Storing paid subscription with role:", role);
-        console.log("Full subscription data:", subscriptionData);
-
+        console.log("Storing subscription with role:", role);
         subscriptionAPI.storeSubscription(subscriptionData);
 
-        // Redirect to Stripe checkout
+        // Redirect to Stripe checkout for all plans (including free trial)
         console.log("Redirecting to Stripe checkout:", checkoutUrl);
         window.location.href = checkoutUrl;
       } else {
@@ -492,12 +382,6 @@ function PlansList() {
       }
     } catch (error) {
       console.error("Failed to create Stripe checkout - Full error:", error);
-      console.error("Error details:", {
-        message: error.message,
-        statusCode: error.statusCode,
-        data: error.data,
-        stack: error.stack,
-      });
 
       let errorMessage = "Failed to process payment. Please try again.";
 
