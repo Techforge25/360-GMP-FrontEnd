@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -32,9 +32,45 @@ const AuthNavbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
   const { user } = useUserRole();
   const { cartCount } = useCart();
   const pathname = usePathname();
+
+  // Fetch profile image based on user role
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      if (!user?.role) return;
+
+      try {
+        if (user.role === "business") {
+          // Fetch business profile
+          const response = await api.get({
+            url: "/businessProfile/me",
+            enableSuccessMessage: false,
+            enableErrorMessage: false,
+          });
+          if (response?.data?.logo) {
+            setProfileImage(response.data.logo);
+          }
+        } else {
+          // Fetch user profile
+          const response = await api.get({
+            url: "/userProfile/me",
+            enableSuccessMessage: false,
+            enableErrorMessage: false,
+          });
+          if (response?.data?.avatar) {
+            setProfileImage(response.data.avatar);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile image:", error);
+      }
+    };
+
+    fetchProfileImage();
+  }, [user?.role]);
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -210,11 +246,11 @@ const AuthNavbar = () => {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none"
                 >
-                  {user?.logo ? (
+                  {profileImage ? (
                     <img
-                      src={user.logo}
+                      src={profileImage}
                       alt="Profile"
-                      className="w-9 h-9 rounded-md object-cover"
+                      className="w-9 h-9 rounded-md object-contain"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = "/assets/images/Logo.png";
@@ -222,7 +258,9 @@ const AuthNavbar = () => {
                     />
                   ) : (
                     <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base">
-                      {user?.companyName?.[0]?.toUpperCase() || user?.firstName?.[0]?.toUpperCase() || "M"}
+                      {user?.role === "business" 
+                        ? (user?.companyName?.[0]?.toUpperCase() || "B")
+                        : (user?.firstName?.[0]?.toUpperCase() || user?.fullName?.[0]?.toUpperCase() || "U")}
                     </div>
                   )}
                   <FiChevronDown

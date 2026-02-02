@@ -1,7 +1,9 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 import { FiBriefcase, FiClock, FiMapPin } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
+import { useUserRole } from "@/context/UserContext";
 import jobAPI from "@/services/jobAPI"; // Import jobAPI
 
 const getTimeAgo = (dateString) => {
@@ -32,6 +34,10 @@ const JobSection = () => {
   const [jobs, setJobs] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const { user } = useUserRole();
+
+  // Conditional URL based on user role
+  const jobsUrl = user?.role === "business" ? "/dashboard/business/jobs" : "/dashboard/user/jobs";
 
   React.useEffect(() => {
     const fetchJobs = async () => {
@@ -48,6 +54,7 @@ const JobSection = () => {
           const mappedJobs = jobsData.map((job, index) => ({
             id: job._id,
             company: job.businessId?.companyName || "Unknown Company",
+            logo: job.businessId?.logo || null,
             title: job.jobTitle,
             location: job.location
               ? `${job.location.city}, ${job.location.country}`
@@ -128,8 +135,23 @@ const JobSection = () => {
               <div
                 className={`w-35 h-full rounded-2xl bg-[#ECEFF6] border border-[#E3E7EE] flex-shrink-0 flex items-center justify-center`}
               >
-                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center">
-                  <span className="text-2xl font-bold text-gray-700">
+                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden">
+                  {job.logo ? (
+                    <img
+                      src={job.logo}
+                      alt={job.company}
+                      className="w-full h-full object-contain p-1"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <span 
+                    className={`text-2xl font-bold text-gray-700 ${job.logo ? 'hidden' : 'flex'}`}
+                    style={{ display: job.logo ? 'none' : 'flex' }}
+                  >
                     {job.company.charAt(0)}
                   </span>
                 </div>
@@ -182,22 +204,24 @@ const JobSection = () => {
 
         {/* View All Jobs Button */}
         <div className="flex justify-center">
-          <Button className="bg-[#240457] hover:bg-[#1a0340] text-white rounded-xl px-8 py-3 font-medium flex items-center gap-2">
-            View All Jobs
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
-          </Button>
+          <Link href={jobsUrl}>
+            <Button className="bg-[#240457] hover:bg-[#1a0340] text-white rounded-xl px-8 py-3 font-medium flex items-center gap-2">
+              View All Jobs
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

@@ -231,6 +231,8 @@ export default function JobsPageContent() {
     fetchInitialJobs();
   };
 
+  console.log("JobsPageContent Rendered: ", { jobs, loading, filters });
+
   if (loading && jobs.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center">
