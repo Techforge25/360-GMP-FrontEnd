@@ -551,6 +551,44 @@ export default function UserProfilePage() {
   };
 
   const handleNext = async () => {
+    // Validate current step before proceeding
+    setError("");
+
+    if (currentStep === 1) {
+      // Step 1 validation
+      if (
+        !formData.fullName ||
+        !formData.currentTitle ||
+        !formData.phone ||
+        !formData.country ||
+        !formData.city ||
+        !formData.address
+      ) {
+        setError("Please fill all required fields before proceeding.");
+        return;
+      }
+    } else if (currentStep === 2) {
+      // Step 2 validation
+      if (
+        !formData.skills ||
+        formData.education.length === 0
+      ) {
+        setError("Please fill all required fields and add at least one education entry.");
+        return;
+      }
+    } else if (currentStep === 3) {
+      // Step 3 validation
+      if (
+        !formData.jobTitle ||
+        !formData.minSalary ||
+        !formData.maxSalary ||
+        formData.employeeType.length === 0
+      ) {
+        setError("Please fill all required fields and select at least one employment type.");
+        return;
+      }
+    }
+
     if (currentStep < steps.length) {
       nextStep();
       return;

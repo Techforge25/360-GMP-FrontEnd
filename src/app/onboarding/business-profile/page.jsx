@@ -563,6 +563,44 @@ export default function BusinessProfilePage() {
   };
 
   const handleNext = async () => {
+    // Validate current step before proceeding
+    setError("");
+
+    if (currentStep === 1) {
+      // Step 1 validation: Basic Identity
+      if (
+        !formData.companyName ||
+        !formData.industry ||
+        !formData.businessType ||
+        !formData.companySize ||
+        !formData.foundedDate ||
+        !formData.operatingHours ||
+        !formData.website
+      ) {
+        setError("Please fill all required fields before proceeding.");
+        return;
+      }
+    } else if (currentStep === 2) {
+      // Step 2 validation: Location Contact
+      if (
+        !formData.country ||
+        !formData.city ||
+        !formData.address ||
+        !formData.contactName ||
+        !formData.contactTitle ||
+        !formData.contactPhone ||
+        !formData.contactEmail
+      ) {
+        setError("Please fill all required contact and location fields before proceeding.");
+        return;
+      }
+      
+      if (!isValidEmail(formData.contactEmail)) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+    }
+
     if (isUploading) {
       setError("Please wait for uploads to finish.");
       return;
