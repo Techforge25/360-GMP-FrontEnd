@@ -90,7 +90,7 @@ export const JobCard = ({ job = dummyJob }) => {
       <div className="flex-1 min-w-0 flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4 mb-1">
           <div>
-            <h3 className="font-bold text-text-primary text-xl truncate pr-2">
+            <h3 className="font-semibold text-text-primary text-xl truncate pr-2">
               {jobData.title}
             </h3>
             <div className="flex items-center gap-2 mt-2 text-base">

@@ -54,7 +54,7 @@ const WhyUsPage = () => {
         </div>
 
         <div className="flex justify-center mb-24">
-          <Button className="bg-indigo-900 text-white px-8 py-3 rounded-md font-medium text-base">
+          <Button className="bg-[#240457] text-white px-8 py-3 rounded-md font-medium text-base">
             JOIN NOW →
           </Button>
         </div>
@@ -78,7 +78,7 @@ const WhyUsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
               {/* Item 1 */}
               <div className="bg-indigo-50/50 rounded-xl p-4 flex items-center justify-center gap-2 border border-indigo-100 shadow-sm">
-                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-sm font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#240457] text-white flex items-center justify-center text-sm font-bold">
                   1
                 </div>
                 <span className="text-base font-medium text-indigo-900">
@@ -88,7 +88,7 @@ const WhyUsPage = () => {
 
               {/* Item 2 */}
               <div className="bg-indigo-50/50 rounded-xl p-4 flex items-center justify-center gap-2 border border-indigo-100 shadow-sm">
-                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-sm font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#240457] text-white flex items-center justify-center text-sm font-bold">
                   2
                 </div>
                 <span className="text-base font-medium text-indigo-900">
@@ -98,7 +98,7 @@ const WhyUsPage = () => {
 
               {/* Item 3 */}
               <div className="bg-indigo-50/50 rounded-xl p-4 flex items-center justify-center gap-2 border border-indigo-100 shadow-sm">
-                <div className="w-6 h-6 rounded-full bg-indigo-900 text-white flex items-center justify-center text-sm font-bold">
+                <div className="w-6 h-6 rounded-full bg-[#240457] text-white flex items-center justify-center text-sm font-bold">
                   3
                 </div>
                 <span className="text-base font-medium text-indigo-900">

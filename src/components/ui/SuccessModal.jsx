@@ -31,7 +31,7 @@ export const SuccessModal = ({
 
           <Button
             onClick={onNext}
-            className="w-full h-11 bg-indigo-900 hover:bg-indigo-800 text-white rounded-md font-medium"
+            className="w-full h-11 bg-[#240457] hover:bg-indigo-800 text-white rounded-md font-medium"
           >
             {buttonText}
           </Button>

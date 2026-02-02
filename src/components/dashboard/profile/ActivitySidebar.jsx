@@ -304,7 +304,7 @@ const ActivitySidebar = () => {
             </div>
             <button
               onClick={handleSaveContact}
-              className="w-full mt-2 bg-[#240457] text-white py-1.5 rounded text-sm font-semibold hover:bg-indigo-900 transition-colors"
+              className="w-full mt-2 bg-[#240457] text-white py-1.5 rounded text-sm font-semibold hover:bg-[#240457] transition-colors"
             >
               Save Changes
             </button>
@@ -397,7 +397,7 @@ const ActivitySidebar = () => {
         ) : (
           <button
             onClick={() => setIsEditing2(true)}
-            className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2"
+            className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-2"
           >
             Add Social Link <span>+</span>
           </button>
@@ -411,7 +411,7 @@ const ActivitySidebar = () => {
             </div>
           </div>
         </div>
-        <button className="w-full py-3 bg-[#240457] text-white text-sm font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg">
+        <button className="w-full py-3 bg-[#240457] text-white text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg">
           Update Location <FiMapPin className="w-3 h-3" />
         </button>
       </div>

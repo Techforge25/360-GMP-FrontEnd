@@ -62,7 +62,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         </div>
 
         <div className="absolute top-4 right-4">
-          <button className="bg-[#240457] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-indigo-900 transition-colors shadow-sm flex items-center gap-2">
+          <button className="bg-[#240457] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-2">
             <img
               src="/assets/images/updateProfileIcon.png"
               alt=""

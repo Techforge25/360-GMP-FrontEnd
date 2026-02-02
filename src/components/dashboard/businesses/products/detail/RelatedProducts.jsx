@@ -45,7 +45,7 @@ export default function RelatedProducts({ businessId, currentProductId }) {
 
   return (
     <div className="border-t border-gray-100 pt-10">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Products</h2>
+      <h2 className="text-2xl font-medium text-black mb-6">Related Products</h2>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((p) => (

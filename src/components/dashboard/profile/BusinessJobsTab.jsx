@@ -113,7 +113,7 @@ export default function BusinessJobsTab() {
           <h2 className="text-xl font-bold text-gray-900">Jobs</h2>
           <button
             onClick={handleCreateJob}
-            className="bg-[#240457] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-900 transition-colors flex items-center gap-2"
+            className="bg-[#240457] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors flex items-center gap-2"
           >
             Create a job
             <span className="text-lg">→</span>

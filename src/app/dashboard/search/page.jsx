@@ -261,7 +261,7 @@ function SearchResults() {
                 flex items-center gap-2 px-5 py-2.5 rounded-full text-base font-medium transition-all whitespace-nowrap
                 ${
                   activeTab === tab.id
-                    ? "bg-indigo-900 text-white shadow-md"
+                    ? "bg-[#240457] text-white shadow-md"
                     : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                 }
               `}

@@ -34,9 +34,9 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
           Search by Category, industry, or name and explore verified Businesses.
         </p>
 
-        <div className="bg-white/20 p-6 rounded-lg shadow-xl max-w-4xl mx-auto flex flex-col md:flex-row gap-2">
+        <div className="bg-white/20 border border-white/40 p-6 rounded-lg shadow-xl max-w-4xl mx-auto flex flex-col md:flex-row gap-2">
           <div className="flex-1 flex items-center px-4 py-4 h-12 bg-gray-50 rounded-md border border-border-light">
-            <FiSearch className="text-gray-400 mr-3" />
+            <FiSearch className="text-black mr-3 w-5 h-5" />
             <input
               type="text"
               placeholder="Reference / products, service..."
@@ -47,10 +47,10 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
             />
           </div>
           <div className="flex-1 flex items-center px-4 py-4 h-12 bg-gray-50 rounded-md border border-gray-200">
-            <FiMapPin className="text-gray-400 mr-3" />
+            <FiMapPin className="text-black mr-3 w-5 h-5" />
             <input
               type="text"
-              placeholder="City or country..."
+              placeholder="Type Location"
               className="w-full bg-transparent border-none focus:outline-none text-base text-gray-700 placeholder:text-gray-400"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
@@ -59,9 +59,9 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
           </div>
           <Button
             onClick={onSearch}
-            className="bg-indigo-900 cursor-pointer text-white rounded-md px-8 h-12 font-medium hover:bg-indigo-800 w-full md:w-auto"
+            className="bg-[#240457] cursor-pointer text-white rounded-xl px-3 h-12 font-medium hover:bg-[#240457] w-full md:w-auto"
           >
-            <FiSearch className="text-xl" />
+            <img src="/assets/images/stylishArrow.png" alt="" />
           </Button>
         </div>
       </div>

@@ -54,17 +54,17 @@ export default function ProductListCard({ product }) {
       </div>
 
       <div className="p-4">
-          <h3 className="font-bold text-gray-900 text-sm mb-2">{name}</h3>
+          <h3 className="font-semibold text-gray-900 text-base mb-2">{name}</h3>
           <p className="text-sm text-gray-500 mb-4 line-clamp-2 h-8 leading-4">
               {description}
           </p>
 
           <div className="flex justify-between items-center text-[10px] text-gray-500 mb-4 pb-4 border-b border-gray-100">
               <div className="flex flex-col">
-                  <span className="mb-1">MOQ: {moq}</span>
+                  <span className="mb-1 text-sm">MOQ: {moq}</span>
               </div>
               <div className="flex flex-col text-right">
-                   <span>{price}</span>
+                   <span className="text-sm">USD ${price}</span>
               </div>
           </div>
 

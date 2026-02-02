@@ -28,7 +28,7 @@ const FilterGroup = ({ title, options, isOpenDefault = true }) => {
                   className="peer w-4 h-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500/20"
                 />
               </div>
-              <span className="text-base text-gray-600 group-hover:text-gray-900 transition-colors">
+              <span className="text-sm text-gray-600 group-hover:text-gray-900 transition-colors">
                 {opt}
               </span>
             </label>

@@ -47,7 +47,7 @@ const UserSidebar = () => {
           ></div>
         </div>
 
-        <button className="w-full bg-[#240457] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2">
+        <button className="w-full bg-[#240457] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-2">
           Complete Your Profile
           <svg
             width="16"
@@ -111,7 +111,7 @@ const UserSidebar = () => {
               );
             })}
           </div>
-          <button className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-indigo-900 transition-colors flex items-center justify-center gap-1">
+          <button className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-1">
             Add Social Link <FiPlus className="w-3 h-3" />
           </button>
         </div>
@@ -150,7 +150,7 @@ const UserSidebar = () => {
           </button>
         </div>
 
-        <button className="w-full bg-[#240457] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-indigo-900 transition-colors flex items-center justify-center gap-2">
+        <button className="w-full bg-[#240457] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-2">
           Update Resume/Portfolio
           <svg
             width="16"

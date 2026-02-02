@@ -210,7 +210,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
             <button
               onClick={handleUpdateProfile}
               disabled={isUpdating || (!newLogo && !newBanner)}
-              className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-base font-medium hover:bg-indigo-900 transition-colors shadow-sm flex items-center gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <img src="/assets/images/updateProfileIcon.png" alt="" />
               {isUpdating ? "Updating..." : "Update Profile"}

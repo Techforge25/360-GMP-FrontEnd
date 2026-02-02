@@ -90,7 +90,7 @@ const PlanCard = ({
           className={cn(
             "w-full mb-8 font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer",
             variant === "purple"
-              ? "bg-indigo-900 text-white hover:bg-indigo-800"
+              ? "bg-[#240457] text-white hover:bg-indigo-800"
               : variant === "orange"
                 ? "bg-white text-orange-900 border border-orange-200 hover:bg-orange-50"
                 : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50",
@@ -194,7 +194,7 @@ const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {
             </Button>
             <Button
               onClick={onConfirm}
-              className="flex-1 h-11 bg-indigo-900 hover:bg-indigo-800 text-white"
+              className="flex-1 h-11 bg-[#240457] hover:bg-indigo-800 text-white"
             >
               Confirm
             </Button>
@@ -267,7 +267,7 @@ const ConfirmationModal = ({
 
           <Button
             onClick={onNext}
-            className="w-full h-11 bg-indigo-900 hover:bg-indigo-800 text-white mb-2"
+            className="w-full h-11 bg-[#240457] hover:bg-indigo-800 text-white mb-2"
           >
             Next
           </Button>

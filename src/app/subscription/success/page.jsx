@@ -147,7 +147,7 @@ function SubscriptionSuccessContent() {
         {status === "active" && (
           <Button
             onClick={handleContinue}
-            className="w-full bg-indigo-900 hover:bg-indigo-800 text-white"
+            className="w-full bg-[#240457] hover:bg-indigo-800 text-white"
           >
             Continue
           </Button>
@@ -157,7 +157,7 @@ function SubscriptionSuccessContent() {
           <div className="space-y-3">
             <Button
               onClick={() => router.push("/onboarding/plans")}
-              className="w-full bg-indigo-900 hover:bg-indigo-800 text-white"
+              className="w-full bg-[#240457] hover:bg-indigo-800 text-white"
             >
               Back to Plans
             </Button>

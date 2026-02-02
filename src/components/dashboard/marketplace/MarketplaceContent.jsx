@@ -176,7 +176,7 @@ export default function MarketplaceContent() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-gray-500 text-lg font-sm">Market Place</h1>
+          <h1 className="text-gray-900 text-base font-sm">Market Place</h1>
         </div>
       </nav>
 
@@ -193,7 +193,7 @@ export default function MarketplaceContent() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 pt-16">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-white mb-4 sm:mb-6">
               Find Verified supplier Across the Globe
@@ -207,8 +207,8 @@ export default function MarketplaceContent() {
       </div>
 
       {/* Search Section - Overlapping */}
-      <div className="relative z-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24">
-        <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-10">
+      <div className="relative z-20 max-w-[1150px] mx-auto px-4 sm:px-6 lg:px-8 -mt-24">
+        <div className="bg-white rounded-2xl shadow-2xl p-6">
           <div className="flex flex-col sm:flex-row justify-center items-center gap-3 mb-6">
             <div className="relative w-full max-w-lg">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
@@ -232,11 +232,12 @@ export default function MarketplaceContent() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <p className="text-gray-600 font-sm">Popular:</p>
             <div className="flex flex-wrap gap-2">
               {popularCategories.map((category, index) => (
                 <button
                   key={index}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm sm:text-base font-medium transition-colors duration-200"
+                  className="px-4 py-2 bg-[#E5E7EB] text-gray-700 rounded-full text-sm sm:text-base font-medium transition-colors duration-200"
                 >
                   {category}
                 </button>
@@ -427,7 +428,7 @@ export default function MarketplaceContent() {
             <div className="flex-1">
              {/* Featured Products */}
               <div className="mb-8">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">
+                <h2 className="text-2xl font-semibold text-black mb-4">
                   Featured Products
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -457,11 +458,11 @@ export default function MarketplaceContent() {
                             {product.detail || product.description}
                           </p>
                           <div className="flex items-center justify-between mb-3">
-                            <span className="text-purple-600 font-semibold text-base">
-                              ${product.pricePerUnit}
-                            </span>
                             <span className="text-sm text-gray-500">
-                              Min: {product.minOrderQty}
+                              Min: {product.minOrderQty} pc
+                            </span>
+                            <span className="text-sm text-gray-600">
+                              USD ${product.pricePerUnit}
                             </span>
                           </div>
                           {isBusinessUser ? (
@@ -502,7 +503,7 @@ export default function MarketplaceContent() {
               </div>
 
               {/* Top Ranking */}
-              <div className="mb-8 bg-gradient-to-r from-purple-600 to-purple-500 rounded-lg p-6 text-white">
+              <div className="mb-8 bg-[#9747FF] rounded-lg p-6 text-white">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-bold">Top Ranking</h2>
                   <button className="text-base hover:underline flex items-center gap-1">
@@ -533,6 +534,14 @@ export default function MarketplaceContent() {
                           <p className="text-sm text-gray-600 line-clamp-2">
                             {product.detail || product.description}
                           </p>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-sm text-gray-500">
+                              Min: {product.moq} pc
+                            </span>
+                            <span className="text-sm text-gray-600">
+                              USD ${product.pricePerUnit}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     ))
@@ -579,11 +588,11 @@ export default function MarketplaceContent() {
                             {product.detail || product.description}
                           </p>
                           <div className="flex items-center justify-between">
-                            <span className="text-purple-600 font-semibold text-base">
-                              ${product.pricePerUnit}
-                            </span>
                             <span className="text-sm text-gray-500">
-                              Min: {product.minOrderQty}
+                              Min: {product.minOrderQty} pc
+                            </span>
+                            <span className="text-sm text-gray-600 ">
+                              USD ${product.pricePerUnit}
                             </span>
                           </div>
                         </div>
@@ -625,16 +634,14 @@ export default function MarketplaceContent() {
                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                       {product.detail || product.description}
                     </p>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-base font-bold text-gray-900">
-                        ${product.pricePerUnit}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-gray-500 line-through">
-                          {product.originalPrice}
-                        </span>
-                      )}
-                    </div>
+                    <div className="flex items-center justify-between mb-3">
+                            <span className="text-sm text-gray-500">
+                              Min: {product.minOrderQty} pc
+                            </span>
+                            <span className="text-sm text-gray-600 ">
+                              USD ${product.pricePerUnit}
+                            </span>
+                          </div>
                     {isBusinessUser ? (
                     <button 
                       onClick={async () => {
@@ -686,8 +693,8 @@ function TopDealsSection({ deals = [], isBusinessUser = false }) {
   if (!deals || deals.length === 0) return null;
 
   return (
-    <div className="bg-white py-8 lg:py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="py-8 lg:py-12 mt-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Top Deals</h2>
           <p className="text-gray-600 text-base">

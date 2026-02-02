@@ -130,6 +130,7 @@ export default function BusinessesPageContent() {
 
   return (
     <div className="w-full bg-white">
+      <span className="text-[#240457] max-w-7xl mx-auto block py-4 text-sm">Business List</span>
       <main className="pb-24">
         <BusinessHero
           query={query}
@@ -149,25 +150,25 @@ export default function BusinessesPageContent() {
             {/* Main Content */}
             <div className="flex-1">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-medium text-black">
                   {loading
                     ? "Loading..."
                     : `${filteredBusinesses.length} ${
                         filteredBusinesses.length === 1
-                          ? "Company"
-                          : "Companies"
-                      } Found`}
+                          ? "Registered Company"
+                          : "Registered Companies"
+                      } `}
                 </h2>
 
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    className="bg-indigo-900 text-white text-sm"
+                    className="bg-[#240457] text-white text-sm"
                   >
                     <span className="mr-1">
                       <CiMenuBurger />
                     </span>{" "}
-                    Map View
+                    Open Map
                   </Button>
                 </div>
               </div>
@@ -218,7 +219,7 @@ export default function BusinessesPageContent() {
                   <button className="px-3 py-1 bg-gray-100 rounded text-gray-500 text-base hover:bg-gray-200">
                     Prev
                   </button>
-                  <button className="px-3 py-1 bg-indigo-900 text-white rounded text-base">
+                  <button className="px-3 py-1 bg-[#240457] text-white rounded text-base">
                     1
                   </button>
                   <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
