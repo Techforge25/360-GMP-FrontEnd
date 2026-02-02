@@ -15,6 +15,8 @@ const ProductSections = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const carouselRef = React.useRef(null);
+  const topRankingRef = React.useRef(null);
+  const newProductsRef = React.useRef(null);
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -28,11 +30,43 @@ const ProductSections = () => {
     }
   };
 
+  const scrollTopRankingLeft = () => {
+    if (topRankingRef.current) {
+      topRankingRef.current.scrollBy({ left: -250, behavior: "smooth" });
+    }
+  };
+
+  const scrollTopRankingRight = () => {
+    if (topRankingRef.current) {
+      topRankingRef.current.scrollBy({ left: 250, behavior: "smooth" });
+    }
+  };
+
+  const scrollNewLeft = () => {
+    if (newProductsRef.current) {
+      newProductsRef.current.scrollBy({ left: -220, behavior: "smooth" });
+    }
+  };
+
+  const scrollNewRight = () => {
+    if (newProductsRef.current) {
+      newProductsRef.current.scrollBy({ left: 220, behavior: "smooth" });
+    }
+  };
+
   const handleViewAllProducts = () => {
     if (pathname.includes('/dashboard/business')) {
       router.push('/dashboard/business/marketplace');
     } else if (pathname.includes('/dashboard/user')) {
       router.push('/dashboard/user/marketplace');
+    }
+  };
+
+  const handleViewProduct = (productId) => {
+    if (pathname.includes('/dashboard/business')) {
+      router.push(`/dashboard/business/products/${productId}`);
+    } else if (pathname.includes('/dashboard/user')) {
+      router.push(`/dashboard/user/products/${productId}`);
     }
   };
 
@@ -60,11 +94,11 @@ const ProductSections = () => {
 
       console.log("Fetching products from API...");
 
-      // Fetch all three categories in parallel
+      // Fetch all three categories in parallel - remove limits to get more products
       const [featuredRes, topRankingRes, newProductsRes] = await Promise.all([
-        productAPI.getFeatured(3),
-        productAPI.getTopRanking(2),
-        productAPI.getNewProducts(2),
+        productAPI.getFeatured(10),
+        productAPI.getTopRanking(8),
+        productAPI.getNewProducts(8),
       ]);
 
       console.log("Featured products response:", featuredRes);
@@ -99,15 +133,12 @@ const ProductSections = () => {
 
       // Transform and set new products
       // New products endpoint returns direct array
-      // Backend returns more than requested, so we slice to get only 2
       if (
         newProductsRes.success &&
         Array.isArray(newProductsRes.data) &&
         newProductsRes.data.length > 0
       ) {
-        const transformedNewProducts = newProductsRes.data
-          .slice(0, 2)
-          .map(transformProduct);
+        const transformedNewProducts = newProductsRes.data.map(transformProduct);
         setNewProducts(transformedNewProducts);
       } else {
         setNewProducts([]);
@@ -203,50 +234,61 @@ const ProductSections = () => {
 
             {/* Carousel Container */}
             <div className="flex-1 relative">
-              {/* Navigation Arrows */}
-              <button
-                onClick={scrollLeft}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-              <button
-                onClick={scrollRight}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
+              {/* Navigation Arrows - Only show when there are more than 3 products */}
+              {featured.length > 3 && (
+                <>
+                  <button
+                    onClick={scrollLeft}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={scrollRight}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
+                </>
+              )}
 
               {/* Products Grid/Carousel */}
-              <div
+              <div 
                 ref={carouselRef}
                 className="overflow-x-auto scrollbar-hide scroll-smooth"
+                style={{ 
+                  width: featured.length <= 3 ? '100%' : '932px', // Show max 3 products (300px each + 16px gap)
+                  maxWidth: '100%'
+                }}
               >
-                <div className="flex gap-4 pb-2">
+                <div
+                  className="flex gap-4 pb-2"
+                  style={{ width: 'max-content' }}
+                >
                   {featured.map((prod) => (
                     <div
                       key={prod.id}
@@ -292,7 +334,10 @@ const ProductSections = () => {
                         </div>
 
                         {/* View Product Button */}
-                        <button className="w-full py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base">
+                        <button 
+                          onClick={() => handleViewProduct(prod.id)}
+                          className="w-full py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base"
+                        >
                           View Product
                         </button>
                       </div>
@@ -311,7 +356,7 @@ const ProductSections = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Top Ranking (Purple Gradient) */}
             {topRanking.length > 0 && (
-              <div className="bg-[#9747FF] rounded-2xl p-6 text-white">
+              <div className="bg-[#9747FF] rounded-2xl p-6 text-white relative group">
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h2 className="text-xl font-semibold">Top Ranking</h2>
@@ -323,11 +368,34 @@ const ProductSections = () => {
                     View More <ChevronRight />
                   </span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                
+                {/* Navigation Arrows */}
+                {topRanking.length > 2 && (
+                  <>
+                    <button
+                      onClick={scrollTopRankingLeft}
+                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={scrollTopRankingRight}
+                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+                
+                <div 
+                  ref={topRankingRef}
+                  className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
+                >
                   {topRanking.map((item) => (
                     <div
                       key={item.id}
-                      className="bg-white rounded-xl p-3 text-gray-900 shadow-lg"
+                      onClick={() => handleViewProduct(item.id)}
+                      className="min-w-[calc(50%-8px)] flex-shrink-0 bg-white rounded-xl p-3 text-gray-900 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
                     >
                       <div className="h-32 bg-gray-100 rounded-lg mb-3 overflow-hidden relative">
                         <img
@@ -360,7 +428,7 @@ const ProductSections = () => {
 
             {/* New Product (Dark Overlay) */}
             {newProducts.length > 0 && (
-              <div className="bg-[#3A373E] rounded-2xl p-6 text-white relative overflow-hidden">
+              <div className="bg-[#3A373E] rounded-2xl p-6 text-white relative overflow-hidden group">
                 {/* Background element */}
                 <div className="absolute  top-0 right-0 w-32 h-32 bg-gray-800 rounded-full blur-3xl -mr-10 -mt-10" />
 
@@ -375,32 +443,36 @@ const ProductSections = () => {
                     View More <ChevronRight />
                   </span>
                 </div>
+                
                 {/* Carousel Container */}
-                <div className="relative group">
-                  {/* Left Arrow */}
-                  <button
-                    // onClick={scrollNewLeft}
-                    className="absolute left-0 top-1/2 shadow-amber-50 -translate-y-1/2 -translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-
-                  {/* Right Arrow */}
-                  <button
-                    // onClick={scrollNewRight}
-                    className="absolute right-0 shadow-amber-50 top-1/2 -translate-y-1/2 translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
+                <div className="relative">
+                  {/* Navigation Arrows */}
+                  {newProducts.length > 2 && (
+                    <>
+                      <button
+                        onClick={scrollNewLeft}
+                        className="absolute left-0 top-1/2 shadow-amber-50 -translate-y-1/2 -translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={scrollNewRight}
+                        className="absolute right-0 shadow-amber-50 top-1/2 -translate-y-1/2 translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
 
                   <div
-                    // ref={newProductsRef}
+                    ref={newProductsRef}
                     className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
                   >
                     {newProducts.map((item) => (
                       <div
                         key={item.id}
-                        className="min-w-[200px] w-[calc(50%-8px)] bg-white rounded-xl p-3 border border-gray-700 shadow-lg flex-shrink-0"
+                        onClick={() => handleViewProduct(item.id)}
+                        className="min-w-[200px] w-[calc(50%-8px)] bg-white rounded-xl p-3 border border-gray-700 shadow-lg flex-shrink-0 cursor-pointer hover:shadow-xl transition-shadow"
                       >
                         <div className="h-32 bg-gray-100 rounded-lg mb-3 overflow-hidden relative">
                           <img

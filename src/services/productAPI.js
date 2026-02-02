@@ -19,7 +19,7 @@ class ProductAPI {
   /**
    * Get featured products
    */
-  async getFeatured(limit = 3) {
+  async getFeatured(limit = 10) {
     return await api.get({
       url: `/products/featured?limit=${limit}`,
       activateLoader: false,
@@ -31,7 +31,7 @@ class ProductAPI {
   /**
    * Get products sorted by price (highest first)
    */
-  async getTopRanking(limit = 2) {
+  async getTopRanking(limit = 8) {
     return await api.get({
       url: `/products/top-ranking?limit=${limit}`,
       activateLoader: false,
@@ -43,7 +43,7 @@ class ProductAPI {
   /**
    * Get new products (recently created)
    */
-  async getNewProducts(limit = 2) {
+  async getNewProducts(limit = 8) {
     return await api.get({
       url: `/products/new?limit=${limit}`,
       activateLoader: false,
