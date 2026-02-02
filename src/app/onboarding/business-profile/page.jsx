@@ -67,6 +67,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
           placeholder="Global Manufacturing Co."
           value={formData.companyName}
           onChange={(e) => handleChange("companyName", e.target.value)}
+          required
         />
       </div>
       <div className="space-y-2">
@@ -76,6 +77,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
             className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
             value={formData.industry || ""}
             onChange={(e) => handleChange("industry", e.target.value)}
+            required
           >
             <option value="" disabled>
               Select Primary Industry
@@ -95,6 +97,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
           placeholder="Private Corporation"
           value={formData.businessType || ""}
           onChange={(e) => handleChange("businessType", e.target.value)}
+          required
         />
       </div>
       <div className="space-y-2">
@@ -104,6 +107,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
             className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
             value={formData.companySize || ""}
             onChange={(e) => handleChange("companySize", e.target.value)}
+            required
           >
             <option value="" disabled>
               Select Company Size
@@ -125,6 +129,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
             className="block"
             value={formData.foundedDate || ""}
             onChange={(e) => handleChange("foundedDate", e.target.value)}
+            required
           />
         </div>
       </div>
@@ -137,6 +142,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
             value={formData.operatingHours || ""}
             onChange={(e) => handleChange("operatingHours", e.target.value)}
             placeholder="09:00"
+            required
           />
         </div>
       </div>
@@ -148,6 +154,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
         placeholder="https://www.example.com"
         value={formData.website || ""}
         onChange={(e) => handleChange("website", e.target.value)}
+        required
       />
     </div>
 
@@ -209,6 +216,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
             placeholder="e.g Canada"
             value={formData.country || ""}
             onChange={(e) => handleChange("country", e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -217,6 +225,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
             placeholder="Ottawa"
             value={formData.city || ""}
             onChange={(e) => handleChange("city", e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -225,6 +234,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
             placeholder="street address"
             value={formData.address || ""}
             onChange={(e) => handleChange("address", e.target.value)}
+            required
           />
         </div>
       </div>
@@ -289,6 +299,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           <Input
             value={formData.contactName || ""}
             onChange={(e) => handleChange("contactName", e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -296,6 +307,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           <Input
             value={formData.contactTitle || ""}
             onChange={(e) => handleChange("contactTitle", e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -303,6 +315,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           <Input
             value={formData.contactPhone || ""}
             onChange={(e) => handleChange("contactPhone", e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -310,6 +323,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           <Input
             value={formData.contactEmail || ""}
             onChange={(e) => handleChange("contactEmail", e.target.value)}
+            required
           />
         </div>
       </div>

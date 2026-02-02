@@ -40,8 +40,8 @@ const Step1 = ({ formData, handleChange }) => (
           <Input
             placeholder="Alex Morgan"
             value={formData.fullName}
-            required
             onChange={(e) => handleChange("fullName", e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -52,6 +52,7 @@ const Step1 = ({ formData, handleChange }) => (
               placeholder="e.g Supply Chain Analyst"
               value={formData.currentTitle || ""}
               onChange={(e) => handleChange("currentTitle", e.target.value)}
+              required
             >
               <option value="">Select Title</option>
               {IndustryOptions.map((option) => (
@@ -69,6 +70,7 @@ const Step1 = ({ formData, handleChange }) => (
             placeholder="+128895949965"
             value={formData.phone || ""}
             onChange={(e) => handleChange("phone", e.target.value)}
+            required
           />
         </div>
         <div className="space-y-2">
@@ -83,6 +85,7 @@ const Step1 = ({ formData, handleChange }) => (
                   placeholder="e.g Canada"
                   value={formData.country || ""}
                   onChange={(e) => handleChange("country", e.target.value)}
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -91,6 +94,7 @@ const Step1 = ({ formData, handleChange }) => (
                   placeholder="Ottawa"
                   value={formData.city || ""}
                   onChange={(e) => handleChange("city", e.target.value)}
+                  required
                 />
               </div>
               <div className="space-y-2">
@@ -99,6 +103,7 @@ const Step1 = ({ formData, handleChange }) => (
                   placeholder="street address"
                   value={formData.address || ""}
                   onChange={(e) => handleChange("address", e.target.value)}
+                  required
                 />
               </div>
             </div>
@@ -198,6 +203,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
           placeholder="e.g Python,Java,Figma,"
           value={formData.skills || ""}
           onChange={(e) => handleChange("skills", e.target.value)}
+          required
         />
       </div>
 
@@ -246,6 +252,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
                   institution: e.target.value,
                 }))
               }
+              required
             />
 
             <Input
@@ -254,6 +261,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               onChange={(e) =>
                 setEducationDraft((p) => ({ ...p, degree: e.target.value }))
               }
+              required
             />
 
             <Input
@@ -265,6 +273,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
                   fieldOfStudy: e.target.value,
                 }))
               }
+              required
             />
 
             <div className="flex gap-2">
@@ -278,6 +287,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
                     startDate: e.target.value,
                   }))
                 }
+                required
               />
 
               <Input
@@ -288,6 +298,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
                 onChange={(e) =>
                   setEducationDraft((p) => ({ ...p, endDate: e.target.value }))
                 }
+                required={!educationDraft.isCurrent}
               />
             </div>
 
@@ -312,6 +323,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               onChange={(e) =>
                 setEducationDraft((p) => ({ ...p, grade: e.target.value }))
               }
+              required
             />
 
             <textarea
@@ -324,6 +336,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
                   description: e.target.value,
                 }))
               }
+              required
             />
 
             <div className="flex justify-end gap-2 pt-2">
@@ -350,6 +363,7 @@ const Step3 = ({ formData, handleChange }) => (
         placeholder="e.g Supply Chain Analyst"
         value={formData.jobTitle || ""}
         onChange={(e) => handleChange("jobTitle", e.target.value)}
+        required
       />
       <p className="text-sm text-text-secondary">
         This Focus Your Job Recomendation
@@ -398,11 +412,13 @@ const Step3 = ({ formData, handleChange }) => (
           placeholder="Min ($)"
           value={formData.minSalary || ""}
           onChange={(e) => handleChange("minSalary", e.target.value)}
+          required
         />
         <Input
           placeholder="Max ($)"
           value={formData.maxSalary || ""}
           onChange={(e) => handleChange("maxSalary", e.target.value)}
+          required
         />
       </div>
     </div>
