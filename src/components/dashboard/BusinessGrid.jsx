@@ -3,8 +3,10 @@ import React, { useState, useEffect } from "react";
 import { FiMapPin, FiPhone, FiGlobe, FiX } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const BusinessGrid = () => {
+  const router = useRouter();
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,6 +17,19 @@ const BusinessGrid = () => {
   useEffect(() => {
     fetchBusinessProfiles();
   }, []);
+
+  const handleBusinessClick = async (businessId) => {
+    try {
+      // Call the view API to track view and get complete business data
+      await businessProfileAPI.viewBusinessProfile(businessId);
+      // Navigate to the business profile page
+      router.push(`/dashboard/business-profile/${businessId}`);
+    } catch (error) {
+      console.error("Failed to view business profile:", error);
+      // Still navigate even if tracking fails
+      router.push(`/dashboard/business-profile/${businessId}`);
+    }
+  };
 
   const fetchBusinessProfiles = async () => {
     try {
@@ -133,7 +148,8 @@ const BusinessGrid = () => {
           {businesses.map((biz) => (
             <div
               key={biz.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+              onClick={() => handleBusinessClick(biz.id)}
+              className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
             >
               {/* Cover Image */}
               <div className="h-32 bg-gray-200 relative">
@@ -176,7 +192,10 @@ const BusinessGrid = () => {
                     </div>
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                       <button
-                        onClick={(e) => handleGetDirection(biz.id, biz.name, e)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleGetDirection(biz.id, biz.name, e);
+                        }}
                         className="flex items-center hover:text-[#240457] transition-colors cursor-pointer"
                       >
                         <FiMapPin className="mr-1 w-3 h-3 text-black hover:text-[#240457]" />
@@ -190,6 +209,7 @@ const BusinessGrid = () => {
                         href={biz.website}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
                         className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
                       >
                         <FiGlobe className="w-4 h-4 text-[#240457]" />
@@ -200,6 +220,7 @@ const BusinessGrid = () => {
                         href={biz.website}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
                         className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
                       >
                         <img src="/assets/images/twoArrows.png" alt="" />
@@ -208,6 +229,7 @@ const BusinessGrid = () => {
                     {biz.phone !== "#" && (
                       <a
                         href={`tel:${biz.phone}`}
+                        onClick={(e) => e.stopPropagation()}
                         className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
                       >
                         <FiPhone className="w-4 h-4 text-[#240457]" />
