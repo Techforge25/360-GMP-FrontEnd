@@ -4,8 +4,11 @@ import { FiArrowRight, FiHeart } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import productAPI from "@/services/productAPI";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
 
 const ProductSections = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [featured, setFeatured] = useState([]);
   const [topRanking, setTopRanking] = useState([]);
   const [newProducts, setNewProducts] = useState([]);
@@ -22,6 +25,14 @@ const ProductSections = () => {
   const scrollRight = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({ left: 320, behavior: "smooth" });
+    }
+  };
+
+  const handleViewAllProducts = () => {
+    if (pathname.includes('/dashboard/business')) {
+      router.push('/dashboard/business/marketplace');
+    } else if (pathname.includes('/dashboard/user')) {
+      router.push('/dashboard/user/marketplace');
     }
   };
 
@@ -181,7 +192,10 @@ const ProductSections = () => {
                   Continue your search and access 140+ million product on 360GMP
                 </p>
               </div>
-              <Button className="bg-[#240457] hover:bg-[#1a0340] text-white rounded-xl px-6 py-3 font-medium flex items-center justify-center gap-2 w-fit">
+              <Button 
+                onClick={handleViewAllProducts}
+                className="bg-[#240457] hover:bg-[#1a0340] text-white rounded-xl px-6 py-3 font-medium flex items-center justify-center gap-2 w-fit"
+              >
                 View All Product
                 <FiArrowRight className="w-4 h-4" />
               </Button>
