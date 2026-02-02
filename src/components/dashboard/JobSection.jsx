@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FiBriefcase, FiClock, FiMapPin } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
@@ -35,9 +36,15 @@ const JobSection = () => {
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
   const { user } = useUserRole();
+  const router = useRouter();
 
   // Conditional URL based on user role
   const jobsUrl = user?.role === "business" ? "/dashboard/business/jobs" : "/dashboard/user/jobs";
+
+  const handleViewJobDetail = (jobId) => {
+    const baseUrl = user?.role === "business" ? "/dashboard/business/jobs" : "/dashboard/user/jobs";
+    router.push(`${baseUrl}/${jobId}`);
+  };
 
   React.useEffect(() => {
     const fetchJobs = async () => {
@@ -181,7 +188,10 @@ const JobSection = () => {
                 </div>
 
                 {/* View Details Button */}
-                <button className="px-4 mt-6 py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base flex items-center gap-2">
+                <button 
+                  onClick={() => handleViewJobDetail(job.id)}
+                  className="px-4 mt-6 py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base flex items-center gap-2"
+                >
                   View Details
                   <svg
                     className="w-4 h-4"

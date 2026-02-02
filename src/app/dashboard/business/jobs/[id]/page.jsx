@@ -223,7 +223,7 @@ export default function JobDetailsPage() {
         </Card>
       </div>
 
-      <ChatWidget />
+      {/* <ChatWidget /> */}
 
       {job && (
         <JobApplicationModal
