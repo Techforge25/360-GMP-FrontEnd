@@ -110,8 +110,13 @@ export default function BusinessProfileDetail({ businessId }) {
 
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Full width banner section */}
+      <div className="w-full">
          <ProfileHeader business={businessData} />
+      </div>
+      
+      {/* Constrained content */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
          <ProfileOverview business={businessData} />
          <ProfileJobs businessId={businessId} />
          <ProfileProducts businessId={businessId} />

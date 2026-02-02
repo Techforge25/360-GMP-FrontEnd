@@ -65,7 +65,7 @@ export default function ProductInfo({ product }) {
       </div>
 
       {/* Price */}
-      <div className="flex justify-between items-end mb-6 border-b border-gray-100 pb-6">
+      <div className="flex justify-between items-end mb-6 pb-2">
           <div className="flex items-baseline gap-1">
              <span className="text-3xl font-semibold text-black">${product.pricePerUnit.toFixed(2)}</span>
              <span className="text-gray-500 text-base font-semibold">/Pc</span>
@@ -76,7 +76,7 @@ export default function ProductInfo({ product }) {
       {/* Supplier Card */}
       <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded bg-white flex items-center justify-center border border-green-200">
+              <div className="w-8 h-8 rounded bg-white flex items-center justify-center border border-[#D1D7E3]">
                   {/* Logo Placeholder */}
                   <div className="text-cyan-500 text-lg">🌐</div>
               </div>
@@ -97,7 +97,7 @@ export default function ProductInfo({ product }) {
                     onClick={() => setQuantity(Math.max(product.minOrderQty, quantity - 1))}
                     className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-l-lg"
                   >
-                      <FaMinus className="text-[10px]" />
+                      <FaMinus className="text-[10px] " />
                   </button>
                   <input 
                     type="number" 

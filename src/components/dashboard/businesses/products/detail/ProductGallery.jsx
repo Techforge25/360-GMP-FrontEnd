@@ -57,7 +57,7 @@ export default function ProductGallery({ images }) {
             <div 
                 key={idx}
                 onClick={() => setCurrentImage(idx)}
-                className={`cursor-pointer bg-gray-100 rounded-xl h-24 overflow-hidden p-2 flex items-center justify-center border-2 ${currentImage === idx ? 'border-indigo-900' : 'border-transparent'}`}
+                className={`cursor-pointer bg-gray-100 rounded-xl h-50 overflow-hidden p-2 flex items-center justify-center border-2 ${currentImage === idx ? 'border-indigo-900' : 'border-transparent'}`}
             >
                 <img 
                     src={img} 

@@ -88,15 +88,11 @@ export default function ProfileProducts({ products, businessId }) {
                         {product.detail || product.description}
                       </p>
                       
-                      <div className="flex items-center gap-2 mb-3">
-                          <span className="text-base font-bold text-black">
-                            ${product.pricePerUnit || product.minPrice || 0}
-                          </span>
-                          {product.originalPrice && (
-                            <span className="text-sm text-gray-500 line-through">
-                              ${product.originalPrice}
-                            </span>
-                          )}
+                      <div className="flex items-center justify-between text-sm mb-4">
+                        <span className="text-gray-500">MOQ: {product.minOrderQty}</span>
+                        <span className="text-gray-500">
+                          USD {product.pricePerUnit}
+                        </span>
                       </div>
                       
                       {role === "business" ? (
@@ -119,7 +115,7 @@ export default function ProfileProducts({ products, businessId }) {
       </div>
 
        <div className="mt-8 flex justify-center">
-           <Link href={productsUrl} className="bg-white border border-gray-200 text-gray-700 px-6 py-2.5 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
+           <Link href={productsUrl} className="bg-white border border-gray-200 text-gray-700 px-6 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm">
                View All Product &rarr;
            </Link>
        </div>

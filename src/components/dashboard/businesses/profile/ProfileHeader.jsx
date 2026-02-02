@@ -34,12 +34,19 @@ export default function ProfileHeader({ business }) {
   } = business || {};
 
   return (
-    <div className="rounded-xl overflow-hidden mb-6">
-      {/* Banner */}
-      <div className="h-48 md:h-64 relative bg-gray-900">
+    <div>
+      {/* Breadcrumb - constrained width */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-0">
+        <div className="text-sm text-gray-700 mb-6 font-medium">
+            Business List <span className="mx-1">&gt;</span> <span className="text-[#240457]">{name}</span> 
+        </div>
+      </div>
+
+      {/* Banner - full width */}
+      <div className="h-48 md:h-64 relative bg-gray-900 ">
         <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-blue-900/50 mix-blend-multiply"></div>
         {/* Placeholder for banner image */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-60"></div>
+        <div className="absolute inset-0 bg-[url('/assets/images/businessInnerPageBanner.png')] bg-cover bg-center opacity-60"></div>
         
         <div className="absolute bottom-4 right-4 flex gap-3">
              {isUserRole && (
@@ -53,10 +60,10 @@ export default function ProfileHeader({ business }) {
         </div>
       </div>
 
-      {/* Profile Info Section */}
-      <div className="px-6 pb-6 relative">
+      {/* Profile Info Section - constrained width */}
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 rounded-xl mb-6 relative">
         {/* Logo - Overlapping Banner */}
-        <div className="absolute -top-12 left-0 right-0 flex justify-center">
+        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
             <div className="w-24 h-24 bg-white rounded-xl shadow-lg p-2 flex items-center justify-center">
                  <div className="w-full h-full border border-cyan-100 rounded-lg flex items-center justify-center">
                     <img src={logo} alt="Logo" className="w-16 h-16 object-contain" />
@@ -65,7 +72,7 @@ export default function ProfileHeader({ business }) {
         </div>
 
         {/* Main Text Info */}
-        <div className="pt-16 text-center">
+        <div className="pt-16 pb-6 text-center">
             <div className="flex items-center justify-center gap-2 mb-2">
                 <h1 className="text-2xl font-medium text-black">{name}</h1>
                 {verified && <MdVerified className="text-blue-500 text-xl" />}
@@ -75,7 +82,7 @@ export default function ProfileHeader({ business }) {
             <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-sm text-gray-500 mb-6">
                 <div className="flex items-center gap-1">
                     <FaStar className="text-yellow-400" />
-                    <span className="font-bold text-gray-900">{rating} / 5</span>
+                    <span className="text-gray-500">{rating} / 5</span>
                 </div>
                 <div className="flex items-center gap-1">
                     <BsBuildings />
@@ -97,29 +104,29 @@ export default function ProfileHeader({ business }) {
                     <span>{location}</span>
                 </div>
             </div>
-        </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-5 divide-x divide-gray-100 border-t border-gray-100 pt-6">
-            <div className="px-4 text-center md:text-left">
-                <p className="text-sm font-bold text-gray-900 mb-1">On-time delivery</p>
-                <p className="text-gray-500 text-sm">{stats.delivery}</p>
-            </div>
-            <div className="px-4 text-center md:text-left">
-                <p className="text-sm font-bold text-gray-900 mb-1">Reorder rate</p>
-                <p className="text-gray-500 text-sm">{stats.reorder}</p>
-            </div>
-            <div className="px-4 text-center md:text-left">
-                <p className="text-sm font-bold text-gray-900 mb-1">Response time</p>
-                <p className="text-gray-500 text-sm">{stats.response}</p>
-            </div>
-             <div className="px-4 text-center md:text-left">
-                <p className="text-sm font-bold text-gray-900 mb-1">Online revenue</p>
-                <p className="text-gray-500 text-sm">{stats.revenue}</p>
-            </div>
-             <div className="px-4 text-center md:text-left border-r-0">
-                <p className="text-sm font-bold text-gray-900 mb-1">Products Types</p>
-                <p className="text-gray-500 text-sm">{stats.products}</p>
+            {/* Stats Row */}
+            <div className="grid grid-cols-2 md:grid-cols-5 divide-x divide-gray-100 border-t bg-[#F8F9FB] pt-6">
+                <div className="px-4 text-center md:text-left">
+                    <p className="text-sm font-semibold text-black mb-1">On-time delivery</p>
+                    <p className="text-gray-500 text-sm">{stats.delivery}</p>
+                </div>
+                <div className="px-4 text-center md:text-left">
+                    <p className="text-sm font-semibold text-black mb-1">Reorder rate</p>
+                    <p className="text-gray-500 text-sm">{stats.reorder}</p>
+                </div>
+                <div className="px-4 text-center md:text-left">
+                    <p className="text-sm font-semibold text-black mb-1">Response time</p>
+                    <p className="text-gray-500 text-sm">{stats.response}</p>
+                </div>
+                 <div className="px-4 text-center md:text-left">
+                    <p className="text-sm font-semibold text-black mb-1">Online revenue</p>
+                    <p className="text-gray-500 text-sm">{stats.revenue}</p>
+                </div>
+                 <div className="px-4 text-center md:text-left border-r-0">
+                    <p className="text-sm font-semibold text-black mb-1">Products Types</p>
+                    <p className="text-gray-500 text-sm">{stats.products}</p>
+                </div>
             </div>
         </div>
       </div>

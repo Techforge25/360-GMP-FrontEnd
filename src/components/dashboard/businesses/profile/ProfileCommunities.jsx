@@ -70,7 +70,7 @@ export default function ProfileCommunities({ businessId }) {
 
   if (loading) {
     return (
-      <div className="mb-10 text-center">
+      <div className="mb-10 text-center mt-28">
         <h2 className="text-3xl font-semibold text-black mb-2">Communities</h2>
         <div className="flex justify-center items-center py-8">
           <div className="text-gray-500">Loading communities...</div>
@@ -81,7 +81,7 @@ export default function ProfileCommunities({ businessId }) {
 
   if (communities.length === 0) {
     return (
-      <div className="mb-10 text-center">
+      <div className="mb-10 text-center mt-28">
         <h2 className="text-3xl font-semibold text-black mb-2">Communities</h2>
         <div className="text-center py-8 text-gray-500">
           No communities found
@@ -91,7 +91,7 @@ export default function ProfileCommunities({ businessId }) {
   }
 
   return (
-    <div className="mb-10 text-center">
+    <div className="mb-10 text-center mt-28">
       <h2 className="text-3xl font-semibold text-black mb-2">Communities</h2>
       <p className="text-gray-500 text-sm mb-8 max-w-3xl mx-auto">
         A dedicated professional hub for discussing the latest trends and practical applications in Industrial Technology, Manufacturing Automation, and Supply Chain Digitization. Join to share insights, find expert answers, and network with industry leaders in B2B Tech

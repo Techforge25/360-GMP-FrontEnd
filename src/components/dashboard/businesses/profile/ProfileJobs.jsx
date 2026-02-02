@@ -70,7 +70,7 @@ export default function ProfileJobs({ jobs, businessId }) {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-gray-100 mb-10">
+      <div className="rounded-xl p-6 border border-[#E6E6E6] mb-10">
         <h2 className="text-3xl font-medium text-black mb-6">Recent Jobs Posted</h2>
         <div className="flex justify-center items-center py-8">
           <div className="text-gray-500">Loading jobs...</div>
@@ -81,7 +81,7 @@ export default function ProfileJobs({ jobs, businessId }) {
 
   if (recentJobs.length === 0 && !jobs) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-gray-100 mb-10">
+      <div className="rounded-xl p-6 border border-[#E6E6E6] mb-10">
         <h2 className="text-3xl font-medium text-black mb-6">Recent Jobs Posted</h2>
         <div className="text-center py-8 text-gray-500">
           No jobs posted yet
@@ -91,7 +91,7 @@ export default function ProfileJobs({ jobs, businessId }) {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-gray-100 mb-10">
+    <div className="rounded-xl p-6 border border-[#E6E6E6] mb-10">
       <h2 className="text-3xl font-medium text-black mb-6">Recent Jobs Posted</h2>
       
       <div className="space-y-4">

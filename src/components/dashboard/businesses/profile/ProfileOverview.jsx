@@ -25,15 +25,15 @@ export default function ProfileOverview({ business }) {
   return (
     <div className="flex flex-col lg:flex-row gap-6 mb-10">
       {/* Left Column: Overview */}
-      <div className="flex-1 bg-white rounded-xl p-6 border border-gray-100 flex flex-col justify-between">
+      <div className="flex-1 rounded-xl p-6 border border-[#E6E6E6]">
          <div>
             <h2 className="text-3xl font-medium text-black mb-4">Overview</h2>
-            <p className="text-gray-600 leading-relaxed mb-10 text-sm">
+            <p className="text-gray-600 leading-relaxed mb-6 text-sm">
                 {description}
             </p>
          </div>
 
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-gray-100 pt-6">
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-[#E6E6E6] pt-6">
             <div>
                 <p className="text-sm font-bold text-gray-900 mb-1">Business Type</p>
                 <p className="text-gray-500 text-sm">{businessType}</p>
@@ -50,10 +50,10 @@ export default function ProfileOverview({ business }) {
       </div>
 
       {/* Right Column: Sidebar */}
-      <div className="w-full lg:w-96 space-y-6">
+      <div className="w-full lg:w-96 space-y-6 border border-[#E6E6E6] rounded-xl p-4">
         
         {/* Certifications Box */}
-        <div className="bg-white rounded-xl p-6 border border-gray-100">
+        <div className="rounded-xl p-6 border border-[#E6E6E6]">
             <h3 className="text-2xl font-medium text-black mb-4">Certifications</h3>
             <div className="space-y-3">
                 {certifications.map((cert, index) => (
@@ -71,9 +71,9 @@ export default function ProfileOverview({ business }) {
         </div>
 
         {/* Contact Info Box */}
-        <div className="bg-gray-50/50 rounded-xl p-6 border border-gray-100">
+        <div className="bg-gray-50/50 rounded-xl border border-gray-100">
              <h3 className="text-2xl font-medium text-black mb-4">Contact Info</h3>
-             <ul className="space-y-4 mb-6">
+             <ul className="space-y-4 mb-6 bg-[#F0F0F0] p-4 rounded-lg">
                 <li className="flex items-start gap-3 text-sm text-gray-600">
                     <HiOutlineMail className="text-lg mt-0.5 text-indigo-900"/>
                     <span>{contact.email}</span>
