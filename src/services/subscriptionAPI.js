@@ -4,14 +4,14 @@ class SubscriptionAPI {
   /**
    * Create Stripe checkout session for subscription
    * @param {string} planId - The plan ID from backend
-   * @param {string} role - User role (business or user)
+   * @param {string} profile - User profile (business or user)
    */
-  async createStripeCheckout(planId, role = "business", successUrl, cancelUrl) {
+  async createStripeCheckout(planId, profile = "business", successUrl, cancelUrl) {
     // Sending params in both URL and Body to ensure backend finds them
     // Also sending success/cancel URLs in query param as a fallback
     const queryParams = new URLSearchParams({
       planId,
-      role,
+      profile,
       success_url: successUrl,
       cancel_url: cancelUrl,
     }).toString();
@@ -20,7 +20,7 @@ class SubscriptionAPI {
       url: `/subscription/stripe/create?${queryParams}`,
       payload: {
         planId: planId,
-        role: role,
+        profile: profile,
         successUrl: successUrl,
         cancelUrl: cancelUrl,
         success_url: successUrl,

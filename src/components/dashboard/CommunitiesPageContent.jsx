@@ -189,6 +189,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   return (
     <div className="min-h-screen px-4 overflow-x-hidden bg-gray-50">
       {/* Hero Section */}
+      <p className="text-[#444953] pt-4 max-w-[1400px] mx-auto">Communities</p>
       <div className="relative w-full rounded-3xl overflow-hidden mt-6 mb-8 shadow-2xl">
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
@@ -218,7 +219,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
             </p>
 
             {/* Search Bar */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-3 max-w-5xl mx-auto">
+            <div className="bg-white/10 border border-white/30 backdrop-blur-sm rounded-2xl p-3 max-w-5xl mx-auto">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Input */}
                 <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white rounded-xl">
@@ -270,7 +271,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   onClick={handleSearch}
                   className="px-4 py-3 cursor-pointer bg-brand-primary hover:bg-brand-primary/90 text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 sm:w-auto w-full"
                 >
-                  <FaChevronRight className="w-4 h-4" />
+                  <img src="/assets/images/stylishArrow.png" alt="" />
                 </button>
               </div>
             </div>
@@ -280,10 +281,10 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
       {/* Header Section */}
       <div className="">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-semibold text-gray-900">
+              <h2 className="text-3xl font-semibold text-black">
                 Communities
               </h2>
               <p className="text-gray-600 mt-1 text-base">
@@ -296,7 +297,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 bg-white rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
+                  className="py-2 border border-gray-300 bg-white rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-500 text-black"
                 >
                   <option value="all">All</option>
                   <option value="public">Public</option>
@@ -317,7 +318,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
       </div>
 
       {/* Communities Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {loading ? (
           <div className="text-center py-12">
             <p className="text-gray-500">Loading communities...</p>
@@ -414,7 +415,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
                     {/* View Community Button */}
                     <Link href={`/community/${community._id}`}>
-                      <button className="w-full py-2.5 border-2 border-[#240457] rounded-xl text-base font-bold text-[#240457] hover:bg-[#240457] hover:text-white transition-all duration-200">
+                      <button className="w-full py-2.5 border border-[#240457] rounded-md text-base font-semibold text-[#240457] hover:bg-[#240457] hover:text-white transition-all duration-200">
                         View Community
                       </button>
                     </Link>

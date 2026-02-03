@@ -1,232 +1,528 @@
 "use client";
-import React, { useState } from "react";
-import { FiArrowLeft, FiSearch, FiMessageCircle, FiUserPlus } from "react-icons/fi";
+import React, { useState, useEffect } from "react";
+import { IoChevronBack } from "react-icons/io5";
+import { BiSearch, BiDotsHorizontalRounded } from "react-icons/bi";
+import { BsChat } from "react-icons/bs";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import communityAPI from "@/services/communityAPI";
 
-const CommunityMembersView = ({ onBack, communityName = "Community" }) => {
+const CommunityMembersView = ({ onBack, community, isOwner }) => {
+  console.log("CommunityMembersView rendered");
+  console.log("Props - community:", community);
+  console.log("Props - isOwner:", isOwner);
+  
+  const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [members, setMembers] = useState([]);
+  const [pendingRequests, setPendingRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totalMembers, setTotalMembers] = useState(0);
+  const [totalPending, setTotalPending] = useState(0);
+  const [processingId, setProcessingId] = useState(null);
+  const itemsPerPage = 5;
 
-  // Dummy members data
-  const allMembers = [
-    {
-      id: 1,
-      name: "Sophia Martinez",
-      role: "Green Manufacturing Consultant",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: true,
-    },
-    {
-      id: 2,
-      name: "James Carter",
-      role: "Lean Production Specialist",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: false,
-    },
-    {
-      id: 3,
-      name: "Olivia Bennett",
-      role: "Sustainable Operations Analyst",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: true,
-    },
-    {
-      id: 4,
-      name: "Ethan Ramirez",
-      role: "Mechanical Design Lead",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: false,
-    },
-    {
-      id: 5,
-      name: "Marcus Bennett",
-      role: "Manufacturing Operations Manager",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: true,
-    },
-    {
-      id: 6,
-      name: "David Kim",
-      role: "Environmental Policy Analyst",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: false,
-    },
-    {
-      id: 7,
-      name: "Michael Torres",
-      role: "Senior Sustainability Consultant",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: true,
-    },
-    {
-      id: 8,
-      name: "Sofia Andrade",
-      role: "Materials & Metallurgy Engineer",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: false,
-    },
-    {
-      id: 9,
-      name: "Ava Thompson",
-      role: "Automotive Parts Quality Inspector",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: true,
-    },
-    {
-      id: 10,
-      name: "Lucas Johnson",
-      role: "Supply Chain Analyst",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: false,
-    },
-    {
-      id: 11,
-      name: "Emma Wilson",
-      role: "Process Engineer",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: true,
-    },
-    {
-      id: 12,
-      name: "Noah Davis",
-      role: "Quality Assurance Manager",
-      image: "/assets/images/Portrait_Placeholder.png",
-      isOnline: false,
-    },
-  ];
-
-  const filters = ["All", "Online", "New Members", "Admins"];
-
-  // Filter members based on search and active filter
-  const filteredMembers = allMembers.filter((member) => {
-    const matchesSearch =
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.role.toLowerCase().includes(searchQuery.toLowerCase());
-
-    if (activeFilter === "Online") {
-      return matchesSearch && member.isOnline;
+  // Fetch members
+  const fetchMembers = async () => {
+    if (!community?._id) return;
+    
+    try {
+      setLoading(true);
+      const response = await communityAPI.getMembers(community._id, {
+        page: currentPage,
+        limit: itemsPerPage,
+        search: searchQuery
+      });
+      
+      if (response.success) {
+        setMembers(response.data.members || []);
+        setTotalMembers(response.data.total || 0);
+      }
+    } catch (error) {
+      console.error("Error fetching members:", error);
+    } finally {
+      setLoading(false);
     }
-    return matchesSearch;
-  });
+  };
+
+  // Fetch pending requests (only for owners/admins)
+  const fetchPendingRequests = async () => {
+    console.log("fetchPendingRequests called");
+    console.log("community._id:", community?._id);
+    console.log("isOwner:", isOwner);
+    
+    if (!community?._id || !isOwner) {
+      console.log("Exiting fetchPendingRequests - missing community._id or not owner");
+      return;
+    }
+    
+    try {
+      setLoading(activeTab === "requests");
+      console.log("Making API call to getPendingRequests");
+      
+      const response = await communityAPI.getPendingRequests(community._id, {
+        page: activeTab === "requests" ? currentPage : 1,
+        limit: itemsPerPage
+      });
+      
+      console.log("Pending requests API response:", response);
+      console.log("Response success:", response.success);
+      
+      if (response.success) {
+        // Handle different possible response structures
+        const requests = response.data?.pendingRequests || response.data?.requests || response.data?.data || (Array.isArray(response.data) ? response.data : []);
+        const total = response.data?.total || response.data?.totalCount || requests.length || 0;
+        
+        console.log("Parsed pending requests:", requests);
+        console.log("Total pending count:", total);
+        
+        setPendingRequests(requests);
+        setTotalPending(total);
+      } else {
+        console.log("API response not successful:", response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching pending requests:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch pending count on mount (for badge)
+  useEffect(() => {
+    console.log("useEffect for pending requests triggered");
+    console.log("isOwner:", isOwner);
+    console.log("community._id:", community?._id);
+    
+    if (isOwner && community?._id) {
+      console.log("Conditions met, calling fetchPendingRequests");
+      fetchPendingRequests();
+    } else {
+      console.log("Conditions NOT met for fetchPendingRequests");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [community?._id, isOwner]);
+
+  useEffect(() => {
+    console.log("Main useEffect triggered - activeTab:", activeTab);
+    if (activeTab === "requests") {
+      fetchPendingRequests();
+    } else {
+      fetchMembers();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [community?._id, activeTab, currentPage, searchQuery]);
+
+  // Filter for admins from members
+  const filteredAdmins = members.filter(member => 
+    member.role === "admin" || member.role === "owner" || member.role === "moderator"
+  );
+
+  const getCurrentData = () => {
+    switch (activeTab) {
+      case "all":
+        return members;
+      case "admins":
+        return filteredAdmins;
+      case "requests":
+        return pendingRequests;
+      default:
+        return members;
+    }
+  };
+
+  const handleAcceptRequest = async (userProfileId) => {
+    if (!community?._id) return;
+    
+    try {
+      setProcessingId(userProfileId);
+      const response = await communityAPI.approveMembership(community._id, userProfileId, "approved");
+      
+      if (response.success) {
+        // Remove from pending requests
+        setPendingRequests(prev => prev.filter(req => req.userProfileId?._id !== userProfileId));
+        setTotalPending(prev => prev - 1);
+        // Refresh members list
+        fetchMembers();
+      }
+    } catch (error) {
+      console.error("Error accepting request:", error);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleIgnoreRequest = async (userProfileId) => {
+    if (!community?._id) return;
+    
+    try {
+      setProcessingId(userProfileId);
+      const response = await communityAPI.approveMembership(community._id, userProfileId, "rejected");
+      
+      if (response.success) {
+        // Remove from pending requests
+        setPendingRequests(prev => prev.filter(req => req.userProfileId?._id !== userProfileId));
+        setTotalPending(prev => prev - 1);
+      }
+    } catch (error) {
+      console.error("Error rejecting request:", error);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const formatMemberCount = (count) => {
+    if (count >= 1000) {
+      return (count / 1000).toFixed(1) + "k";
+    }
+    return count?.toString() || "0";
+  };
+
+  const totalPages = Math.ceil(
+    (activeTab === "requests" ? totalPending : totalMembers) / itemsPerPage
+  );
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-gray-200">
       {/* Header */}
-      <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={onBack}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <FiArrowLeft className="w-5 h-5 text-gray-600" />
-            </button>
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            onClick={onBack}
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          >
+            <IoChevronBack className="w-5 h-5 text-gray-600" />
+          </button>
+          <div className="flex items-center gap-4">
+            {/* Community Logo */}
+            <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center overflow-hidden">
+              {community?.profileImage || community?.logo ? (
+                <img
+                  src={community.profileImage || community.logo}
+                  alt={community.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+              ) : (
+                <span className="text-white text-xl font-bold">
+                  {community?.name?.charAt(0) || "C"}
+                </span>
+              )}
+            </div>
             <div>
-              <h1 className="text-lg sm:text-xl font-bold text-gray-900">
-                Community Members
+              <h1 className="text-xl font-bold text-gray-900">
+                {community?.name || "Community"}
               </h1>
-              <p className="text-sm text-gray-500">
-                {allMembers.length} members in {communityName}
+              <p className="text-sm text-gray-500 line-clamp-1">
+                {community?.shortDescription || community?.description || ""}
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                {formatMemberCount(community?.memberCount)} Members • {community?.status === 'active' ? 'Active Community' : 'Community'} • <span className="capitalize">{community?.type || "Public"}</span>
               </p>
             </div>
           </div>
-
-          {/* Search */}
-          <div className="relative w-full sm:w-64">
-            <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search members..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
-            />
-          </div>
-        </div>
-
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-2 mt-4 overflow-x-auto scrollbar-hide">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setActiveFilter(filter)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                activeFilter === filter
-                  ? "bg-[#240457] text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              {filter}
+          {isOwner && (
+            <button className="ml-auto px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
+              <span>✏️</span> Edit
             </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Members Grid */}
-      <div className="p-4 sm:p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {filteredMembers.map((member) => (
-            <MemberCard key={member.id} member={member} />
-          ))}
-        </div>
-
-        {filteredMembers.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">No members found matching your search.</p>
-          </div>
-        )}
-
-        {/* Load More */}
-        <div className="flex justify-center mt-8">
-          <button className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
-            Load more
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Member Card Component
-const MemberCard = ({ member }) => {
-  return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-3">
-        {/* Avatar with online indicator */}
-        <div className="relative shrink-0">
-          <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-100">
-            <img
-              src={member.image || "/assets/images/Portrait_Placeholder.png"}
-              alt={member.name}
-              className="w-full h-full object-cover"
-              onError={(e) => {
-                e.target.src = "/assets/images/Portrait_Placeholder.png";
-              }}
-            />
-          </div>
-          {member.isOnline && (
-            <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full"></div>
           )}
         </div>
 
-        {/* Info */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-semibold text-gray-900 truncate">
-            {member.name}
-          </h3>
-          <p className="text-sm text-gray-500 truncate mt-0.5">{member.role}</p>
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            placeholder="search by name, role and company..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-24 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
+          />
+          <button 
+            onClick={() => fetchMembers()}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#240457] text-white px-4 py-1.5 rounded-md text-sm font-medium"
+          >
+            Search
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-1">
+          <button
+            onClick={() => { setActiveTab("all"); setCurrentPage(1); }}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === "all"
+                ? "bg-[#240457] text-white"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            All Members
+          </button>
+          <button
+            onClick={() => { setActiveTab("admins"); setCurrentPage(1); }}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+              activeTab === "admins"
+                ? "bg-[#240457] text-white"
+                : "text-gray-600 hover:bg-gray-100"
+            }`}
+          >
+            Admins
+          </button>
+          {isOwner && (
+            <button
+              onClick={() => { setActiveTab("requests"); setCurrentPage(1); }}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
+                activeTab === "requests"
+                  ? "bg-[#240457] text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              Request
+              {totalPending > 0 && (
+                <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {totalPending}
+                </span>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex items-center gap-2 mt-4">
-        <button className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 bg-[#240457] text-white rounded-lg text-sm font-medium hover:bg-[#1a0340] transition-colors">
-          <FiMessageCircle className="w-3.5 h-3.5" />
-          Message
-        </button>
-        <button className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
-          <FiUserPlus className="w-3.5 h-3.5" />
-          Connect
-        </button>
+      {/* Content */}
+      <div className="p-6">
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#240457]"></div>
+          </div>
+        ) : (
+          <>
+            {/* Secondary Search for table */}
+            <div className="flex items-center justify-end mb-4">
+              <div className="relative">
+                <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="search by name and role..."
+                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent w-64"
+                />
+              </div>
+            </div>
+
+            {/* Table Header */}
+            <div className="grid grid-cols-12 gap-4 py-3 px-4 bg-gray-50 rounded-lg mb-4">
+              <div className="col-span-1">
+                <input type="checkbox" className="rounded border-gray-300" />
+              </div>
+              <div className="col-span-3 text-sm font-medium text-gray-600">Profile</div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">Joined</div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">Role</div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">Status</div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">Actions</div>
+            </div>
+
+            {/* Table Content */}
+            <div className="space-y-3">
+              {getCurrentData().length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  {activeTab === "requests" ? "No pending requests" : "No members found"}
+                </div>
+              ) : activeTab === "requests" ? (
+                // Requests View
+                pendingRequests.map((request) => (
+                  <div key={request._id} className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors">
+                    <div className="col-span-1 flex items-center">
+                      <input type="checkbox" className="rounded border-gray-300" />
+                    </div>
+                    <div className="col-span-3 flex items-center gap-3">
+                      <div className="relative">
+                        <img
+                          src={request.userProfileId?.imageProfile || "/assets/images/Portrait_Placeholder.png"}
+                          alt={request.userProfileId?.fullName}
+                          className="w-10 h-10 rounded-full object-cover"
+                          onError={(e) => {
+                            e.target.src = "/assets/images/Portrait_Placeholder.png";
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900">
+                          {request.userProfileId?.fullName || "Unknown User"}
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          {request.userProfileId?.title || "Member"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <span className="text-sm text-gray-500">
+                        {formatDate(request.createdAt)}
+                      </span>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        Pending
+                      </span>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <div className="flex items-center gap-2">
+                        <BiDotsHorizontalRounded className="w-5 h-5 text-gray-400" />
+                      </div>
+                    </div>
+                    <div className="col-span-2 flex items-center gap-2">
+                      <button
+                        onClick={() => handleAcceptRequest(request.userProfileId?._id)}
+                        disabled={processingId === request.userProfileId?._id}
+                        className="px-3 py-1.5 bg-blue-100 text-blue-700 text-sm rounded-md hover:bg-blue-200 transition-colors disabled:opacity-50"
+                      >
+                        {processingId === request.userProfileId?._id ? "..." : "Accept"}
+                      </button>
+                      <button
+                        onClick={() => handleIgnoreRequest(request.userProfileId?._id)}
+                        disabled={processingId === request.userProfileId?._id}
+                        className="px-3 py-1.5 bg-red-100 text-red-700 text-sm rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
+                      >
+                        Ignore
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                // Members View
+                getCurrentData().map((member) => (
+                  <div key={member._id} className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors">
+                    <div className="col-span-1 flex items-center">
+                      <input type="checkbox" className="rounded border-gray-300" />
+                    </div>
+                    <div className="col-span-3 flex items-center gap-3">
+                      <div className="relative">
+                        <img
+                          src={member.userProfileId?.imageProfile || member.memberId?.imageProfile || "/assets/images/Portrait_Placeholder.png"}
+                          alt={member.userProfileId?.fullName || member.memberId?.companyName}
+                          className="w-10 h-10 rounded-full object-cover"
+                          onError={(e) => {
+                            e.target.src = "/assets/images/Portrait_Placeholder.png";
+                          }}
+                        />
+                        {member.memberModel === "BusinessProfile" && (
+                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#240457] rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">B</span>
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900">
+                          {member.userProfileId?.fullName || member.memberId?.companyName || "Unknown"}
+                        </h4>
+                        <p className="text-sm text-gray-500">
+                          {member.userProfileId?.title || member.memberId?.industry || "Member"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <span className="text-sm text-gray-500">
+                        Joined {formatDate(member.joinedAt)}
+                      </span>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        member.role === "owner" 
+                          ? "bg-purple-100 text-purple-800"
+                          : member.role === "admin"
+                          ? "bg-blue-100 text-blue-800"
+                          : member.role === "moderator"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}>
+                        {member.role === "owner" ? "Creator" : member.role?.charAt(0).toUpperCase() + member.role?.slice(1) || "Member"}
+                      </span>
+                    </div>
+                    <div className="col-span-2 flex items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                        <span className="text-sm text-gray-600">Online</span>
+                      </div>
+                    </div>
+                    <div className="col-span-2 flex items-center gap-2">
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <BsChat className="w-4 h-4 text-gray-600" />
+                      </button>
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <BiDotsHorizontalRounded className="w-4 h-4 text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Pagination */}
+            {getCurrentData().length > 0 && (
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
+                <p className="text-sm text-gray-500">
+                  Showing <span className="font-semibold">{((currentPage - 1) * itemsPerPage) + 1}-{Math.min(currentPage * itemsPerPage, activeTab === "requests" ? totalPending : totalMembers)}</span> Of <span className="font-semibold">{activeTab === "requests" ? totalPending : totalMembers}</span>
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <FiChevronLeft className="w-4 h-4" />
+                    Back
+                  </button>
+                  
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => i + 1).map((page) => (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                          page === currentPage
+                            ? "bg-[#240457] text-white"
+                            : "text-gray-600 hover:bg-gray-100 border border-gray-200"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    ))}
+                    {totalPages > 5 && (
+                      <>
+                        <span className="text-gray-400 px-1">...</span>
+                        <button
+                          onClick={() => setCurrentPage(totalPages)}
+                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
+                            totalPages === currentPage
+                              ? "bg-[#240457] text-white"
+                              : "text-gray-600 hover:bg-gray-100 border border-gray-200"
+                          }`}
+                        >
+                          {totalPages}
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages || totalPages === 0}
+                    className="flex items-center gap-1 px-3 py-2 text-sm bg-[#240457] text-white rounded-lg hover:bg-[#1a0340] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                    <FiChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

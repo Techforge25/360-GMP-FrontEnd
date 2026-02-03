@@ -11,6 +11,20 @@ const CommunityInfoCard = ({ community }) => {
     return count?.toString() || "0";
   };
 
+  const formatFoundedDate = (date) => {
+    if (!date) return "Unknown";
+    
+    try {
+      const createdDate = new Date(date);
+      return createdDate.toLocaleDateString('en-US', { 
+        month: 'short', 
+        year: 'numeric' 
+      });
+    } catch (error) {
+      return "Unknown";
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5">
       <h3 className="text-base font-bold text-gray-900 mb-4">Community Info</h3>
@@ -27,17 +41,12 @@ const CommunityInfoCard = ({ community }) => {
           </span>
         </div>
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500">Posts (Last 30 days)</span>
-          <span className="font-bold text-gray-900">
-            {community.postsCount || 32}
-          </span>
-        </div>
-        <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500">Founded</span>
           <span className="font-bold text-gray-900">
-            {community.founded || "Jan 2023"}
+            {formatFoundedDate(community.createdAt)}
           </span>
         </div>
+
       </div>
     </div>
   );

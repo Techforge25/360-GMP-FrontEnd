@@ -40,6 +40,66 @@ class CommunityAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Join a community
+   */
+  async join(communityId) {
+    return await api.post({
+      url: `/community/${communityId}/join`,
+      payload: {},
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get community members
+   */
+  async getMembers(communityId, params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams 
+      ? `/community/${communityId}/members?${queryParams}` 
+      : `/community/${communityId}/members`;
+
+    return await api.get({
+      url,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get pending join requests (for private/featured communities)
+   */
+  async getPendingRequests(communityId, params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams 
+      ? `/community/${communityId}/pending-requests?${queryParams}` 
+      : `/community/${communityId}/pending-requests`;
+
+    return await api.get({
+      url,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Approve or reject membership request
+   */
+  async approveMembership(communityId, userProfileId, status) {
+    return await api.post({
+      url: `/community/${communityId}/approve-membership`,
+      payload: { userProfileId, status },
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const communityAPI = new CommunityAPI();

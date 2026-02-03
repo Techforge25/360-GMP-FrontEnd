@@ -23,6 +23,8 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("recent");
   const [showMembersView, setShowMembersView] = useState(false);
+  const [isMember, setIsMember] = useState(false);
+  const [membershipStatus, setMembershipStatus] = useState(null);
 
   // Mock Posts Data
   const [posts] = useState([
@@ -77,7 +79,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
       timeAgo: "1 day ago",
       content:
         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      image: "/assets/images/handshake.jpg",
+      image: "/assets/images/placeholderBanner.jpg",
       readMore: true,
       likes: 14,
       comments: 6,
@@ -119,7 +121,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
       content:
         "Michael Torres shared a video",
       videoTitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      videoThumbnail: "/assets/images/steve-jobs-book.jpg",
+      videoThumbnail: "/assets/images/placeholderBanner.jpg",
       readMore: true,
       likes: 14,
       comments: 6,
@@ -131,37 +133,27 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
     const fetchCommunity = async () => {
       try {
         setLoading(true);
-        // Using dummy data for now
-        const dummyCommunity = {
-          _id: params.id,
-          name: "Job Search Support Group",
-          description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-          shortDescription: "Job search support you to find the best jobs according to your expertise",
-          category: "General",
-          type: "public",
-          profileImage: "/assets/images/Portrait_Placeholder.png",
-          coverImage: "/assets/images/community-cover.jpg",
-          memberCount: 66300,
-          postsCount: 324,
-          founded: "Jan 2023",
-          isVerified: false,
-        };
+        const response = await communityAPI.getById(params.id);
         
-        setCommunity(dummyCommunity);
-        
-        // Uncomment this when API is ready
-        // const response = await communityAPI.getById(params.id);
-        // if (response.success) {
-        //   setCommunity(response.data);
-        // }
+        if (response.success) {
+          setCommunity(response.data.community);
+          setIsMember(response.data.isMember || false);
+          setMembershipStatus(response.data.membershipStatus || null);
+        } else {
+          console.error("Failed to fetch community:", response.message);
+          setCommunity(null);
+        }
       } catch (error) {
         console.error("Error fetching community:", error);
+        setCommunity(null);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCommunity();
+    if (params.id) {
+      fetchCommunity();
+    }
   }, [params.id]);
 
   if (loading) {
@@ -202,8 +194,32 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const isOwner =
     user?.role === "business" &&
     (community.businessId?._id === user?.businessId ||
-      community.businessId === user?.businessId);
-  const isMember = true; // TODO: Check actual membership
+      community.businessId === user?.businessId ||
+      community.businessId?._id === user?.profilePayload?._id);
+
+  // Debug isOwner calculation
+  console.log("=== isOwner Debug ===");
+  console.log("user:", user);
+  console.log("user.role:", user?.role);
+  console.log("user.businessId:", user?.businessId);
+  console.log("user.profilePayload._id:", user?.profilePayload?._id);
+  console.log("community.businessId:", community.businessId);
+  console.log("community.businessId._id:", community.businessId?._id);
+  console.log("isOwner result:", isOwner);
+  console.log("==================");
+
+  const handleMembershipUpdate = (updateData) => {
+    setIsMember(updateData.isMember);
+    setMembershipStatus(updateData.membershipStatus);
+    
+    // Optionally update community member count if joined successfully
+    if (updateData.isMember && community) {
+      setCommunity(prev => ({
+        ...prev,
+        memberCount: (prev.memberCount || 0) + 1
+      }));
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -225,6 +241,9 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
           community={community}
           isOwner={isOwner}
           isMember={isMember}
+          membershipStatus={membershipStatus}
+          user={user}
+          onMembershipUpdate={handleMembershipUpdate}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -243,7 +262,8 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
             {showMembersView ? (
               <CommunityMembersView
                 onBack={() => setShowMembersView(false)}
-                communityName={community.name}
+                community={community}
+                isOwner={isOwner}
               />
             ) : (
               <>
