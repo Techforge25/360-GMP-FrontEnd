@@ -314,7 +314,6 @@ const AuthNavbar = () => {
                           </Link>
                         )}
 
-                        {/* Temporarily disabled
                         <Link
                           href={
                             user?.role === "business"
@@ -327,9 +326,7 @@ const AuthNavbar = () => {
                           <FiCreditCard className="w-5 h-5 text-gray-900" />
                           <span>Wallet</span>
                         </Link>
-                        */}
 
-                        {/* Temporarily disabled
                         <Link
                           href={
                             user?.role === "business"
@@ -342,7 +339,6 @@ const AuthNavbar = () => {
                           <FiShoppingBag className="w-5 h-5 text-gray-900" />
                           <span>Orders</span>
                         </Link>
-                        */}
 
                         <Link
                           href={
@@ -357,7 +353,6 @@ const AuthNavbar = () => {
                           <span>Subscriptions</span>
                         </Link>
 
-                        {/* Temporarily disabled
                         <Link
                           href={
                             user?.role === "business"
@@ -369,7 +364,7 @@ const AuthNavbar = () => {
                         >
                           <FiHelpCircle className="w-5 h-5 text-gray-900" />
                           <span>Support</span>
-                        </Link> */}
+                        </Link> 
 
                         <div className="h-px bg-gray-100 my-1 mx-4" />
 

@@ -310,14 +310,12 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
             active={activeTab === "Communities"}
             onClick={() => onTabChange("Communities")}
           />
-          {/* Temporarily disabled
           <TabButton
             label="Orders"
             src="/assets/images/orderIcon.png"
             active={activeTab === "Orders"}
             onClick={() => onTabChange("Orders")}
           />
-          */}
         </div>
       </div>
     </div>

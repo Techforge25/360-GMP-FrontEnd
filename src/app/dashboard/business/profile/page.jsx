@@ -45,11 +45,10 @@ export default function BusinessProfilePage() {
         ) : activeTab === "About" ? (
           <BusinessAboutTab />
         ) 
-        /* Temporarily disabled
-        : activeTab === "Orders" ? (
-          <BusinessOrdersTab />
-        ) 
-        */
+        // Disabled
+        // : activeTab === "Orders" ? (
+        //   <BusinessOrdersTab />
+        // ) 
         : activeTab === "Communities" ? (
           <BusinessCommunitiesTab />
         ) : (

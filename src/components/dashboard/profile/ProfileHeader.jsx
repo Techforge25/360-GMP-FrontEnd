@@ -318,14 +318,12 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
             active={activeTab === "Product"}
             onClick={() => onTabChange("Product")}
           />
-          {/* Temporarily disabled
           <TabButton
             label="Orders"
             src="/assets/images/orderIcon.png"
             active={activeTab === "Orders"}
             onClick={() => onTabChange("Orders")}
           />
-          */}
           <TabButton
             label="Jobs"
             src="/assets/images/jobIcon.png"

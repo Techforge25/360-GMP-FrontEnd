@@ -43,13 +43,14 @@ export default function UserProfilePage() {
         ) : activeTab === "Communities" ? (
           <UserCommunities />
         ) 
+        // Disabled
         // : activeTab === "Orders" ? (
         //   <UserOrders />
         // ) 
         : (
           <div className="bg-white p-12 rounded-xl text-center text-gray-500 shadow-sm border border-gray-100 min-h-[400px] flex flex-col items-center justify-center">
             <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              Coming Soon
+              Coming Soon in phase 5
             </h3>
             <p>The {activeTab} section is currently under development.</p>
           </div>
