@@ -2,13 +2,34 @@
 import React from "react";
 import { FiChevronDown } from "react-icons/fi";
 
-const FeedTabs = ({ activeTab, setActiveTab }) => {
+const FeedTabs = ({ activeTab, setActiveTab, postCounts }) => {
   const tabs = [
-    { id: "recent", label: "Recent", dropdown: true },
-    { id: "posts", label: "Posts" },
-    { id: "discussions", label: "Discussions" },
-    { id: "events", label: "Events" },
-    { id: "resources", label: "Resources" },
+    { 
+      id: "recent", 
+      label: "Recent", 
+      dropdown: true,
+      count: postCounts?.total || 0
+    },
+    { 
+      id: "posts", 
+      label: "Posts",
+      count: postCounts?.posts || 0
+    },
+    { 
+      id: "discussions", 
+      label: "Discussions",
+      count: postCounts?.discussions || 0
+    },
+    { 
+      id: "events", 
+      label: "Events",
+      count: postCounts?.events || 0
+    },
+    { 
+      id: "resources", 
+      label: "Resources",
+      count: postCounts?.resources || 0
+    },
   ];
 
   return (
@@ -24,6 +45,11 @@ const FeedTabs = ({ activeTab, setActiveTab }) => {
           }`}
         >
           {tab.label}
+          {tab.count > 0 && (
+            <span className="bg-gray-100 text-gray-600 text-sm px-2 py-0.5 rounded-full">
+              {tab.count}
+            </span>
+          )}
           {tab.dropdown && <FiChevronDown className="w-4 h-4" />}
           {activeTab === tab.id && (
             <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#240457] rounded-full" />

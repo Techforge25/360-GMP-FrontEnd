@@ -184,6 +184,20 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
             )
           }
         />
+        {formData.profileImageUrl && (
+          <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
+            <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
+            <div className="w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
+              <Image
+                src={formData.profileImageUrl}
+                alt="Profile Preview"
+                width={80}
+                height={80}
+                className="object-cover w-full h-full"
+              />
+            </div>
+          </div>
+        )}
       </div>
       <div className="space-y-2">
         <label className="text-base font-medium">Banner Image</label>
@@ -200,6 +214,20 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
             )
           }
         />
+        {formData.certificationDocUrl && (
+            <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
+              <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
+              <div className="relative w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
+                <Image
+                  src={formData.certificationDocUrl}
+                  alt="Certification Document Preview"
+                  width={80}
+                  height={80}
+                  className="object-contain w-full h-full"
+                />
+              </div>
+            </div>
+          )}
       </div>
     </div>
   </div>
@@ -289,6 +317,20 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           )
         }
       />
+      {formData.certificationDocUrl && (
+          <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
+            <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
+            <div className="relative w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
+              <Image
+                src={formData.certificationDocUrl}
+                alt="Certification Document Preview"
+                width={80}
+                height={80}
+                className="object-contain w-full h-full"
+              />
+            </div>
+          </div>
+        )}
     </div>
 
     <div>

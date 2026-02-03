@@ -7,10 +7,6 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import communityAPI from "@/services/communityAPI";
 
 const CommunityMembersView = ({ onBack, community, isOwner }) => {
-  console.log("CommunityMembersView rendered");
-  console.log("Props - community:", community);
-  console.log("Props - isOwner:", isOwner);
-  
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,39 +43,22 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
   // Fetch pending requests (only for owners/admins)
   const fetchPendingRequests = async () => {
-    console.log("fetchPendingRequests called");
-    console.log("community._id:", community?._id);
-    console.log("isOwner:", isOwner);
-    
-    if (!community?._id || !isOwner) {
-      console.log("Exiting fetchPendingRequests - missing community._id or not owner");
-      return;
-    }
+    if (!community?._id || !isOwner) return;
     
     try {
       setLoading(activeTab === "requests");
-      console.log("Making API call to getPendingRequests");
-      
       const response = await communityAPI.getPendingRequests(community._id, {
         page: activeTab === "requests" ? currentPage : 1,
         limit: itemsPerPage
       });
-      
-      console.log("Pending requests API response:", response);
-      console.log("Response success:", response.success);
       
       if (response.success) {
         // Handle different possible response structures
         const requests = response.data?.pendingRequests || response.data?.requests || response.data?.data || (Array.isArray(response.data) ? response.data : []);
         const total = response.data?.total || response.data?.totalCount || requests.length || 0;
         
-        console.log("Parsed pending requests:", requests);
-        console.log("Total pending count:", total);
-        
         setPendingRequests(requests);
         setTotalPending(total);
-      } else {
-        console.log("API response not successful:", response.message);
       }
     } catch (error) {
       console.error("Error fetching pending requests:", error);
@@ -90,21 +69,13 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
   // Fetch pending count on mount (for badge)
   useEffect(() => {
-    console.log("useEffect for pending requests triggered");
-    console.log("isOwner:", isOwner);
-    console.log("community._id:", community?._id);
-    
     if (isOwner && community?._id) {
-      console.log("Conditions met, calling fetchPendingRequests");
       fetchPendingRequests();
-    } else {
-      console.log("Conditions NOT met for fetchPendingRequests");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [community?._id, isOwner]);
 
   useEffect(() => {
-    console.log("Main useEffect triggered - activeTab:", activeTab);
     if (activeTab === "requests") {
       fetchPendingRequests();
     } else {
@@ -287,7 +258,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             >
               Request
               {totalPending > 0 && (
-                <span className="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="bg-red-500 text-white text-sm rounded-full w-5 h-5 flex items-center justify-center">
                   {totalPending}
                 </span>
               )}
@@ -367,7 +338,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center">
-                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                      <span className="px-2 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
                         Pending
                       </span>
                     </div>
@@ -413,7 +384,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                         />
                         {member.memberModel === "BusinessProfile" && (
                           <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#240457] rounded-full flex items-center justify-center">
-                            <span className="text-white text-xs font-bold">B</span>
+                            <span className="text-white text-sm font-bold">B</span>
                           </div>
                         )}
                       </div>
@@ -432,7 +403,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      <span className={`px-2 py-1 rounded-full text-sm font-medium ${
                         member.role === "owner" 
                           ? "bg-purple-100 text-purple-800"
                           : member.role === "admin"

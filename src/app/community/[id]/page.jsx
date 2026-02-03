@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUserRole } from "@/context/UserContext";
 import communityAPI from "@/services/communityAPI";
+import postsAPI from "@/services/postsAPI";
 import AuthNavbar from "@/components/dashboard/AuthNavbar";
 import CommunityHeader from "@/components/community/CommunityHeader";
 import CommunityInfoCard from "@/components/community/CommunityInfoCard";
@@ -25,109 +26,100 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const [showMembersView, setShowMembersView] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [membershipStatus, setMembershipStatus] = useState(null);
+  const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [pagination, setPagination] = useState(null);
 
-  // Mock Posts Data
-  const [posts] = useState([
-    {
-      id: 1,
-      author: {
-        name: "Michael Torres",
-        role: "Senior Sustainability Consultant",
-        image: "/assets/images/Portrait_Placeholder.png",
-      },
-      timeAgo: "1 minute ago",
-      title:
-        "What is the BEST strategy for negotiating salary after receiving a verbal job offer in the Manufacturing sector?",
-      type: "question",
-      tag: "Question",
-      options: [
-        { text: "Focus Solely On A Higher Base Salary" },
-        { text: "Negotiate A Higher Bonus Structure" },
-      ],
-      likes: 14,
-      comments: 6,
-      shares: 0,
-    },
-    {
-      id: 2,
-      author: {
-        name: "David Kim",
-        role: "Environmental Policy Analyst",
-        image: "/assets/images/Portrait_Placeholder.png",
-      },
-      timeAgo: "4 hours ago",
-      tag: "Discussions",
-      content:
-        "Looking for recommendations on tools and methodologies for accurate carbon footprint measurement. What are your experiences with different platforms?",
-      likes: 22,
-      comments: 22,
-      shares: 0,
-      commentsList: [
-        {
-          author: "Sarah Chen",
-          content: "We have been using CarbonTrack Pro..."
+  // Fetch community posts
+  const fetchCommunityPosts = async (page = 1, filterType = activeTab) => {
+    if (!params.id) return;
+    
+    try {
+      setPostsLoading(true);
+      const queryParams = {
+        page,
+        limit: 10,
+      };
+      
+      // Add filter based on active tab
+      if (filterType && filterType !== "recent") {
+        queryParams.type = filterType;
+      }
+      
+      const response = await postsAPI.getCommunityPosts(params.id, queryParams);
+      
+      if (response.success) {
+        const posts = response.data.posts || [];
+        
+        // Temporary fix: Check if current user liked posts client-side
+        const processedPosts = posts.map(post => {
+          if (!post.likedByUser && user && post.likes) {
+            const currentUserId = user.profilePayload?._id;
+            if (currentUserId) {
+              post.likedByUser = post.likes.some(like => 
+                like.userId === currentUserId || like.userId?._id === currentUserId
+              );
+            }
+          }
+          return post;
+        });
+        
+        if (page === 1) {
+          setPosts(processedPosts);
+        } else {
+          setPosts(prev => [...prev, ...processedPosts]);
         }
-      ]
-    },
-    {
-      id: 3,
-      author: {
-        name: "Michael Torres",
-        role: "Senior Sustainability Consultant",
-        image: "/assets/images/Portrait_Placeholder.png",
-      },
-      timeAgo: "1 day ago",
-      content:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      image: "/assets/images/placeholderBanner.jpg",
-      readMore: true,
-      likes: 14,
-      comments: 6,
-      shares: 0,
-    },
-    {
-      id: 4,
-      type: "event",
-      title: "Virtual Sustainability Summit 2025",
-      date: "DEC 25",
-      description: "Join industry leaders for a day of insights, networking, and innovative solutions for sustainable business practices.",
-      time: "10:00 AM - 4:00 PM EST",
-      location: "Virtual Event",
-      attendees: 156,
-      tag: "Event",
-    },
-    {
-      id: 5,
-      type: "document",
-      author: {
-        name: "David Kim",
-        role: "Environmental Policy Analyst",
-        image: "/assets/images/Portrait_Placeholder.png",
-      },
-      timeAgo: "1 day ago",
-      title: "Sustainability Metrics Dashboard Template",
-      fileType: "EXCEL",
-      description: "Comprehensive template for tracking and visualizing key sustainability metrics across your organization.",
-      downloads: 36,
-    },
-    {
-      id: 6,
-      author: {
-        name: "David Kim",
-        role: "Environmental Policy Analyst",
-        image: "/assets/images/Portrait_Placeholder.png",
-      },
-      timeAgo: "1 day ago",
-      content:
-        "Michael Torres shared a video",
-      videoTitle: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-      videoThumbnail: "/assets/images/placeholderBanner.jpg",
-      readMore: true,
-      likes: 14,
-      comments: 6,
-      shares: 0,
-    },
-  ]);
+        setPagination(response.data.pagination);
+      }
+    } catch (error) {
+      console.error("Error fetching community posts:", error);
+      setPosts([]);
+    } finally {
+      setPostsLoading(false);
+    }
+  };
+
+  // Handle tab change
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+    setPosts([]); // Clear existing posts
+    fetchCommunityPosts(1, newTab); // Fetch posts for new tab
+  };
+
+  // Get post counts by type for tabs
+  const getPostCounts = () => {
+    const totalPosts = posts.length;
+    const postTypes = posts.reduce((acc, post) => {
+      const type = post.type || 'posts';
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {});
+    
+    return {
+      total: totalPosts,
+      posts: postTypes.posts || totalPosts, // All posts if no specific type
+      discussions: postTypes.discussion || 0,
+      events: postTypes.event || 0,
+      resources: postTypes.document || postTypes.resource || 0,
+    };
+  };
+
+  // Handle new post creation
+  const handlePostCreated = (newPost) => {
+    setPosts(prev => [newPost, ...prev]);
+  };
+
+  // Handle post updates (likes, comments, etc.)
+  const handlePostUpdate = (updatedPost) => {
+    setPosts(prev => prev.map(post => 
+      post._id === updatedPost._id ? { ...post, ...updatedPost } : post
+    ));
+  };
+
+  // Handle post deletion
+  const handlePostDelete = (postId) => {
+    setPosts(prev => prev.filter(post => post._id !== postId));
+  };
 
   useEffect(() => {
     const fetchCommunity = async () => {
@@ -139,6 +131,9 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
           setCommunity(response.data.community);
           setIsMember(response.data.isMember || false);
           setMembershipStatus(response.data.membershipStatus || null);
+          
+          // Fetch posts after community is loaded
+          fetchCommunityPosts(1);
         } else {
           console.error("Failed to fetch community:", response.message);
           setCommunity(null);
@@ -196,17 +191,6 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
     (community.businessId?._id === user?.businessId ||
       community.businessId === user?.businessId ||
       community.businessId?._id === user?.profilePayload?._id);
-
-  // Debug isOwner calculation
-  console.log("=== isOwner Debug ===");
-  console.log("user:", user);
-  console.log("user.role:", user?.role);
-  console.log("user.businessId:", user?.businessId);
-  console.log("user.profilePayload._id:", user?.profilePayload?._id);
-  console.log("community.businessId:", community.businessId);
-  console.log("community.businessId._id:", community.businessId?._id);
-  console.log("isOwner result:", isOwner);
-  console.log("==================");
 
   const handleMembershipUpdate = (updateData) => {
     setIsMember(updateData.isMember);
@@ -267,20 +251,54 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
               />
             ) : (
               <>
-                <FeedInput />
+                <FeedInput 
+                  communityId={community._id}
+                  onPostCreated={handlePostCreated}
+                  isMember={isMember}
+                  membershipStatus={membershipStatus}
+                />
 
-                <FeedTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                <FeedTabs 
+                  activeTab={activeTab} 
+                  setActiveTab={handleTabChange}
+                  postCounts={getPostCounts()}
+                />
 
                 <div className="space-y-4 mt-6">
-                  {posts.map((post) => (
-                    <PostCard key={post.id} post={post} />
-                  ))}
-
-                  <div className="flex justify-center mt-8 mb-12">
-                    <button className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors">
-                      Load more
-                    </button>
-                  </div>
+                  {postsLoading && posts.length === 0 ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#240457]"></div>
+                    </div>
+                  ) : posts.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500">
+                      <p className="text-lg font-medium mb-2">No posts yet</p>
+                      <p className="text-sm">Be the first to share something with this community!</p>
+                    </div>
+                  ) : (
+                    <>
+                      {posts.map((post) => (
+                        <PostCard 
+                          key={post._id} 
+                          post={post} 
+                          onUpdate={handlePostUpdate}
+                          onDelete={handlePostDelete}
+                          currentUser={user}
+                        />
+                      ))}
+                      
+                      {pagination && pagination.hasNextPage && (
+                        <div className="flex justify-center mt-8 mb-12">
+                          <button 
+                            onClick={() => fetchCommunityPosts(pagination.currentPage + 1, activeTab)}
+                            disabled={postsLoading}
+                            className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors disabled:opacity-50"
+                          >
+                            {postsLoading ? "Loading..." : "Load more"}
+                          </button>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
               </>
             )}

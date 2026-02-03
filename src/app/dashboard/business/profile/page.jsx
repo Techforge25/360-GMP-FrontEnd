@@ -8,7 +8,7 @@ import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import ProductListContent from "@/components/dashboard/products/ProductListContent";
 import BusinessJobsTab from "@/components/dashboard/profile/BusinessJobsTab";
 import BusinessAboutTab from "@/components/dashboard/profile/BusinessAboutTab";
-import BusinessOrdersTab from "@/components/dashboard/profile/BusinessOrdersTab";
+// import BusinessOrdersTab from "@/components/dashboard/profile/BusinessOrdersTab";
 import BusinessCommunitiesTab from "@/components/dashboard/profile/BusinessCommunitiesTab";
 
 export default function BusinessProfilePage() {
@@ -44,9 +44,13 @@ export default function BusinessProfilePage() {
           <BusinessJobsTab />
         ) : activeTab === "About" ? (
           <BusinessAboutTab />
-        ) : activeTab === "Orders" ? (
+        ) 
+        /* Temporarily disabled
+        : activeTab === "Orders" ? (
           <BusinessOrdersTab />
-        ) : activeTab === "Communities" ? (
+        ) 
+        */
+        : activeTab === "Communities" ? (
           <BusinessCommunitiesTab />
         ) : (
           <div className="bg-white p-12 rounded-xl text-center text-gray-500 shadow-sm border border-gray-100">

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import {
   FiMapPin,
@@ -8,42 +8,176 @@ import {
   FiCheckCircle,
   FiCamera,
 } from "react-icons/fi";
+import userProfileAPI from "@/services/userProfileAPI";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
-  // Mock data - replace with actual user data later
-  const [profileData] = useState({
-    name: "Alex Morgan",
-    title: "Supply Chain Manager",
-    industry: "Automotive Industry",
-    location: { city: "Los Angeles", country: "USA" },
-    isVerified: true,
-    avatar: "/assets/images/userAvatar.png", // Fallback will be handled
-    cover: "/assets/images/profileBanner.png",
-  });
-
+  const [profileData, setProfileData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [newAvatar, setNewAvatar] = useState(null);
+  const [newCover, setNewCover] = useState(null);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+
   const bannerInputRef = useRef(null);
   const avatarInputRef = useRef(null);
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        setIsLoading(true);
+        const response = await userProfileAPI.getMyProfile();
+        if (response?.data) {
+          setProfileData(response.data);
+        }
+      } catch (error) {
+        // Handle 404 errors gracefully (profile doesn't exist yet)
+        if (error?.status === 404 || error?.statusCode === 404) {
+          console.log("Profile not found - user hasn't created profile yet");
+          setProfileData(null);
+          return;
+        }
+        console.error("Failed to fetch user profile:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
   const handleBannerClick = () => bannerInputRef.current?.click();
   const handleAvatarClick = () => avatarInputRef.current?.click();
+
+  const handleCoverChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        alert("File must be under 10MB");
+        return;
+      }
+      const previewUrl = URL.createObjectURL(file);
+      setNewCover({ file, previewUrl });
+    }
+  };
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        alert("File must be under 10MB");
+        return;
+      }
+      const previewUrl = URL.createObjectURL(file);
+      setNewAvatar({ file, previewUrl });
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    try {
+      setIsUpdating(true);
+      const updates = {};
+
+      if (newAvatar) {
+        setIsUploadingAvatar(true);
+        const avatarUrl = await uploadToCloudinary(
+          newAvatar.file,
+          "user/profile",
+        );
+        updates.imageProfile = avatarUrl;
+        setIsUploadingAvatar(false);
+      }
+
+      if (newCover) {
+        setIsUploadingCover(true);
+        const coverUrl = await uploadToCloudinary(
+          newCover.file,
+          "user/cover",
+        );
+        updates.coverImage = coverUrl;
+        setIsUploadingCover(false);
+      }
+
+      if (Object.keys(updates).length > 0) {
+        console.log("Updating profile with:", updates);
+
+        const response = await userProfileAPI.updateMyProfile(updates);
+
+        if (response?.data) {
+          setProfileData(response.data);
+          setNewAvatar(null);
+          setNewCover(null);
+
+          if (newAvatar?.previewUrl) URL.revokeObjectURL(newAvatar.previewUrl);
+          if (newCover?.previewUrl) URL.revokeObjectURL(newCover.previewUrl);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to update profile:", error);
+      console.error("Error message:", error?.message);
+      console.error("Error statusCode:", error?.statusCode);
+      console.error("Error data:", error?.data);
+      alert(`Failed to update profile: ${error?.message || "Unknown error"}`);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="animate-pulse">
+            <div className="h-64 bg-gray-200 rounded-lg mb-4"></div>
+            <div className="h-32 w-32 bg-gray-200 rounded-xl mb-4 mx-auto"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <p className="text-gray-500 text-center">
+            No user profile found. Please complete your profile setup.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white border-b border-gray-200">
       {/* Cover Image */}
       <div className="h-64 w-full relative bg-gray-200 group">
         <Image
-          src={profileData.cover}
+          src={
+            newCover?.previewUrl ||
+            profileData.coverImage ||
+            "/assets/images/profileBanner.png"
+          }
           alt="Cover"
           fill
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
 
+        {newCover && (
+          <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+            New cover selected - Click "Update Profile" to save
+          </div>
+        )}
+
         <input
           ref={bannerInputRef}
           type="file"
           accept="image/*"
+          onChange={handleCoverChange}
           className="hidden"
         />
 
@@ -54,21 +188,26 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           </button>
           <button
             onClick={handleBannerClick}
-            className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-2"
+            disabled={isUploadingCover}
+            className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             <FiCamera className="w-4 h-4" />
-            Update Cover
+            {isUploadingCover ? "Uploading..." : "Update Cover"}
           </button>
         </div>
 
         <div className="absolute top-4 right-4">
-          <button className="bg-[#240457] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-2">
+          <button
+            onClick={handleUpdateProfile}
+            disabled={isUpdating || (!newAvatar && !newCover)}
+            className="bg-[#240457] text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <img
               src="/assets/images/updateProfileIcon.png"
               alt=""
               className="w-4 h-4"
             />
-            Update Profile
+            {isUpdating ? "Updating..." : "Update Profile"}
           </button>
         </div>
       </div>
@@ -79,19 +218,28 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           <div className="relative group">
             <div className="w-32 h-32 rounded-xl bg-white p-1 shadow-lg overflow-hidden">
               <div className="w-full h-full relative rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
-                {/* Using a placeholder if image load fails or is missing, but assuming src is valid for now */}
-                <Image
-                  src={profileData.avatar}
-                  alt={profileData.name}
-                  width={128}
-                  height={128}
-                  className="object-cover"
+                <img
+                  src={
+                    newAvatar?.previewUrl ||
+                    profileData.imageProfile ||
+                    "/assets/images/userAvatar.png"
+                  }
+                  alt={profileData.fullName || "User"}
+                  className="w-full h-full object-cover"
                 />
+                {newAvatar && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <span className="text-white text-sm font-medium text-center px-2">
+                      New avatar
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
             <button
               onClick={handleAvatarClick}
-              className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-md text-gray-600 hover:text-[#240457] transition-colors"
+              disabled={isUploadingAvatar}
+              className="absolute bottom-2 right-2 p-2 bg-white rounded-full shadow-md text-gray-600 hover:text-[#240457] transition-colors disabled:opacity-50"
             >
               <FiEdit2 className="w-4 h-4" />
             </button>
@@ -99,6 +247,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
               ref={avatarInputRef}
               type="file"
               accept="image/*"
+              onChange={handleAvatarChange}
               className="hidden"
             />
           </div>
@@ -106,31 +255,37 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           {/* User Info */}
           <div className="text-center mt-3">
             <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center gap-2">
-              {profileData.name}
+              {profileData.fullName || "User"}
               {profileData.isVerified && (
                 <FiCheckCircle className="w-5 h-5 text-blue-500" />
               )}
             </h1>
 
             <div className="flex items-center justify-center gap-6 mt-2 text-sm text-gray-500">
-              <div className="flex items-center gap-1.5">
-                <span className="w-4 h-4 flex items-center justify-center">
-                  <FiBriefcase />
-                </span>
-                {profileData.title}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <img
-                  src="/assets/images/manufacturingIcon.png"
-                  alt=""
-                  className="w-4 h-4"
-                />
-                {profileData.industry}
-              </div>
-              <div className="flex items-center gap-1.5">
-                <FiMapPin className="w-4 h-4" />
-                {profileData.location.city} {profileData.location.country}
-              </div>
+              {profileData.title && (
+                <div className="flex items-center gap-1.5">
+                  <span className="w-4 h-4 flex items-center justify-center">
+                    <FiBriefcase />
+                  </span>
+                  {profileData.title}
+                </div>
+              )}
+              {profileData.targetJob && (
+                <div className="flex items-center gap-1.5">
+                  <img
+                    src="/assets/images/manufacturingIcon.png"
+                    alt=""
+                    className="w-4 h-4"
+                  />
+                  {profileData.targetJob}
+                </div>
+              )}
+              {profileData.location && (
+                <div className="flex items-center gap-1.5">
+                  <FiMapPin className="w-4 h-4" />
+                  {profileData.location}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -155,12 +310,14 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
             active={activeTab === "Communities"}
             onClick={() => onTabChange("Communities")}
           />
+          {/* Temporarily disabled
           <TabButton
             label="Orders"
             src="/assets/images/orderIcon.png"
             active={activeTab === "Orders"}
             onClick={() => onTabChange("Orders")}
           />
+          */}
         </div>
       </div>
     </div>
