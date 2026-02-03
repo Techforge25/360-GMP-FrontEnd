@@ -251,8 +251,8 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
           <div className="lg:col-span-3 space-y-6">
             <CommunityInfoCard community={community} />
             <CommunityMembersWidget
+              communityId={community._id}
               totalCount={community.memberCount}
-              members={[]}
               onViewAll={() => setShowMembersView(true)}
             />
           </div>
