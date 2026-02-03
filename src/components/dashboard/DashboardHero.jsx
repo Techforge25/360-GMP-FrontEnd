@@ -43,7 +43,7 @@ const DashboardHero = () => {
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10" />
 
       {/* Content */}
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
+      <div className="relative z-20 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-32">
         {/* White Content Card */}
         <div className="bg-white rounded-md shadow-2xl p-8 max-w-5xl mx-auto">
           {/* Heading */}

@@ -51,7 +51,7 @@ export default function ProductDetailContent({ productId, businessId }) {
 
   return (
     <div className="bg-white min-h-screen pb-24">
-       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {/* Breadcrumb */}
             <div className="text-sm text-gray-700 mb-6 font-medium">
                 Business List <span className="mx-1">&gt;</span> {product.businessId?.name || 'Business'} <span className="mx-1">&gt;</span> Product List <span className="mx-1 font-bold text-[#240457]">&gt; Product Detail</span>

@@ -8,7 +8,7 @@ import Link from "next/link";
 const Welcome = () => {
   return (
     <section className="py-20 bg-surface">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row items-center gap-12 mb-16 md:mb-24 relative">
           <div className="w-full md:w-1/2 flex justify-center relative">
             {/* <img

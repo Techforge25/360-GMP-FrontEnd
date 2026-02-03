@@ -110,7 +110,7 @@ const BusinessGrid = () => {
   if (loading) {
     return (
       <section className="py-12 bg-gray-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-2xl font-bold text-indigo-950 mb-2">
               Businesses
@@ -126,7 +126,7 @@ const BusinessGrid = () => {
 
   return (
     <section className="py-12 bg-gray-50/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <h2 className="text-2xl font-semibold mx-auto text-black mb-2 max-w-sm mb-2">
             Businesses

@@ -175,7 +175,7 @@ export default function MarketplaceContent() {
     <div className="w-full bg-gray-50">
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 py-4">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1400px] mx-auto">
           <h1 className="text-gray-900 text-base font-sm">Market Place</h1>
         </div>
       </nav>
@@ -193,7 +193,7 @@ export default function MarketplaceContent() {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 pt-16">
+        <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-8 pt-16">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-white mb-4 sm:mb-6">
               Find Verified supplier Across the Globe
@@ -248,7 +248,7 @@ export default function MarketplaceContent() {
       </div>
 
       {/* Products Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {loading ? (
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-900"></div>
@@ -613,7 +613,7 @@ export default function MarketplaceContent() {
         <TopDealsSection deals={flashDeals} isBusinessUser={isBusinessUser} />
 
         <section className="w-full bg-white py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-[1400px] mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {filteredProducts.map((product, index) => (
                 <div

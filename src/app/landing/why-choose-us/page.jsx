@@ -25,9 +25,9 @@ const WhyChooseUsPage = () => {
         </h1>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
         {/* Intro Section */}
-        <div className="max-w-7xl mb-16">
+        <div className="max-w-[1400px] mb-16">
           <h2 className="text-2xl md:text-3xl font-sm text-[#240457] mb-6 leading-tight">
             Your Trusted Partner For Global Trade, Growth & Business
             Connectivity

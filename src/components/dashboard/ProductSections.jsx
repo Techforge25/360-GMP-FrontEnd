@@ -178,7 +178,7 @@ const ProductSections = () => {
   if (loading) {
     return (
       <div className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="animate-spin h-8 w-8 border-2 border-brand-primary border-t-transparent rounded-full mx-auto"></div>
             <p className="text-base text-gray-500 mt-4">Loading products...</p>
@@ -200,7 +200,7 @@ const ProductSections = () => {
   return (
     <div className="space-y-16 py-12 relative overflow-hidden">
       {error && (
-        <div className="max-w-7xl relative mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] relative mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-red-600 text-base text-center">
               <strong>Error:</strong> {error}
@@ -211,7 +211,7 @@ const ProductSections = () => {
 
       {/* Featured Products */}
       {featured.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Left Sidebar */}
             <div className="lg:w-80 flex-shrink-0 rounded-2xl p-6 flex flex-col justify-start">
@@ -352,7 +352,7 @@ const ProductSections = () => {
 
       {/* Split Section: Top Ranking & New Products */}
       {(topRanking.length > 0 || newProducts.length > 0) && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Top Ranking (Purple Gradient) */}
             {topRanking.length > 0 && (

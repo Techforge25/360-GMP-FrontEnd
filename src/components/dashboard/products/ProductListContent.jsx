@@ -139,7 +139,7 @@ const ProductListContent = ({ isProfileView = false }) => {
     <div className={isProfileView ? "bg-gray-50" : "bg-gray-50"}>
       {!isProfileView && (
         <>
-          <p className="text-gray-500 text-base max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <p className="text-gray-500 text-base max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
             My Product
           </p>
           {/* Hero / Header Section */}
@@ -154,7 +154,7 @@ const ProductListContent = ({ isProfileView = false }) => {
               }}
             ></div>
 
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+            <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
               <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
                 My Products Management
               </h1>
@@ -187,7 +187,7 @@ const ProductListContent = ({ isProfileView = false }) => {
 
       {/* Main Content Container */}
       <div
-        className={`${isProfileView ? "w-full" : "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20"} relative z-10`}
+        className={`${isProfileView ? "w-full" : "max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-20"} relative z-10`}
       >
         {/* Inventory Alert - Hide in profile view if desired, or keep. User said 'without header and footer' so maybe keep body intact */}
         {!isProfileView && (

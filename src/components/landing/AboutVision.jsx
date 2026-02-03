@@ -8,7 +8,7 @@ const AboutVision = () => {
     <section id="about" className="py-16 md:py-20 relative overflow-hidden">
       {/* Background Decoration */}
       <div className="absolute top-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-[#A347FF] opacity-30 blur-[100px] md:blur-[150px] rounded-full -translate-y-1/3 translate-x-1/3 z-0 pointer-events-none" />
-      <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8 space-y-16 md:space-y-20">
+      <div className="max-w-[1400px]  mx-auto px-4 sm:px-6 lg:px-8 space-y-16 md:space-y-20">
         {/* About Us Section */}
         {/* bg-gradient-to-br from-purple-50 via-pink-50 to-white */}
         <div className="flex p-4 rounded-2xl flex-col sm:flex-row items-center gap-8 md:gap-12">

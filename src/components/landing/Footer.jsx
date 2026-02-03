@@ -13,7 +13,7 @@ import Image from "next/image";
 const Footer = () => {
   return (
     <footer className="bg-[#0B192C] text-white pt-16 pb-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
             <Link href="/" className="flex-shrink-0 flex items-center">

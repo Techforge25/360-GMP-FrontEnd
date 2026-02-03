@@ -176,7 +176,7 @@ const BusinessOrdersPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-4 border border-gray-200 rounded-xl">
+      <div className="max-w-[1400px] mx-auto px-6 py-4 border border-gray-200 rounded-xl">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
           <h1 className="text-2xl font-medium text-gray-900">My Orders</h1>

@@ -137,7 +137,7 @@ const BusinessOrdersPage = () => {
     <div className="bg-[#FFFFFF]">
       {/* Seller Dashboard Banner */}
       <div className="mx-auto mb-8 bg-[#110026] relative overflow-hidden">
-        <div className="flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-end p-8 md:p-12 relative z-10 max-w-[1400px] mx-auto">
           <div className="w-full md:w-1/2 space-y-4">
             <h1 className="text-3xl font-bold text-white">Seller Dashboard</h1>
             <p className="text-base">
@@ -176,7 +176,7 @@ const BusinessOrdersPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-4 border border-gray-200 rounded-xl">
+      <div className="max-w-[1400px] mx-auto px-6 py-4 border border-gray-200 rounded-xl">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
           <h1 className="text-2xl font-medium text-gray-900">My Orders</h1>

@@ -19,7 +19,7 @@ export default function BusinessProfilePage() {
       {/* Profile Header */}
       <ProfileHeader activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
         {activeTab === "Home" ? (
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Main Content Column */}

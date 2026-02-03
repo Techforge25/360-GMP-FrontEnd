@@ -130,7 +130,7 @@ export default function BusinessesPageContent() {
 
   return (
     <div className="w-full bg-white">
-      <span className="text-[#240457] max-w-7xl mx-auto block py-4 text-sm">Business List</span>
+      <span className="text-[#240457] max-w-[1400px] mx-auto block py-4 text-sm">Business List</span>
       <main className="pb-24">
         <BusinessHero
           query={query}
@@ -141,7 +141,7 @@ export default function BusinessesPageContent() {
         />
 
         <div className="mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-8 max-w-[1400px] mx-auto">
             {/* Sidebar */}
             <aside className="w-full lg:w-64 flex-shrink-0">
               <FilterSidebar />

@@ -21,7 +21,7 @@ const CheckoutPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 pb-12">
       {/* Breadcrumb */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="text-sm text-gray-500 flex items-center gap-1 flex-wrap">
           <span>Business List</span>
           <span>&gt;</span>
@@ -37,7 +37,7 @@ const CheckoutPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Column - Shipping Address */}
           <div className="flex-1">

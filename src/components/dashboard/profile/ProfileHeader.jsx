@@ -142,7 +142,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   if (isLoading) {
     return (
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse">
             <div className="h-64 bg-gray-200 rounded-lg mb-4"></div>
             <div className="h-32 w-32 bg-gray-200 rounded-2xl mb-4"></div>
@@ -157,7 +157,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   if (!profileData) {
     return (
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <p className="text-gray-500 text-center">No business profile found</p>
         </div>
       </div>
@@ -166,7 +166,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 
   return (
     <div className="bg-white border-b border-gray-200">
-      <p className="text-gray-500 text-base max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <p className="text-gray-500 text-base max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         Home <span className="text-[#240457]">/ {profileData.companyName}</span>
       </p>
       {/* Cover Image */}
@@ -219,7 +219,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative -mt-16 mb-6 flex flex-col items-center justify-center sm:items-start sm:flex-row gap-6">
           {/* Company Logo */}
           <div className="relative ">

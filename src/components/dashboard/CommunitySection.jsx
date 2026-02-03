@@ -82,7 +82,7 @@ const CommunitySection = () => {
   if (loading) {
     return (
       <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center text-center mb-8">
             <h2 className="text-2xl font-bold text-indigo-950 mb-1">
               {user?.role === "user" ? "Join Communities" : "Communities"}
@@ -116,7 +116,7 @@ const CommunitySection = () => {
         </svg>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-8">
           <h2 className="text-2xl font-bold text-indigo-950 mb-1">

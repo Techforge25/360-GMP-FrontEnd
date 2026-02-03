@@ -289,7 +289,7 @@ export default function JobsPageContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto flex flex-col items-start sm:flex-row mb-10 gap-6">
+      <div className="max-w-[1400px] mx-auto flex flex-col items-start sm:flex-row mb-10 gap-6">
         <JobFilterSidebar onFilterChange={handleFilterChange} />
 
         <div className="flex-1 w-full">

@@ -30,7 +30,7 @@ const BusinessSubscriptionsPage = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Active Plan Card */}
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 relative overflow-hidden">
           {/* Gradient Background Effect */}

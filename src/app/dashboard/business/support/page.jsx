@@ -56,7 +56,7 @@ export default function SupportPage() {
       <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-purple-100/50 via-transparent to-transparent pointer-events-none" />
 
       {/* FAQ Section */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 max-w-7xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 max-w-[1400px] mx-auto">
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           Frequently Asked Questions
         </h2>
@@ -106,7 +106,7 @@ export default function SupportPage() {
       </div>
 
       {/* Get In Touch Section */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 max-w-7xl mx-auto mt-4">
+      <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 max-w-[1400px] mx-auto mt-4">
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           Get In Touch
         </h2>
@@ -164,7 +164,7 @@ export default function SupportPage() {
         </div>
       </div>
       {/* Report An Issue Section */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 max-w-7xl mx-auto mt-8">
+      <div className="bg-white rounded-2xl shadow-sm p-6 md:p-8 max-w-[1400px] mx-auto mt-8">
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           Report An Issue
         </h2>

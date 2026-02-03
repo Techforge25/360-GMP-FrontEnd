@@ -154,7 +154,7 @@ const AuthNavbar = () => {
   return (
     <>
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <Link
@@ -217,7 +217,14 @@ const AuthNavbar = () => {
                   </Link>
                 )}
 
-                <button className=" relative">
+                <Link
+                  href={
+                    user?.role === "business"
+                      ? "/dashboard/business/notifications"
+                      : "/dashboard/user/notifications"
+                  }
+                  className="relative"
+                >
                   <img
                     src="/assets/images/notificationIcon.png"
                     alt=""
@@ -226,7 +233,7 @@ const AuthNavbar = () => {
                   <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#9747FF] text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
                     2
                   </span>
-                </button>
+                </Link>
 
                 <Link
                   href={
@@ -396,12 +403,19 @@ const AuthNavbar = () => {
 
             {/* Mobile Menu Toggle */}
             <div className="lg:hidden flex items-center gap-4">
-              <button className="text-gray-600 hover:text-indigo-600 relative">
+              <Link
+                href={
+                  user?.role === "business"
+                    ? "/dashboard/business/notifications"
+                    : "/dashboard/user/notifications"
+                }
+                className="text-gray-600 hover:text-indigo-600 relative"
+              >
                 <FiBell className="w-5 h-5 text-[#240457]" />
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
                   2
                 </span>
-              </button>
+              </Link>
               <button
                 onClick={toggleMenu}
                 className="text-gray-600 hover:text-indigo-600 focus:outline-none"

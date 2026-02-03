@@ -150,7 +150,7 @@ const WalletPage = () => {
   return (
     <div className="bg-gray-50">
       {/* 1. Header Section */}
-      <p className="text-gray-500 text-base max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <p className="text-gray-500 text-base max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         My Wallet
       </p>
       <div className="relative bg-[#8B5CF6] h-48 overflow-hidden flex items-center justify-center">
@@ -170,7 +170,7 @@ const WalletPage = () => {
         </h1>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8  mt-6 relative z-10 space-y-8">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8  mt-6 relative z-10 space-y-8">
         {/* 2. Tabs & Withdraw */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-6 text-base font-medium border-b border-transparent md:border-none w-full md:w-auto overflow-x-auto">

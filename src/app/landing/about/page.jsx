@@ -27,7 +27,7 @@ const AboutPage = () => {
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         {/* Intro Text */}
         <div className="max-w-5xl mx-auto text-left md:text-center mb-16 text-base md:text-[15px]">
           <p className="text-black/80 leading-relaxed mb-6">
