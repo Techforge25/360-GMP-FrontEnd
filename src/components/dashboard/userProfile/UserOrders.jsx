@@ -139,29 +139,31 @@ const UserOrders = () => {
   return (
     <div className="border border-gray-200 rounded-xl bg-white">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 gap-4">
-        <h1 className="text-xl sm:text-2xl font-medium text-gray-900">My Orders</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 sm:p-4 lg:p-6 gap-3 sm:gap-4">
+        <h1 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900">My Orders</h1>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-base text-gray-600 hover:bg-gray-50">
-            <span>Filter By Date</span>
-            <FiCalendar className="w-4 h-4 text-black" />
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm lg:text-base text-gray-600 hover:bg-gray-50">
+            <span className="hidden sm:inline">Filter By Date</span>
+            <span className="sm:hidden">Date</span>
+            <FiCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-base text-gray-600 hover:bg-gray-50">
-            <span>All Status</span>
-            <FiChevronDown className="w-4 h-4 text-black" />
+          <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm lg:text-base text-gray-600 hover:bg-gray-50">
+            <span className="hidden sm:inline">All Status</span>
+            <span className="sm:hidden">Status</span>
+            <FiChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="px-4 sm:px-6">
-        <div className="flex space-x-4 sm:space-x-8 overflow-x-auto scrollbar-hide border-b border-t border-[#E3E7EE] py-4">
+      <div className="px-3 sm:px-4 lg:px-6">
+        <div className="flex space-x-2 sm:space-x-4 lg:space-x-8 overflow-x-auto scrollbar-hide border-b border-t border-[#E3E7EE] py-3 sm:py-4">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`text-sm sm:text-base font-medium px-3 py-2 rounded-xl whitespace-nowrap transition-colors ${
+              className={`text-xs sm:text-sm lg:text-base font-medium px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl whitespace-nowrap transition-colors ${
                 activeTab === tab
                   ? "bg-[#240457] text-white"
                   : "text-gray-500 hover:text-gray-700"
@@ -179,25 +181,25 @@ const UserOrders = () => {
           <table className="w-full">
             <thead className="bg-[#F0F0F0]">
               <tr>
-                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Order ID
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Buyer
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                   Order Date
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Total
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Order Type
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
-                  Delivery Status
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                  Status
                 </th>
-                <th className="px-4 sm:px-6 py-4 text-right text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Action
                 </th>
               </tr>
@@ -208,47 +210,48 @@ const UserOrders = () => {
                   key={index}
                   className="hover:bg-gray-50 transition-colors"
                 >
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm sm:text-base font-semibold text-gray-900">
+                  <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
+                    <span className="text-xs sm:text-sm lg:text-base font-semibold text-gray-900">
                       {order.id}
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm sm:text-base text-gray-600">
+                  <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4">
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-600 block truncate max-w-[120px] sm:max-w-none">
                       {order.buyer}
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden sm:table-cell">
-                    <span className="text-sm sm:text-base text-gray-600">
+                  <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-600">
                       {order.date}
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm sm:text-base font-semibold text-gray-900">
+                  <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
+                    <span className="text-xs sm:text-sm lg:text-base font-semibold text-gray-900">
                       {order.total}
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                    <span className="text-sm sm:text-base text-gray-600">
+                  <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap hidden md:table-cell">
+                    <span className="text-xs sm:text-sm lg:text-base text-gray-600">
                       {order.type}
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+                  <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-sm sm:text-sm font-medium ${getStatusColor(
+                      className={`inline-flex items-center px-1.5 sm:px-2 lg:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${getStatusColor(
                         order.status
                       )}`}
                     >
-                      {order.status}
+                      <span className="hidden sm:inline">{order.status}</span>
+                      <span className="sm:hidden">{order.status.split(' ')[0]}</span>
                     </span>
                   </td>
-                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right">
-                    <div className="flex items-center justify-end gap-2 sm:gap-3">
-                      <button className="p-1.5 rounded-lg bg-[#DCDCDC33] text-[#444953] transition-colors hover:bg-gray-200">
-                        <FiEye className="w-4 h-4" />
+                  <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap text-right">
+                    <div className="flex items-center justify-end gap-1.5 sm:gap-2 lg:gap-3">
+                      <button className="p-1 sm:p-1.5 rounded-lg bg-[#DCDCDC33] text-[#444953] transition-colors hover:bg-gray-200">
+                        <FiEye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
-                      <button className="p-1.5 rounded-lg bg-[#DCDCDC33] text-[#FF383C] transition-colors hover:bg-red-100">
-                        <FiTrash2 className="w-4 h-4" />
+                      <button className="p-1 sm:p-1.5 rounded-lg bg-[#DCDCDC33] text-[#FF383C] transition-colors hover:bg-red-100">
+                        <FiTrash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
                     </div>
                   </td>
@@ -259,8 +262,8 @@ const UserOrders = () => {
         </div>
 
         {/* Load More */}
-        <div className="px-6 py-6 border-t border-gray-200 flex justify-center">
-          <button className="px-6 py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+        <div className="px-3 sm:px-4 lg:px-6 py-4 sm:py-6 border-t border-gray-200 flex justify-center">
+          <button className="px-4 sm:px-6 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm lg:text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors">
             Load more
           </button>
         </div>

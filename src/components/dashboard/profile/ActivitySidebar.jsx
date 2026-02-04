@@ -155,11 +155,11 @@ const ActivitySidebar = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 h-48 animate-pulse bg-gray-50"
+            className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-5 h-40 sm:h-44 lg:h-48 animate-pulse bg-gray-50"
           ></div>
         ))}
       </div>
@@ -167,13 +167,13 @@ const ActivitySidebar = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Recent Critical Activity */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 className="text-base font-bold text-gray-900 mb-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-5">
+        <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-3 sm:mb-4">
           Recent Critical Activity
         </h3>
-        <div className="space-y-3">
+        <div className="space-y-2 sm:space-y-3">
           {lowStockItems.length > 0 ? (
             lowStockItems.map((item, index) => (
               <ActivityItem
@@ -187,17 +187,17 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-sm text-gray-500">No critical alerts</p>
+            <p className="text-xs sm:text-sm text-gray-500">No critical alerts</p>
           )}
         </div>
       </div>
 
       {/* Recent Applicant */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-        <h3 className="text-base font-bold text-gray-900 mb-4">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-5">
+        <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-3 sm:mb-4">
           Recent Applicant
         </h3>
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {applicants.length > 0 ? (
             applicants.map((app, index) => (
               <ApplicantItem
@@ -207,22 +207,22 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-sm text-gray-500">No recent applicants</p>
+            <p className="text-xs sm:text-sm text-gray-500">No recent applicants</p>
           )}
         </div>
       </div>
 
       {/* Contact Info */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 relative">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-5 relative">
         <button
           onClick={() => setIsEditing(!isEditing)}
-          className="absolute top-5 right-5 text-gray-400 hover:text-gray-600"
+          className="absolute top-3 sm:top-4 lg:top-5 right-3 sm:right-4 lg:right-5 text-gray-400 hover:text-gray-600"
         >
           <FiEdit2
-            className={`w-3.5 h-3.5 ${isEditing ? "text-indigo-600" : ""}`}
+            className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isEditing ? "text-indigo-600" : ""}`}
           />
         </button>
-        <h3 className="text-base font-bold text-gray-900 mb-4">Contact Info</h3>
+        <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-3 sm:mb-4">Contact Info</h3>
 
         {isEditing ? (
           <div className="space-y-3 bg-[#B4B4B433] p-3 rounded-lg">

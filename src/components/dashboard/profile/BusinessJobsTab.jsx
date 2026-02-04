@@ -109,29 +109,30 @@ export default function BusinessJobsTab() {
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 md:p-8 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Jobs</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 lg:p-8 border-b border-gray-200 gap-3 sm:gap-0">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Jobs</h2>
           <button
             onClick={handleCreateJob}
-            className="bg-[#240457] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors flex items-center gap-2"
+            className="bg-[#240457] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-[#240457] transition-colors flex items-center gap-1.5 sm:gap-2 justify-center sm:justify-start"
           >
-            Create a job
-            <span className="text-lg">→</span>
+            <span className="hidden sm:inline">Create a job</span>
+            <span className="sm:hidden">Create Job</span>
+            <span className="text-base sm:text-lg">→</span>
           </button>
         </div>
 
         {/* Hiring Funnel Stats */}
-        <div className="p-6 md:p-8">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-base font-semibold text-gray-900">
+        <div className="p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
+            <h3 className="text-sm sm:text-base font-semibold text-gray-900">
               Hiring Funnel State
             </h3>
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Sort By</span>
+              <span className="text-xs sm:text-sm text-gray-600">Sort By</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="text-sm bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-gray-900 focus:ring-2 focus:ring-[#240457] focus:border-[#240457] outline-none cursor-pointer"
+                className="text-xs sm:text-sm bg-white border border-gray-300 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-gray-900 focus:ring-2 focus:ring-[#240457] focus:border-[#240457] outline-none cursor-pointer"
               >
                 <option value="Last 30 Day's">Last 30 Day's</option>
                 <option value="Last 7 Days">Last 7 Days</option>
@@ -141,39 +142,39 @@ export default function BusinessJobsTab() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
             {/* Views Card */}
-            <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-              <div className="text-3xl font-bold text-green-700 mb-1">
+            <div className="bg-green-50 border border-green-200 rounded-xl p-3 sm:p-4 lg:p-6">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-700 mb-0.5 sm:mb-1">
                 {hiringStats.views.count}
               </div>
-              <div className="text-sm text-green-600">
+              <div className="text-xs sm:text-sm text-green-600">
                 Views ({hiringStats.views.period})
               </div>
             </div>
 
             {/* Applications Card */}
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-              <div className="text-3xl font-bold text-blue-700 mb-1">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 sm:p-4 lg:p-6">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-700 mb-0.5 sm:mb-1">
                 {hiringStats.applications}
               </div>
-              <div className="text-sm text-blue-600">Applications</div>
+              <div className="text-xs sm:text-sm text-blue-600">Applications</div>
             </div>
 
             {/* Interview Card */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-              <div className="text-3xl font-bold text-yellow-700 mb-1">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 sm:p-4 lg:p-6">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-700 mb-0.5 sm:mb-1">
                 {hiringStats.interview}
               </div>
-              <div className="text-sm text-yellow-600">Interview</div>
+              <div className="text-xs sm:text-sm text-yellow-600">Interview</div>
             </div>
 
             {/* Hired Card */}
-            <div className="bg-gray-100 border border-gray-300 rounded-xl p-6">
-              <div className="text-3xl font-bold text-gray-700 mb-1">
+            <div className="bg-gray-100 border border-gray-300 rounded-xl p-3 sm:p-4 lg:p-6">
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-700 mb-0.5 sm:mb-1">
                 {hiringStats.hired}
               </div>
-              <div className="text-sm text-gray-600">Hired</div>
+              <div className="text-xs sm:text-sm text-gray-600">Hired</div>
             </div>
           </div>
 

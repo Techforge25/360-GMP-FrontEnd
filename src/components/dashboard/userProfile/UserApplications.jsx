@@ -60,19 +60,19 @@ export default function UserApplications() {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-border-light overflow-hidden">
-      <div className="p-6 md:p-8">
-        <h2 className="text-xl font-bold text-text-primary mb-6">
+      <div className="p-3 sm:p-4 md:p-6 lg:p-8">
+        <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-4 sm:mb-6">
           Application & Saved Jobs
         </h2>
 
         {/* Tabs */}
-        <div className="flex flex-wrap gap-4 mb-8">
+        <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "px-6 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2",
+                "px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 sm:gap-2",
                 activeTab === tab.id
                   ? "bg-[#240457] text-white"
                   : "bg-white text-text-secondary border border-border-light hover:bg-gray-50",
@@ -82,7 +82,7 @@ export default function UserApplications() {
               {tab.showBadge && (
                 <span
                   className={cn(
-                    "w-5 h-5 rounded-full flex items-center justify-center text-[10px]",
+                    "w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[9px] sm:text-[10px]",
                     activeTab === tab.id
                       ? "bg-white text-[#240457]"
                       : "bg-[#240457] text-white",
@@ -99,16 +99,16 @@ export default function UserApplications() {
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-            <p className="font-medium">Error loading applications</p>
-            <p className="text-sm mt-1">{error}</p>
+          <div className="mb-3 sm:mb-4 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <p className="font-medium text-sm sm:text-base">Error loading applications</p>
+            <p className="text-xs sm:text-sm mt-1">{error}</p>
           </div>
         )}
 
         {/* List */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {loading ? (
-            <div className="py-12 text-center text-text-secondary italic">
+            <div className="py-8 sm:py-12 text-center text-text-secondary italic text-sm sm:text-base">
               Loading applications...
             </div>
           ) : filteredApplications.length > 0 ? (
@@ -116,11 +116,11 @@ export default function UserApplications() {
               <JobApplicationCard key={app.id || app._id} application={app} />
             ))
           ) : (
-            <div className="py-12 text-center text-text-secondary border-2 border-dashed border-border-light rounded-xl bg-gray-50/50">
-              <p className="font-medium text-text-primary text-lg mb-1">
+            <div className="py-8 sm:py-12 text-center text-text-secondary border-2 border-dashed border-border-light rounded-xl bg-gray-50/50">
+              <p className="font-medium text-text-primary text-base sm:text-lg mb-1">
                 No applications found
               </p>
-              <p className="text-sm">
+              <p className="text-xs sm:text-sm">
                 You haven't{" "}
                 {activeTab === "all" ? "made any" : `any ${activeTab}`}{" "}
                 applications yet.

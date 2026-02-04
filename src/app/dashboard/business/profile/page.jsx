@@ -15,15 +15,15 @@ export default function BusinessProfilePage() {
   const [activeTab, setActiveTab] = React.useState("Home");
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 min-h-screen">
       {/* Profile Header */}
       <ProfileHeader activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8 mb-6 sm:mb-8">
         {activeTab === "Home" ? (
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
             {/* Main Content Column */}
-            <div className="flex-1 space-y-8">
+            <div className="flex-1 space-y-4 sm:space-y-6 lg:space-y-8">
               {/* Analytics Section */}
               <AnalyticsSection />
 
@@ -32,28 +32,37 @@ export default function BusinessProfilePage() {
             </div>
 
             {/* Right Sidebar Column */}
-            <div className="w-full lg:w-[350px] space-y-8">
+            <div className="w-full lg:w-[350px] xl:w-[380px] space-y-4 sm:space-y-6 lg:space-y-8">
               <ActivitySidebar />
             </div>
           </div>
         ) : activeTab === "Product" ? (
-          <div className=" overflow-hidden p-4  rounded-xl">
+          <div className="bg-white overflow-hidden p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl shadow-sm">
             <ProductListContent isProfileView={true} />
           </div>
         ) : activeTab === "Jobs" ? (
-          <BusinessJobsTab />
+          <div className="w-full">
+            <BusinessJobsTab />
+          </div>
         ) : activeTab === "About" ? (
-          <BusinessAboutTab />
+          <div className="w-full">
+            <BusinessAboutTab />
+          </div>
         ) 
         // Disabled
         // : activeTab === "Orders" ? (
         //   <BusinessOrdersTab />
         // ) 
         : activeTab === "Communities" ? (
-          <BusinessCommunitiesTab />
+          <div className="w-full">
+            <BusinessCommunitiesTab />
+          </div>
         ) : (
-          <div className="bg-white p-12 rounded-xl text-center text-gray-500 shadow-sm border border-gray-100">
-            {activeTab} content coming soon
+          <div className="bg-white p-6 sm:p-8 lg:p-12 rounded-lg sm:rounded-xl text-center text-gray-500 shadow-sm border border-gray-100 min-h-[300px] sm:min-h-[400px] flex flex-col items-center justify-center">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
+              {activeTab} content coming soon
+            </h3>
+            <p className="text-sm sm:text-base">This section is under development.</p>
           </div>
         )}
       </div>

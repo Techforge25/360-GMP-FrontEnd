@@ -100,16 +100,16 @@ const AnalyticsSection = () => {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div className="flex items-center justify-between mb-6">
-          <div className="h-6 w-48 bg-gray-200 rounded animate-pulse"></div>
-          <div className="h-8 w-32 bg-gray-200 rounded animate-pulse"></div>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+          <div className="h-5 sm:h-6 w-40 sm:w-48 bg-gray-200 rounded animate-pulse"></div>
+          <div className="h-6 sm:h-8 w-28 sm:w-32 bg-gray-200 rounded animate-pulse"></div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-32 bg-gray-100 rounded-xl animate-pulse"
+              className="h-24 sm:h-28 lg:h-32 bg-gray-100 rounded-xl animate-pulse"
             ></div>
           ))}
         </div>
@@ -118,49 +118,50 @@ const AnalyticsSection = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-medium text-black">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h2 className="text-base sm:text-lg font-medium text-black">
           Core Profile Analytics
         </h2>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-sm font-semibold hover:bg-indigo-100 transition-colors">
-          <p>Business Analytics</p>
-          <img src="/assets/images/analyticsIcon.png" alt="" />
+        <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-xs sm:text-sm font-semibold hover:bg-indigo-100 transition-colors">
+          <p className="hidden sm:inline">Business Analytics</p>
+          <p className="sm:hidden">Analytics</p>
+          <img src="/assets/images/analyticsIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
         </button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className={`p-4 rounded-xl border ${stat.borderColor} ${stat.bgColor} relative overflow-hidden group hover:border-gray-200 transition-colors`}
+            className={`p-3 sm:p-4 rounded-xl border ${stat.borderColor} ${stat.bgColor} relative overflow-hidden group hover:border-gray-200 transition-colors`}
           >
             <div
               className={`absolute top-0 left-0 w-1 h-full ${stat.borderColor}`}
             />
-            <div className="flex justify-between items-start mb-2">
+            <div className="flex justify-between items-start mb-1.5 sm:mb-2">
               <div>
-                <div className={`text-2xl font-semibold ${stat.iconColor}`}>
+                <div className={`text-lg sm:text-xl lg:text-2xl font-semibold ${stat.iconColor}`}>
                   {stat.value}
                 </div>
-                <div className="text-sm text-black font-medium mt-1 mb-2">
+                <div className="text-xs sm:text-sm text-black font-medium mt-0.5 sm:mt-1 mb-1.5 sm:mb-2 leading-tight">
                   {stat.label}
                 </div>
               </div>
               <div
-                className={`w-8 h-8 rounded-lg ${stat.iconBg} flex items-center justify-center text-white`}
+                className={`w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 rounded-lg ${stat.iconBg} flex items-center justify-center text-white`}
               >
-                <stat.icon className="w-4 h-4" />
+                <stat.icon className="w-3 h-3 sm:w-3.5 sm:h-3.5 lg:w-4 lg:h-4" />
               </div>
             </div>
             {stat.change && (
               <div
-                className={`text-[10px] font-medium flex items-center gap-1 ${stat.trend === "up" ? "text-[#0B8806]" : stat.trend === "down" ? "text-[#D60000]" : "text-gray-500"}`}
+                className={`text-[9px] sm:text-[10px] font-medium flex items-center gap-1 ${stat.trend === "up" ? "text-[#0B8806]" : stat.trend === "down" ? "text-[#D60000]" : "text-gray-500"}`}
               >
                 {stat.trend === "up" ? (
-                  <FiTrendingUp className="w-3 h-3" />
+                  <FiTrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 ) : stat.trend === "down" ? (
-                  <FiTrendingDown className="w-3 h-3" />
+                  <FiTrendingDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                 ) : null}
                 {stat.change}
               </div>

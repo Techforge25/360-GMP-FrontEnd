@@ -30,28 +30,30 @@ const UserSidebar = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Profile Strength */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 text-center">
-        <div className="flex items-center gap-2 justify-center mb-2">
-          <h3 className="text-lg font-semibold text-[#240457]">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 lg:p-6 text-center">
+        <div className="flex items-center gap-1.5 sm:gap-2 justify-center mb-1.5 sm:mb-2">
+          <h3 className="text-base sm:text-lg font-semibold text-[#240457]">
             Profile Strength
           </h3>
         </div>
-        <p className="text-2xl font-bold text-gray-900 mb-2">75 %</p>
+        <p className="text-xl sm:text-2xl font-bold text-gray-900 mb-1.5 sm:mb-2">75 %</p>
 
-        <div className="w-full bg-gray-100 rounded-full h-2.5 mb-6">
+        <div className="w-full bg-gray-100 rounded-full h-2 sm:h-2.5 mb-4 sm:mb-6">
           <div
-            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2.5 rounded-full"
+            className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 sm:h-2.5 rounded-full"
             style={{ width: "75%" }}
           ></div>
         </div>
 
-        <button className="w-full bg-[#240457] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-2">
-          Complete Your Profile
+        <button className="w-full bg-[#240457] text-white py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-1.5 sm:gap-2">
+          <span className="hidden sm:inline">Complete Your Profile</span>
+          <span className="sm:hidden">Complete Profile</span>
           <svg
-            width="16"
-            height="16"
+            width="14"
+            height="14"
+            className="sm:w-4 sm:h-4"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -66,67 +68,70 @@ const UserSidebar = () => {
       </div>
 
       {/* Contact Info */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 relative">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-gray-900">Contact Info</h3>
-          <button className="p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-400">
-            <FiEdit2 className="w-4 h-4" />
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 lg:p-6 relative">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900">Contact Info</h3>
+          <button className="p-1 sm:p-1.5 hover:bg-gray-100 rounded-md transition-colors text-gray-400">
+            <FiEdit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
 
-        <div className="space-y-4 bg-gray-50/50 rounded-lg p-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-[#240457]">
-              <FiMail className="w-4 h-4" />
+        <div className="space-y-3 sm:space-y-4 bg-gray-50/50 rounded-lg p-3 sm:p-4">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-50 flex items-center justify-center text-[#240457]">
+              <FiMail className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-sm text-gray-600">alex@gmail.com</span>
+            <span className="text-xs sm:text-sm text-gray-600 truncate">alex@gmail.com</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-[#240457]">
-              <FiPhone className="w-4 h-4" />
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-50 flex items-center justify-center text-[#240457]">
+              <FiPhone className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-sm text-gray-600">+123456789</span>
+            <span className="text-xs sm:text-sm text-gray-600">+123456789</span>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-[#240457]">
-              <FiMapPin className="w-4 h-4" />
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-indigo-50 flex items-center justify-center text-[#240457]">
+              <FiMapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </div>
-            <span className="text-sm text-gray-600">San Francisco, CA</span>
+            <span className="text-xs sm:text-sm text-gray-600">San Francisco, CA</span>
           </div>
         </div>
 
-        <div className="mt-6">
-          <p className="text-sm text-gray-500 mb-3">Social Media</p>
-          <div className="flex flex-wrap gap-2">
+        <div className="mt-4 sm:mt-6">
+          <p className="text-xs sm:text-sm text-gray-500 mb-2 sm:mb-3">Social Media</p>
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {socialLinks.map((link) => {
               const Icon = socialIcons[link.platform] || FiMail;
               return (
                 <a
                   key={link.id}
                   href={link.url}
-                  className="w-8 h-8 rounded-full bg-[#ECEFF6] flex items-center justify-center text-[#240457] hover:bg-indigo-100 transition-colors"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#ECEFF6] flex items-center justify-center text-[#240457] hover:bg-indigo-100 transition-colors"
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </a>
               );
             })}
           </div>
-          <button className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-1">
-            Add Social Link <FiPlus className="w-3 h-3" />
+          <button className="w-full mt-3 sm:mt-4 bg-[#240457] text-white py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-1">
+            <span className="hidden sm:inline">Add Social Link</span>
+            <span className="sm:hidden">Add Link</span>
+            <FiPlus className="w-3 h-3" />
           </button>
         </div>
       </div>
 
       {/* Resume Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">Resume</h3>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 lg:p-6">
+        <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">Resume</h3>
 
-        <div className="border border-gray-200 rounded-lg p-3 flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="bg-gray-100 p-2 rounded">
+        <div className="border border-gray-200 rounded-lg p-2.5 sm:p-3 flex items-center justify-between mb-3 sm:mb-4">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="bg-gray-100 p-1.5 sm:p-2 rounded">
               <svg
-                width="24"
-                height="24"
+                width="20"
+                height="20"
+                className="sm:w-6 sm:h-6"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -141,20 +146,22 @@ const UserSidebar = () => {
               </svg>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-900">Resume</p>
-              <p className="text-sm text-gray-500">Uploaded On 12-1-2025</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-900">Resume</p>
+              <p className="text-xs sm:text-sm text-gray-500">Uploaded On 12-1-2025</p>
             </div>
           </div>
           <button className="text-red-500 hover:text-red-700 p-1">
-            <FiTrash2 className="w-4 h-4" />
+            <FiTrash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
 
-        <button className="w-full bg-[#240457] text-white py-2.5 rounded-lg text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-2">
-          Update Resume/Portfolio
+        <button className="w-full bg-[#240457] text-white py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-1.5 sm:gap-2">
+          <span className="hidden sm:inline">Update Resume/Portfolio</span>
+          <span className="sm:hidden">Update Resume</span>
           <svg
-            width="16"
-            height="16"
+            width="14"
+            height="14"
+            className="sm:w-4 sm:h-4"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"

@@ -142,12 +142,12 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   if (isLoading) {
     return (
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
           <div className="animate-pulse">
-            <div className="h-64 bg-gray-200 rounded-lg mb-4"></div>
-            <div className="h-32 w-32 bg-gray-200 rounded-2xl mb-4"></div>
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-40 sm:h-48 md:h-56 lg:h-64 bg-gray-200 rounded-lg mb-4"></div>
+            <div className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-32 lg:w-32 bg-gray-200 rounded-2xl mb-4 mx-auto sm:mx-0"></div>
+            <div className="h-6 sm:h-8 bg-gray-200 rounded w-1/3 mb-2 mx-auto sm:mx-0"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto sm:mx-0"></div>
           </div>
         </div>
       </div>
@@ -157,8 +157,8 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   if (!profileData) {
     return (
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-gray-500 text-center">No business profile found</p>
+        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
+          <p className="text-gray-500 text-center text-sm sm:text-base">No business profile found</p>
         </div>
       </div>
     );
@@ -166,11 +166,11 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 
   return (
     <div className="bg-white border-b border-gray-200">
-      <p className="text-gray-500 text-base max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <p className="text-gray-500 text-xs sm:text-sm md:text-base max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
         Home <span className="text-[#240457]">/ {profileData.companyName}</span>
       </p>
       {/* Cover Image */}
-      <div className="h-64 w-full relative bg-gray-200">
+      <div className="h-40 sm:h-48 md:h-56 lg:h-64 w-full relative bg-gray-200">
         <Image
           src={
             newBanner?.previewUrl ||
@@ -182,8 +182,9 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           className="object-cover"
         />
         {newBanner && (
-          <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-            New banner selected - Click "Update Profile" to save
+          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium">
+            <span className="hidden sm:inline">New banner selected - Click "Update Profile" to save</span>
+            <span className="sm:hidden">New banner - Update to save</span>
           </div>
         )}
         <input
@@ -193,38 +194,53 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           onChange={handleBannerChange}
           className="hidden"
         />
-        <div className="absolute bottom-4 right-4 flex gap-3">
-          <button className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-2">
-            <img src="/assets/images/eyeIcon.png" alt="" />
-            View as a user
+        <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex gap-2 sm:gap-3">
+          <button className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-xs sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2">
+            <img src="/assets/images/eyeIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="hidden sm:inline">View as a user</span>
+            <span className="sm:hidden">View</span>
           </button>
           <button
             onClick={handleBannerClick}
             disabled={isUploadingBanner}
-            className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-3xl text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-xs sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2 disabled:opacity-50"
           >
-            <img src="/assets/images/cameraIcon.png" alt="" />
-            {isUploadingBanner ? "Uploading..." : "Update cover"}
+            <img src="/assets/images/cameraIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+            {isUploadingBanner ? (
+              <span className="hidden sm:inline">Uploading...</span>
+            ) : (
+              <>
+                <span className="hidden sm:inline">Update cover</span>
+                <span className="sm:hidden">Cover</span>
+              </>
+            )}
           </button>
-          <div className="absolute -bottom-18 right-2">
+          <div className="absolute -bottom-16 sm:-bottom-18 right-1 sm:right-2">
             <button
               onClick={handleUpdateProfile}
               disabled={isUpdating || (!newLogo && !newBanner)}
-              className="bg-[#240457] text-white px-6 py-2.5 rounded-lg text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <img src="/assets/images/updateProfileIcon.png" alt="" />
-              {isUpdating ? "Updating..." : "Update Profile"}
+              <img src="/assets/images/updateProfileIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+              {isUpdating ? (
+                <span className="hidden sm:inline">Updating...</span>
+              ) : (
+                <>
+                  <span className="hidden sm:inline">Update Profile</span>
+                  <span className="sm:hidden">Update</span>
+                </>
+              )}
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative -mt-16 mb-6 flex flex-col items-center justify-center sm:items-start sm:flex-row gap-6">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+        <div className="relative -mt-12 sm:-mt-14 md:-mt-16 mb-4 sm:mb-6 flex flex-col items-center justify-center sm:items-start sm:flex-row gap-4 sm:gap-6">
           {/* Company Logo */}
-          <div className="relative ">
-            <div className="w-32 h-32 rounded-2xl bg-white p-1.5 shadow-lg border-2 border-gray-300">
-              <div className="w-full h-full bg-white rounded-xl flex items-center justify-center overflow-hidden relative">
+          <div className="relative">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-xl sm:rounded-2xl bg-white p-1 sm:p-1.5 shadow-lg border-2 border-gray-300">
+              <div className="w-full h-full bg-white rounded-lg sm:rounded-xl flex items-center justify-center overflow-hidden relative">
                 <img
                   src={
                     newLogo?.previewUrl ||
@@ -253,42 +269,42 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
             <button
               onClick={handleLogoClick}
               disabled={isUploadingLogo}
-              className="absolute bottom-10 -right-5 p-2.5 border border-gray-300 bg-white rounded-full shadow-lg text-gray-600 hover:text-indigo-600 transition-colors border border-gray-100 z-10 disabled:opacity-50"
+              className="absolute bottom-6 sm:bottom-8 md:bottom-10 -right-3 sm:-right-4 md:-right-5 p-1.5 sm:p-2 md:p-2.5 border border-gray-300 bg-white rounded-full shadow-lg text-gray-600 hover:text-indigo-600 transition-colors z-10 disabled:opacity-50"
             >
-              <FiEdit2 className="w-4 h-4" />
+              <FiEdit2 className="w-3 h-3 sm:w-4 sm:h-4" />
             </button>
           </div>
 
           {/* Profile Info */}
         </div>
-        <div className="flex-1 pt-4 text-center sm:text-left">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-4">
-            <div className="flex flex-col flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-3 text-base text-gray-500">
-              <h1 className="text-2xl font-bold text-gray-900 flex items-center justify-center sm:justify-start gap-2">
+        <div className="flex-1 pt-3 sm:pt-4 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-center gap-3 sm:gap-4">
+            <div className="flex flex-col flex-wrap items-center justify-center sm:justify-start gap-x-4 sm:gap-x-6 gap-y-1.5 sm:gap-y-2 mt-2 sm:mt-3 text-sm sm:text-base text-gray-500">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
                 {profileData.companyName}
                 {profileData.isVerified && (
-                  <FiCheckCircle className="w-5 h-5 text-blue-500" />
+                  <FiCheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
                 )}
               </h1>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-6 gap-y-2 mt-2 text-base text-gray-500 mb-12">
-                <div className="flex items-center gap-1.5">
-                  <img src="/assets/images/employeesIcon.png" alt="" />
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 sm:gap-x-4 md:gap-x-6 gap-y-1.5 sm:gap-y-2 mt-1.5 sm:mt-2 text-xs sm:text-sm md:text-base text-gray-500 mb-8 sm:mb-10 md:mb-12">
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <img src="/assets/images/employeesIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{profileData.companySize || "N/A"}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <FiCalendar className="w-4 h-4" />
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <FiCalendar className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>
                     {calculateYearsInBusiness(profileData.foundedDate)}
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <img src="/assets/images/manufacturingIcon.png" alt="" />
-                  <span>{profileData.primaryIndustry || "N/A"}</span>
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <img src="/assets/images/manufacturingIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="truncate max-w-[120px] sm:max-w-none">{profileData.primaryIndustry || "N/A"}</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <FiMapPin className="w-4 h-4" />
-                  <span>
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                  <FiMapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="truncate max-w-[120px] sm:max-w-none">
                     {profileData.location?.city && profileData.location?.country
                       ? `${profileData.location.city}, ${profileData.location.country}`
                       : "N/A"}
@@ -299,7 +315,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center border-t border-gray-200 pt-4 gap-8 overflow-x-auto pb-px scrollbar-hide">
+        <div className="flex items-center justify-center border-t border-gray-200 pt-3 sm:pt-4 gap-4 sm:gap-6 lg:gap-8 overflow-x-auto pb-px scrollbar-hide">
           <TabButton
             label="Home"
             src="/assets/images/homeIcon.png"
@@ -345,10 +361,10 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 const TabButton = ({ label, src, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-2 pb-4 text-base font-medium border-b-2 transition-colors whitespace-nowrap ${active ? "border-[#240457] text-[#240457]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
+    className={`flex items-center gap-1.5 sm:gap-2 pb-3 sm:pb-4 text-sm sm:text-base font-medium border-b-2 transition-colors whitespace-nowrap px-1 sm:px-2 ${active ? "border-[#240457] text-[#240457]" : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"}`}
   >
-    <img src={src} alt={label} className="w-4 h-4" />
-    {label}
+    <img src={src} alt={label} className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+    <span className="hidden xs:inline sm:inline">{label}</span>
   </button>
 );
 

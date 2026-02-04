@@ -48,12 +48,13 @@ const UserStats = () => {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-900">Profile Summary</h2>
-        <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 text-[#240457] rounded-md text-sm font-medium hover:bg-gray-100 transition-colors">
-          Profile Analytics
-          <div className="w-4 h-4 bg-[#240457] rounded-sm flex items-end justify-center p-0.5 gap-0.5">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 lg:p-6 mb-6 sm:mb-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Profile Summary</h2>
+        <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#240457] rounded-md text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors">
+          <span className="hidden sm:inline">Profile Analytics</span>
+          <span className="sm:hidden">Analytics</span>
+          <div className="w-3 h-3 sm:w-4 sm:h-4 bg-[#240457] rounded-sm flex items-end justify-center p-0.5 gap-0.5">
             <div className="w-0.5 h-1.5 bg-white"></div>
             <div className="w-0.5 h-2.5 bg-white"></div>
             <div className="w-0.5 h-2 bg-white"></div>
@@ -61,26 +62,26 @@ const UserStats = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className={`p-5 rounded-xl border ${stat.color} relative`}
+            className={`p-3 sm:p-4 md:p-5 rounded-xl border ${stat.color} relative`}
           >
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-1">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">
                   {stat.value}
                 </h3>
-                <p className="text-sm font-semibold text-gray-900 mb-4">
+                <p className="text-xs sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-4 leading-tight">
                   {stat.label}
                 </p>
-                <p className="text-[10px] text-gray-500">{stat.subLabel}</p>
+                <p className="text-[9px] sm:text-[10px] text-gray-500">{stat.subLabel}</p>
               </div>
               <div
-                className={`w-8 h-8 rounded-lg ${stat.iconBg} flex items-center justify-center text-white shadow-sm`}
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg ${stat.iconBg} flex items-center justify-center text-white shadow-sm`}
               >
-                <stat.icon className="w-4 h-4" />
+                <stat.icon className="w-3 h-3 sm:w-4 sm:h-4" />
               </div>
             </div>
           </div>

@@ -70,51 +70,54 @@ const BusinessAboutTab = () => {
   ]);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
+    <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
       {/* Main Content */}
-      <div className="flex-1 space-y-6">
+      <div className="flex-1 space-y-4 sm:space-y-6">
         {/* Our Story & Mission */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h2 className="text-lg font-bold text-gray-900">
+        <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 lg:p-5 xl:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3 sm:mb-4">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Our Story & Mission
             </h2>
-            <button className="flex items-center gap-2 text-[#240457] text-sm font-semibold hover:underline">
-              Edit About Section
-              <FiExternalLink className="w-4 h-4" />
+            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-xs sm:text-sm font-semibold hover:underline">
+              <span className="hidden sm:inline">Edit About Section</span>
+              <span className="sm:hidden">Edit</span>
+              <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
 
-          <p className="text-sm text-gray-600 leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
             {aboutData.storyMission}
           </p>
         </div>
 
         {/* Export Market Distribution */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
-            <h2 className="text-lg font-bold text-gray-900">
+        <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 lg:p-5 xl:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Export Market Distribution
             </h2>
-            <button className="flex items-center gap-2 text-[#240457] text-sm font-semibold hover:underline">
-              Manage Featured Products
-              <FiExternalLink className="w-4 h-4" />
+            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-xs sm:text-sm font-semibold hover:underline">
+              <span className="hidden sm:inline">Manage Featured Products</span>
+              <span className="sm:hidden">Manage</span>
+              <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
 
           {/* Chart */}
           <div className="flex flex-col items-center">
-            <div className="w-full max-w-[300px] h-[250px] relative">
+            <div className="w-full max-w-[250px] sm:max-w-[300px] h-[200px] sm:h-[250px] relative">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={exportData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
+                    innerRadius={50}
+                    outerRadius={80}
                     paddingAngle={2}
                     dataKey="value"
+                    className="sm:innerRadius-[60] sm:outerRadius-[100]"
                   >
                     {exportData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
@@ -125,21 +128,21 @@ const BusinessAboutTab = () => {
               </ResponsiveContainer>
 
               {/* Center Label */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center bg-white px-3 py-2 rounded-lg shadow-sm border border-gray-100">
-                <p className="text-sm text-gray-500">European Union</p>
-                <p className="text-lg font-bold text-orange-500">30</p>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg shadow-sm border border-gray-100">
+                <p className="text-xs sm:text-sm text-gray-500">European Union</p>
+                <p className="text-base sm:text-lg font-bold text-orange-500">30</p>
               </div>
             </div>
 
             {/* Legend */}
-            <div className="flex flex-wrap justify-center gap-4 mt-4">
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:gap-4 mt-3 sm:mt-4">
               {exportData.map((item, index) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={index} className="flex items-center gap-1.5 sm:gap-2">
                   <div
-                    className="w-3 h-3 rounded-full"
+                    className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-sm text-gray-600">{item.name}</span>
+                  <span className="text-xs sm:text-sm text-gray-600">{item.name}</span>
                 </div>
               ))}
             </div>

@@ -18,11 +18,11 @@ export default function UserProfilePage() {
       {/* Profile Header */}
       <UserProfileHeader activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 mt-4 sm:mt-6 lg:mt-8 mb-6 sm:mb-8">
         {activeTab === "Profile" ? (
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
             {/* Main Content Column */}
-            <div className="flex-1 space-y-8">
+            <div className="flex-1 space-y-4 sm:space-y-6 lg:space-y-8 min-w-0">
               {/* Profile Stats / Summary */}
               <UserStats />
 
@@ -34,25 +34,29 @@ export default function UserProfilePage() {
             </div>
 
             {/* Right Sidebar Column */}
-            <div className="w-full lg:w-[350px] space-y-8">
+            <div className="w-full lg:w-[350px] xl:w-[380px] lg:flex-shrink-0 space-y-4 sm:space-y-6 lg:space-y-8">
               <UserSidebar />
             </div>
           </div>
         ) : activeTab === "Jobs" ? (
-          <UserApplications />
+          <div className="w-full">
+            <UserApplications />
+          </div>
         ) : activeTab === "Communities" ? (
-          <UserCommunities />
+          <div className="w-full">
+            <UserCommunities />
+          </div>
         ) 
         // Disabled
         // : activeTab === "Orders" ? (
         //   <UserOrders />
         // ) 
         : (
-          <div className="bg-white p-12 rounded-xl text-center text-gray-500 shadow-sm border border-gray-100 min-h-[400px] flex flex-col items-center justify-center">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+          <div className="bg-white p-6 sm:p-8 lg:p-12 rounded-lg sm:rounded-xl text-center text-gray-500 shadow-sm border border-gray-100 min-h-[300px] sm:min-h-[400px] flex flex-col items-center justify-center">
+            <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
               Coming Soon in phase 5
             </h3>
-            <p>The {activeTab} section is currently under development.</p>
+            <p className="text-sm sm:text-base px-4">The {activeTab} section is currently under development.</p>
           </div>
         )}
       </div>
