@@ -14,6 +14,7 @@ export default function BusinessesPageContent() {
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
   const [filteredBusinesses, setFilteredBusinesses] = useState([]);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   useEffect(() => {
     fetchBusinessProfiles();
@@ -130,8 +131,8 @@ export default function BusinessesPageContent() {
 
   return (
     <div className="w-full bg-white">
-      <span className="text-[#240457] max-w-[1400px] mx-auto block py-4 text-sm">Business List</span>
-      <main className="pb-24">
+      <span className="text-[#240457] max-w-[1400px] mx-auto block py-3 sm:py-4 px-3 sm:px-6 lg:px-20 text-xs sm:text-sm">Business List</span>
+      <main className="pb-16 sm:pb-20 lg:pb-24">
         <BusinessHero
           query={query}
           setQuery={setQuery}
@@ -140,17 +141,56 @@ export default function BusinessesPageContent() {
           onSearch={handleSearch}
         />
 
-        <div className="mx-auto px-4 sm:px-6 lg:px-20">
-          <div className="flex flex-col lg:flex-row gap-8 max-w-[1400px] mx-auto">
-            {/* Sidebar */}
-            <aside className="w-full lg:w-64 flex-shrink-0">
-              <FilterSidebar />
+        <div className="mx-auto px-3 sm:px-6 lg:px-20">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 max-w-[1400px] mx-auto">
+            {/* Mobile Filter Button */}
+            <button
+              onClick={() => setIsMobileFilterOpen(true)}
+              className="lg:hidden w-full flex items-center justify-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3 mb-4 hover:bg-gray-50 transition-colors"
+            >
+              <CiMenuBurger className="w-5 h-5 text-[#240457]" />
+              <span className="font-medium text-gray-700">Filters</span>
+            </button>
+
+            {/* Desktop Sidebar */}
+            <aside className="hidden lg:block w-64 flex-shrink-0">
+              <div className="top-4">
+                <FilterSidebar />
+              </div>
             </aside>
 
+            {/* Mobile Filter Modal */}
+            {isMobileFilterOpen && (
+              <>
+                {/* Backdrop */}
+                <div 
+                  className="lg:hidden fixed inset-0 bg-black/50 z-50"
+                  onClick={() => setIsMobileFilterOpen(false)}
+                />
+                
+                {/* Modal */}
+                <div className="lg:hidden fixed inset-x-4 top-4 bottom-4 z-50 bg-white rounded-lg shadow-2xl overflow-y-auto">
+                  <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                    <h3 className="font-semibold text-gray-900 text-lg">Filters</h3>
+                    <button
+                      onClick={() => setIsMobileFilterOpen(false)}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      <span className="sr-only">Close</span>
+                      ×
+                    </button>
+                  </div>
+                  <div className="p-4">
+                    <FilterSidebar />
+                  </div>
+                </div>
+              </>
+            )}
+
             {/* Main Content */}
-            <div className="flex-1">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-medium text-black">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 gap-3 sm:gap-4">
+                <h2 className="text-lg sm:text-xl text-center lg:text-left font-medium text-black">
                   {loading
                     ? "Loading..."
                     : `${filteredBusinesses.length} ${
@@ -163,10 +203,10 @@ export default function BusinessesPageContent() {
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    className="bg-[#240457] text-white text-sm"
+                    className="bg-[#240457] mx-auto lg:mx-0 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
                   >
-                    <span className="mr-1">
-                      <CiMenuBurger />
+                    <span className="mr-1 sm:mr-2">
+                      <CiMenuBurger className="w-3 h-3 sm:w-4 sm:h-4" />
                     </span>{" "}
                     Open Map
                   </Button>
@@ -175,22 +215,25 @@ export default function BusinessesPageContent() {
 
               {/* Loading State */}
               {loading && (
-                <div className="flex justify-center items-center py-12">
-                  <div className="text-gray-500">
-                    Loading business profiles...
+                <div className="flex justify-center items-center py-12 sm:py-16">
+                  <div className="text-center">
+                    <div className="w-8 h-8 border-3 border-gray-300 border-t-[#240457] rounded-full animate-spin mx-auto mb-4"></div>
+                    <div className="text-gray-500 text-sm sm:text-base">
+                      Loading business profiles...
+                    </div>
                   </div>
                 </div>
               )}
 
               {/* Error State */}
               {error && !loading && (
-                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
-                  <p className="text-red-600 text-base">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 mb-4">
+                  <p className="text-red-600 text-sm sm:text-base">
                     <strong>Error:</strong> {error}
                   </p>
                   <button
                     onClick={fetchBusinessProfiles}
-                    className="mt-2 text-sm text-red-700 underline hover:text-red-800"
+                    className="mt-2 text-xs sm:text-sm text-red-700 underline hover:text-red-800 transition-colors"
                   >
                     Try again
                   </button>
@@ -199,7 +242,7 @@ export default function BusinessesPageContent() {
 
               {/* Business List */}
               {!loading && !error && filteredBusinesses.length > 0 && (
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {filteredBusinesses.map((biz, i) => (
                     <BusinessCard key={i} business={biz} />
                   ))}
@@ -208,35 +251,40 @@ export default function BusinessesPageContent() {
 
               {/* Empty State */}
               {!loading && !error && businesses.length === 0 && (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">No business profiles found.</p>
+                <div className="text-center py-12 sm:py-16">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CiMenuBurger className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500 text-base font-medium mb-2">No business profiles found</p>
+                  <p className="text-gray-400 text-sm">Try adjusting your search criteria</p>
                 </div>
               )}
 
               {/* Pagination */}
               {!loading && businesses.length > 0 && (
-                <div className="flex justify-center items-center mt-12 gap-2">
-                  <button className="px-3 py-1 bg-gray-100 rounded text-gray-500 text-base hover:bg-gray-200">
+                <div className="flex justify-center items-center mt-8 sm:mt-12 gap-1 sm:gap-2 px-2">
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-xs sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
                     Prev
                   </button>
-                  <button className="px-3 py-1 bg-[#240457] text-white rounded text-base">
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-[#240457] text-white rounded text-xs sm:text-sm lg:text-base">
                     1
                   </button>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
+                  <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
                     2
                   </button>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
+                  <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
                     3
                   </button>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
+                  <button className="hidden md:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
                     4
                   </button>
-                  <span className="text-gray-400">...</span>
-                  <button className="px-3 py-1 bg-white border border-gray-200 rounded text-gray-600 text-base hover:bg-gray-50">
+                  <span className="hidden md:block text-gray-400 text-sm">...</span>
+                  <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
                     352
                   </button>
-                  <button className="px-3 py-1 bg-gray-100 rounded text-gray-500 text-base hover:bg-gray-200">
-                    Next &gt;
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-xs sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
+                    <span className="hidden sm:inline">Next &gt;</span>
+                    <span className="sm:hidden">&gt;</span>
                   </button>
                 </div>
               )}
