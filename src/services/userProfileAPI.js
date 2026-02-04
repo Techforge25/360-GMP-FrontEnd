@@ -30,7 +30,7 @@ class UserProfileAPI {
    * Update user profile basic info (fullName, bio)
    */
   async updateBasicInfo(basicData) {
-    return await api.put({
+    return await api.patch({
       url: "/userProfile/update/basic-info",
       payload: basicData,
       activateLoader: true,
@@ -43,7 +43,7 @@ class UserProfileAPI {
    * Update user profile contact info (email, phone, location)
    */
   async updateContactInfo(contactData) {
-    return await api.put({
+    return await api.patch({
       url: "/userProfile/update/contact-info",
       payload: contactData,
       activateLoader: true,
@@ -56,8 +56,8 @@ class UserProfileAPI {
    * Update user profile logo/avatar
    */
   async updateLogo(logoData) {
-    return await api.put({
-      url: "/userProfile/update/logo",
+    return await api.patch({
+      url: "/userProfile/logo",
       payload: logoData,
       activateLoader: true,
       enableSuccessMessage: true,
@@ -69,7 +69,7 @@ class UserProfileAPI {
    * Update user profile resume
    */
   async updateResume(resumeData) {
-    return await api.put({
+    return await api.patch({
       url: "/userProfile/update/resume",
       payload: resumeData,
       activateLoader: true,
@@ -82,7 +82,7 @@ class UserProfileAPI {
    * Update user profile education
    */
   async updateEducation(educationData) {
-    return await api.put({
+    return await api.patch({
       url: "/userProfile/update/education",
       payload: educationData,
       activateLoader: true,
@@ -95,7 +95,7 @@ class UserProfileAPI {
    * Update the current user's profile (legacy method)
    */
   async updateMyProfile(profileData) {
-    return await api.put({
+    return await api.patch({
       url: "/userProfile",
       payload: profileData,
       activateLoader: true,

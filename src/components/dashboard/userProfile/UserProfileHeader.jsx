@@ -85,7 +85,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           newAvatar.file,
           "user/profile",
         );
-        updates.imageProfile = avatarUrl;
+        updates.logo = avatarUrl;
         setIsUploadingAvatar(false);
       }
 
@@ -102,7 +102,16 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
       if (Object.keys(updates).length > 0) {
         console.log("Updating profile with:", updates);
 
-        const response = await userProfileAPI.updateMyProfile(updates);
+        let response;
+        
+        // Use specific API methods based on what's being updated
+        if (updates.logo && Object.keys(updates).length === 1) {
+          // If only updating logo, use the specific logo endpoint
+          response = await userProfileAPI.updateLogo({ logo: updates.logo });
+        } else {
+          // For other updates, use the general update method
+          response = await userProfileAPI.updateMyProfile(updates);
+        }
 
         if (response?.data) {
           setProfileData(response.data);

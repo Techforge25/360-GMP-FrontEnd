@@ -20,6 +20,7 @@ import {
 import api from "@/lib/axios";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import userProfileAPI from "@/services/userProfileAPI";
 
 const IndustryOptions = [
   "Manufacturing",
@@ -32,24 +33,68 @@ const IndustryOptions = [
   "Other",
 ];
 
-const Step1 = ({ formData, handleChange, setIsUploading }) => (
+const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
     <div>
       <div className="space-y-6">
         {/* Profile Photo Upload */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Upload Profile Photo</h3>
-          <FileUpload
-            label="Upload Profile Photo"
-            subLabel="JPG, PNG (Max 5MB)"
-            onUploadingChange={setIsUploading}
-            onUpload={(file, onProgress) =>
-              uploadToCloudinary(file, "user/profile", onProgress).then((url) => {
+          
+          {/* Show uploaded image preview */}
+          {formData.logo && (
+            <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100">
+                <Image
+                  src={formData.logo}
+                  alt="Profile Preview"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-green-800">Profile photo uploaded successfully!</p>
+                <div className="flex gap-3 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Show file upload again for updating
+                      handleChange("logo", "");
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Update photo
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleChange("logo", "")}
+                    className="text-sm text-red-600 hover:text-red-800"
+                  >
+                    Remove photo
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {!formData.logo && (
+            <FileUpload
+              label="Upload Profile Photo"
+              subLabel="JPG, PNG (Max 5MB)"
+              onUploadingChange={setIsUploading}
+              onUpload={async (file, onProgress) => {
+                const url = await uploadToCloudinary(file, "user/profile", onProgress);
                 handleChange("logo", url);
+                
+                // If updating existing profile, call update API
+                if (onUpdateLogo) {
+                  await onUpdateLogo(url);
+                }
+                
                 return url;
-              })
-            }
-          />
+              }}
+            />
+          )}
         </div>
         
         <div className="grid md:grid-cols-2 gap-6">
@@ -571,6 +616,9 @@ export default function UserProfilePage() {
 
         // Location mapping
         location: `${formData.city || ""}, ${formData.country || ""}`,
+        
+        // Ensure logo is included (required by backend)
+        logo: formData.logo,
       };
 
       // Remove fields that shouldn't be sent to backend
@@ -694,6 +742,24 @@ export default function UserProfilePage() {
   };
   const [isUploading, setIsUploading] = useState(false);
 
+  // Function to update logo via API
+  const handleUpdateLogo = async (newLogoUrl) => {
+    try {
+      const response = await userProfileAPI.updateLogo({ logo: newLogoUrl });
+      
+      if (response.success) {
+        // Update local form data
+        handleChange("logo", newLogoUrl);
+        console.log("Logo updated successfully");
+      } else {
+        console.error("Failed to update logo:", response.message);
+      }
+    } catch (error) {
+      console.error("Error updating logo:", error);
+      // Handle error gracefully - don't break the form flow
+    }
+  };
+
   return (
     <div className="min-h-screen">
       <Card className="w-full sm:w-3xl lg:w-5xl max-w-5xl mx-auto mt-16 md:mt-10 flex-shrink-0 bg-white shadow-xl min-h-[800px]">
@@ -719,6 +785,7 @@ export default function UserProfilePage() {
               formData={formData} 
               handleChange={handleChange}
               setIsUploading={setIsUploading}
+              onUpdateLogo={handleUpdateLogo}
             />
           )}
           {currentStep === 2 && (
