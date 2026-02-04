@@ -509,9 +509,11 @@ export default function UserProfilePage() {
     // testing
     console.log(formData);
 
+    // Validation check with better email handling
     if (
       !formData.fullName ||
-      !formData.email ||
+      !formData.email || 
+      !formData.email.trim() || // Ensure email is not just whitespace
       !formData.logo ||
       !formData.currentTitle ||
       !formData.phone ||
@@ -536,6 +538,7 @@ export default function UserProfilePage() {
       // Format payload to match backend schema
       const payload = {
         ...formData,
+        email: formData.email.trim().toLowerCase(), // Ensure email is trimmed and lowercase
         skills: formData.skills
           ? formData.skills
               .split(",")
@@ -544,24 +547,39 @@ export default function UserProfilePage() {
           : [],
         employmentType: formData.employeeType,
 
-        // Mapping inferred from errors and UI usage:
-        // 1. "location" expects a string (seen in UserHeader)
-        location: `${formData.city || ""}, ${formData.country || ""}`,
+        // Convert salary fields to numbers as expected by backend
+        minSalary: formData.minSalary ? Number(formData.minSalary) : 0,
+        maxSalary: formData.maxSalary ? Number(formData.maxSalary) : 0,
 
-        // 2. "currentTitle" in UI selects from IndustryOptions
-        // Not sending currentTitle/industry/profession as it causes 400 Bad Request
+        // Convert education array to object format for backend
+        education: formData.education.length > 0 ? formData.education[0] : {
+          institution: "",
+          degree: "",
+          fieldOfStudy: "",
+          startDate: "",
+          endDate: "",
+          isCurrent: false,
+          description: "",
+          grade: "",
+        },
 
-        // 3. "jobTitle" (Target Job Title) map to "title"
+        // Backend expects 'title' field to be required
         title: formData.jobTitle,
+        
+        // Optional targetJob field
+        targetJob: formData.jobTitle,
+
+        // Location mapping
+        location: `${formData.city || ""}, ${formData.country || ""}`,
       };
 
-      // Remove forbidden/mapped keys
-      delete payload.employeeType;
-      delete payload.currentTitle;
-      delete payload.jobTitle;
-      delete payload.city;
-      delete payload.country;
-      delete payload.address;
+      // Remove fields that shouldn't be sent to backend
+      delete payload.employeeType; // Already mapped to employmentType
+      delete payload.currentTitle; // Not needed in backend
+      delete payload.jobTitle; // Already mapped to title and targetJob
+      delete payload.city; // Already mapped to location
+      delete payload.country; // Already mapped to location
+      delete payload.address; // Not in backend schema
 
       const response = await api.post({
         url: "/userProfile",
@@ -588,10 +606,11 @@ export default function UserProfilePage() {
     setError("");
 
     if (currentStep === 1) {
-      // Step 1 validation
+      // Step 1 validation - ensure email is properly filled
       if (
         !formData.fullName ||
         !formData.email ||
+        !formData.email.trim() || // Check for whitespace-only email
         !formData.logo ||
         !formData.currentTitle ||
         !formData.phone ||
@@ -613,6 +632,9 @@ export default function UserProfilePage() {
       }
     } else if (currentStep === 3) {
       // Step 3 validation
+      const minSal = Number(formData.minSalary);
+      const maxSal = Number(formData.maxSalary);
+      
       if (
         !formData.jobTitle ||
         !formData.minSalary ||
@@ -620,6 +642,12 @@ export default function UserProfilePage() {
         formData.employeeType.length === 0
       ) {
         setError("Please fill all required fields and select at least one employment type.");
+        return;
+      }
+      
+      // Validate salary range (backend requires maxSalary > minSalary)
+      if (isNaN(minSal) || isNaN(maxSal) || maxSal <= minSal) {
+        setError("Please enter valid salary range. Maximum salary must be greater than minimum salary.");
         return;
       }
     }
