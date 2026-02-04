@@ -1,5 +1,21 @@
 import api from "@/lib/axios";
 
+// Helper function to get business profile ID
+const getBusinessProfileId = async () => {
+  try {
+    const response = await api.get({
+      url: `/businessProfile/me`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+    return response?.data?._id || null;
+  } catch (error) {
+    console.error('Failed to fetch business profile ID:', error);
+    return null;
+  }
+};
+
 class SubscriptionAPI {
   /**
    * Create Stripe checkout session for subscription
@@ -56,6 +72,85 @@ class SubscriptionAPI {
       enableSuccessMessage: false,
       enableErrorMessage: true,
     });
+  }
+
+  /**
+   * Get current user subscription
+   */
+  async getMySubscription() {
+    return await api.get({
+      url: `/subscription`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get total spent on subscriptions
+   */
+  async getTotalSpent() {
+    return await api.get({
+      url: `/subscription/total-spent`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get business usage limits/counts
+   * @param {string} businessId - Optional business profile ID, will auto-fetch if not provided
+   */
+  async getBusinessUsage(businessId = null) {
+    try {
+      // Auto-fetch businessId if not provided
+      const finalBusinessId = businessId || await getBusinessProfileId();
+      
+      if (!finalBusinessId) {
+        console.log('No business profile found for user');
+        return { communities: 0, jobs: 0, products: 0 };
+      }
+
+      console.log('Fetching business usage for businessId:', finalBusinessId);
+
+      const [communitiesResponse, jobsResponse, productsResponse] = await Promise.all([
+        api.get({
+          url: `/community?businessId=${finalBusinessId}`,
+          activateLoader: false,
+          enableSuccessMessage: false,
+          enableErrorMessage: false,
+        }),
+        api.get({
+          url: `/jobs?businessId=${finalBusinessId}`,
+          activateLoader: false,
+          enableSuccessMessage: false,
+          enableErrorMessage: false,
+        }),
+        api.get({
+          url: `/products/business/${finalBusinessId}`,
+          activateLoader: false,
+          enableSuccessMessage: false,
+          enableErrorMessage: false,
+        }),
+      ]);
+
+      const usage = {
+        communities: communitiesResponse?.data?.totalDocs || 0,
+        jobs: jobsResponse?.data?.totalDocs || 0,
+        products: productsResponse?.data?.totalDocs || 0,
+      };
+
+      console.log('Business usage fetched:', usage);
+      return usage;
+    } catch (error) {
+      console.error('Failed to fetch business usage:', error);
+      return {
+        communities: 0,
+        jobs: 0,
+        products: 0,
+      };
+    }
   }
 
   /**

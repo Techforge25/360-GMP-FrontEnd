@@ -1,12 +1,11 @@
 "use client";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import { ChevronLeft } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FiArrowRight,
   FiInfo,
   FiPlus,
-  FiCheckCircle,
   FiCalendar,
   FiChevronDown,
   FiSearch,
@@ -14,8 +13,90 @@ import {
   FiChevronRight,
 } from "react-icons/fi";
 import { RiVisaLine } from "react-icons/ri";
+import { SiStripe } from "react-icons/si";
+import subscriptionAPI from "@/services/subscriptionAPI";
 
 const BusinessSubscriptionsPage = () => {
+  const [subscription, setSubscription] = useState(null);
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchSubscriptionData = async () => {
+      try {
+        const [subResponse, totalSpentResponse] = await Promise.all([
+          subscriptionAPI.getMySubscription(),
+          subscriptionAPI.getTotalSpent(),
+        ]);
+
+        const subData = Array.isArray(subResponse?.data)
+          ? subResponse.data[0]
+          : subResponse?.data;
+
+        let finalSubscription = subData || null;
+
+        if (!finalSubscription) {
+          const stored = subscriptionAPI.getStoredSubscription();
+          if (stored?.planName) {
+            finalSubscription = {
+              ...stored,
+              plan: { name: stored.planName, price: stored.price },
+            };
+          }
+        }
+
+        if (isMounted) {
+          setSubscription(finalSubscription);
+          setTotalSpent(totalSpentResponse?.data ?? 0);
+        }
+      } catch (error) {
+        console.error("Failed to fetch subscription data", error);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchSubscriptionData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const planName =
+    subscription?.plan?.name || subscription?.planName || "Current Plan";
+  const planPriceRaw = subscription?.plan?.price ?? subscription?.price ?? 0;
+  const planPrice =
+    typeof planPriceRaw === "number" ? planPriceRaw : Number(planPriceRaw) || 0;
+  const status = subscription?.status || "active";
+  const statusLabel =
+    status === "active"
+      ? "Active Plan"
+      : status === "canceled"
+        ? "Canceled"
+        : "Expired";
+  const renewalDate = subscription?.endDate || subscription?.nextBillingDate;
+
+  const formatCurrency = (value) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: 0,
+    }).format(value || 0);
+
+  const formatDate = (value) => {
+    if (!value) return "N/A";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "N/A";
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className=" bg-gray-50">
       {/* Header */}
@@ -37,21 +118,29 @@ const BusinessSubscriptionsPage = () => {
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-purple-50 via-white to-white pointer-events-none opacity-50" />
 
           <div className="relative z-10">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#E6F6E9] border border-[#0B8806] text-[#0B8806] text-sm font-semibold mb-6">
-              Active Plan
+            <span
+              className={`inline-block px-4 py-1.5 rounded-full text-sm font-semibold mb-6 ${
+                status === "active"
+                  ? "bg-[#E6F6E9] border border-[#0B8806] text-[#0B8806]"
+                  : "bg-red-50 border border-red-500 text-red-600"
+              }`}
+            >
+              {statusLabel}
             </span>
 
             <h2 className="text-3xl font-medium text-gray-900 mb-2">
-              Silver Perfect For Discovering Businesses
+              {loading ? "Loading plan..." : planName}
             </h2>
 
             <div className="flex items-baseline gap-1 mb-2">
-              <span className="text-4xl font-medium text-[#240457]">$199</span>
+              <span className="text-4xl font-medium text-[#240457]">
+                {formatCurrency(planPrice)}
+              </span>
               <span className="text-[#240457] text-lg">/Month</span>
             </div>
 
             <p className="text-gray-700 mb-8">
-              Renews Automatically On Jan 15, 2026
+              Renews Automatically On {formatDate(renewalDate)}
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -67,69 +156,7 @@ const BusinessSubscriptionsPage = () => {
         </div>
 
         {/* Lower Grid Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Usage Limits Card */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="text-lg font-medium text-black">Usage Limits</h3>
-              <button className="text-base text-blue-600 hover:underline font-medium">
-                View Details
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              {/* Product Listings */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-base font-medium text-gray-700">
-                  <span>Product Listings</span>
-                  <div>
-                    <span className="text-gray-900">10 </span>
-                    <span className="text-gray-500">/ 20</span>
-                  </div>
-                </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#240457] w-1/2 rounded-full" />
-                </div>
-              </div>
-
-              {/* Active Job Posts */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-base font-medium text-gray-700">
-                  <span>Active Job Posts</span>
-                  <div>
-                    <span className="text-gray-900">45 </span>
-                    <span className="text-gray-500">/ 100</span>
-                  </div>
-                </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#240457] w-[45%] rounded-full" />
-                </div>
-              </div>
-
-              {/* Communities */}
-              <div className="space-y-2">
-                <div className="flex justify-between text-base font-medium text-gray-700">
-                  <span>Communities</span>
-                  <div>
-                    <span className="text-gray-900">3 </span>
-                    <span className="text-gray-500">/ 10</span>
-                  </div>
-                </div>
-                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-[#240457] w-[30%] rounded-full" />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 pt-6 border-t border-gray-100">
-              <p className="text-base text-gray-500">
-                Need more capacity?{" "}
-                <button className="text-blue-600 hover:underline">
-                  Upgrade your limits
-                </button>
-              </p>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {/* Billing Cycle Card */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
@@ -147,7 +174,7 @@ const BusinessSubscriptionsPage = () => {
                   Next billing date
                 </p>
                 <p className="text-lg font-medium text-black">
-                  January 15, 2026
+                  {formatDate(renewalDate)}
                 </p>
               </div>
             </div>
@@ -156,7 +183,10 @@ const BusinessSubscriptionsPage = () => {
               <FiInfo className="w-5 h-5 text-white border border-blue-600 rounded-full bg-blue-600 mt-0.5 flex-shrink-0" />
               <p className="text-sm text-blue-500">
                 Your account will be charged{" "}
-                <span className="font-bold">$199</span> automatically.
+                <span className="font-bold">
+                  {formatCurrency(planPrice)}
+                </span>{" "}
+                automatically.
               </p>
             </div>
           </div>
@@ -173,11 +203,11 @@ const BusinessSubscriptionsPage = () => {
             <div className="bg-gray-50 rounded-lg p-4 mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="bg-white p-1 rounded border border-gray-200">
-                  <RiVisaLine className="w-8 h-5 text-blue-800" />
+                  <SiStripe className="w-8 h-5 text-blue-600" />
                 </div>
                 <div>
                   <p className="text-base font-medium text-gray-900">
-                    visa ****2125
+                    stripe
                   </p>
                   <p className="text-sm text-gray-500">Expiry · 12/27</p>
                 </div>
@@ -219,8 +249,10 @@ const BusinessSubscriptionsPage = () => {
                   Current Plan
                 </span>
               </div>
-              <p className="text-2xl font-medium text-gray-900">Silver</p>
-              <p className="text-sm text-gray-500 mt-1">Renew Automatically</p>
+              <p className="text-2xl font-medium text-gray-900">{planName}</p>
+              <p className="text-sm text-gray-500 mt-1">
+                Status: {statusLabel}
+              </p>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
@@ -234,8 +266,12 @@ const BusinessSubscriptionsPage = () => {
                   Next Billing Date
                 </span>
               </div>
-              <p className="text-2xl font-medium text-gray-900">Nov 24, 2023</p>
-              <p className="text-sm text-gray-500 mt-1">Amount: $199.00</p>
+              <p className="text-2xl font-medium text-gray-900">
+                {formatDate(renewalDate)}
+              </p>
+              <p className="text-sm text-gray-500 mt-1">
+                Amount: {formatCurrency(planPrice)}
+              </p>
             </div>
 
             <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
@@ -249,7 +285,9 @@ const BusinessSubscriptionsPage = () => {
                   Total Spent YTD
                 </span>
               </div>
-              <p className="text-2xl font-medium text-gray-900">$48,000.00</p>
+              <p className="text-2xl font-medium text-gray-900">
+                {formatCurrency(totalSpent)}
+              </p>
               <div className="flex items-center gap-2 mt-1">
                 <img src="/assets/images/trending_up.png" alt="" />
                 <p className="text-sm text-green-500 font-medium">
@@ -313,90 +351,55 @@ const BusinessSubscriptionsPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {[
-                    {
-                      date: "Oct 28, 2025",
-                      time: "12:30 AM",
-                      id: "#INV-2025-089",
-                      plan: "Silver Plan-Monthly",
-                      amount: "$199",
-                      status: "Paid",
-                    },
-                    {
-                      date: "Aug 28, 2025",
-                      time: "12:30 AM",
-                      id: "#INV-2025-087",
-                      plan: "Silver Plan-Monthly",
-                      amount: "$199",
-                      status: "Paid",
-                    },
-                    {
-                      date: "Sep 28, 2025",
-                      time: "12:30 AM",
-                      id: "#INV-2025-088",
-                      plan: "Silver Plan-Monthly",
-                      amount: "$199",
-                      status: "Paid",
-                    },
-                    {
-                      date: "Jul 28, 2025",
-                      time: "12:30 AM",
-                      id: "#INV-2025-086",
-                      plan: "Premium Plan -Monthly",
-                      amount: "$299",
-                      status: "Paid",
-                    },
-                    {
-                      date: "Jul 28, 2025",
-                      time: "12:30 AM",
-                      id: "#INV-2025-086",
-                      plan: "Premium Plan -Monthly",
-                      amount: "$299",
-                      status: "Failed",
-                    },
-                    {
-                      date: "May 28, 2025",
-                      time: "12:30 AM",
-                      id: "#INV-2025-084",
-                      plan: "Silver-Monthly",
-                      amount: "$199",
-                      status: "Paid",
-                    },
-                  ].map((invoice, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                  {!subscription ? (
+                    <tr>
+                      <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                        {loading ? "Loading subscription..." : "No active subscription found."}
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr className="hover:bg-gray-50">
                       <td className="px-6 py-4">
                         <div className="text-base font-medium text-gray-900">
-                          {invoice.date}
+                          {formatDate(subscription.startDate || subscription.createdAt)}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {invoice.time}
+                          {new Date(subscription.startDate || subscription.createdAt || Date.now()).toLocaleTimeString('en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                          })}
                         </div>
                       </td>
                       <td className="px-6 py-4 text-base text-gray-500">
-                        {invoice.id}
+                        {subscription.stripeSubscriptionId || `#INV-${new Date().getFullYear()}-001`}
                       </td>
                       <td className="px-6 py-4 text-base text-gray-900">
-                        {invoice.plan}
+                        {subscription.plan?.name || subscription.planName || 'Current Plan'}
                       </td>
                       <td className="px-6 py-4 text-base font-medium text-gray-900">
-                        {invoice.amount}
+                        {formatCurrency(subscription.plan?.price || subscription.price || 0)}
                       </td>
                       <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
-                            invoice.status === "Paid"
+                            subscription.status === "active"
                               ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
+                              : subscription.status === "canceled"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-yellow-100 text-yellow-800"
                           }`}
                         >
                           <span
                             className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                              invoice.status === "Paid"
+                              subscription.status === "active"
                                 ? "bg-green-500"
-                                : "bg-red-500"
+                                : subscription.status === "canceled"
+                                ? "bg-red-500"
+                                : "bg-yellow-500"
                             }`}
                           ></span>
-                          {invoice.status}
+                          {subscription.status === "active" ? "Paid" : subscription.status === "canceled" ? "Failed" : "Pending"}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
@@ -406,7 +409,7 @@ const BusinessSubscriptionsPage = () => {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  )}
                 </tbody>
               </table>
             </div>
@@ -414,8 +417,10 @@ const BusinessSubscriptionsPage = () => {
             {/* Pagination */}
             <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
               <p className="text-base text-gray-700">
-                Showing <span className="font-medium text-black">1-5</span> Of{" "}
-                <span className="font-medium text-black">20</span>
+                Showing <span className="font-medium text-black">
+                  {subscription ? "1" : "0"}
+                </span> Of{" "}
+                <span className="font-medium text-black">{subscription ? "1" : "0"}</span>
               </p>
               <div className="flex items-center space-x-2">
                 <div className="flex items-center gap-1">
