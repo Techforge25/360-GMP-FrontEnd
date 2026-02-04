@@ -40,6 +40,7 @@ export const UserProvider = ({ children }) => {
           ...user,
           ...(response.data || {}),
           role: role, // Ensure role is explicitly set locally
+          profileData: role === "business" ? "business" : "user",
         };
         login(updatedUser);
       } else {
@@ -66,6 +67,7 @@ export const UserProvider = ({ children }) => {
         const updatedUser = {
           ...user,
           role: role,
+          profileData: role === "business" ? "business" : "user",
         };
         login(updatedUser);
         return; // Treat as success so UI proceeds
@@ -80,7 +82,13 @@ export const UserProvider = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ user, login, setOnboardingRole, onboardingRole: user?.role }}
+      value={{ 
+        user, 
+        login, 
+        setOnboardingRole, 
+        onboardingRole: user?.role,
+        onboardingProfileData: user?.profileData 
+      }}
     >
       {children}
     </UserContext.Provider>

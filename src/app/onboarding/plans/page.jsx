@@ -281,10 +281,11 @@ function PlansList() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const { onboardingRole } = useUserRole();
+  const { onboardingRole, onboardingProfileData } = useUserRole();
 
   // Prefer context role, fallback to query param, default to "user"
   const role = onboardingRole || searchParams.get("role") || "user";
+  const profileData = onboardingProfileData || (role === "business" ? "business" : "user");
   const isBusiness = role === "business";
 
   const [subscription, setSubscription] = useState(null);
@@ -339,7 +340,7 @@ function PlansList() {
       // Call backend to create Stripe checkout session for all plans
       const response = await subscriptionAPI.createStripeCheckout(
         plan.id,
-        role,
+        profileData,
         successUrl,
         cancelUrl,
       );
@@ -362,11 +363,12 @@ function PlansList() {
           planId: plan.id,
           planName: plan.name,
           role: role,
+          profileData: profileData,
           status: "pending",
           createdAt: new Date().toISOString(),
         };
 
-        console.log("Storing subscription with role:", role);
+        console.log("Storing subscription with role:", role, "profileData:", profileData);
         subscriptionAPI.storeSubscription(subscriptionData);
 
         // Redirect to Stripe checkout for all plans (including free trial)
