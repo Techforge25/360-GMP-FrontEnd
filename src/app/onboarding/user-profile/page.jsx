@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { Stepper } from "@/components/ui/Stepper";
 import { useStepper } from "@/hooks/useStepper";
 import { SuccessModal } from "@/components/ui/SuccessModal";
+import { useUserRole } from "@/context/UserContext";
 import {
   FiArrowLeft,
   FiArrowRight,
@@ -31,52 +32,79 @@ const IndustryOptions = [
   "Other",
 ];
 
-const Step1 = ({ formData, handleChange }) => (
+const Step1 = ({ formData, handleChange, setIsUploading }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
     <div>
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="text-base font-medium">Full Name</label>
-          <Input
-            placeholder="Alex Morgan"
-            value={formData.fullName}
-            onChange={(e) => handleChange("fullName", e.target.value)}
-            required
+      <div className="space-y-6">
+        {/* Profile Photo Upload */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Upload Profile Photo</h3>
+          <FileUpload
+            label="Upload Profile Photo"
+            subLabel="JPG, PNG (Max 5MB)"
+            onUploadingChange={setIsUploading}
+            onUpload={(file, onProgress) =>
+              uploadToCloudinary(file, "user/profile", onProgress).then((url) => {
+                handleChange("logo", url);
+                return url;
+              })
+            }
           />
         </div>
-        <div className="space-y-2">
-          <label className="text-base font-medium">Current Title / Role</label>
-          <div className="relative">
-            <select
-              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
-              placeholder="e.g Supply Chain Analyst"
-              value={formData.currentTitle || ""}
-              onChange={(e) => handleChange("currentTitle", e.target.value)}
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-base font-medium">Full Name</label>
+            <Input
+              placeholder="Alex Morgan"
+              value={formData.fullName}
+              onChange={(e) => handleChange("fullName", e.target.value)}
               required
-            >
-              <option value="">Select Title</option>
-              {IndustryOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">Email Address</label>
+            <Input
+              type="email"
+              placeholder="alex.morgan@example.com"
+              value={formData.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">Current Title / Role</label>
+            <div className="relative">
+              <select
+                className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+                placeholder="e.g Supply Chain Analyst"
+                value={formData.currentTitle || ""}
+                onChange={(e) => handleChange("currentTitle", e.target.value)}
+                required
+              >
+                <option value="">Select Title</option>
+                {IndustryOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">Contact Phone Number</label>
+            <Input
+              placeholder="+128895949965"
+              value={formData.phone || ""}
+              onChange={(e) => handleChange("phone", e.target.value)}
+              required
+            />
           </div>
         </div>
+        
+        {/* Location Fields */}
         <div className="space-y-2">
-          <label className="text-base font-medium">Contact Phone Number</label>
-          <Input
-            placeholder="+128895949965"
-            value={formData.phone || ""}
-            onChange={(e) => handleChange("phone", e.target.value)}
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          {/* <label className="text-base font-medium">
-            Location (City,State,Country)
-          </label> */}
           <div>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-2">
@@ -451,9 +479,11 @@ export default function UserProfilePage() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { user } = useUserRole();
 
   const [formData, setFormData] = useState({
     fullName: "",
+    email: user?.email || "", // Pre-populate with user's email if available
     currentTitle: "",
     phone: "",
     // location: "",
@@ -468,6 +498,7 @@ export default function UserProfilePage() {
     maxSalary: "",
     employeeType: [],
     resumeUrl: "",
+    logo: "", // Profile photo URL
   });
   const router = useRouter();
 
@@ -480,6 +511,8 @@ export default function UserProfilePage() {
 
     if (
       !formData.fullName ||
+      !formData.email ||
+      !formData.logo ||
       !formData.currentTitle ||
       !formData.phone ||
       !formData.city ||
@@ -558,13 +591,15 @@ export default function UserProfilePage() {
       // Step 1 validation
       if (
         !formData.fullName ||
+        !formData.email ||
+        !formData.logo ||
         !formData.currentTitle ||
         !formData.phone ||
         !formData.country ||
         !formData.city ||
         !formData.address
       ) {
-        setError("Please fill all required fields before proceeding.");
+        setError("Please fill all required fields and upload a profile photo before proceeding.");
         return;
       }
     } else if (currentStep === 2) {
@@ -652,7 +687,11 @@ export default function UserProfilePage() {
           )}
 
           {currentStep === 1 && (
-            <Step1 formData={formData} handleChange={handleChange} />
+            <Step1 
+              formData={formData} 
+              handleChange={handleChange}
+              setIsUploading={setIsUploading}
+            />
           )}
           {currentStep === 2 && (
             <Step2
