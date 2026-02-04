@@ -423,50 +423,172 @@ const AuthNavbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0">
-            <div className="px-4 py-4 space-y-2">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
+          <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 z-40">
+            <div className="px-6 py-6">
+              {/* Navigation Links Section */}
+              <div className="mb-6">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Navigation
+                </h3>
+                <div className="space-y-1">
+                  {navLinks.map((link) => {
+                    const isActive = pathname === link.href;
+                    return (
+                      <Link
+                        key={link.label}
+                        href={link.href}
+                        className={`block text-base font-medium px-4 py-3 rounded-xl transition-all duration-200 ${
+                          isActive
+                            ? "text-white bg-gradient-to-r from-[#240457] to-[#3B1A78] shadow-lg transform scale-[0.98]"
+                            : "text-gray-700 hover:text-[#240457] hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md"
+                        }`}
+                        onClick={toggleMenu}
+                      >
+                        {link.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Profile & Actions Section */}
+              <div className="border-t border-gray-100 pt-6">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Account
+                </h3>
+                <div className="space-y-1">
                   <Link
-                    key={link.label}
-                    href={link.href}
-                    className={`block text-xl font-medium px-3 py-2 rounded-md transition-colors ${
-                      isActive
-                        ? "text-[#240457] bg-gray-50"
-                        : "text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
-                    }`}
+                    href={
+                      user?.role === "business"
+                        ? "/dashboard/business/messages"
+                        : "/dashboard/user/messages"
+                    }
+                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
                     onClick={toggleMenu}
                   >
-                    {link.label}
+                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
+                      <MdOutlineMessage className="w-4 h-4 text-white" />
+                    </div>
+                    <span>Messages</span>
                   </Link>
-                );
-              })}
-              <div className="border-t border-gray-100 pt-4 mt-4">
-                <Link
-                  href={
-                    user?.role === "business"
-                      ? "/dashboard/business/messages"
-                      : "/dashboard/user/messages"
-                  }
-                  className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md hover:bg-gray-50"
-                  onClick={toggleMenu}
-                >
-                  <MdOutlineMessage className="w-5 h-5" />
-                  <span>Messages</span>
-                </Link>
-                <Link
-                  href={
-                    user?.role === "business"
-                      ? "/dashboard/business/settings"
-                      : "/dashboard/user/profile"
-                  }
-                  className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md hover:bg-gray-50 mt-2"
-                  onClick={toggleMenu}
-                >
-                  <FiUser className="w-5 h-5" />
-                  <span>Profile</span>
-                </Link>
+                  
+                  <Link
+                    href={
+                      user?.role === "business"
+                        ? "/dashboard/business/profile"
+                        : "/dashboard/user/profile"
+                    }
+                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
+                    onClick={toggleMenu}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                      <FiUser className="w-4 h-4 text-white" />
+                    </div>
+                    <span>My Profile</span>
+                  </Link>
+
+                  {user?.role === "business" && (
+                    <Link
+                      href="/dashboard/business/products"
+                      className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
+                      onClick={toggleMenu}
+                    >
+                      <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
+                        <FiBox className="w-4 h-4 text-white" />
+                      </div>
+                      <span>My Products</span>
+                    </Link>
+                  )}
+
+                  <Link
+                    href={
+                      user?.role === "business"
+                        ? "/dashboard/business/wallet"
+                        : "/dashboard/user/wallet"
+                    }
+                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
+                    onClick={toggleMenu}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                      <FiCreditCard className="w-4 h-4 text-white" />
+                    </div>
+                    <span>Wallet</span>
+                  </Link>
+
+                  <Link
+                    href={
+                      user?.role === "business"
+                        ? "/dashboard/business/orders"
+                        : "/dashboard/user/orders"
+                    }
+                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
+                    onClick={toggleMenu}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center">
+                      <FiShoppingBag className="w-4 h-4 text-white" />
+                    </div>
+                    <span>Orders</span>
+                  </Link>
+
+                  <Link
+                    href={
+                      user?.role === "business"
+                        ? "/dashboard/business/subscriptions"
+                        : "/dashboard/user/subscriptions"
+                    }
+                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
+                    onClick={toggleMenu}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg flex items-center justify-center">
+                      <FiLayers className="w-4 h-4 text-white" />
+                    </div>
+                    <span>Subscriptions</span>
+                  </Link>
+
+                  <Link
+                    href={
+                      user?.role === "business"
+                        ? "/dashboard/business/support"
+                        : "/dashboard/user/support"
+                    }
+                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
+                    onClick={toggleMenu}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
+                      <FiHelpCircle className="w-4 h-4 text-white" />
+                    </div>
+                    <span>Support</span>
+                  </Link>
+                </div>
+
+                {/* Bottom Actions */}
+                <div className="mt-6 pt-4 border-t border-gray-100 space-y-2">
+                  <button
+                    className="w-full flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200 text-left"
+                    onClick={() => {
+                      toggleMenu();
+                      setIsSwitchModalOpen(true);
+                    }}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center">
+                      <FiRepeat className="w-4 h-4 text-white" />
+                    </div>
+                    <span>Switch Role</span>
+                  </button>
+
+                  <button
+                    className="w-full flex items-center gap-3 text-base font-medium text-red-600 hover:text-red-700 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:shadow-md transition-all duration-200 text-left"
+                    onClick={() => {
+                      toggleMenu();
+                      setIsSignOutModalOpen(true);
+                    }}
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center">
+                      <FiLogOut className="w-4 h-4 text-white" />
+                    </div>
+                    <span>Sign Out</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
