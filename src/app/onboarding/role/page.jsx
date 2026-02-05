@@ -46,7 +46,7 @@ export default function RoleSelectionPage() {
   };
 
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center p-3 xs:p-4 sm:p-6">
       <div className="fixed inset-0 -z-10">
         <img
           src="/assets/images/authBG.png"
@@ -56,18 +56,18 @@ export default function RoleSelectionPage() {
         <div className="absolute inset-0 bg-black/60" />
       </div>
 
-      <Card className="w-full max-w-2xl rounded-3xl border-none shadow-xl bg-surface-elevated z-10 relative">
-        <CardHeader className="text-center pb-2">
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-brand-primary to-brand-primary-light bg-clip-text text-transparent">
+      <Card className="w-full max-w-[280px] xs:max-w-sm sm:max-w-md lg:max-w-2xl rounded-2xl xs:rounded-3xl border-none shadow-xl bg-surface-elevated z-10 relative">
+        <CardHeader className="text-center pb-1 xs:pb-2 px-4 xs:px-6 pt-4 xs:pt-6 sm:pt-8">
+          <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold bg-gradient-to-r from-brand-primary to-brand-primary-light bg-clip-text text-transparent leading-tight">
             Welcome To 360 GMP
           </CardTitle>
-          <CardDescription className="text-text-secondary">
+          <CardDescription className="text-xs xs:text-sm sm:text-base text-text-secondary mt-1">
             One Platform Many Solutions
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="space-y-6 pt-6">
-          <div className="space-y-4">
+        <CardContent className="space-y-3 xs:space-y-4 sm:space-y-6 px-4 xs:px-6 pb-4 xs:pb-6 sm:pb-8 pt-2 xs:pt-4 sm:pt-6">
+          <div className="space-y-2 xs:space-y-3 sm:space-y-4">
             <RoleSelectionCard
               type="business"
               selected={selectedRole}
@@ -82,7 +82,7 @@ export default function RoleSelectionPage() {
 
           <button
             onClick={handleContinue}
-            className="w-full h-11 bg-brand-primary hover:bg-brand-primary/90 text-white rounded-md font-medium transition-colors"
+            className="w-full h-10 xs:h-11 bg-brand-primary hover:bg-brand-primary/90 text-white rounded-lg font-medium transition-colors text-sm xs:text-base"
           >
             Continue
           </button>

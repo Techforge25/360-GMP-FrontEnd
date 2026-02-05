@@ -65,28 +65,28 @@ export default function SignupPage() {
   };
 
   return (
-    <Card className="w-full min-w-[360px] sm:min-w-0 sm:max-w-lg border-none shadow-xl bg-surface-elevated">
-      <CardHeader className="text-center pb-2">
-        <CardTitle className="text-2xl font-bold text-brand-primary">
+    <Card className="w-full max-w-sm xs:max-w-md sm:max-w-lg lg:max-w-xl mx-auto border-none shadow-xl bg-surface-elevated">
+      <CardHeader className="text-center pb-1 sm:pb-2 px-3 xs:px-4 sm:px-6 pt-4 xs:pt-6 sm:pt-8">
+        <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold text-brand-primary">
           Welcome To 360GMP
         </CardTitle>
-        <CardDescription className="text-text-secondary">
+        <CardDescription className="text-xs xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
           One Platform Many Solutions
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-6 pt-6">
+      <CardContent className="space-y-3 xs:space-y-4 sm:space-y-6 px-3 xs:px-4 sm:px-6 pb-4 xs:pb-6 sm:pb-8 pt-3 xs:pt-4 sm:pt-6">
         {error && (
-          <div className="p-3 text-base text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-2 xs:p-3 text-xs xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSignup} className="space-y-6">
-          <div className="space-y-2">
+        <form onSubmit={handleSignup} className="space-y-3 xs:space-y-4 sm:space-y-6">
+          <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
             <label
               htmlFor="email"
-              className="text-base font-medium text-text-primary"
+              className="text-xs xs:text-sm sm:text-base font-medium text-text-primary"
             >
               Email
             </label>
@@ -96,16 +96,16 @@ export default function SignupPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-surface border-border-light h-11"
+              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-xs xs:text-sm sm:text-base"
               required
               autoFocus
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
             <label
               htmlFor="password"
-              className="text-base font-medium text-text-primary"
+              className="text-xs xs:text-sm sm:text-base font-medium text-text-primary"
             >
               Password
             </label>
@@ -116,15 +116,15 @@ export default function SignupPage() {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-surface border-border-light h-11 pr-10"
+                className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 pr-8 xs:pr-10 text-xs xs:text-sm sm:text-base"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary"
+                className="absolute right-2 xs:right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary p-1"
               >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
+                {showPassword ? <FiEyeOff className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" /> : <FiEye className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />}
               </button>
             </div>
           </div>
@@ -132,18 +132,18 @@ export default function SignupPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-md mt-2 shadow-lg shadow-brand-primary/20"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-xs xs:text-sm sm:text-base mt-1 xs:mt-2 shadow-lg shadow-brand-primary/20"
           >
             Sign Up
           </Button>
         </form>
 
-        <div className="relative">
+        <div className="relative my-3 xs:my-4 sm:my-6">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border-light" />
           </div>
-          <div className="relative flex justify-center text-sm uppercase">
-            <span className="bg-surface-elevated px-2 text-text-secondary rounded-full border border-border-light">
+          <div className="relative flex justify-center text-[10px] xs:text-xs sm:text-sm uppercase">
+            <span className="bg-surface-elevated px-1.5 xs:px-2 sm:px-3 text-text-secondary rounded-full border border-border-light">
               or
             </span>
           </div>
@@ -151,16 +151,16 @@ export default function SignupPage() {
 
         <Button
           variant="outline"
-          className="w-full h-11 border-border-light text-text-primary font-medium hover:bg-surface-muted relative"
+          className="w-full h-9 xs:h-10 sm:h-11 border-border-light text-text-primary text-xs xs:text-sm sm:text-base font-medium hover:bg-surface-muted relative"
           onClick={handleGoogleSignup}
         >
-          <div className="absolute left-4">
-            <FcGoogle className="h-5 w-5" />
+          <div className="absolute left-2 xs:left-3 sm:left-4">
+            <FcGoogle className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5" />
           </div>
-          Continue with Google
+          <span className="text-xs xs:text-sm sm:text-base">Continue with Google</span>
         </Button>
 
-        <div className="text-center text-base text-text-secondary mt-4">
+        <div className="text-center text-xs xs:text-sm sm:text-base text-text-secondary mt-3 xs:mt-4">
           Already have an account?{" "}
           <Link
             href="/login"

@@ -762,7 +762,7 @@ export default function UserProfilePage() {
 
   return (
     <div className="min-h-screen">
-      <Card className="w-full sm:w-3xl lg:w-5xl max-w-5xl mx-auto mt-16 md:mt-10 flex-shrink-0 bg-white shadow-xl min-h-[800px]">
+      <Card className="w-full sm:w-3x lg:w-4xl max-w-5xl mx-auto mt-16 md:mt-10 flex-shrink-0 bg-white shadow-xl min-h-[800px]">
         <div className="p-8 pb-0">
           <h1 className="text-[#40444C] text-2xl font-semibold text-center mb-8">
             Complete Your Profile

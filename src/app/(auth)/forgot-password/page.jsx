@@ -48,37 +48,37 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <Card className="w-full min-w-[360px] sm:min-w-0 sm:max-w-lg border-none shadow-xl bg-surface-elevated">
-      <CardHeader className="text-center pb-2">
-        <CardTitle className="text-2xl font-bold text-brand-primary">
+    <Card className="w-full max-w-[320px] xs:max-w-[360px] sm:max-w-md lg:max-w-lg mx-auto border-none shadow-xl bg-surface-elevated">
+      <CardHeader className="text-center pb-1 sm:pb-2 px-3 xs:px-4 sm:px-6 pt-4 xs:pt-6 sm:pt-8">
+        <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold text-brand-primary">
           Welcome To 360GMP
         </CardTitle>
-        <CardDescription className="text-text-secondary">
+        <CardDescription className="text-xs xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
           One Platform Many Solutions
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="space-y-6 pt-2">
-        <div className="bg-brand-secondary/30 p-6 rounded-lg text-center">
-          <h3 className="font-bold text-lg mb-2 text-text-primary">
+      <CardContent className="space-y-4 xs:space-y-5 sm:space-y-6 px-3 xs:px-4 sm:px-6 pb-4 xs:pb-6 sm:pb-8 pt-1 xs:pt-2 sm:pt-2">
+        <div className="bg-brand-secondary/30 p-3 xs:p-4 sm:p-6 rounded-lg text-center">
+          <h3 className="font-bold text-sm xs:text-base sm:text-lg mb-1 xs:mb-2 text-text-primary">
             Forgot Password
           </h3>
-          <p className="text-base text-text-secondary">
+          <p className="text-xs xs:text-sm sm:text-base text-text-secondary">
             Please Enter Your Registered Email Address
           </p>
         </div>
 
         {error && (
-          <div className="p-3 text-base text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-2 xs:p-3 text-xs xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit} className="space-y-4 xs:space-y-5 sm:space-y-6">
+          <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
             <label
               htmlFor="email"
-              className="text-base font-medium text-text-primary"
+              className="text-xs xs:text-sm sm:text-base font-medium text-text-primary"
             >
               Enter Your Email
             </label>
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-surface border-border-light h-11"
+              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-xs xs:text-sm sm:text-base"
               required
             />
           </div>
@@ -96,13 +96,13 @@ export default function ForgotPasswordPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-11 text-xl shadow-lg shadow-brand-primary/20"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-sm xs:text-base sm:text-xl shadow-lg shadow-brand-primary/20"
           >
             Request OTP
           </Button>
         </form>
 
-        <div className="text-center text-base text-text-secondary">
+        <div className="text-center text-xs xs:text-sm sm:text-base text-text-secondary">
           Take me back to{" "}
           <Link
             href="/login"

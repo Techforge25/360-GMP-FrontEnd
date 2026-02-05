@@ -436,7 +436,7 @@ function PlansList() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className=" flex items-center justify-center">
         Loading plans...
       </div>
     );
@@ -444,7 +444,7 @@ function PlansList() {
 
   if (!subscription || !subscription.data || subscription.data.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-500">
+      <div className=" flex items-center justify-center text-red-500">
         Failed to load plans or no plans available.
       </div>
     );
@@ -493,7 +493,7 @@ function PlansList() {
 
   console.log(subscriptionPlans);
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 md:p-8">
+    <div className="w-full max-w-[1400px] mx-auto p-4 md:p-8">
       <div className="text-center mb-12">
         <h1 className="text-4xl text-text-primary font-semibold mb-3">
           Choose Your Plan
