@@ -58,8 +58,14 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = (productId) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.productId !== productId));
-    showSuccess("Removed from cart");
+    setCartItems((prevItems) => {
+      const filteredItems = prevItems.filter((item) => item.productId !== productId);
+      // Only show success message if item was actually removed
+      if (filteredItems.length < prevItems.length) {
+        showSuccess("Removed from cart");
+      }
+      return filteredItems;
+    });
   };
 
   const updateQuantity = (productId, quantity) => {

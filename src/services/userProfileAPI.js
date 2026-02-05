@@ -57,7 +57,7 @@ class UserProfileAPI {
    */
   async updateLogo(logoData) {
     return await api.patch({
-      url: "/userProfile/logo",
+      url: "/userProfile/update/logo",
       payload: logoData,
       activateLoader: true,
       enableSuccessMessage: true,

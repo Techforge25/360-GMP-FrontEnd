@@ -23,6 +23,7 @@ import { useUserRole } from "@/context/UserContext";
 import { useCart } from "@/context/CartContext";
 import { MdOutlineMessage } from "react-icons/md";
 import api from "@/lib/axios";
+import userProfileAPI from "@/services/userProfileAPI";
 
 import ProfileSwitchModal from "./ProfileSwitchModal";
 import SignOutModal from "./SignOutModal";
@@ -54,14 +55,10 @@ const AuthNavbar = () => {
             setProfileImage(response.data.logo);
           }
         } else {
-          // Fetch user profile
-          const response = await api.get({
-            url: "/userProfile/me",
-            enableSuccessMessage: false,
-            enableErrorMessage: false,
-          });
-          if (response?.data?.imageProfile) {
-            setProfileImage(response.data.imageProfile);
+          // Fetch user profile using userProfileAPI
+          const response = await userProfileAPI.getMyProfile();
+          if (response?.data?.logo) {
+            setProfileImage(response.data.logo);
           }
         }
       } catch (error) {

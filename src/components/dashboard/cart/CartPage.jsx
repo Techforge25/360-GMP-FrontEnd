@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,64 +12,85 @@ import productAPI from "@/services/productAPI";
 const CartPage = () => {
   const router = useRouter();
   const { cartItems, removeFromCart, updateQuantity } = useCart();
-  const [products, setProducts] = useState([]);
+  const [productsCache, setProductsCache] = useState({});
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
+
+  // Memoized products from cache and cart items
+  const products = useMemo(() => {
+    return cartItems.map(item => {
+      const cachedProduct = productsCache[item.productId];
+      return cachedProduct ? {
+        ...cachedProduct,
+        quantity: item.quantity
+      } : null;
+    }).filter(Boolean);
+  }, [cartItems, productsCache]);
 
   useEffect(() => {
-    const fetchCartProducts = async () => {
+    const fetchMissingProducts = async () => {
       if (cartItems.length === 0) {
         setLoading(false);
+        setInitialLoad(false);
+        return;
+      }
+
+      // Find products not in cache
+      const missingProducts = cartItems.filter(item => !productsCache[item.productId]);
+      
+      if (missingProducts.length === 0) {
+        if (initialLoad) {
+          setLoading(false);
+          setInitialLoad(false);
+        }
         return;
       }
 
       try {
-        setLoading(true);
-        const productPromises = cartItems.map((item) =>
+        if (initialLoad) setLoading(true);
+        
+        const productPromises = missingProducts.map((item) =>
           productAPI.getById(item.productId)
         );
         const results = await Promise.all(productPromises);
         
-        const productsWithQuantity = results.map((result, index) => ({
-          ...result.data,
-          quantity: cartItems[index].quantity,
-        }));
-
-        setProducts(productsWithQuantity);
+        // Update cache with new products
+        const newCache = { ...productsCache };
+        results.forEach((result, index) => {
+          if (result.data) {
+            newCache[missingProducts[index].productId] = result.data;
+          }
+        });
+        
+        setProductsCache(newCache);
       } catch (error) {
         console.error("Failed to fetch cart products:", error);
       } finally {
         setLoading(false);
+        setInitialLoad(false);
       }
     };
 
-    fetchCartProducts();
-  }, [cartItems.length]); // Only refetch when items are added/removed, not quantity changes
+    fetchMissingProducts();
+  }, [cartItems, productsCache, initialLoad]);
 
-  const incrementQuantity = (productId) => {
+  const incrementQuantity = useCallback((productId) => {
     const item = cartItems.find((i) => i.productId === productId);
     if (item) {
       updateQuantity(productId, item.quantity + 1);
-      // Update local products state immediately
-      setProducts(prevProducts => 
-        prevProducts.map(p => 
-          p._id === productId ? { ...p, quantity: p.quantity + 1 } : p
-        )
-      );
     }
-  };
+  }, [cartItems, updateQuantity]);
 
-  const decrementQuantity = (productId) => {
+  const decrementQuantity = useCallback((productId) => {
     const item = cartItems.find((i) => i.productId === productId);
     if (item && item.quantity > 1) {
       updateQuantity(productId, item.quantity - 1);
-      // Update local products state immediately
-      setProducts(prevProducts => 
-        prevProducts.map(p => 
-          p._id === productId ? { ...p, quantity: p.quantity - 1 } : p
-        )
-      );
     }
-  };
+  }, [cartItems, updateQuantity]);
+
+  const handleRemoveProduct = useCallback((productId) => {
+    removeFromCart(productId);
+  }, [removeFromCart]);
 
   const calculateSubtotal = () => {
     return products.reduce((total, product) => {
@@ -90,7 +111,7 @@ const CartPage = () => {
     );
   }
 
-  if (cartItems.length === 0) {
+  if (cartItems.length === 0 || products.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -189,7 +210,10 @@ const CartPage = () => {
                                 </div>
                                 
                                 <button 
-                                  onClick={() => removeFromCart(product._id)}
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    handleRemoveProduct(product._id);
+                                  }}
                                   className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors self-end sm:self-center"
                                 >
                                     <FiTrash2 className="w-5 h-5" />
