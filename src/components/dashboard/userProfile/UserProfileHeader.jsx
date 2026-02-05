@@ -10,6 +10,7 @@ import {
 } from "react-icons/fi";
 import userProfileAPI from "@/services/userProfileAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { FaRegUser } from "react-icons/fa";
 
 const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
   const [profileData, setProfileData] = useState(null);
@@ -177,7 +178,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
 
         {newCover && (
-          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
+          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-1 rounded-full text-sm sm:text-sm font-medium">
             <span className="hidden sm:inline">New cover selected - Click "Update Profile" to save</span>
             <span className="sm:hidden">New cover - Update to save</span>
           </div>
@@ -192,7 +193,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         />
 
         <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <button className="bg-white/90 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-xs sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2">
+          <button className="bg-white/90 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2">
             <img src="/assets/images/eyeIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">View as a user</span>
             <span className="sm:hidden">View</span>
@@ -200,7 +201,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           <button
             onClick={handleBannerClick}
             disabled={isUploadingCover}
-            className="bg-white/90 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-xs sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2 disabled:opacity-50"
+            className="bg-white/90 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2 disabled:opacity-50"
           >
             <FiCamera className="w-3 h-3 sm:w-4 sm:h-4" />
             {isUploadingCover ? (
@@ -212,28 +213,27 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
               </>
             )}
           </button>
-        </div>
-
-        <div className="absolute top-2 sm:top-4 right-2 sm:right-4">
-          <button
-            onClick={handleUpdateProfile}
-            disabled={isUpdating || (!newAvatar && !newCover)}
-            className="bg-[#240457] text-white px-3 sm:px-6 py-1.5 sm:py-2 rounded-md sm:rounded-lg text-xs sm:text-sm font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1.5 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <img
-              src="/assets/images/updateProfileIcon.png"
-              alt=""
-              className="w-3 h-3 sm:w-4 sm:h-4"
-            />
-            {isUpdating ? (
-              <span className="hidden sm:inline">Updating...</span>
-            ) : (
-              <>
-                <span className="hidden sm:inline">Update Profile</span>
-                <span className="sm:hidden">Update</span>
-              </>
-            )}
-          </button>
+          <div className="absolute -bottom-16 sm:-bottom-18 right-1 sm:right-2">
+            <button
+              onClick={handleUpdateProfile}
+              disabled={isUpdating || (!newAvatar && !newCover)}
+              className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <img
+                src="/assets/images/updateProfileIcon.png"
+                alt=""
+                className="w-3 h-3 sm:w-4 sm:h-4"
+              />
+              {isUpdating ? (
+                <span className="hidden sm:inline">Updating...</span>
+              ) : (
+                <>
+                  <span className="hidden sm:inline">Update Profile</span>
+                  <span className="sm:hidden">Update</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -246,7 +246,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                 <img
                   src={
                     newAvatar?.previewUrl ||
-                    profileData.imageProfile ||
+                    profileData.logo ||
                     "/assets/images/userAvatar.png"
                   }
                   alt={profileData.fullName || "User"}
@@ -254,7 +254,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                 />
                 {newAvatar && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white text-xs sm:text-sm font-medium text-center px-2">
+                    <span className="text-white text-sm sm:text-sm font-medium text-center px-2">
                       New avatar
                     </span>
                   </div>
@@ -286,11 +286,11 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
               )}
             </h1>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 mt-2 text-xs sm:text-sm text-gray-500">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 mt-2 text-sm sm:text-sm text-gray-500">
               {profileData.title && (
                 <div className="flex items-center gap-1.5">
                   <span className="w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center">
-                    <FiBriefcase />
+                    <FaRegUser />
                   </span>
                   {profileData.title}
                 </div>
@@ -306,11 +306,11 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                 </div>
               )}
               {profileData.location && (
-                <div className="flex items-center gap-1.5">
-                  <FiMapPin className="w-3 h-3 sm:w-4 sm:h-4" />
-                  {profileData.location}
-                </div>
-              )}
+                              <div className="flex items-center gap-1.5">
+                                  <FiMapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                                <span className="text-sm sm:text-sm text-gray-600">{profileData.location}</span>
+                              </div>
+                            )}
             </div>
           </div>
         </div>

@@ -356,7 +356,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
                     {/* Category Badge */}
                     <div className="absolute top-3 right-3">
-                      <span className="px-4 py-1.5 bg-white/95 backdrop-blur-sm rounded-xl text-[11px] font-semibold text-gray-800 shadow-sm">
+                      <span className="px-4 py-1.5 bg-white/95 backdrop-blur-sm rounded-xl text-[14px] font-semibold text-gray-800 shadow-sm">
                         {community.category || "General"}
                       </span>
                     </div>
@@ -384,7 +384,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                             />
                           ))}
                         </div>
-                        <span className="text-[10px] font-bold text-gray-500">
+                        <span className="text-[14px] font-bold text-gray-500">
                           {community.memberCount > 1000
                             ? (community.memberCount / 1000).toFixed(0) + "k"
                             : community.memberCount || "4k"}
@@ -398,7 +398,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                         "Creating sustainable place for tech and it professional and corporates."}
                     </p>
 
-                    <div className="border-t border-gray-100 pt-4 mb-4 flex items-center justify-between text-[13px] text-gray-500">
+                    <div className="border-t border-gray-100 pt-4 mb-4 flex items-center justify-between text-[14px] text-gray-500">
                       <div className="flex items-center gap-2">
                         <span>Active 2h ago</span>
                       </div>

@@ -58,7 +58,7 @@ export default function ProfileTestimonials() {
                                  <div className="flex text-yellow-400 text-sm">
                                      <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
                                  </div>
-                                 <span className="bg-indigo-50 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full flex items-center gap-1 font-medium">
+                                 <span className="bg-indigo-50 text-indigo-700 text-[14px] px-2 py-0.5 rounded-full flex items-center gap-1 font-medium">
                                      <MdVerified /> Verified Purchaser
                                  </span>
                              </div>

@@ -463,7 +463,7 @@ const Step3 = ({ formData }) => (
 
     <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-base text-orange-800">
       <div className="pt-0.5">
-        <div className="w-4 h-4 rounded-full bg-orange-200 flex items-center justify-center text-[10px] font-bold">
+        <div className="w-4 h-4 rounded-full bg-orange-200 flex items-center justify-center text-[14px] font-bold">
           !
         </div>
       </div>

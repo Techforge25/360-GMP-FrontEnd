@@ -49,7 +49,7 @@ const BusinessCard = ({ business }) => {
       } mb-4 relative`}
     >
       {sponsored && (
-        <span className="absolute top-4 right-4 bg-white text-gray-600 text-[10px] px-2 py-0.5 rounded font-medium">
+        <span className="absolute top-4 right-4 bg-white text-gray-600 text-[14px] px-2 py-0.5 rounded font-medium">
           Ad
         </span>
       )}

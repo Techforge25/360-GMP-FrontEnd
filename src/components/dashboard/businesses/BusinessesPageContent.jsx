@@ -131,7 +131,7 @@ export default function BusinessesPageContent() {
 
   return (
     <div className="w-full bg-white">
-      <span className="text-[#240457] max-w-[1400px] mx-auto block py-3 sm:py-4 px-3 sm:px-6 lg:px-20 text-xs sm:text-sm">Business List</span>
+      <span className="text-[#240457] max-w-[1400px] mx-auto block py-3 sm:py-4 px-3 sm:px-6 lg:px-20 text-sm sm:text-sm">Business List</span>
       <main className="pb-16 sm:pb-20 lg:pb-24">
         <BusinessHero
           query={query}
@@ -203,7 +203,7 @@ export default function BusinessesPageContent() {
                 <div className="flex items-center gap-2">
                   <Button
                     size="sm"
-                    className="bg-[#240457] mx-auto lg:mx-0 text-white text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
+                    className="bg-[#240457] mx-auto lg:mx-0 text-white text-sm sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
                   >
                     <span className="mr-1 sm:mr-2">
                       <CiMenuBurger className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -233,7 +233,7 @@ export default function BusinessesPageContent() {
                   </p>
                   <button
                     onClick={fetchBusinessProfiles}
-                    className="mt-2 text-xs sm:text-sm text-red-700 underline hover:text-red-800 transition-colors"
+                    className="mt-2 text-sm sm:text-sm text-red-700 underline hover:text-red-800 transition-colors"
                   >
                     Try again
                   </button>
@@ -263,10 +263,10 @@ export default function BusinessesPageContent() {
               {/* Pagination */}
               {!loading && businesses.length > 0 && (
                 <div className="flex justify-center items-center mt-8 sm:mt-12 gap-1 sm:gap-2 px-2">
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-xs sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
                     Prev
                   </button>
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-[#240457] text-white rounded text-xs sm:text-sm lg:text-base">
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-[#240457] text-white rounded text-sm sm:text-sm lg:text-base">
                     1
                   </button>
                   <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
@@ -282,7 +282,7 @@ export default function BusinessesPageContent() {
                   <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
                     352
                   </button>
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-xs sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
+                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
                     <span className="hidden sm:inline">Next &gt;</span>
                     <span className="sm:hidden">&gt;</span>
                   </button>

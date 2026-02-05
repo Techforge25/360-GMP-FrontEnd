@@ -79,14 +79,14 @@ const BusinessAboutTab = () => {
             <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Our Story & Mission
             </h2>
-            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-xs sm:text-sm font-semibold hover:underline">
+            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
               <span className="hidden sm:inline">Edit About Section</span>
               <span className="sm:hidden">Edit</span>
               <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
 
-          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+          <p className="text-sm sm:text-sm text-gray-600 leading-relaxed">
             {aboutData.storyMission}
           </p>
         </div>
@@ -97,7 +97,7 @@ const BusinessAboutTab = () => {
             <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Export Market Distribution
             </h2>
-            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-xs sm:text-sm font-semibold hover:underline">
+            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
               <span className="hidden sm:inline">Manage Featured Products</span>
               <span className="sm:hidden">Manage</span>
               <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -129,7 +129,7 @@ const BusinessAboutTab = () => {
 
               {/* Center Label */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg shadow-sm border border-gray-100">
-                <p className="text-xs sm:text-sm text-gray-500">European Union</p>
+                <p className="text-sm sm:text-sm text-gray-500">European Union</p>
                 <p className="text-base sm:text-lg font-bold text-orange-500">30</p>
               </div>
             </div>
@@ -142,7 +142,7 @@ const BusinessAboutTab = () => {
                     className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-xs sm:text-sm text-gray-600">{item.name}</span>
+                  <span className="text-sm sm:text-sm text-gray-600">{item.name}</span>
                 </div>
               ))}
             </div>

@@ -143,12 +143,12 @@ const UserOrders = () => {
         <h1 className="text-lg sm:text-xl lg:text-2xl font-medium text-gray-900">My Orders</h1>
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm lg:text-base text-gray-600 hover:bg-gray-50">
+          <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-sm lg:text-base text-gray-600 hover:bg-gray-50">
             <span className="hidden sm:inline">Filter By Date</span>
             <span className="sm:hidden">Date</span>
             <FiCalendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
           </button>
-          <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm lg:text-base text-gray-600 hover:bg-gray-50">
+          <button className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-sm lg:text-base text-gray-600 hover:bg-gray-50">
             <span className="hidden sm:inline">All Status</span>
             <span className="sm:hidden">Status</span>
             <FiChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
@@ -163,7 +163,7 @@ const UserOrders = () => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`text-xs sm:text-sm lg:text-base font-medium px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl whitespace-nowrap transition-colors ${
+              className={`text-sm sm:text-sm lg:text-base font-medium px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl whitespace-nowrap transition-colors ${
                 activeTab === tab
                   ? "bg-[#240457] text-white"
                   : "text-gray-500 hover:text-gray-700"
@@ -181,25 +181,25 @@ const UserOrders = () => {
           <table className="w-full">
             <thead className="bg-[#F0F0F0]">
               <tr>
-                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Order ID
                 </th>
-                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Buyer
                 </th>
-                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                   Order Date
                 </th>
-                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Total
                 </th>
-                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                   Order Type
                 </th>
-                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-sm sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Action
                 </th>
               </tr>
@@ -211,33 +211,33 @@ const UserOrders = () => {
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
-                    <span className="text-xs sm:text-sm lg:text-base font-semibold text-gray-900">
+                    <span className="text-sm sm:text-sm lg:text-base font-semibold text-gray-900">
                       {order.id}
                     </span>
                   </td>
                   <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4">
-                    <span className="text-xs sm:text-sm lg:text-base text-gray-600 block truncate max-w-[120px] sm:max-w-none">
+                    <span className="text-sm sm:text-sm lg:text-base text-gray-600 block truncate max-w-[120px] sm:max-w-none">
                       {order.buyer}
                     </span>
                   </td>
                   <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap hidden sm:table-cell">
-                    <span className="text-xs sm:text-sm lg:text-base text-gray-600">
+                    <span className="text-sm sm:text-sm lg:text-base text-gray-600">
                       {order.date}
                     </span>
                   </td>
                   <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
-                    <span className="text-xs sm:text-sm lg:text-base font-semibold text-gray-900">
+                    <span className="text-sm sm:text-sm lg:text-base font-semibold text-gray-900">
                       {order.total}
                     </span>
                   </td>
                   <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap hidden md:table-cell">
-                    <span className="text-xs sm:text-sm lg:text-base text-gray-600">
+                    <span className="text-sm sm:text-sm lg:text-base text-gray-600">
                       {order.type}
                     </span>
                   </td>
                   <td className="px-2 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-1.5 sm:px-2 lg:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium ${getStatusColor(
+                      className={`inline-flex items-center px-1.5 sm:px-2 lg:px-3 py-0.5 sm:py-1 rounded-full text-sm sm:text-sm font-medium ${getStatusColor(
                         order.status
                       )}`}
                     >
@@ -263,7 +263,7 @@ const UserOrders = () => {
 
         {/* Load More */}
         <div className="px-3 sm:px-4 lg:px-6 py-4 sm:py-6 border-t border-gray-200 flex justify-center">
-          <button className="px-4 sm:px-6 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-xs sm:text-sm lg:text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+          <button className="px-4 sm:px-6 py-1.5 sm:py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-sm lg:text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors">
             Load more
           </button>
         </div>

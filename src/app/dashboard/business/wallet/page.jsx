@@ -16,13 +16,13 @@ export default function BusinessWalletPage() {
             <h1 className="text-3xl font-bold text-white mb-4">
               Business Wallet & Payments
             </h1>
-            <p className="text-white/90 text-lg max-w-7xl mx-auto">
+            <p className="text-white/90 text-lg max-w-[1400px] mx-auto">
               Manage your business finances, track payments, and handle transactions with our comprehensive wallet system.
             </p>
           </div>
 
           <div className="px-8 py-12 text-center">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-[1400px] mx-auto">
               <div className="w-16 h-16 bg-[#240457]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <FiClock className="w-8 h-8 text-[#240457]" />
               </div>
@@ -329,7 +329,7 @@ export default function BusinessWalletPage() {
 //                   />
 //                 </div>
 //               </div>
-//               <p className={`text-[10px] font-medium ${stat.subLabelColor}`}>
+//               <p className={`text-[14px] font-medium ${stat.subLabelColor}`}>
 //                 {stat.subLabel}
 //               </p>
 //             </div>
@@ -351,7 +351,7 @@ export default function BusinessWalletPage() {
 //                 <span className="text-sm font-semibold text-gray-900">
 //                   Messaging
 //                 </span>
-//                 <span className="text-[10px] text-gray-500">
+//                 <span className="text-[14px] text-gray-500">
 //                   Global Manufacturing Co.
 //                 </span>
 //               </div>
@@ -451,14 +451,14 @@ export default function BusinessWalletPage() {
 //                   <p className="text-base font-semibold text-gray-900 mb-0.5">
 //                     {tx.desc}
 //                   </p>
-//                   <p className="text-[10px] text-gray-500">{tx.date}</p>
+//                   <p className="text-[14px] text-gray-500">{tx.date}</p>
 //                 </div>
 //                 <div className="col-span-3 text-sm text-gray-600">
 //                   {tx.method}
 //                 </div>
 //                 <div className="col-span-2">
 //                   <span
-//                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium
+//                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[14px] font-medium
 //                                 ${tx.status === "Completed" ? "bg-green-100 text-green-700" : ""}
 //                                 ${tx.status === "Pending" ? "bg-yellow-100 text-yellow-700" : ""}
 //                             `}

@@ -17,14 +17,14 @@ export default function BusinessMessagesPage() {
             <h1 className="text-3xl font-bold text-white mb-4">
               Business Messaging Center
             </h1>
-            <p className="text-white/90 text-lg max-w-7xl mx-auto">
+            <p className="text-white/90 text-lg max-w-[1400px] mx-auto">
               Connect with your customers, manage inquiries, and build stronger business relationships.
             </p>
           </div>
 
           {/* Content Section */}
           <div className="px-8 py-12 text-center">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-[1400px] mx-auto">
               <div className="w-16 h-16 bg-[#240457]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <FiClock className="w-8 h-8 text-[#240457]" />
               </div>

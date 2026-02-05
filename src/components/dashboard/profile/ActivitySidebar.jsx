@@ -187,7 +187,7 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-xs sm:text-sm text-gray-500">No critical alerts</p>
+            <p className="text-sm sm:text-sm text-gray-500">No critical alerts</p>
           )}
         </div>
       </div>
@@ -207,7 +207,7 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-xs sm:text-sm text-gray-500">No recent applicants</p>
+            <p className="text-sm sm:text-sm text-gray-500">No recent applicants</p>
           )}
         </div>
       </div>
@@ -430,10 +430,10 @@ const ActivityItem = ({ title, time, action, severity }) => (
       <div>
         <p className="text-sm font-semibold text-gray-800">{title}</p>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-gray-500">({time})</span>
+          <span className="text-[14px] text-gray-500">({time})</span>
           <span className="text-[30px] text-gray-500">•</span>
           <button
-            className={`text-[10px] font-medium flex items-center hover:underline ${severity === "high" ? "text-[#185ADB]" : "text-gray-600"}`}
+            className={`text-[14px] font-medium flex items-center hover:underline ${severity === "high" ? "text-[#185ADB]" : "text-gray-600"}`}
           >
             {action} <FiArrowRight className="w-2 h-2 ml-0.5" />
           </button>
@@ -454,13 +454,13 @@ const ApplicantItem = ({ name, time }) => (
         />
       </div>
       <div>
-        <p className="text-[13px] font-medium text-black">
+        <p className="text-[14px] font-medium text-black">
           New Applicant: {name}
         </p>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-gray-500">({time} ago)</span>
+          <span className="text-[14px] text-gray-500">({time} ago)</span>
           <span className="text-[30px] text-gray-500">•</span>
-          <button className="text-[10px] text-[#185ADB] font-medium text-blue-600 flex items-center hover:underline whitespace-nowrap">
+          <button className="text-[14px] text-[#185ADB] font-medium text-blue-600 flex items-center hover:underline whitespace-nowrap">
             View Detail <FiArrowRight className="w-2 h-2 ml-0.5" />
           </button>
         </div>

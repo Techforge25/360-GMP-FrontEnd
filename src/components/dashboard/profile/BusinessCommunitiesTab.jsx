@@ -242,7 +242,7 @@ const OwnedCommunityCard = ({ community, onDelete, formatMemberCount }) => {
                 <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
                   <FiEdit2 className="w-4 h-4" />
                 </button>
-                <span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-600 text-xs sm:text-sm font-medium rounded-full whitespace-nowrap">
+                <span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-600 text-sm sm:text-sm font-medium rounded-full whitespace-nowrap">
                   {community.category || "General"}
                 </span>
               </div>
@@ -288,7 +288,7 @@ const OwnedCommunityCard = ({ community, onDelete, formatMemberCount }) => {
 
       {/* Footer */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4 pt-4 border-t border-gray-100">
-        <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 flex-wrap">
+        <div className="flex items-center justify-center sm:justify-start gap-3 sm:gap-4 text-sm sm:text-sm text-gray-500 flex-wrap">
           <span>Active {community.lastActive || "2h ago"}</span>
           <div className="flex items-center gap-1.5">
             <FiUsers className="w-4 h-4" />
@@ -341,7 +341,7 @@ const SuggestedCommunityItem = ({ community, formatMemberCount }) => {
             <h4 className="text-sm sm:text-sm font-semibold text-gray-900 truncate">
               {community.name}
             </h4>
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-sm sm:text-sm text-gray-500">
               {formatMemberCount(community.memberCount)} Members
               {community.type === "featured" && (
                 <span className="text-[#240457] font-medium"> • Premium</span>

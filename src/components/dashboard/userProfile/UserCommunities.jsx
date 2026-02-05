@@ -266,7 +266,7 @@ const UserCommunities = () => {
 
           <Link
             href="/dashboard/user/communities"
-            className="flex items-center justify-start gap-1 text-[#240457] font-semibold text-xs sm:text-sm mt-4 sm:mt-5 hover:underline"
+            className="flex items-center justify-start gap-1 text-[#240457] font-semibold text-sm sm:text-sm mt-4 sm:mt-5 hover:underline"
           >
             Explore Communities
             <FiChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -311,11 +311,11 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
                 <h3 className="text-sm sm:text-base md:text-lg font-bold text-gray-900 truncate">
                   {community.name}
                 </h3>
-                <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-100 text-gray-600 text-xs sm:text-sm font-medium rounded-full whitespace-nowrap">
+                <span className="px-2 sm:px-3 py-0.5 sm:py-1 bg-gray-100 text-gray-600 text-sm sm:text-sm font-medium rounded-full whitespace-nowrap">
                   {community.category || "General"}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-gray-500 mt-1 line-clamp-2">
+              <p className="text-sm sm:text-sm text-gray-500 mt-1 line-clamp-2">
                 {community.description || community.purpose || "A community for like-minded professionals."}
               </p>
             </div>
@@ -351,7 +351,7 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
 
       {/* Footer */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
-        <div className="flex items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+        <div className="flex items-center gap-2 sm:gap-4 text-sm sm:text-sm text-gray-500">
           <span>Active {community.lastActive || "2h ago"}</span>
           <div className="flex items-center gap-1 sm:gap-1.5">
             <FiUsers className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -362,13 +362,13 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
         <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => onLeave(community._id)}
-            className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 border-2 border-red-400 text-red-500 rounded-lg text-xs sm:text-sm font-semibold hover:bg-red-50 transition-colors whitespace-nowrap"
+            className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 border-2 border-red-400 text-red-500 rounded-lg text-sm sm:text-sm font-semibold hover:bg-red-50 transition-colors whitespace-nowrap"
           >
             <span className="hidden sm:inline">Leave Community</span>
             <span className="sm:hidden">Leave</span>
           </button>
           <Link href={`/community/${community._id}`}>
-            <button className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 border-2 border-[#240457] text-[#240457] rounded-lg text-xs sm:text-sm font-semibold hover:bg-[#240457] hover:text-white transition-colors whitespace-nowrap">
+            <button className="px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 border-2 border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm font-semibold hover:bg-[#240457] hover:text-white transition-colors whitespace-nowrap">
               <span className="hidden sm:inline">View Community</span>
               <span className="sm:hidden">View</span>
             </button>
@@ -393,20 +393,20 @@ const SuggestedCommunityItem = ({ community, formatMemberCount }) => {
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.target.style.display = "none";
-                  e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs sm:text-sm font-bold">${community.name?.charAt(0) || "C"}</div>`;
+                  e.target.parentElement.innerHTML = `<div class="w-full h-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-sm sm:text-sm font-bold">${community.name?.charAt(0) || "C"}</div>`;
                 }}
               />
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-xs sm:text-sm font-bold">
+              <div className="w-full h-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white text-sm sm:text-sm font-bold">
                 {community.name?.charAt(0) || "C"}
               </div>
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <h4 className="text-xs sm:text-sm font-semibold text-gray-900 truncate">
+            <h4 className="text-sm sm:text-sm font-semibold text-gray-900 truncate">
               {community.name}
             </h4>
-            <p className="text-xs sm:text-sm text-gray-500">
+            <p className="text-sm sm:text-sm text-gray-500">
               {formatMemberCount(community.memberCount)} Members
               {community.type === "featured" && (
                 <span className="text-[#240457] font-medium"> • Premium</span>

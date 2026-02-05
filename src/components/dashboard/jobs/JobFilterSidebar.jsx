@@ -154,7 +154,7 @@ export const JobFilterSidebar = ({ onFilterChange }) => {
           {hasActiveFilters && (
             <button
               onClick={clearAll}
-              className="text-xs sm:text-sm text-brand-primary hover:underline font-medium touch-manipulation py-1 px-1"
+              className="text-sm sm:text-sm text-brand-primary hover:underline font-medium touch-manipulation py-1 px-1"
             >
               Clear All
             </button>

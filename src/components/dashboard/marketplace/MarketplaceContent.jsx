@@ -239,7 +239,7 @@ export default function MarketplaceContent() {
               {popularCategories.map((category, index) => (
                 <button
                   key={index}
-                  className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#E5E7EB] text-gray-700 rounded-full text-xs sm:text-sm lg:text-base font-medium transition-colors duration-200 hover:bg-gray-300"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#E5E7EB] text-gray-700 rounded-full text-sm sm:text-sm lg:text-base font-medium transition-colors duration-200 hover:bg-gray-300"
                 >
                   {category}
                 </button>
@@ -357,7 +357,7 @@ export default function MarketplaceContent() {
                             }
                           />
                         </div>
-                        <button className="bg-[#1D064F] hover:bg-[#2D0A75] text-white px-3 sm:px-4 py-1.5 rounded-md text-xs sm:text-sm font-semibold transition-colors">
+                        <button className="bg-[#1D064F] hover:bg-[#2D0A75] text-white px-3 sm:px-4 py-1.5 rounded-md text-sm sm:text-sm font-semibold transition-colors">
                           Search
                         </button>
                       </div>
@@ -384,7 +384,7 @@ export default function MarketplaceContent() {
                                 {country.flag}
                               </span>
                               <span
-                                className={`text-xs sm:text-sm lg:text-base flex-1 text-left ${
+                                className={`text-sm sm:text-sm lg:text-base flex-1 text-left ${
                                   selectedCountry === country.name
                                     ? "text-gray-900 font-medium"
                                     : "text-gray-600 group-hover:text-gray-900"
@@ -567,14 +567,14 @@ export default function MarketplaceContent() {
                           <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">
+                          <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
                             {product.detail || product.description}
                           </p>
                           <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs sm:text-sm text-gray-500">
+                            <span className="text-sm sm:text-sm text-gray-500">
                               Min: {product.minOrderQty} pc
                             </span>
-                            <span className="text-xs sm:text-sm text-gray-600">
+                            <span className="text-sm sm:text-sm text-gray-600">
                               USD ${product.pricePerUnit}
                             </span>
                           </div>
@@ -595,11 +595,11 @@ export default function MarketplaceContent() {
                                   addToCart(product, product.minOrderQty || 1);
                                   router.push('/dashboard/user/cart');
                                 }}
-                                className="py-2 border border-[#240457] text-[#240457] rounded-lg text-xs sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
+                                className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
                               >
                                 Add To Cart
                               </button>
-                              <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-xs sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
+                              <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
                                 Chat Now
                               </button>
                             </div>
@@ -644,14 +644,14 @@ export default function MarketplaceContent() {
                           <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2">
+                          <p className="text-sm sm:text-sm text-gray-600 line-clamp-2 mb-2">
                             {product.detail || product.description}
                           </p>
                           <div className="flex items-center justify-between">
-                            <span className="text-xs sm:text-sm text-gray-500">
+                            <span className="text-sm sm:text-sm text-gray-500">
                               Min: {product.moq} pc
                             </span>
-                            <span className="text-xs sm:text-sm text-gray-600">
+                            <span className="text-sm sm:text-sm text-gray-600">
                               USD ${product.pricePerUnit}
                             </span>
                           </div>
@@ -697,14 +697,14 @@ export default function MarketplaceContent() {
                           <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">
+                          <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
                             {product.detail || product.description}
                           </p>
                           <div className="flex items-center justify-between">
-                            <span className="text-xs sm:text-sm text-gray-500">
+                            <span className="text-sm sm:text-sm text-gray-500">
                               Min: {product.minOrderQty} pc
                             </span>
-                            <span className="text-xs sm:text-sm text-gray-600">
+                            <span className="text-sm sm:text-sm text-gray-600">
                               USD ${product.pricePerUnit}
                             </span>
                           </div>
@@ -744,14 +744,14 @@ export default function MarketplaceContent() {
                     <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 line-clamp-2">
                       {product.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">
+                    <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
                       {product.detail || product.description}
                     </p>
                     <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs sm:text-sm text-gray-500">
+                            <span className="text-sm sm:text-sm text-gray-500">
                               Min: {product.minOrderQty} pc
                             </span>
-                            <span className="text-xs sm:text-sm text-gray-600">
+                            <span className="text-sm sm:text-sm text-gray-600">
                               USD ${product.pricePerUnit}
                             </span>
                           </div>
@@ -761,7 +761,7 @@ export default function MarketplaceContent() {
                         await productAPI.getById(product._id);
                         router.push(`/dashboard/business/businesses/${product.businessId}/products/${product._id}`);
                       }}
-                      className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-xs sm:text-sm lg:text-base hover:bg-[#240457] hover:text-white transition-colors"
+                      className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm lg:text-base hover:bg-[#240457] hover:text-white transition-colors"
                     >
                         View Product
                     </button>
@@ -772,11 +772,11 @@ export default function MarketplaceContent() {
                           addToCart(product, product.minOrderQty || 1);
                           router.push('/dashboard/user/cart');
                         }}
-                        className="py-2 border border-[#240457] text-[#240457] rounded-lg text-xs sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
+                        className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
                       >
                           Add To Cart
                         </button>
-                        <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-xs sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
+                        <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
                           Chat Now
                         </button>
                       </div>

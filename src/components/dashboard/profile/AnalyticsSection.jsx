@@ -123,7 +123,7 @@ const AnalyticsSection = () => {
         <h2 className="text-base sm:text-lg font-medium text-black">
           Core Profile Analytics
         </h2>
-        <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-xs sm:text-sm font-semibold hover:bg-indigo-100 transition-colors">
+        <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-sm sm:text-sm font-semibold hover:bg-indigo-100 transition-colors">
           <p className="hidden sm:inline">Business Analytics</p>
           <p className="sm:hidden">Analytics</p>
           <img src="/assets/images/analyticsIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -144,7 +144,7 @@ const AnalyticsSection = () => {
                 <div className={`text-lg sm:text-xl lg:text-2xl font-semibold ${stat.iconColor}`}>
                   {stat.value}
                 </div>
-                <div className="text-xs sm:text-sm text-black font-medium mt-0.5 sm:mt-1 mb-1.5 sm:mb-2 leading-tight">
+                <div className="text-sm sm:text-sm text-black font-medium mt-0.5 sm:mt-1 mb-1.5 sm:mb-2 leading-tight">
                   {stat.label}
                 </div>
               </div>
@@ -156,7 +156,7 @@ const AnalyticsSection = () => {
             </div>
             {stat.change && (
               <div
-                className={`text-[9px] sm:text-[10px] font-medium flex items-center gap-1 ${stat.trend === "up" ? "text-[#0B8806]" : stat.trend === "down" ? "text-[#D60000]" : "text-gray-500"}`}
+                className={`text-[9px] sm:text-[14px] font-medium flex items-center gap-1 ${stat.trend === "up" ? "text-[#0B8806]" : stat.trend === "down" ? "text-[#D60000]" : "text-gray-500"}`}
               >
                 {stat.trend === "up" ? (
                   <FiTrendingUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />

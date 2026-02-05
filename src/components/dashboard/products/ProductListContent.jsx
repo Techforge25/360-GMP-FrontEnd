@@ -198,12 +198,12 @@ const ProductListContent = ({ isProfileView = false }) => {
                 <h3 className="text-red-600 font-semibold text-sm sm:text-base mb-1">
                   Inventory Alert
                 </h3>
-                <p className="text-gray-600 text-xs sm:text-sm lg:text-base">
+                <p className="text-gray-600 text-sm sm:text-sm lg:text-base">
                   Check for products below minimum safety stock levels.
                 </p>
               </div>
             </div>
-            <button className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 bg-red-100 text-red-600 text-xs sm:text-sm font-semibold rounded hover:bg-red-200 transition-colors border border-red-600 whitespace-nowrap">
+            <button className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 bg-red-100 text-red-600 text-sm sm:text-sm font-semibold rounded hover:bg-red-200 transition-colors border border-red-600 whitespace-nowrap">
               Update Inventory
             </button>
           </div>
@@ -214,7 +214,7 @@ const ProductListContent = ({ isProfileView = false }) => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Products</h2>
-              <span className="px-2 sm:px-3 py-1 bg-white border border-gray-200 text-gray-600 text-xs sm:text-sm rounded-full flex items-center gap-1 w-fit">
+              <span className="px-2 sm:px-3 py-1 bg-white border border-gray-200 text-gray-600 text-sm sm:text-sm rounded-full flex items-center gap-1 w-fit">
                 {products.length} records found{" "}
                 <span className="cursor-pointer hover:text-gray-800">×</span>
               </span>
@@ -265,7 +265,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
                     activeTab === tab.id
                       ? "bg-[#2e1065] text-white"
                       : "bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100"
@@ -281,7 +281,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                 setEditingProduct(null);
                 setIsAddModalOpen(true);
               }}
-              className="w-full sm:w-auto flex-shrink-0 bg-[#2e1065] text-white text-xs sm:text-sm font-semibold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2"
+              className="w-full sm:w-auto flex-shrink-0 bg-[#2e1065] text-white text-sm sm:text-sm font-semibold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:bg-[#1e0a45] transition-colors flex items-center justify-center gap-2"
             >
               <span className="hidden sm:inline">Create A New Product</span>
               <span className="sm:hidden">Add Product</span>
@@ -293,7 +293,7 @@ const ProductListContent = ({ isProfileView = false }) => {
         {/* Product List */}
         <div className="bg-white shadow-sm overflow-hidden mb-6 sm:mb-8">
           {/* Desktop Table Header - Hidden on mobile */}
-          <div className="hidden lg:grid grid-cols-12 gap-4 px-4 sm:px-6 py-3 sm:py-4 bg-[#F0F0F0] border-b border-gray-100 text-xs sm:text-sm font-semibold text-gray-500">
+          <div className="hidden lg:grid grid-cols-12 gap-4 px-4 sm:px-6 py-3 sm:py-4 bg-[#F0F0F0] border-b border-gray-100 text-sm sm:text-sm font-semibold text-gray-500">
             <div className="col-span-1 flex items-center">
               <input
                 type="checkbox"
@@ -349,12 +349,12 @@ const ProductListContent = ({ isProfileView = false }) => {
                       <h3 className="text-sm sm:text-base font-medium text-gray-900 leading-tight mb-1 truncate">
                         {product.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-[#240457] truncate mb-2">
+                      <p className="text-sm sm:text-sm text-[#240457] truncate mb-2">
                         {product.category}
                       </p>
                       <div className="flex flex-wrap items-center gap-2">
                         <span
-                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium capitalize
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-sm font-medium capitalize
                           ${product.status === "approved" ? "bg-green-100 text-green-800" : ""}
                           ${product.status === "pending" ? "bg-yellow-100 text-yellow-800" : ""}
                           ${product.status === "rejected" ? "bg-red-100 text-red-800" : ""}
@@ -364,7 +364,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                           {product.status === "approved" ? "Live" : product.status}
                         </span>
                         <span
-                          className={`inline-block px-2 py-1 rounded text-xs font-medium capitalize
+                          className={`inline-block px-2 py-1 rounded text-sm font-medium capitalize
                            ${product.stockFlag === "out-of-stock" ? "bg-red-100 text-red-800" : ""}
                            ${product.stockFlag === "critical-threshold" ? "bg-yellow-100 text-yellow-800" : ""}
                            ${product.stockFlag === "in-stock" ? "bg-green-100 text-green-800" : ""}
@@ -396,7 +396,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                       </button>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 text-xs sm:text-sm">
+                  <div className="grid grid-cols-2 gap-3 text-sm sm:text-sm">
                     <div>
                       <p className="text-gray-500 font-medium mb-1">MOQ & Price</p>
                       <p className="text-gray-600">MOQ: {product.minOrderQty}</p>
@@ -443,14 +443,14 @@ const ProductListContent = ({ isProfileView = false }) => {
                       <h3 className="text-sm xl:text-base font-medium text-gray-900 leading-tight mb-0.5 truncate">
                         {product.title}
                       </h3>
-                      <p className="text-xs xl:text-sm text-[#240457] truncate">
+                      <p className="text-sm xl:text-sm text-[#240457] truncate">
                         {product.category}
                       </p>
                     </div>
                   </div>
 
                   {/* MOQ & Price */}
-                  <div className="col-span-2 text-xs xl:text-sm">
+                  <div className="col-span-2 text-sm xl:text-sm">
                     <p className="text-gray-600 mb-1">
                       MOQ: {product.minOrderQty}
                     </p>
@@ -462,7 +462,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                   {/* Status */}
                   <div className="col-span-2">
                     <span
-                      className={`inline-flex items-center px-2 xl:px-3 py-1 xl:py-2 rounded-full text-xs xl:text-sm font-medium capitalize
+                      className={`inline-flex items-center px-2 xl:px-3 py-1 xl:py-2 rounded-full text-sm xl:text-sm font-medium capitalize
                       ${product.status === "approved" ? "bg-green-100 text-green-800" : ""}
                       ${product.status === "pending" ? "bg-yellow-100 text-yellow-800" : ""}
                       ${product.status === "rejected" ? "bg-red-100 text-red-800" : ""}
@@ -474,7 +474,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                   </div>
 
                   {/* Stock */}
-                  <div className="col-span-2 text-xs xl:text-sm">
+                  <div className="col-span-2 text-sm xl:text-sm">
                     <span
                       className={`inline-block px-2 xl:px-3 py-1 xl:py-2 rounded font-medium mb-1 capitalize
                        ${product.stockFlag === "out-of-stock" ? "bg-red-100 text-red-800" : ""}
@@ -488,7 +488,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                   </div>
 
                   {/* SKU / Units */}
-                  <div className="col-span-1 text-xs xl:text-sm text-gray-600 font-medium">
+                  <div className="col-span-1 text-sm xl:text-sm text-gray-600 font-medium">
                     {product.stockQty} Units
                   </div>
 

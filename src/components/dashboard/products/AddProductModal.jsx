@@ -366,7 +366,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           </option>
           <option value="EXW (Ex Works)">EXW (Ex Works)</option>
         </select>
-        <p className="text-[10px] text-gray-400 mt-1">
+        <p className="text-[14px] text-gray-400 mt-1">
           Select the shipping term applicable for this product.
         </p>
       </div>
@@ -393,7 +393,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Main Product Image
         </label>
-        <p className="text-[10px] text-gray-400 mb-2">
+        <p className="text-[14px] text-gray-400 mb-2">
           This Will Be The Primary Image Displayed For Your Product.
         </p>
 
@@ -421,7 +421,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
                   • Drag & drop here
                 </span>
               </p>
-              <p className="text-[10px] text-gray-400">JPG,PNG, Max 100 Mb</p>
+              <p className="text-[14px] text-gray-400">JPG,PNG, Max 100 Mb</p>
             </>
           )}
           <input
@@ -438,7 +438,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         <label className="block text-sm font-semibold text-gray-700 mb-2">
           Image Gallery
         </label>
-        <p className="text-[10px] text-gray-400 mb-2">
+        <p className="text-[14px] text-gray-400 mb-2">
           Add More Images To Showcase Your Product From Different Angles.
         </p>
 

@@ -97,7 +97,7 @@ export default function ProductInfo({ product }) {
                     onClick={() => setQuantity(Math.max(product.minOrderQty, quantity - 1))}
                     className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-l-lg"
                   >
-                      <FaMinus className="text-[10px] " />
+                      <FaMinus className="text-[14px] " />
                   </button>
                   <input 
                     type="number" 
@@ -109,7 +109,7 @@ export default function ProductInfo({ product }) {
                     onClick={() => setQuantity(quantity + 1)}
                     className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 rounded-r-lg"
                   >
-                      <FaPlus className="text-[10px]" />
+                      <FaPlus className="text-[14px]" />
                   </button>
               </div>
           </div>

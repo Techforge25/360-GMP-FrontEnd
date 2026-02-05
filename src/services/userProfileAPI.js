@@ -92,6 +92,86 @@ class UserProfileAPI {
   }
 
   /**
+   * Update job preferences
+   */
+  async updateJobPreferences(jobPreferencesData) {
+    return await api.patch({
+      url: "/userProfile/update/job-preferences",
+      payload: jobPreferencesData,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Create a new social link for user profile
+   * POST /userProfile/social
+   */
+  async createSocialLink(socialLinkData) {
+    return await api.post({
+      url: "/userProfile/social",
+      payload: socialLinkData,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get all social links for user profile
+   * GET /userProfile/social
+   */
+  async getSocialLinks() {
+    return await api.get({
+      url: "/userProfile/social",
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Update a social link for user profile
+   * PATCH /userProfile/social/socialId
+   */
+  async updateSocialLink(socialId, socialLinkData) {
+    return await api.patch({
+      url: `/userProfile/social/${socialId}`,
+      payload: socialLinkData,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Delete a social link for user profile
+   * DELETE /userProfile/social/socialId
+   */
+  async deleteSocialLink(socialId) {
+    return await api.delete({
+      url: `/userProfile/social/${socialId}`,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get job matches based on user preferences
+   * GET /userProfile/job-matches
+   */
+  async getJobMatches(page = 1, limit = 10) {
+    return await api.get({
+      url: `/userProfile/job-matches?page=${page}&limit=${limit}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
    * Update the current user's profile (legacy method)
    */
   async updateMyProfile(profileData) {

@@ -407,7 +407,7 @@ const AuthNavbar = () => {
                 className="text-gray-600 hover:text-indigo-600 relative"
               >
                 <FiBell className="w-5 h-5 text-[#240457]" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[10px] flex items-center justify-center rounded-full font-semibold">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[14px] flex items-center justify-center rounded-full font-semibold">
                   2
                 </span>
               </Link>
@@ -427,7 +427,7 @@ const AuthNavbar = () => {
             <div className="px-6 py-6">
               {/* Navigation Links Section */}
               <div className="mb-6">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                   Navigation
                 </h3>
                 <div className="space-y-1">
@@ -453,7 +453,7 @@ const AuthNavbar = () => {
 
               {/* Profile & Actions Section */}
               <div className="border-t border-gray-100 pt-6">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                   Account
                 </h3>
                 <div className="space-y-1">

@@ -30,7 +30,7 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
         <h1 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 px-1 sm:px-2 leading-tight">
           Discover Businesses Around the World
         </h1>
-        <p className="text-blue-100 mb-4 sm:mb-6 lg:mb-8 text-xs xs:text-sm sm:text-base lg:text-lg px-1 sm:px-4 max-w-3xl mx-auto">
+        <p className="text-blue-100 mb-4 sm:mb-6 lg:mb-8 text-sm xs:text-sm sm:text-base lg:text-lg px-1 sm:px-4 max-w-3xl mx-auto">
           Search by Category, industry, or name and explore verified Businesses.
         </p>
 

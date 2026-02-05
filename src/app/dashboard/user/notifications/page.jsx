@@ -17,20 +17,20 @@ export default function UserNotificationsPage() {
             <h1 className="text-3xl font-bold text-white mb-4">
               Your Notifications Hub
             </h1>
-            <p className="text-white/90 text-lg max-w-7xl mx-auto">
+            <p className="text-white/90 text-lg max-w-[1400px] mx-auto">
               Stay informed about your orders, job applications, and marketplace activities with personalized alerts.
             </p>
           </div>
 
           {/* Content Section */}
           <div className="px-8 py-12 text-center">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-[1400px] mx-auto">
               <div className="w-16 h-16 bg-[#240457]/10 rounded-full flex items-center justify-center mx-auto mb-6">
                 <FiClock className="w-8 h-8 text-[#240457]" />
               </div>
               
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Personalized Notifications Coming Soon
+                Coming Soon in Phase 5
               </h2>
               
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">

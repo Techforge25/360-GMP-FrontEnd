@@ -166,7 +166,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 
   return (
     <div className="bg-white border-b border-gray-200">
-      <p className="text-gray-500 text-xs sm:text-sm md:text-base max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
+      <p className="text-gray-500 text-sm sm:text-sm md:text-base max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
         Home <span className="text-[#240457]">/ {profileData.companyName}</span>
       </p>
       {/* Cover Image */}
@@ -182,7 +182,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           className="object-cover"
         />
         {newBanner && (
-          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-medium">
+          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-sm sm:text-sm font-medium">
             <span className="hidden sm:inline">New banner selected - Click "Update Profile" to save</span>
             <span className="sm:hidden">New banner - Update to save</span>
           </div>
@@ -195,7 +195,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           className="hidden"
         />
         <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex gap-2 sm:gap-3">
-          <button className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-xs sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2">
+          <button className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2">
             <img src="/assets/images/eyeIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="hidden sm:inline">View as a user</span>
             <span className="sm:hidden">View</span>
@@ -203,7 +203,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           <button
             onClick={handleBannerClick}
             disabled={isUploadingBanner}
-            className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-xs sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2 disabled:opacity-50"
+            className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2 disabled:opacity-50"
           >
             <img src="/assets/images/cameraIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
             {isUploadingBanner ? (
@@ -219,7 +219,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
             <button
               onClick={handleUpdateProfile}
               disabled={isUpdating || (!newLogo && !newBanner)}
-              className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-xs sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <img src="/assets/images/updateProfileIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
               {isUpdating ? (
@@ -287,7 +287,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                 )}
               </h1>
 
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 sm:gap-x-4 md:gap-x-6 gap-y-1.5 sm:gap-y-2 mt-1.5 sm:mt-2 text-xs sm:text-sm md:text-base text-gray-500 mb-8 sm:mb-10 md:mb-12">
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 sm:gap-x-4 md:gap-x-6 gap-y-1.5 sm:gap-y-2 mt-1.5 sm:mt-2 text-sm sm:text-sm md:text-base text-gray-500 mb-8 sm:mb-10 md:mb-12">
                 <div className="flex items-center gap-1 sm:gap-1.5">
                   <img src="/assets/images/employeesIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{profileData.companySize || "N/A"}</span>

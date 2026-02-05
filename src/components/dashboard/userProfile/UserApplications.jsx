@@ -72,7 +72,7 @@ export default function UserApplications() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 sm:gap-2",
+                "px-3 sm:px-4 md:px-6 py-1.5 sm:py-2 rounded-lg text-sm sm:text-sm font-medium transition-all flex items-center gap-1.5 sm:gap-2",
                 activeTab === tab.id
                   ? "bg-[#240457] text-white"
                   : "bg-white text-text-secondary border border-border-light hover:bg-gray-50",
@@ -82,7 +82,7 @@ export default function UserApplications() {
               {tab.showBadge && (
                 <span
                   className={cn(
-                    "w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[9px] sm:text-[10px]",
+                    "w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[9px] sm:text-[14px]",
                     activeTab === tab.id
                       ? "bg-white text-[#240457]"
                       : "bg-[#240457] text-white",
@@ -101,7 +101,7 @@ export default function UserApplications() {
         {error && (
           <div className="mb-3 sm:mb-4 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
             <p className="font-medium text-sm sm:text-base">Error loading applications</p>
-            <p className="text-xs sm:text-sm mt-1">{error}</p>
+            <p className="text-sm sm:text-sm mt-1">{error}</p>
           </div>
         )}
 
@@ -120,7 +120,7 @@ export default function UserApplications() {
               <p className="font-medium text-text-primary text-base sm:text-lg mb-1">
                 No applications found
               </p>
-              <p className="text-xs sm:text-sm">
+              <p className="text-sm sm:text-sm">
                 You haven't{" "}
                 {activeTab === "all" ? "made any" : `any ${activeTab}`}{" "}
                 applications yet.

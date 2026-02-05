@@ -119,7 +119,7 @@ const UserSubscriptionsPage = () => {
 
           <div className="relative z-10">
             <span
-              className={`inline-block px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-xs sm:text-sm font-semibold mb-4 sm:mb-6 ${
+              className={`inline-block px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-sm sm:text-sm font-semibold mb-4 sm:mb-6 ${
                 status === "active"
                   ? "bg-[#E6F6E9] border border-[#0B8806] text-[#0B8806]"
                   : "bg-red-50 border border-red-500 text-red-600"
@@ -181,7 +181,7 @@ const UserSubscriptionsPage = () => {
 
             <div className="bg-blue-50 border border-blue-600 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 flex items-start sm:items-center gap-2 sm:gap-3">
               <FiInfo className="w-4 h-4 sm:w-5 sm:h-5 text-white border border-blue-600 rounded-full bg-blue-600 mt-0.5 sm:mt-0 flex-shrink-0" />
-              <p className="text-xs sm:text-sm text-blue-500">
+              <p className="text-sm sm:text-sm text-blue-500">
                 Your account will be charged{" "}
                 <span className="font-bold">
                   {formatCurrency(planPrice)}
@@ -209,7 +209,7 @@ const UserSubscriptionsPage = () => {
                   <p className="text-sm sm:text-base font-medium text-gray-900">
                     stripe
                   </p>
-                  <p className="text-xs sm:text-sm text-gray-500">Expiry · 12/27</p>
+                  <p className="text-sm sm:text-sm text-gray-500">Expiry · 12/27</p>
                 </div>
               </div>
               <img src="/assets/images/check_circle.png" alt="check" className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" />
@@ -250,7 +250,7 @@ const UserSubscriptionsPage = () => {
                 </span>
               </div>
               <p className="text-xl sm:text-2xl font-medium text-gray-900">{planName}</p>
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">
+              <p className="text-sm sm:text-sm text-gray-500 mt-1">
                 Status: {statusLabel}
               </p>
             </div>
@@ -269,7 +269,7 @@ const UserSubscriptionsPage = () => {
               <p className="text-xl sm:text-2xl font-medium text-gray-900">
                 {formatDate(renewalDate)}
               </p>
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">
+              <p className="text-sm sm:text-sm text-gray-500 mt-1">
                 Amount: {formatCurrency(planPrice)}
               </p>
             </div>
@@ -290,7 +290,7 @@ const UserSubscriptionsPage = () => {
               </p>
               <div className="flex items-center gap-2 mt-1">
                 <img src="/assets/images/trending_up.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-                <p className="text-xs sm:text-sm text-green-500 font-medium">
+                <p className="text-sm sm:text-sm text-green-500 font-medium">
                   +12% vs last year
                 </p>
               </div>
@@ -326,26 +326,26 @@ const UserSubscriptionsPage = () => {
               <table className="w-full min-w-[700px]">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
-                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium flex gap-2 items-center text-black uppercase tracking-wider">
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium flex gap-2 items-center text-black uppercase tracking-wider">
                       <input
                         type="checkbox"
                         className="rounded border-gray-300 text-gray-300 focus:ring-gray-300"
                       />
                       Date
                     </th>
-                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-black uppercase tracking-wider">
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-black uppercase tracking-wider">
                       Invoice ID
                     </th>
-                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-black uppercase tracking-wider">
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-black uppercase tracking-wider">
                       Plans
                     </th>
-                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-black uppercase tracking-wider">
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-black uppercase tracking-wider">
                       Amount
                     </th>
-                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-medium text-black uppercase tracking-wider">
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-sm sm:text-sm font-medium text-black uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-medium text-black uppercase tracking-wider">
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-sm sm:text-sm font-medium text-black uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -363,7 +363,7 @@ const UserSubscriptionsPage = () => {
                         <div className="text-sm sm:text-base font-medium text-gray-900">
                           {formatDate(subscription.startDate || subscription.createdAt)}
                         </div>
-                        <div className="text-xs sm:text-sm text-gray-500">
+                        <div className="text-sm sm:text-sm text-gray-500">
                           {new Date(subscription.startDate || subscription.createdAt || Date.now()).toLocaleTimeString('en-US', {
                             hour: '2-digit',
                             minute: '2-digit',
@@ -382,7 +382,7 @@ const UserSubscriptionsPage = () => {
                       </td>
                       <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
                         <span
-                          className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-medium ${
+                          className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-sm sm:text-sm font-medium ${
                             subscription.status === "active"
                               ? "bg-green-100 text-green-800"
                               : subscription.status === "canceled"
@@ -403,7 +403,7 @@ const UserSubscriptionsPage = () => {
                         </span>
                       </td>
                       <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-right">
-                        <button className="flex items-center justify-end gap-1 text-xs sm:text-sm text-gray-500 hover:text-gray-900 w-full">
+                        <button className="flex items-center justify-end gap-1 text-sm sm:text-sm text-gray-500 hover:text-gray-900 w-full">
                           <span>PDF</span>
                           <FiDownload className="w-3 h-3 sm:w-4 sm:h-4" />
                         </button>

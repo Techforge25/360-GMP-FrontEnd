@@ -113,7 +113,7 @@ export default function BusinessJobsTab() {
           <h2 className="text-lg sm:text-xl font-bold text-gray-900">Jobs</h2>
           <button
             onClick={handleCreateJob}
-            className="bg-[#240457] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium hover:bg-[#240457] transition-colors flex items-center gap-1.5 sm:gap-2 justify-center sm:justify-start"
+            className="bg-[#240457] text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm sm:text-sm font-medium hover:bg-[#240457] transition-colors flex items-center gap-1.5 sm:gap-2 justify-center sm:justify-start"
           >
             <span className="hidden sm:inline">Create a job</span>
             <span className="sm:hidden">Create Job</span>
@@ -128,11 +128,11 @@ export default function BusinessJobsTab() {
               Hiring Funnel State
             </h3>
             <div className="flex items-center gap-2">
-              <span className="text-xs sm:text-sm text-gray-600">Sort By</span>
+              <span className="text-sm sm:text-sm text-gray-600">Sort By</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="text-xs sm:text-sm bg-white border border-gray-300 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-gray-900 focus:ring-2 focus:ring-[#240457] focus:border-[#240457] outline-none cursor-pointer"
+                className="text-sm sm:text-sm bg-white border border-gray-300 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-gray-900 focus:ring-2 focus:ring-[#240457] focus:border-[#240457] outline-none cursor-pointer"
               >
                 <option value="Last 30 Day's">Last 30 Day's</option>
                 <option value="Last 7 Days">Last 7 Days</option>
@@ -148,7 +148,7 @@ export default function BusinessJobsTab() {
               <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-700 mb-0.5 sm:mb-1">
                 {hiringStats.views.count}
               </div>
-              <div className="text-xs sm:text-sm text-green-600">
+              <div className="text-sm sm:text-sm text-green-600">
                 Views ({hiringStats.views.period})
               </div>
             </div>
@@ -158,7 +158,7 @@ export default function BusinessJobsTab() {
               <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-700 mb-0.5 sm:mb-1">
                 {hiringStats.applications}
               </div>
-              <div className="text-xs sm:text-sm text-blue-600">Applications</div>
+              <div className="text-sm sm:text-sm text-blue-600">Applications</div>
             </div>
 
             {/* Interview Card */}
@@ -166,7 +166,7 @@ export default function BusinessJobsTab() {
               <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-700 mb-0.5 sm:mb-1">
                 {hiringStats.interview}
               </div>
-              <div className="text-xs sm:text-sm text-yellow-600">Interview</div>
+              <div className="text-sm sm:text-sm text-yellow-600">Interview</div>
             </div>
 
             {/* Hired Card */}
@@ -174,7 +174,7 @@ export default function BusinessJobsTab() {
               <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-700 mb-0.5 sm:mb-1">
                 {hiringStats.hired}
               </div>
-              <div className="text-xs sm:text-sm text-gray-600">Hired</div>
+              <div className="text-sm sm:text-sm text-gray-600">Hired</div>
             </div>
           </div>
 

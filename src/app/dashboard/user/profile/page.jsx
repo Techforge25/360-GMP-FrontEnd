@@ -4,6 +4,8 @@ import UserProfileHeader from "@/components/dashboard/userProfile/UserProfileHea
 import UserStats from "@/components/dashboard/userProfile/UserStats";
 import UserAbout from "@/components/dashboard/userProfile/UserAbout";
 import UserExperience from "@/components/dashboard/userProfile/UserExperience";
+import UserEducation from "@/components/dashboard/userProfile/UserEducation";
+import UserJobPreferences from "@/components/dashboard/userProfile/UserJobPreferences";
 import UserSidebar from "@/components/dashboard/userProfile/UserSidebar";
 import UserApplications from "@/components/dashboard/userProfile/UserApplications";
 import UserCommunities from "@/components/dashboard/userProfile/UserCommunities";
@@ -31,6 +33,12 @@ export default function UserProfilePage() {
 
               {/* Experience Section */}
               <UserExperience />
+
+              {/* Education and Job Preferences Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+                <UserEducation />
+                <UserJobPreferences />
+              </div>
             </div>
 
             {/* Right Sidebar Column */}
