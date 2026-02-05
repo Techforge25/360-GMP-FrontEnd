@@ -58,10 +58,29 @@ const ActivitySidebar = () => {
 
   const handleSaveContact = async () => {
     try {
-      await businessProfileAPI.updateContactInfo(formData);
+      // Filter out empty fields to avoid validation errors
+      const filteredData = Object.fromEntries(
+        Object.entries(formData).filter(([key, value]) => value && value.trim() !== "")
+      );
+      
+      // Only send data if we have at least one field to update
+      if (Object.keys(filteredData).length === 0) {
+        console.warn("No data to update");
+        setIsEditing(false);
+        return;
+      }
+
+      await businessProfileAPI.updateContactInfo(filteredData);
       setIsEditing(false);
+      
+      // Refresh the profile data
+      const profileRes = await businessProfileAPI.getMyProfile();
+      if (profileRes?.data) {
+        setProfile(profileRes.data);
+      }
     } catch (error) {
       console.error("Failed to update contact info:", error);
+      alert("Failed to update contact info. Please check your input and try again.");
     }
   };
 
@@ -88,6 +107,21 @@ const ActivitySidebar = () => {
     }
   };
 
+  const handleEditToggle = () => {
+    if (!isEditing && profile) {
+      // When starting to edit, populate form with current profile data
+      setFormData({
+        supportEmail: profile?.b2bContact?.supportEmail || "",
+        phone: profile?.b2bContact?.phone || "",
+        website: profile?.website || "",
+        addressLine: profile?.location?.addressLine || "",
+        city: profile?.location?.city || "",
+        country: profile?.location?.country || "",
+      });
+    }
+    setIsEditing(!isEditing);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -108,6 +142,16 @@ const ActivitySidebar = () => {
 
         if (profileRes?.data) {
           setProfile(profileRes.data);
+          // Populate form data with existing profile data
+          setFormData({
+            supportEmail: profileRes.data?.b2bContact?.supportEmail || "",
+            phone: profileRes.data?.b2bContact?.phone || "",
+            website: profileRes.data?.website || "",
+            addressLine: profileRes.data?.location?.addressLine || "",
+            city: profileRes.data?.location?.city || "",
+            country: profileRes.data?.location?.country || "",
+          });
+          
           // Fetch social links
           try {
             const socialRes = await socialLinkAPI.getByBusinessProfileId(
@@ -215,7 +259,7 @@ const ActivitySidebar = () => {
       {/* Contact Info */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-5 relative">
         <button
-          onClick={() => setIsEditing(!isEditing)}
+          onClick={handleEditToggle}
           className="absolute top-3 sm:top-4 lg:top-5 right-3 sm:right-4 lg:right-5 text-gray-400 hover:text-gray-600"
         >
           <FiEdit2
@@ -302,12 +346,20 @@ const ActivitySidebar = () => {
                 />
               </div>
             </div>
-            <button
-              onClick={handleSaveContact}
-              className="w-full mt-2 bg-[#240457] text-white py-1.5 rounded text-sm font-semibold hover:bg-[#240457] transition-colors"
-            >
-              Save Changes
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSaveContact}
+                className="flex-1 mt-2 bg-[#240457] text-white py-1.5 rounded text-sm font-semibold hover:bg-[#240457] transition-colors"
+              >
+                Save Changes
+              </button>
+              <button
+                onClick={() => setIsEditing(false)}
+                className="flex-1 mt-2 bg-gray-500 text-white py-1.5 rounded text-sm font-semibold hover:bg-gray-600 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         ) : (
           <ul className="space-y-5 bg-[#B4B4B433] p-3 rounded-lg">
