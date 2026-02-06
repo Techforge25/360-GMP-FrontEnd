@@ -513,7 +513,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
 
       <div className="space-y-2">
         <label className="text-base font-medium">
-          Key Skills/Expertise(Mandatory)
+          Key Skills/Expertise <span className="text-red-500">*</span>
         </label>
         <Input
           placeholder="e.g Python,Java,Figma,"
@@ -957,7 +957,7 @@ export default function UserProfilePage() {
       }
     } else if (currentStep === 2) {
       // Step 2 validation - check each field individually
-      if (!formData.skills) {
+      if (!formData.skills || !formData.skills.trim()) {
         setError("Key Skills/Expertise is required");
         return;
       }
