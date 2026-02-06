@@ -51,7 +51,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
   const handleBannerClick = () => bannerInputRef.current?.click();
   const handleAvatarClick = () => avatarInputRef.current?.click();
 
-  const handleCoverChange = (event) => {
+  const handleCoverChange = async (event) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
@@ -60,10 +60,29 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
       }
       const previewUrl = URL.createObjectURL(file);
       setNewCover({ file, previewUrl });
+      // Immediately update profile with new cover
+      try {
+        setIsUploadingCover(true);
+        setIsUpdating(true);
+        const coverUrl = await uploadToCloudinary(file, "user/cover");
+        // Use specific API method for banner
+        const response = await userProfileAPI.updateBanner({ banner: coverUrl });
+        if (response?.data) {
+          setProfileData((prevData) => ({ ...prevData, ...response.data }));
+          setNewCover(null);
+          if (previewUrl) URL.revokeObjectURL(previewUrl);
+        }
+      } catch (error) {
+        console.error("Failed to update cover:", error);
+        alert(`Failed to update cover: ${error?.message || "Unknown error"}`);
+      } finally {
+        setIsUploadingCover(false);
+        setIsUpdating(false);
+      }
     }
   };
 
-  const handleAvatarChange = (event) => {
+  const handleAvatarChange = async (event) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
@@ -72,6 +91,25 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
       }
       const previewUrl = URL.createObjectURL(file);
       setNewAvatar({ file, previewUrl });
+      // Immediately update profile with new avatar
+      try {
+        setIsUploadingAvatar(true);
+        setIsUpdating(true);
+        const avatarUrl = await uploadToCloudinary(file, "user/profile");
+        // Use specific API method for logo
+        const response = await userProfileAPI.updateLogo({ logo: avatarUrl });
+        if (response?.data) {
+          setProfileData((prevData) => ({ ...prevData, ...response.data }));
+          setNewAvatar(null);
+          if (previewUrl) URL.revokeObjectURL(previewUrl);
+        }
+      } catch (error) {
+        console.error("Failed to update avatar:", error);
+        alert(`Failed to update avatar: ${error?.message || "Unknown error"}`);
+      } finally {
+        setIsUploadingAvatar(false);
+        setIsUpdating(false);
+      }
     }
   };
 
@@ -226,27 +264,57 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
               </>
             )}
           </button>
+          {/* Update button removed as update is now automatic */}
           <div className="absolute -bottom-16 sm:-bottom-18 right-1 sm:right-2">
             <button
-              onClick={handleUpdateProfile}
-              disabled={isUpdating || (!newAvatar && !newCover)}
+              onClick={() => setShowEditModal(true)}
               className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <img
-                src="/assets/images/updateProfileIcon.png"
-                alt=""
-                className="w-3 h-3 sm:w-4 sm:h-4"
-              />
-              {isUpdating ? (
-                <span className="hidden sm:inline">Updating...</span>
-              ) : (
-                <>
-                  <span className="hidden sm:inline">Update Profile</span>
-                  <span className="sm:hidden">Update</span>
-                </>
-              )}
+              <img src="/assets/images/updateProfileIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Edit Basic Info</span>
+              <span className="sm:hidden">Edit</span>
             </button>
           </div>
+
+
+  {/* Basic Info Edit Modal */}
+  {showEditModal && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto">
+        <h2 className="text-lg font-bold mb-4">Edit Basic Info</h2>
+        <div className="mb-4">
+          <label className="block text-black text-sm font-medium mb-1">Full Name</label>
+          <input
+            type="text"
+            value={editFullName}
+            onChange={(e) => setEditFullName(e.target.value)}
+            className="w-full text-black border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-black text-sm font-medium mb-1">Bio</label>
+          <textarea
+            value={editBio}
+            onChange={(e) => setEditBio(e.target.value)}
+            className="w-full text-black   border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
+            rows={3}
+          />
+        </div>
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={() => setShowEditModal(false)}
+            className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-medium"
+            disabled={isBasicInfoUpdating}
+          >Cancel</button>
+          <button
+            onClick={handleBasicInfoUpdate}
+            className="px-4 py-2 rounded bg-[#240457] text-white font-medium disabled:opacity-50"
+            disabled={isBasicInfoUpdating || !editFullName}
+          >{isBasicInfoUpdating ? "Saving..." : "Save"}</button>
+        </div>
+      </div>
+    </div>
+  )}
         </div>
       </div>
 
