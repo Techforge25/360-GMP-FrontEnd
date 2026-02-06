@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   FiTrendingUp,
   FiTrendingDown,
@@ -12,6 +13,7 @@ import {
 import businessProfileAPI from "@/services/businessProfileAPI";
 
 const AnalyticsSection = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({
     views: 0,
@@ -19,6 +21,10 @@ const AnalyticsSection = () => {
     conversion: 0,
     criticalAlerts: 0,
   });
+
+  const handleNavigateToAnalytics = () => {
+    router.push("/dashboard/business/analytics");
+  };
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -151,7 +157,10 @@ const AnalyticsSection = () => {
         <h2 className="text-base sm:text-lg font-medium text-black">
           Core Profile Analytics
         </h2>
-        <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-sm sm:text-sm font-semibold hover:bg-indigo-100 transition-colors">
+        <button
+          onClick={handleNavigateToAnalytics}
+          className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-sm sm:text-sm font-semibold hover:bg-indigo-100 transition-colors"
+        >
           <p className="hidden sm:inline">Business Analytics</p>
           <p className="sm:hidden">Analytics</p>
           <img

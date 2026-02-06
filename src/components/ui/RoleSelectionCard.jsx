@@ -37,7 +37,7 @@ const RoleSelectionCard = ({ type = "business", selected, onSelect }) => {
           <h3 className="mb-1 font-semibold text-sm xs:text-base sm:text-base leading-tight">
             {isBusiness ? "Business/Company" : "User"}
           </h3>
-          <p className="text-xs xs:text-sm sm:text-base text-text-secondary leading-relaxed">
+          <p className="text-sm xs:text-sm sm:text-base text-text-secondary leading-relaxed">
             {isBusiness
               ? "Post Jobs, Manage Leads & List Products."
               : "Buy Products & Find Jobs, Build Your Career."}

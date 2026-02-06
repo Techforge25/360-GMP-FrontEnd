@@ -198,6 +198,78 @@ class BusinessProfileAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Get views over time for analytics graph
+   */
+  async getViewsOverTime(range = "7d") {
+    return await api.get({
+      url: `/analytics-overview/views-over-time?range=${range}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
+   * Get top performing products for analytics
+   */
+  async getTopPerformingProducts(range = "7d") {
+    return await api.get({
+      url: `/analytics-overview/top-performing-products?range=${range}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
+   * Get total product views for analytics
+   */
+  async getTotalProductViews(range = "7d") {
+    return await api.get({
+      url: `/analytics-overview/product-total-views?range=${range}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
+   * Get job application funnel for analytics
+   */
+  async getApplicationFunnel(range = "7d") {
+    return await api.get({
+      url: `/analytics-overview/application-success-funnel?range=${range}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
+   * Get competitor benchmarking for analytics
+   */
+  async getCompetitorBenchmarking(range = "7d") {
+    return await api.get({
+      url: `/analytics-overview/competitor-bench-marking?range=${range}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
+   * Get revenue potential analytics
+   */
+  async getRevenuePotential(range = "7d") {
+    return await api.get({
+      url: `/analytics-overview/revenue-potential?range=${range}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
 }
 
 const businessProfileAPI = new BusinessProfileAPI();

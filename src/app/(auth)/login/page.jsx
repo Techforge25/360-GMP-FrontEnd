@@ -110,22 +110,25 @@ export default function LoginPage() {
         <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold bg-gradient-to-r from-brand-primary to-brand-primary-light bg-clip-text text-transparent">
           Welcome To 360GMP
         </CardTitle>
-        <CardDescription className="text-xs xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
+        <CardDescription className="text-sm xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
           One Platform Many Solutions
         </CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4 xs:space-y-5 sm:space-y-6 px-3 xs:px-4 sm:px-6 pb-4 xs:pb-6 sm:pb-8 pt-3 xs:pt-4 sm:pt-6">
         {error && (
-          <div className="p-2 xs:p-3 text-xs xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-2 xs:p-3 text-sm xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-3 xs:space-y-4 sm:space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-3 xs:space-y-4 sm:space-y-4"
+        >
           <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
             <label
               htmlFor="email"
-              className="text-xs xs:text-sm sm:text-base font-medium text-text-primary"
+              className="text-sm xs:text-sm sm:text-base font-medium text-text-primary"
             >
               Enter Your Email
             </label>
@@ -135,7 +138,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-xs xs:text-sm sm:text-base"
+              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base"
               required
             />
           </div>
@@ -143,7 +146,7 @@ export default function LoginPage() {
           <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
             <label
               htmlFor="password"
-              className="text-xs xs:text-sm sm:text-base font-medium text-text-primary"
+              className="text-sm xs:text-sm sm:text-base font-medium text-text-primary"
             >
               Password
             </label>
@@ -153,7 +156,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-xs xs:text-sm sm:text-base"
+              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base"
               required
             />
           </div>
@@ -166,12 +169,14 @@ export default function LoginPage() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="rounded border-gray-300 text-brand-primary focus:ring-brand-primary h-3 w-3 xs:h-4 xs:w-4"
               />
-              <span className="text-xs xs:text-sm sm:text-base text-text-secondary">Remember me</span>
+              <span className="text-sm xs:text-sm sm:text-base text-text-secondary">
+                Remember me
+              </span>
             </label>
 
             <Link
               href="/forgot-password"
-              className="text-xs xs:text-sm sm:text-base font-medium text-text-secondary hover:text-brand-primary"
+              className="text-sm xs:text-sm sm:text-base font-medium text-text-secondary hover:text-brand-primary"
             >
               Forgot password?
             </Link>
@@ -180,7 +185,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-xs xs:text-sm sm:text-base mt-1 xs:mt-2"
+            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base mt-1 xs:mt-2"
           >
             Sign In
           </Button>
@@ -190,7 +195,7 @@ export default function LoginPage() {
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border-light" />
           </div>
-          <div className="relative flex justify-center text-[10px] xs:text-xs sm:text-sm">
+          <div className="relative flex justify-center text-[10px] xs:text-sm sm:text-sm">
             <span className="bg-surface-elevated px-1.5 xs:px-2 sm:px-3 text-text-secondary rounded-full border border-border-light">
               or
             </span>
@@ -199,16 +204,18 @@ export default function LoginPage() {
 
         <Button
           variant="outline"
-          className="w-full h-9 xs:h-10 sm:h-11 border-border-light text-text-primary text-xs xs:text-sm sm:text-base font-medium hover:bg-surface-muted relative"
+          className="w-full h-9 xs:h-10 sm:h-11 border-border-light text-text-primary text-sm xs:text-sm sm:text-base font-medium hover:bg-surface-muted relative"
           onClick={handleGoogleLogin}
         >
           <div className="absolute left-2 xs:left-3 sm:left-4">
             <FcGoogle className="h-3 w-3 xs:h-4 xs:w-4 sm:h-5 sm:w-5" />
           </div>
-          <span className="text-xs xs:text-sm sm:text-base">Continue with Google</span>
+          <span className="text-sm xs:text-sm sm:text-base">
+            Continue with Google
+          </span>
         </Button>
 
-        <div className="text-center text-xs xs:text-sm sm:text-base text-text-secondary mt-3 xs:mt-4">
+        <div className="text-center text-sm xs:text-sm sm:text-base text-text-secondary mt-3 xs:mt-4">
           New to360GMP{" "}
           <Link
             href="/signup"

@@ -635,7 +635,7 @@ const UserSidebar = () => {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-blue-600 hover:text-blue-800 truncate block"
+                            className="text-sm text-blue-600 hover:text-blue-800 truncate block"
                           >
                             {link.url}
                           </a>
@@ -895,7 +895,7 @@ const UserSidebar = () => {
                         <p className="text-sm sm:text-base font-medium text-gray-900 truncate">
                           {job.jobTitle}
                         </p>
-                        <p className="text-xs sm:text-sm text-gray-500">
+                        <p className="text-sm sm:text-sm text-gray-500">
                           {job.businessProfileId?.businessName ||
                             "Company Name"}
                         </p>
@@ -935,7 +935,7 @@ const UserSidebar = () => {
                 </svg>
               </div>
               <p className="text-sm text-gray-500">No job matches found</p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-sm text-gray-400 mt-1">
                 Complete your profile to get better matches
               </p>
             </div>

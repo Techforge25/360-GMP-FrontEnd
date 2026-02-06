@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
         <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold text-brand-primary">
           Welcome To 360GMP
         </CardTitle>
-        <CardDescription className="text-xs xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
+        <CardDescription className="text-sm xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
           One Platform Many Solutions
         </CardDescription>
       </CardHeader>
@@ -63,22 +63,25 @@ export default function ForgotPasswordPage() {
           <h3 className="font-bold text-sm xs:text-base sm:text-lg mb-1 xs:mb-2 text-text-primary">
             Forgot Password
           </h3>
-          <p className="text-xs xs:text-sm sm:text-base text-text-secondary">
+          <p className="text-sm xs:text-sm sm:text-base text-text-secondary">
             Please Enter Your Registered Email Address
           </p>
         </div>
 
         {error && (
-          <div className="p-2 xs:p-3 text-xs xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-2 xs:p-3 text-sm xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 xs:space-y-5 sm:space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 xs:space-y-5 sm:space-y-6"
+        >
           <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
             <label
               htmlFor="email"
-              className="text-xs xs:text-sm sm:text-base font-medium text-text-primary"
+              className="text-sm xs:text-sm sm:text-base font-medium text-text-primary"
             >
               Enter Your Email
             </label>
@@ -88,7 +91,7 @@ export default function ForgotPasswordPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-xs xs:text-sm sm:text-base"
+              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base"
               required
             />
           </div>
@@ -102,7 +105,7 @@ export default function ForgotPasswordPage() {
           </Button>
         </form>
 
-        <div className="text-center text-xs xs:text-sm sm:text-base text-text-secondary">
+        <div className="text-center text-sm xs:text-sm sm:text-base text-text-secondary">
           Take me back to{" "}
           <Link
             href="/login"

@@ -156,7 +156,7 @@ function OTPForm() {
         <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold text-brand-primary">
           Welcome To 360GMP
         </CardTitle>
-        <CardDescription className="text-xs xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
+        <CardDescription className="text-sm xs:text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">
           One Platform Many Solutions
         </CardDescription>
       </CardHeader>
@@ -166,19 +166,19 @@ function OTPForm() {
           <h3 className="font-bold text-sm xs:text-base sm:text-lg mb-1 xs:mb-2 text-text-primary">
             Verify OTP
           </h3>
-          <p className="text-xs xs:text-sm sm:text-base text-text-secondary">
+          <p className="text-sm xs:text-sm sm:text-base text-text-secondary">
             Enter The 6 Digit Code Sent To Your Email And Phone.
           </p>
         </div>
 
         {error && (
-          <div className="p-2 xs:p-3 text-xs xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
+          <div className="p-2 xs:p-3 text-sm xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
             {error}
           </div>
         )}
 
         <div className="space-y-3 xs:space-y-4">
-          <label className="text-xs xs:text-sm sm:text-base font-medium text-text-primary block">
+          <label className="text-sm xs:text-sm sm:text-base font-medium text-text-primary block">
             Enter Verification Code
           </label>
           <div className="flex justify-between gap-1 xs:gap-2">
@@ -205,14 +205,14 @@ function OTPForm() {
           Verify
         </Button>
 
-        <div className="text-center text-xs xs:text-sm sm:text-base text-text-secondary">
+        <div className="text-center text-sm xs:text-sm sm:text-base text-text-secondary">
           <p className="mb-1 xs:mb-2">
             Resend OTP in{" "}
             <span className="font-bold text-brand-primary">
               {formatTime(timer)}
             </span>
           </p>
-          <button className="text-text-secondary underline decoration-text-secondary/50 hover:text-brand-primary text-[10px] xs:text-xs sm:text-sm">
+          <button className="text-text-secondary underline decoration-text-secondary/50 hover:text-brand-primary text-[10px] xs:text-sm sm:text-sm">
             Resend OTP
           </button>
         </div>
@@ -223,11 +223,15 @@ function OTPForm() {
 
 export default function OTPVerificationPage() {
   return (
-    <Suspense fallback={
-      <div className="w-full max-w-[320px] xs:max-w-[360px] sm:max-w-md lg:max-w-lg mx-auto p-4 text-center">
-        <div className="text-sm xs:text-base sm:text-lg text-text-secondary">Loading...</div>
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="w-full max-w-[320px] xs:max-w-[360px] sm:max-w-md lg:max-w-lg mx-auto p-4 text-center">
+          <div className="text-sm xs:text-base sm:text-lg text-text-secondary">
+            Loading...
+          </div>
+        </div>
+      }
+    >
       <OTPForm />
     </Suspense>
   );
