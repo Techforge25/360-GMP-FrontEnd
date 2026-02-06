@@ -34,19 +34,38 @@ const AnalyticsSection = () => {
         const [viewsRes, leadsRes, conversionRes, lowStockRes] = results;
 
         setData({
-          views: viewsRes.status === 'fulfilled' ? (viewsRes.value?.data || 0) : 0,
-          leads: leadsRes.status === 'fulfilled' ? (leadsRes.value?.data || 0) : 0,
-          conversion: conversionRes.status === 'fulfilled' ? (conversionRes.value?.data || 0) : 0,
-          criticalAlerts: lowStockRes.status === 'fulfilled' ? (lowStockRes.value?.data?.totalDocs || 0) : 0,
+          views:
+            viewsRes.status === "fulfilled" ? viewsRes.value?.data || 0 : 0,
+          leads:
+            leadsRes.status === "fulfilled" ? leadsRes.value?.data || 0 : 0,
+          conversion:
+            conversionRes.status === "fulfilled"
+              ? conversionRes.value?.data || 0
+              : 0,
+          criticalAlerts:
+            lowStockRes.status === "fulfilled"
+              ? lowStockRes.value?.data?.totalDocs || 0
+              : 0,
         });
 
-        // Log individual failures for debugging
-        results.forEach((result, index) => {
-          if (result.status === 'rejected') {
-            const apiNames = ['getViewCounts', 'getNewLeads', 'getConversionRate', 'getLowStockProducts'];
-            console.error(`Failed to fetch ${apiNames[index]}:`, result.reason);
-          }
-        });
+        // Silently handle failures - analytics endpoints may not be implemented yet
+        // Only log if in development mode
+        if (process.env.NODE_ENV === "development") {
+          results.forEach((result, index) => {
+            if (result.status === "rejected") {
+              const apiNames = [
+                "getViewCounts",
+                "getNewLeads",
+                "getConversionRate",
+                "getLowStockProducts",
+              ];
+              console.warn(
+                `Analytics API ${apiNames[index]} not available:`,
+                result.reason?.message || "No data",
+              );
+            }
+          });
+        }
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
       } finally {
@@ -135,7 +154,11 @@ const AnalyticsSection = () => {
         <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#6C49AC] rounded-md text-sm sm:text-sm font-semibold hover:bg-indigo-100 transition-colors">
           <p className="hidden sm:inline">Business Analytics</p>
           <p className="sm:hidden">Analytics</p>
-          <img src="/assets/images/analyticsIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+          <img
+            src="/assets/images/analyticsIcon.png"
+            alt=""
+            className="w-3 h-3 sm:w-4 sm:h-4"
+          />
         </button>
       </div>
 
@@ -150,7 +173,9 @@ const AnalyticsSection = () => {
             />
             <div className="flex justify-between items-start mb-1.5 sm:mb-2">
               <div>
-                <div className={`text-lg sm:text-xl lg:text-2xl font-semibold ${stat.iconColor}`}>
+                <div
+                  className={`text-lg sm:text-xl lg:text-2xl font-semibold ${stat.iconColor}`}
+                >
                   {stat.value}
                 </div>
                 <div className="text-sm sm:text-sm text-black font-medium mt-0.5 sm:mt-1 mb-1.5 sm:mb-2 leading-tight">

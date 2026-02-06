@@ -1,48 +1,107 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FiEdit2, FiTrash2, FiSliders } from "react-icons/fi";
+import productAPI from "@/services/productAPI";
+import { useRouter, usePathname } from "next/navigation";
 
-const FeatureProduct = () => {
-  const products = [
-    {
-      id: 1,
-      name: "CNC Machined Component",
-      desc: "Precision milling and turning of complex geometries...",
-      moq: "100 pc",
-      price: "$980",
-      stock: 145,
-      image: "/assets/images/product1.png", // Placeholder
-    },
-    {
-      id: 2,
-      name: "Silent Block Suspension Parts",
-      desc: "Precision milling and turning of complex geometries...",
-      moq: "100 pc",
-      price: "$880",
-      stock: 145,
-      image: "/assets/images/product2.png", // Placeholder
-    },
-    {
-      id: 3,
-      name: "CNC Machined Component",
-      desc: "Precision milling and turning of complex geometries...",
-      moq: "100 pc",
-      price: "$980",
-      stock: 145,
-      image: "/assets/images/product1.png", // Placeholder
-    },
-    {
-      id: 4,
-      name: "Precision Disc Brake System",
-      desc: "Precision milling and turning of complex geometries...",
-      moq: "100 pc",
-      price: "$980",
-      stock: 14,
-      stockColor: "bg-red-500",
-      image: "/assets/images/product3.png", // Placeholder
-    },
-  ];
+const FeatureProduct = ({ onManageClick }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchFeaturedProducts();
+  }, []);
+
+  const fetchFeaturedProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await productAPI.getFeatured(4); // Fetch 4 featured products
+
+      if (
+        response.success &&
+        response.data?.docs &&
+        response.data.docs.length > 0
+      ) {
+        const transformedProducts = response.data.docs.map(transformProduct);
+        setProducts(transformedProducts);
+      } else {
+        setProducts([]);
+      }
+    } catch (err) {
+      console.error("Failed to fetch featured products:", err);
+      setError(err.message || "Failed to load featured products");
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const transformProduct = (product) => {
+    return {
+      id: product._id || product.productId,
+      name: product.title || "Unnamed Product",
+      desc: product.detail?.substring(0, 60) || "No description available",
+      moq: `${product.minOrderQty || product.moq || 100} pc`,
+      price: `$${product.pricePerUnit?.toFixed(2) || "0.00"}`,
+      stock: product.stockQty || 0,
+      stockColor: product.stockQty < 20 ? "bg-red-500" : "bg-green-600",
+      image: product.image || "/assets/images/Portrait_Placeholder.png",
+    };
+  };
+
+  const handleViewProduct = (productId) => {
+    if (pathname.includes("/dashboard/business")) {
+      router.push(`/dashboard/business/products/${productId}`);
+    } else if (pathname.includes("/dashboard/user")) {
+      router.push(`/dashboard/user/products/${productId}`);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-6">
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin h-8 w-8 border-2 border-brand-primary border-t-transparent rounded-full"></div>
+          <p className="text-base text-gray-500 ml-3">
+            Loading featured products...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-6">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-red-600 text-base text-center">
+            <strong>Error:</strong> {error}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+            Feature Product
+          </h2>
+        </div>
+        <div className="text-center py-12">
+          <p className="text-gray-500">No featured products available</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 lg:p-6">
@@ -50,10 +109,17 @@ const FeatureProduct = () => {
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
           Feature Product
         </h2>
-        <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#240457] rounded-md text-sm sm:text-sm font-medium hover:bg-gray-100 transition-colors">
+        <button
+          onClick={onManageClick}
+          className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#240457] rounded-md text-sm sm:text-sm font-medium hover:bg-gray-100 transition-colors"
+        >
           <span className="hidden sm:inline">Manage Featured Products</span>
           <span className="sm:hidden">Manage Products</span>
-          <img src="/assets/images/manageIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+          <img
+            src="/assets/images/manageIcon.png"
+            alt=""
+            className="w-3 h-3 sm:w-4 sm:h-4"
+          />
         </button>
       </div>
 
@@ -66,7 +132,7 @@ const FeatureProduct = () => {
             <div className="aspect-[4/3] bg-gray-50 relative p-3 sm:p-4 flex items-center justify-center">
               {/* Stock Badge */}
               <div
-                className={`absolute top-2 sm:top-3 right-2 sm:right-3 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl text-[9px] sm:text-[14px] font-bold text-white ${product.stockColor || "bg-green-600"}`}
+                className={`absolute top-2 sm:top-3 right-2 sm:right-3 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl text-[9px] sm:text-[14px] font-bold text-white ${product.stockColor}`}
               >
                 Stock {product.stock}
               </div>
@@ -81,10 +147,14 @@ const FeatureProduct = () => {
                 </button>
               </div>
 
-              <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
-                {/* Placeholder for Product Image */}
-                <span className="text-sm sm:text-sm">Product Image</span>
-              </div>
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-cover rounded-lg"
+                onError={(e) => {
+                  e.target.src = "/assets/images/Portrait_Placeholder.png";
+                }}
+              />
             </div>
 
             <div className="p-3 sm:p-4">
@@ -98,11 +168,14 @@ const FeatureProduct = () => {
               <div className="flex items-center justify-between text-sm sm:text-sm mb-3 sm:mb-4">
                 <span className="text-gray-500">MOQ: {product.moq}</span>
                 <span className="text-gray-500 font-semibold">
-                  USD {product.price}
+                  USD {product.price.replace("$", "")}
                 </span>
               </div>
 
-              <button className="w-full py-1.5 sm:py-2 border border-[#240457] rounded-lg text-sm sm:text-sm font-semibold text-[#240457] hover:bg-gray-50 transition-all">
+              <button
+                onClick={() => handleViewProduct(product.id)}
+                className="w-full py-1.5 sm:py-2 border border-[#240457] rounded-lg text-sm sm:text-sm font-semibold text-[#240457] hover:bg-gray-50 transition-all"
+              >
                 View Product
               </button>
             </div>

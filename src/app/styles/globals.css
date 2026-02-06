@@ -1,17 +1,17 @@
+@import "leaflet/dist/leaflet.css";
 @import "tailwindcss";
-
 
 @theme {
   /* ===== Brand ===== */
   --color-brand-primary: #240457;
-  --color-brand-primary-light: #9747FF;
-  --color-brand-secondary: #E8EEF6;
+  --color-brand-primary-light: #9747ff;
+  --color-brand-secondary: #e8eef6;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
   --color-surface-muted: #f3f4f6;
   --color-surface-elevated: #ffffff;
-  --color-scaffold-background: #E3E3E3;
+  --color-scaffold-background: #e3e3e3;
   --color-surface: #ffffff;
 
   /* ===== Text ===== */
@@ -19,7 +19,7 @@
   --color-text-secondary: #556179;
   --color-text-hint: #9ca3af;
   --color-text-inverse: #ffffff;
-  --color-text-link: #2497CD;
+  --color-text-link: #2497cd;
 
   /* ===== Borders ===== */
   --color-border-light: #d3d6de;
@@ -29,24 +29,24 @@
   --color-accent-success: #22c55e;
   --color-accent-warning: #facc15;
   --color-accent-danger: #dc2626;
-  --color-accent-info: #0A78D2;
+  --color-accent-info: #0a78d2;
 
   /* ===== Highlight Backgrounds ===== */
-  --color-highlight-yellow: #FEF3C7;
-  --color-highlight-red: #FECACA;
-  --color-highlight-purple: #E9D5FF;
+  --color-highlight-yellow: #fef3c7;
+  --color-highlight-red: #fecaca;
+  --color-highlight-purple: #e9d5ff;
   --color-highlight-blue: #d1defa;
-  --color-highlight-green: #DCFCE7;
+  --color-highlight-green: #dcfce7;
 
   /* ===== Mislenous Colors ===== */
-  --color-teal: #14B8A6;
+  --color-teal: #14b8a6;
   --color-brown: #92400e;
   --color-green: #0ea443;
   --color-purple-dark: #6b21a8;
   --color-blue-dark: #3b82f6;
 
   /* ===== Typography ===== */
-  --font-primary: 'Open Sans', sans-serif;
+  --font-primary: "Open Sans", sans-serif;
   --text-heading-size: 22px;
   --text-heading-weight: 400;
 

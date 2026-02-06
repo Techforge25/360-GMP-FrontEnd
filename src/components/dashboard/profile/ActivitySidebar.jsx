@@ -17,6 +17,22 @@ import {
 } from "react-icons/fa";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import socialLinkAPI from "@/services/socialLinkAPI";
+import MapModal from "./MapModal";
+import dynamic from "next/dynamic";
+
+// Dynamically import Leaflet map to avoid SSR issues
+const DynamicMap = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false },
+);
+const DynamicTileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false },
+);
+const DynamicMarker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false },
+);
 
 const getSocialIcon = (platform) => {
   const p = platform?.toLowerCase() || "";
@@ -35,6 +51,9 @@ const ActivitySidebar = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isEditing2, setIsEditing2] = useState(false);
   const [socialLinks, setSocialLinks] = useState([]);
+  const [showMapModal, setShowMapModal] = useState(false);
+  const [mapLocation, setMapLocation] = useState([51.505, -0.09]); // Default location
+  const [isClient, setIsClient] = useState(false);
   const [newSocialLink, setNewSocialLink] = useState({
     platformName: "linkedin",
     url: "",
@@ -48,6 +67,10 @@ const ActivitySidebar = () => {
     country: "",
   });
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -60,9 +83,11 @@ const ActivitySidebar = () => {
     try {
       // Filter out empty fields to avoid validation errors
       const filteredData = Object.fromEntries(
-        Object.entries(formData).filter(([key, value]) => value && value.trim() !== "")
+        Object.entries(formData).filter(
+          ([key, value]) => value && value.trim() !== "",
+        ),
       );
-      
+
       // Only send data if we have at least one field to update
       if (Object.keys(filteredData).length === 0) {
         console.warn("No data to update");
@@ -72,7 +97,7 @@ const ActivitySidebar = () => {
 
       await businessProfileAPI.updateContactInfo(filteredData);
       setIsEditing(false);
-      
+
       // Refresh the profile data
       const profileRes = await businessProfileAPI.getMyProfile();
       if (profileRes?.data) {
@@ -80,7 +105,9 @@ const ActivitySidebar = () => {
       }
     } catch (error) {
       console.error("Failed to update contact info:", error);
-      alert("Failed to update contact info. Please check your input and try again.");
+      alert(
+        "Failed to update contact info. Please check your input and try again.",
+      );
     }
   };
 
@@ -122,6 +149,23 @@ const ActivitySidebar = () => {
     setIsEditing(!isEditing);
   };
 
+  const handleSaveMapLocation = async (mapURL, coordinates) => {
+    try {
+      await businessProfileAPI.updateMapURL(mapURL);
+      setMapLocation(coordinates);
+      setShowMapModal(false);
+
+      // Update profile with new mapURL
+      setProfile((prev) => ({
+        ...prev,
+        mapURL,
+      }));
+    } catch (error) {
+      console.error("Failed to update map location:", error);
+      alert("Failed to update map location. Please try again.");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -135,21 +179,36 @@ const ActivitySidebar = () => {
         const [lowStockRes, applicantsRes, profileRes] = results;
 
         // Handle low stock items
-        if (lowStockRes.status === 'fulfilled' && lowStockRes.value?.data?.docs) {
+        if (
+          lowStockRes.status === "fulfilled" &&
+          lowStockRes.value?.data?.docs
+        ) {
           setLowStockItems(lowStockRes.value.data.docs);
-        } else if (lowStockRes.status === 'rejected') {
-          console.error("Failed to fetch low stock products:", lowStockRes.reason);
+        } else if (
+          lowStockRes.status === "rejected" &&
+          process.env.NODE_ENV === "development"
+        ) {
+          console.warn(
+            "Low stock products API not available:",
+            lowStockRes.reason?.message || "No data",
+          );
         }
 
         // Handle applicants
-        if (applicantsRes.status === 'fulfilled' && applicantsRes.value?.data) {
+        if (applicantsRes.status === "fulfilled" && applicantsRes.value?.data) {
           setApplicants(applicantsRes.value.data);
-        } else if (applicantsRes.status === 'rejected') {
-          console.error("Failed to fetch job applications:", applicantsRes.reason);
+        } else if (
+          applicantsRes.status === "rejected" &&
+          process.env.NODE_ENV === "development"
+        ) {
+          console.warn(
+            "Job applications API not available:",
+            applicantsRes.reason?.message || "No data",
+          );
         }
 
         // Handle profile data
-        if (profileRes.status === 'fulfilled' && profileRes.value?.data) {
+        if (profileRes.status === "fulfilled" && profileRes.value?.data) {
           setProfile(profileRes.value.data);
           // Populate form data with existing profile data
           setFormData({
@@ -160,7 +219,7 @@ const ActivitySidebar = () => {
             city: profileRes.value.data?.location?.city || "",
             country: profileRes.value.data?.location?.country || "",
           });
-          
+
           // Fetch social links
           try {
             const socialRes = await socialLinkAPI.getByBusinessProfileId(
@@ -172,7 +231,7 @@ const ActivitySidebar = () => {
           } catch (e) {
             console.error("Failed to fetch social links", e);
           }
-        } else if (profileRes.status === 'rejected') {
+        } else if (profileRes.status === "rejected") {
           console.error("Failed to fetch profile:", profileRes.reason);
         }
       } catch (error) {
@@ -242,7 +301,9 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-sm sm:text-sm text-gray-500">No critical alerts</p>
+            <p className="text-sm sm:text-sm text-gray-500">
+              No critical alerts
+            </p>
           )}
         </div>
       </div>
@@ -262,7 +323,9 @@ const ActivitySidebar = () => {
               />
             ))
           ) : (
-            <p className="text-sm sm:text-sm text-gray-500">No recent applicants</p>
+            <p className="text-sm sm:text-sm text-gray-500">
+              No recent applicants
+            </p>
           )}
         </div>
       </div>
@@ -277,7 +340,9 @@ const ActivitySidebar = () => {
             className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isEditing ? "text-indigo-600" : ""}`}
           />
         </button>
-        <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-3 sm:mb-4">Contact Info</h3>
+        <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-3 sm:mb-4">
+          Contact Info
+        </h3>
 
         {isEditing ? (
           <div className="space-y-3 bg-[#B4B4B433] p-3 rounded-lg">
@@ -468,16 +533,39 @@ const ActivitySidebar = () => {
         {/* Map / Location */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden py-3 px-5 mt-4">
           <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden">
-            {/* Placeholder for Map */}
-            <div className="w-full h-full flex items-center justify-center text-blue-300">
-              <FiMapPin className="w-8 h-8" />
-            </div>
+            {isClient && (
+              <DynamicMap
+                center={mapLocation}
+                zoom={13}
+                style={{ height: "100%", width: "100%" }}
+                scrollWheelZoom={false}
+                dragging={false}
+                zoomControl={false}
+              >
+                <DynamicTileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <DynamicMarker position={mapLocation} />
+              </DynamicMap>
+            )}
           </div>
         </div>
-        <button className="w-full py-3 bg-[#240457] text-white text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg">
+        <button
+          onClick={() => setShowMapModal(true)}
+          className="w-full py-3 bg-[#240457] text-white text-sm font-semibold hover:bg-[#240457]/90 transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg"
+        >
           Update Location <FiMapPin className="w-3 h-3" />
         </button>
       </div>
+
+      {/* Map Modal */}
+      <MapModal
+        isOpen={showMapModal}
+        onClose={() => setShowMapModal(false)}
+        onSave={handleSaveMapLocation}
+        initialLocation={mapLocation}
+      />
     </div>
   );
 };

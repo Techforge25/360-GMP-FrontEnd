@@ -185,6 +185,19 @@ class BusinessProfileAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Update map URL for business location
+   */
+  async updateMapURL(mapURL) {
+    return await api.patch({
+      url: "/business-profile-management/map-url",
+      payload: { mapURL },
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const businessProfileAPI = new BusinessProfileAPI();

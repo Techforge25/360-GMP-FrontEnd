@@ -213,7 +213,9 @@ const ProductListContent = ({ isProfileView = false }) => {
         <div className="flex flex-col gap-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">My Products</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+                My Products
+              </h2>
               <span className="px-2 sm:px-3 py-1 bg-white border border-gray-200 text-gray-600 text-sm sm:text-sm rounded-full flex items-center gap-1 w-fit">
                 {products.length} records found{" "}
                 <span className="cursor-pointer hover:text-gray-800">×</span>
@@ -223,7 +225,9 @@ const ProductListContent = ({ isProfileView = false }) => {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
-              <span className="text-sm sm:text-base text-black font-medium">Inventory Status</span>
+              <span className="text-sm sm:text-base text-black font-medium">
+                Inventory Status
+              </span>
               <select
                 className="border border-gray-300 rounded-md text-sm sm:text-base py-2 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white w-full sm:w-auto min-w-[140px]"
                 value={stockLevelFilter}
@@ -236,7 +240,9 @@ const ProductListContent = ({ isProfileView = false }) => {
               </select>
             </div>
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
-              <span className="text-sm sm:text-base text-black font-medium">Product Category</span>
+              <span className="text-sm sm:text-base text-black font-medium">
+                Product Category
+              </span>
               <select
                 className="border border-gray-300 rounded-md text-sm sm:text-base py-2 px-3 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-black bg-white w-full sm:w-auto min-w-[160px]"
                 value={categoryFilter}
@@ -361,7 +367,9 @@ const ProductListContent = ({ isProfileView = false }) => {
                           ${product.status === "draft" ? "bg-gray-100 text-gray-800" : ""}
                         `}
                         >
-                          {product.status === "approved" ? "Live" : product.status}
+                          {product.status === "approved"
+                            ? "Live"
+                            : product.status}
                         </span>
                         <span
                           className={`inline-block px-2 py-1 rounded text-sm font-medium capitalize
@@ -380,31 +388,51 @@ const ProductListContent = ({ isProfileView = false }) => {
                         onClick={(e) => handleEdit(product, e)}
                         className="p-1.5 sm:p-2 text-gray-400 hover:text-indigo-600 transition-colors rounded"
                       >
-                        <img src="/assets/images/editIcon.png" alt="Edit" className="w-4 h-4" />
+                        <img
+                          src="/assets/images/editIcon.png"
+                          alt="Edit"
+                          className="w-4 h-4"
+                        />
                       </button>
                       <button
                         className="p-1.5 sm:p-2 text-gray-400 hover:text-green-600 transition-colors rounded"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <img src="/assets/images/chartIcon.png" alt="Analytics" className="w-4 h-4" />
+                        <img
+                          src="/assets/images/chartIcon.png"
+                          alt="Analytics"
+                          className="w-4 h-4"
+                        />
                       </button>
                       <button
                         onClick={(e) => handleDelete(product._id, e)}
                         className="p-1.5 sm:p-2 text-gray-400 hover:text-red-500 transition-colors rounded"
                       >
-                        <img src="/assets/images/deleteIcon.png" alt="Delete" className="w-4 h-4" />
+                        <img
+                          src="/assets/images/deleteIcon.png"
+                          alt="Delete"
+                          className="w-4 h-4"
+                        />
                       </button>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-sm sm:text-sm">
                     <div>
-                      <p className="text-gray-500 font-medium mb-1">MOQ & Price</p>
-                      <p className="text-gray-600">MOQ: {product.minOrderQty}</p>
-                      <p className="text-gray-600">Price: ${product.pricePerUnit}</p>
+                      <p className="text-gray-500 font-medium mb-1">
+                        MOQ & Price
+                      </p>
+                      <p className="text-gray-600">
+                        MOQ: {product.minOrderQty}
+                      </p>
+                      <p className="text-gray-600">
+                        Price: ${product.pricePerUnit}
+                      </p>
                     </div>
                     <div>
                       <p className="text-gray-500 font-medium mb-1">Stock</p>
-                      <p className="text-gray-600 font-medium">{product.stockQty} Units</p>
+                      <p className="text-gray-600 font-medium">
+                        {product.stockQty} Units
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -498,19 +526,31 @@ const ProductListContent = ({ isProfileView = false }) => {
                       onClick={(e) => handleEdit(product, e)}
                       className="p-1 text-gray-400 hover:text-indigo-600 transition-colors"
                     >
-                      <img src="/assets/images/editIcon.png" alt="Edit" className="w-4 h-4" />
+                      <img
+                        src="/assets/images/editIcon.png"
+                        alt="Edit"
+                        className="w-4 h-4"
+                      />
                     </button>
                     <button
                       className="p-1 text-gray-400 hover:text-green-600 transition-colors"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <img src="/assets/images/chartIcon.png" alt="Analytics" className="w-4 h-4" />
+                      <img
+                        src="/assets/images/chartIcon.png"
+                        alt="Analytics"
+                        className="w-4 h-4"
+                      />
                     </button>
                     <button
                       onClick={(e) => handleDelete(product._id, e)}
                       className="p-1 text-gray-400 hover:text-red-500 transition-colors"
                     >
-                      <img src="/assets/images/deleteIcon.png" alt="Delete" className="w-4 h-4" />
+                      <img
+                        src="/assets/images/deleteIcon.png"
+                        alt="Delete"
+                        className="w-4 h-4"
+                      />
                     </button>
                   </div>
                 </div>

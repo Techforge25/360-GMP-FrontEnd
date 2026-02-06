@@ -1,6 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "@/lib/axios";
+import useSocket from "@/hooks/useSocket";
 
 const UserContext = createContext();
 
@@ -79,6 +80,12 @@ export const UserProvider = ({ children }) => {
       throw error; // Re-throw to handle in UI
     }
   };
+
+  useSocket("notification", (data) => {
+    console.log("Received notification:", data);
+    // Here you can implement logic to show notifications in the UI
+    
+  });
 
   return (
     <UserContext.Provider

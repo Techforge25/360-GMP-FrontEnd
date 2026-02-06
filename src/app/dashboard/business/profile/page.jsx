@@ -28,7 +28,7 @@ export default function BusinessProfilePage() {
               <AnalyticsSection />
 
               {/* Feature Products */}
-              <FeatureProduct />
+              <FeatureProduct onManageClick={() => setActiveTab("Product")} />
             </div>
 
             {/* Right Sidebar Column */}
@@ -48,12 +48,11 @@ export default function BusinessProfilePage() {
           <div className="w-full">
             <BusinessAboutTab />
           </div>
-        ) 
-        // Disabled
+        ) : // Disabled
         // : activeTab === "Orders" ? (
         //   <BusinessOrdersTab />
-        // ) 
-        : activeTab === "Communities" ? (
+        // )
+        activeTab === "Communities" ? (
           <div className="w-full">
             <BusinessCommunitiesTab />
           </div>
@@ -62,7 +61,9 @@ export default function BusinessProfilePage() {
             <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">
               {activeTab} content coming soon
             </h3>
-            <p className="text-sm sm:text-base">This section is under development.</p>
+            <p className="text-sm sm:text-base">
+              This section is under development.
+            </p>
           </div>
         )}
       </div>
