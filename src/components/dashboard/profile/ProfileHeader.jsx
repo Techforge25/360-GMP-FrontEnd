@@ -27,6 +27,12 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   const [isUploadingBanner, setIsUploadingBanner] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // Business Info Edit Modal States
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editCompanyName, setEditCompanyName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [isBusinessInfoUpdating, setIsBusinessInfoUpdating] = useState(false);
+
   const logoInputRef = useRef(null);
   const bannerInputRef = useRef(null);
 
@@ -47,6 +53,14 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 
     fetchBusinessProfile();
   }, []);
+
+  // Populate edit fields when modal opens
+  useEffect(() => {
+    if (showEditModal && profileData) {
+      setEditCompanyName(profileData.companyName || "");
+      setEditDescription(profileData.description || "");
+    }
+  }, [showEditModal, profileData]);
 
   const handleLogoClick = () => {
     logoInputRef.current?.click();
@@ -70,7 +84,9 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         setIsUploadingLogo(true);
         setIsUpdating(true);
         const logoUrl = await uploadToCloudinary(file, "business/profile");
-        const response = await businessProfileAPI.updateMyProfile({ logo: logoUrl });
+        const response = await businessProfileAPI.updateMyProfile({
+          logo: logoUrl,
+        });
         if (response?.data) {
           setProfileData(response.data);
           setNewLogo(null);
@@ -100,7 +116,9 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         setIsUploadingBanner(true);
         setIsUpdating(true);
         const bannerUrl = await uploadToCloudinary(file, "business/banner");
-        const response = await businessProfileAPI.updateMyProfile({ banner: bannerUrl });
+        const response = await businessProfileAPI.updateMyProfile({
+          banner: bannerUrl,
+        });
         if (response?.data) {
           setProfileData(response.data);
           setNewBanner(null);
@@ -167,6 +185,31 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
     }
   };
 
+  const handleBusinessInfoUpdate = async () => {
+    try {
+      setIsBusinessInfoUpdating(true);
+      const response = await businessProfileAPI.updateMyProfile({
+        companyName: editCompanyName,
+        description: editDescription,
+      });
+
+      if (response?.data) {
+        setProfileData((prevData) => ({
+          ...prevData,
+          ...response.data,
+        }));
+        setShowEditModal(false);
+      }
+    } catch (error) {
+      console.error("Failed to update business info:", error);
+      alert(
+        `Failed to update business info: ${error?.message || "Unknown error"}`,
+      );
+    } finally {
+      setIsBusinessInfoUpdating(false);
+    }
+  };
+
   const calculateYearsInBusiness = (foundedDate) => {
     if (!foundedDate) return "N/A";
     const founded = new Date(foundedDate);
@@ -194,7 +237,9 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
     return (
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-[1400px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
-          <p className="text-gray-500 text-center text-sm sm:text-base">No business profile found</p>
+          <p className="text-gray-500 text-center text-sm sm:text-base">
+            No business profile found
+          </p>
         </div>
       </div>
     );
@@ -219,7 +264,9 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         />
         {newBanner && (
           <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-sm sm:text-sm font-medium">
-            <span className="hidden sm:inline">New banner selected - Click "Update Profile" to save</span>
+            <span className="hidden sm:inline">
+              New banner selected - Click "Update Profile" to save
+            </span>
             <span className="sm:hidden">New banner - Update to save</span>
           </div>
         )}
@@ -232,7 +279,11 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         />
         <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex gap-2 sm:gap-3">
           <button className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2">
-            <img src="/assets/images/eyeIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+            <img
+              src="/assets/images/eyeIcon.png"
+              alt=""
+              className="w-3 h-3 sm:w-4 sm:h-4"
+            />
             <span className="hidden sm:inline">View as a user</span>
             <span className="sm:hidden">View</span>
           </button>
@@ -241,7 +292,11 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
             disabled={isUploadingBanner}
             className="bg-white/90 backdrop-blur-sm px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-base font-medium text-black hover:bg-white transition-colors flex items-center gap-1 sm:gap-2 disabled:opacity-50"
           >
-            <img src="/assets/images/cameraIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+            <img
+              src="/assets/images/cameraIcon.png"
+              alt=""
+              className="w-3 h-3 sm:w-4 sm:h-4"
+            />
             {isUploadingBanner ? (
               <span className="hidden sm:inline">Uploading...</span>
             ) : (
@@ -253,9 +308,14 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           </button>
           <div className="absolute -bottom-16 sm:-bottom-18 right-1 sm:right-2">
             <button
+              onClick={() => setShowEditModal(true)}
               className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <img src="/assets/images/updateProfileIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+              <img
+                src="/assets/images/updateProfileIcon.png"
+                alt=""
+                className="w-3 h-3 sm:w-4 sm:h-4"
+              />
               {isUpdating ? (
                 <span className="hidden sm:inline">Updating...</span>
               ) : (
@@ -266,6 +326,53 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
               )}
             </button>
           </div>
+
+          {/* Business Info Edit Modal */}
+          {showEditModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto">
+                <h2 className="text-lg font-bold mb-4">Edit Business Info</h2>
+                <div className="mb-4">
+                  <label className="block text-black text-sm font-medium mb-1">
+                    Company Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editCompanyName}
+                    onChange={(e) => setEditCompanyName(e.target.value)}
+                    className="w-full text-black border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-black text-sm font-medium mb-1">
+                    Description
+                  </label>
+                  <textarea
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    className="w-full text-black border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
+                    rows={4}
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-medium"
+                    disabled={isBusinessInfoUpdating}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleBusinessInfoUpdate}
+                    className="px-4 py-2 rounded bg-[#240457] text-white font-medium disabled:opacity-50"
+                    disabled={isBusinessInfoUpdating || !editCompanyName}
+                  >
+                    {isBusinessInfoUpdating ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -323,7 +430,11 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 sm:gap-x-4 md:gap-x-6 gap-y-1.5 sm:gap-y-2 mt-1.5 sm:mt-2 text-sm sm:text-sm md:text-base text-gray-500 mb-8 sm:mb-10 md:mb-12">
                 <div className="flex items-center gap-1 sm:gap-1.5">
-                  <img src="/assets/images/employeesIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <img
+                    src="/assets/images/employeesIcon.png"
+                    alt=""
+                    className="w-3 h-3 sm:w-4 sm:h-4"
+                  />
                   <span>{profileData.companySize || "N/A"}</span>
                 </div>
                 <div className="flex items-center gap-1 sm:gap-1.5">
@@ -333,8 +444,14 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                   </span>
                 </div>
                 <div className="flex items-center gap-1 sm:gap-1.5">
-                  <img src="/assets/images/manufacturingIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span className="truncate max-w-[120px] sm:max-w-none">{profileData.primaryIndustry || "N/A"}</span>
+                  <img
+                    src="/assets/images/manufacturingIcon.png"
+                    alt=""
+                    className="w-3 h-3 sm:w-4 sm:h-4"
+                  />
+                  <span className="truncate max-w-[120px] sm:max-w-none">
+                    {profileData.primaryIndustry || "N/A"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1 sm:gap-1.5">
                   <FiMapPin className="w-3 h-3 sm:w-4 sm:h-4" />

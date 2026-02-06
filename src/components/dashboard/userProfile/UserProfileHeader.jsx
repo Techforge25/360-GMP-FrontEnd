@@ -21,6 +21,12 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // Basic Info Edit Modal States
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFullName, setEditFullName] = useState("");
+  const [editBio, setEditBio] = useState("");
+  const [isBasicInfoUpdating, setIsBasicInfoUpdating] = useState(false);
+
   const bannerInputRef = useRef(null);
   const avatarInputRef = useRef(null);
 
@@ -33,7 +39,6 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           setProfileData(response.data);
         }
       } catch (error) {
-        // Handle 404 errors gracefully (profile doesn't exist yet)
         if (error?.status === 404 || error?.statusCode === 404) {
           console.log("Profile not found - user hasn't created profile yet");
           setProfileData(null);
@@ -47,6 +52,14 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
 
     fetchUserProfile();
   }, []);
+
+  // Populate edit fields when modal opens
+  useEffect(() => {
+    if (showEditModal && profileData) {
+      setEditFullName(profileData.fullName || "");
+      setEditBio(profileData.bio || "");
+    }
+  }, [showEditModal, profileData]);
 
   const handleBannerClick = () => bannerInputRef.current?.click();
   const handleAvatarClick = () => avatarInputRef.current?.click();
@@ -66,7 +79,9 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         setIsUpdating(true);
         const coverUrl = await uploadToCloudinary(file, "user/cover");
         // Use specific API method for banner
-        const response = await userProfileAPI.updateBanner({ banner: coverUrl });
+        const response = await userProfileAPI.updateBanner({
+          banner: coverUrl,
+        });
         if (response?.data) {
           setProfileData((prevData) => ({ ...prevData, ...response.data }));
           setNewCover(null);
@@ -178,6 +193,31 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
     }
   };
 
+  const handleBasicInfoUpdate = async () => {
+    try {
+      setIsBasicInfoUpdating(true);
+      const response = await userProfileAPI.updateBasicInfo({
+        fullName: editFullName,
+        bio: editBio,
+      });
+
+      if (response?.data) {
+        setProfileData((prevData) => ({
+          ...prevData,
+          ...response.data,
+        }));
+        setShowEditModal(false);
+      }
+    } catch (error) {
+      console.error("Failed to update basic info:", error);
+      alert(
+        `Failed to update basic info: ${error?.message || "Unknown error"}`,
+      );
+    } finally {
+      setIsBasicInfoUpdating(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="bg-white border-b border-gray-200">
@@ -270,51 +310,62 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
               onClick={() => setShowEditModal(true)}
               className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <img src="/assets/images/updateProfileIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+              <img
+                src="/assets/images/updateProfileIcon.png"
+                alt=""
+                className="w-3 h-3 sm:w-4 sm:h-4"
+              />
               <span className="hidden sm:inline">Edit Basic Info</span>
               <span className="sm:hidden">Edit</span>
             </button>
           </div>
 
-
-  {/* Basic Info Edit Modal */}
-  {showEditModal && (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto">
-        <h2 className="text-lg font-bold mb-4">Edit Basic Info</h2>
-        <div className="mb-4">
-          <label className="block text-black text-sm font-medium mb-1">Full Name</label>
-          <input
-            type="text"
-            value={editFullName}
-            onChange={(e) => setEditFullName(e.target.value)}
-            className="w-full text-black border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-black text-sm font-medium mb-1">Bio</label>
-          <textarea
-            value={editBio}
-            onChange={(e) => setEditBio(e.target.value)}
-            className="w-full text-black   border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
-            rows={3}
-          />
-        </div>
-        <div className="flex justify-end gap-2">
-          <button
-            onClick={() => setShowEditModal(false)}
-            className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-medium"
-            disabled={isBasicInfoUpdating}
-          >Cancel</button>
-          <button
-            onClick={handleBasicInfoUpdate}
-            className="px-4 py-2 rounded bg-[#240457] text-white font-medium disabled:opacity-50"
-            disabled={isBasicInfoUpdating || !editFullName}
-          >{isBasicInfoUpdating ? "Saving..." : "Save"}</button>
-        </div>
-      </div>
-    </div>
-  )}
+          {/* Basic Info Edit Modal */}
+          {showEditModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto">
+                <h2 className="text-lg font-bold mb-4">Edit Basic Info</h2>
+                <div className="mb-4">
+                  <label className="block text-black text-sm font-medium mb-1">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    value={editFullName}
+                    onChange={(e) => setEditFullName(e.target.value)}
+                    className="w-full text-black border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-black text-sm font-medium mb-1">
+                    Bio
+                  </label>
+                  <textarea
+                    value={editBio}
+                    onChange={(e) => setEditBio(e.target.value)}
+                    className="w-full text-black   border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
+                    rows={3}
+                  />
+                </div>
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="px-4 py-2 rounded bg-gray-200 text-gray-700 font-medium"
+                    disabled={isBasicInfoUpdating}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleBasicInfoUpdate}
+                    className="px-4 py-2 rounded bg-[#240457] text-white font-medium disabled:opacity-50"
+                    disabled={isBasicInfoUpdating || !editFullName}
+                  >
+                    {isBasicInfoUpdating ? "Saving..." : "Save"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

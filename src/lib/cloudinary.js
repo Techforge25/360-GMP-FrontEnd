@@ -6,7 +6,7 @@ export const uploadToCloudinary = (file, folder, onProgress) => {
     formData.append("file", file);
     formData.append(
       "upload_preset",
-      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET,
     );
     formData.append("folder", folder);
 
@@ -14,7 +14,7 @@ export const uploadToCloudinary = (file, folder, onProgress) => {
       "POST",
       // if the api is failing on doc use this api url
       // `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`,
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
     );
 
     xhr.upload.onprogress = (event) => {
