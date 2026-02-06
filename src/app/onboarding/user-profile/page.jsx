@@ -40,7 +40,7 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
         {/* Profile Photo Upload */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Upload Profile Photo</h3>
-          
+
           {/* Show uploaded image preview */}
           {formData.logo && (
             <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -53,7 +53,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
                 />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-green-800">Profile photo uploaded successfully!</p>
+                <p className="text-sm font-medium text-green-800">
+                  Profile photo uploaded successfully!
+                </p>
                 <div className="flex gap-3 mt-2">
                   <button
                     type="button"
@@ -76,27 +78,90 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
               </div>
             </div>
           )}
-          
+
           {!formData.logo && (
             <FileUpload
               label="Upload Profile Photo"
               subLabel="JPG, PNG (Max 5MB)"
               onUploadingChange={setIsUploading}
               onUpload={async (file, onProgress) => {
-                const url = await uploadToCloudinary(file, "user/profile", onProgress);
+                const url = await uploadToCloudinary(
+                  file,
+                  "user/profile",
+                  onProgress,
+                );
                 handleChange("logo", url);
-                
+
                 // If updating existing profile, call update API
                 if (onUpdateLogo) {
                   await onUpdateLogo(url);
                 }
-                
+
                 return url;
               }}
             />
           )}
         </div>
-        
+
+        {/* Banner Image Upload */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Upload Banner Image</h3>
+
+          {/* Show uploaded banner preview */}
+          {formData.banner && (
+            <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-gray-100">
+                <Image
+                  src={formData.banner}
+                  alt="Banner Preview"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-green-800">
+                  Banner image uploaded successfully!
+                </p>
+                <div className="flex gap-3 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleChange("banner", "");
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Update banner
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleChange("banner", "")}
+                    className="text-sm text-red-600 hover:text-red-800"
+                  >
+                    Remove banner
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!formData.banner && (
+            <FileUpload
+              label="Upload Banner Image"
+              subLabel="JPG, PNG (Max 5MB, Recommended: 1920x400px)"
+              onUploadingChange={setIsUploading}
+              onUpload={async (file, onProgress) => {
+                const url = await uploadToCloudinary(
+                  file,
+                  "user/banner",
+                  onProgress,
+                );
+                handleChange("banner", url);
+                return url;
+              }}
+            />
+          )}
+        </div>
+
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-base font-medium">Full Name</label>
@@ -118,7 +183,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
             />
           </div>
           <div className="space-y-2">
-            <label className="text-base font-medium">Current Title / Role</label>
+            <label className="text-base font-medium">
+              Current Title / Role
+            </label>
             <div className="relative">
               <select
                 className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
@@ -138,7 +205,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-base font-medium">Contact Phone Number</label>
+            <label className="text-base font-medium">
+              Contact Phone Number
+            </label>
             <Input
               placeholder="+128895949965"
               value={formData.phone || ""}
@@ -147,7 +216,7 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
             />
           </div>
         </div>
-        
+
         {/* Location Fields */}
         <div className="space-y-2">
           <div>
@@ -544,6 +613,7 @@ export default function UserProfilePage() {
     employeeType: [],
     resumeUrl: "",
     logo: "", // Profile photo URL
+    banner: "", // Banner image URL
   });
   const router = useRouter();
 
@@ -557,7 +627,7 @@ export default function UserProfilePage() {
     // Validation check with better email handling
     if (
       !formData.fullName ||
-      !formData.email || 
+      !formData.email ||
       !formData.email.trim() || // Ensure email is not just whitespace
       !formData.logo ||
       !formData.currentTitle ||
@@ -597,28 +667,34 @@ export default function UserProfilePage() {
         maxSalary: formData.maxSalary ? Number(formData.maxSalary) : 0,
 
         // Convert education array to object format for backend
-        education: formData.education.length > 0 ? formData.education[0] : {
-          institution: "",
-          degree: "",
-          fieldOfStudy: "",
-          startDate: "",
-          endDate: "",
-          isCurrent: false,
-          description: "",
-          grade: "",
-        },
+        education:
+          formData.education.length > 0
+            ? formData.education[0]
+            : {
+                institution: "",
+                degree: "",
+                fieldOfStudy: "",
+                startDate: "",
+                endDate: "",
+                isCurrent: false,
+                description: "",
+                grade: "",
+              },
 
         // Backend expects 'title' field to be required
         title: formData.jobTitle,
-        
+
         // Optional targetJob field
         targetJob: formData.jobTitle,
 
         // Location mapping
         location: `${formData.city || ""}, ${formData.country || ""}`,
-        
+
         // Ensure logo is included (required by backend)
         logo: formData.logo,
+
+        // Include banner image if uploaded
+        banner: formData.banner || undefined,
       };
 
       // Remove fields that shouldn't be sent to backend
@@ -666,36 +742,41 @@ export default function UserProfilePage() {
         !formData.city ||
         !formData.address
       ) {
-        setError("Please fill all required fields and upload a profile photo before proceeding.");
+        setError(
+          "Please fill all required fields and upload a profile photo before proceeding.",
+        );
         return;
       }
     } else if (currentStep === 2) {
       // Step 2 validation
-      if (
-        !formData.skills ||
-        formData.education.length === 0
-      ) {
-        setError("Please fill all required fields and add at least one education entry.");
+      if (!formData.skills || formData.education.length === 0) {
+        setError(
+          "Please fill all required fields and add at least one education entry.",
+        );
         return;
       }
     } else if (currentStep === 3) {
       // Step 3 validation
       const minSal = Number(formData.minSalary);
       const maxSal = Number(formData.maxSalary);
-      
+
       if (
         !formData.jobTitle ||
         !formData.minSalary ||
         !formData.maxSalary ||
         formData.employeeType.length === 0
       ) {
-        setError("Please fill all required fields and select at least one employment type.");
+        setError(
+          "Please fill all required fields and select at least one employment type.",
+        );
         return;
       }
-      
+
       // Validate salary range (backend requires maxSalary > minSalary)
       if (isNaN(minSal) || isNaN(maxSal) || maxSal <= minSal) {
-        setError("Please enter valid salary range. Maximum salary must be greater than minimum salary.");
+        setError(
+          "Please enter valid salary range. Maximum salary must be greater than minimum salary.",
+        );
         return;
       }
     }
@@ -746,7 +827,7 @@ export default function UserProfilePage() {
   const handleUpdateLogo = async (newLogoUrl) => {
     try {
       const response = await userProfileAPI.updateLogo({ logo: newLogoUrl });
-      
+
       if (response.success) {
         // Update local form data
         handleChange("logo", newLogoUrl);
@@ -781,8 +862,8 @@ export default function UserProfilePage() {
           )}
 
           {currentStep === 1 && (
-            <Step1 
-              formData={formData} 
+            <Step1
+              formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
               onUpdateLogo={handleUpdateLogo}

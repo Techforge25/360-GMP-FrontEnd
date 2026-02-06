@@ -79,6 +79,19 @@ class UserProfileAPI {
   }
 
   /**
+   * Update user profile banner
+   */
+  async updateBanner(bannerData) {
+    return await api.patch({
+      url: "/userProfile/update/banner",
+      payload: bannerData,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
    * Update user profile education
    */
   async updateEducation(educationData) {

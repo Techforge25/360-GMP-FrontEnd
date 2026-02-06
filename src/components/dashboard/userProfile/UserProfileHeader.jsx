@@ -92,11 +92,8 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
 
       if (newCover) {
         setIsUploadingCover(true);
-        const coverUrl = await uploadToCloudinary(
-          newCover.file,
-          "user/cover",
-        );
-        updates.coverImage = coverUrl;
+        const coverUrl = await uploadToCloudinary(newCover.file, "user/cover");
+        updates.banner = coverUrl;
         setIsUploadingCover(false);
       }
 
@@ -104,18 +101,27 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         console.log("Updating profile with:", updates);
 
         let response;
-        
+
         // Use specific API methods based on what's being updated
         if (updates.logo && Object.keys(updates).length === 1) {
           // If only updating logo, use the specific logo endpoint
           response = await userProfileAPI.updateLogo({ logo: updates.logo });
+        } else if (updates.banner && Object.keys(updates).length === 1) {
+          // If only updating banner, use the specific banner endpoint
+          response = await userProfileAPI.updateBanner({
+            banner: updates.banner,
+          });
         } else {
           // For other updates, use the general update method
           response = await userProfileAPI.updateMyProfile(updates);
         }
 
         if (response?.data) {
-          setProfileData(response.data);
+          // Merge the response data with existing profile data to preserve all fields
+          setProfileData((prevData) => ({
+            ...prevData,
+            ...response.data,
+          }));
           setNewAvatar(null);
           setNewCover(null);
 
@@ -168,6 +174,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         <Image
           src={
             newCover?.previewUrl ||
+            profileData.banner ||
             profileData.coverImage ||
             "/assets/images/profileBanner.png"
           }
@@ -179,7 +186,9 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
 
         {newCover && (
           <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-1 rounded-full text-sm sm:text-sm font-medium">
-            <span className="hidden sm:inline">New cover selected - Click "Update Profile" to save</span>
+            <span className="hidden sm:inline">
+              New cover selected - Click "Update Profile" to save
+            </span>
             <span className="sm:hidden">New cover - Update to save</span>
           </div>
         )}
@@ -193,14 +202,17 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         />
 
         <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
-          
           <button className="bg-white/90 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2">
-            <img src="/assets/images/eyeIcon.png" alt="" className="w-3 h-3 sm:w-4 sm:h-4" />
+            <img
+              src="/assets/images/eyeIcon.png"
+              alt=""
+              className="w-3 h-3 sm:w-4 sm:h-4"
+            />
             <span className="hidden sm:inline">View as a user</span>
             <span className="sm:hidden">View</span>
           </button>
           <button
-            // onClick={handleBannerClick}
+            onClick={handleBannerClick}
             disabled={isUploadingCover}
             className="bg-white/90 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2 disabled:opacity-50"
           >
@@ -307,11 +319,13 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                 </div>
               )}
               {profileData.location && (
-                              <div className="flex items-center gap-1.5">
-                                  <FiMapPin className="w-3 h-3 sm:w-4 sm:h-4" />
-                                <span className="text-sm sm:text-sm text-gray-600">{profileData.location}</span>
-                              </div>
-                            )}
+                <div className="flex items-center gap-1.5">
+                  <FiMapPin className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="text-sm sm:text-sm text-gray-600">
+                    {profileData.location}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -126,36 +126,45 @@ const ActivitySidebar = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [lowStockRes, applicantsRes, profileRes] = await Promise.all([
+        const results = await Promise.allSettled([
           businessProfileAPI.getLowStockProducts({ limit: 2 }),
           businessProfileAPI.getRecentJobApplications(),
           businessProfileAPI.getMyProfile(),
         ]);
 
-        if (lowStockRes?.data?.docs) {
-          setLowStockItems(lowStockRes.data.docs);
+        const [lowStockRes, applicantsRes, profileRes] = results;
+
+        // Handle low stock items
+        if (lowStockRes.status === 'fulfilled' && lowStockRes.value?.data?.docs) {
+          setLowStockItems(lowStockRes.value.data.docs);
+        } else if (lowStockRes.status === 'rejected') {
+          console.error("Failed to fetch low stock products:", lowStockRes.reason);
         }
 
-        if (applicantsRes?.data) {
-          setApplicants(applicantsRes.data);
+        // Handle applicants
+        if (applicantsRes.status === 'fulfilled' && applicantsRes.value?.data) {
+          setApplicants(applicantsRes.value.data);
+        } else if (applicantsRes.status === 'rejected') {
+          console.error("Failed to fetch job applications:", applicantsRes.reason);
         }
 
-        if (profileRes?.data) {
-          setProfile(profileRes.data);
+        // Handle profile data
+        if (profileRes.status === 'fulfilled' && profileRes.value?.data) {
+          setProfile(profileRes.value.data);
           // Populate form data with existing profile data
           setFormData({
-            supportEmail: profileRes.data?.b2bContact?.supportEmail || "",
-            phone: profileRes.data?.b2bContact?.phone || "",
-            website: profileRes.data?.website || "",
-            addressLine: profileRes.data?.location?.addressLine || "",
-            city: profileRes.data?.location?.city || "",
-            country: profileRes.data?.location?.country || "",
+            supportEmail: profileRes.value.data?.b2bContact?.supportEmail || "",
+            phone: profileRes.value.data?.b2bContact?.phone || "",
+            website: profileRes.value.data?.website || "",
+            addressLine: profileRes.value.data?.location?.addressLine || "",
+            city: profileRes.value.data?.location?.city || "",
+            country: profileRes.value.data?.location?.country || "",
           });
           
           // Fetch social links
           try {
             const socialRes = await socialLinkAPI.getByBusinessProfileId(
-              profileRes.data._id,
+              profileRes.value.data._id,
             );
             if (socialRes?.data) {
               setSocialLinks(socialRes.data);
@@ -163,6 +172,8 @@ const ActivitySidebar = () => {
           } catch (e) {
             console.error("Failed to fetch social links", e);
           }
+        } else if (profileRes.status === 'rejected') {
+          console.error("Failed to fetch profile:", profileRes.reason);
         }
       } catch (error) {
         console.error("Failed to fetch sidebar data:", error);

@@ -24,19 +24,28 @@ const AnalyticsSection = () => {
     const fetchAnalytics = async () => {
       try {
         setLoading(true);
-        const [viewsRes, leadsRes, conversionRes, lowStockRes] =
-          await Promise.all([
-            businessProfileAPI.getViewCounts(),
-            businessProfileAPI.getNewLeads("30d"), // Matching the label "30D"
-            businessProfileAPI.getConversionRate("30d"),
-            businessProfileAPI.getLowStockProducts({ limit: 1 }), // Just need count
-          ]);
+        const results = await Promise.allSettled([
+          businessProfileAPI.getViewCounts(),
+          businessProfileAPI.getNewLeads("30d"), // Matching the label "30D"
+          businessProfileAPI.getConversionRate("30d"),
+          businessProfileAPI.getLowStockProducts({ limit: 1 }), // Just need count
+        ]);
+
+        const [viewsRes, leadsRes, conversionRes, lowStockRes] = results;
 
         setData({
-          views: viewsRes?.data || 0,
-          leads: leadsRes?.data || 0,
-          conversion: conversionRes?.data || 0,
-          criticalAlerts: lowStockRes?.data?.totalDocs || 0,
+          views: viewsRes.status === 'fulfilled' ? (viewsRes.value?.data || 0) : 0,
+          leads: leadsRes.status === 'fulfilled' ? (leadsRes.value?.data || 0) : 0,
+          conversion: conversionRes.status === 'fulfilled' ? (conversionRes.value?.data || 0) : 0,
+          criticalAlerts: lowStockRes.status === 'fulfilled' ? (lowStockRes.value?.data?.totalDocs || 0) : 0,
+        });
+
+        // Log individual failures for debugging
+        results.forEach((result, index) => {
+          if (result.status === 'rejected') {
+            const apiNames = ['getViewCounts', 'getNewLeads', 'getConversionRate', 'getLowStockProducts'];
+            console.error(`Failed to fetch ${apiNames[index]}:`, result.reason);
+          }
         });
       } catch (error) {
         console.error("Failed to fetch analytics:", error);
