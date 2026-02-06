@@ -33,6 +33,60 @@ const IndustryOptions = [
   "Other",
 ];
 
+const CountryOptions = [
+  "United States",
+  "Canada",
+  "United Kingdom",
+  "Australia",
+  "Germany",
+  "France",
+  "India",
+  "China",
+  "Japan",
+  "Brazil",
+  "Mexico",
+  "Spain",
+  "Italy",
+  "Netherlands",
+  "Sweden",
+  "Norway",
+  "Denmark",
+  "Finland",
+  "Switzerland",
+  "Austria",
+  "Belgium",
+  "Poland",
+  "Ireland",
+  "New Zealand",
+  "Singapore",
+  "South Korea",
+  "United Arab Emirates",
+  "Saudi Arabia",
+  "South Africa",
+  "Argentina",
+  "Chile",
+  "Colombia",
+  "Peru",
+  "Portugal",
+  "Greece",
+  "Czech Republic",
+  "Hungary",
+  "Romania",
+  "Turkey",
+  "Israel",
+  "Egypt",
+  "Nigeria",
+  "Kenya",
+  "Pakistan",
+  "Bangladesh",
+  "Vietnam",
+  "Thailand",
+  "Malaysia",
+  "Indonesia",
+  "Philippines",
+  "Other",
+];
+
 const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
     <div>
@@ -203,6 +257,16 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
               </select>
               <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
             </div>
+
+            {/* Show custom input when "Other" is selected */}
+            {formData.currentTitle === "Other" && (
+              <Input
+                placeholder="Enter your custom title"
+                value={formData.customTitle || ""}
+                onChange={(e) => handleChange("customTitle", e.target.value)}
+                required
+              />
+            )}
           </div>
           <div className="space-y-2">
             <label className="text-base font-medium">
@@ -223,12 +287,34 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-2">
                 <label className="text-base font-medium">Country</label>
-                <Input
-                  placeholder="e.g Canada"
-                  value={formData.country || ""}
-                  onChange={(e) => handleChange("country", e.target.value)}
-                  required
-                />
+                <div className="relative">
+                  <select
+                    className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+                    value={formData.country || ""}
+                    onChange={(e) => handleChange("country", e.target.value)}
+                    required
+                  >
+                    <option value="">Select Country</option>
+                    {CountryOptions.map((country) => (
+                      <option key={country} value={country}>
+                        {country}
+                      </option>
+                    ))}
+                  </select>
+                  <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
+                </div>
+
+                {/* Show custom input when "Other" is selected */}
+                {formData.country === "Other" && (
+                  <Input
+                    placeholder="Enter your country"
+                    value={formData.customCountry || ""}
+                    onChange={(e) =>
+                      handleChange("customCountry", e.target.value)
+                    }
+                    required
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <label className="text-base font-medium">City</label>
@@ -599,9 +685,11 @@ export default function UserProfilePage() {
     fullName: "",
     email: user?.email || "", // Pre-populate with user's email if available
     currentTitle: "",
+    customTitle: "", // For when "Other" is selected
     phone: "",
     // location: "",
     country: "",
+    customCountry: "", // For when "Other" is selected in country dropdown
     city: "",
     address: "",
     bio: "",
@@ -682,13 +770,21 @@ export default function UserProfilePage() {
               },
 
         // Backend expects 'title' field to be required
-        title: formData.jobTitle,
+        // Use customTitle if "Other" is selected, otherwise use currentTitle
+        title:
+          formData.currentTitle === "Other"
+            ? formData.customTitle
+            : formData.currentTitle,
 
         // Optional targetJob field
         targetJob: formData.jobTitle,
 
-        // Location mapping
-        location: `${formData.city || ""}, ${formData.country || ""}`,
+        // Location mapping - use customCountry if "Other" is selected
+        location: `${formData.city || ""}, ${
+          formData.country === "Other"
+            ? formData.customCountry
+            : formData.country
+        }`,
 
         // Ensure logo is included (required by backend)
         logo: formData.logo,
@@ -730,49 +826,79 @@ export default function UserProfilePage() {
     setError("");
 
     if (currentStep === 1) {
-      // Step 1 validation - ensure email is properly filled
-      if (
-        !formData.fullName ||
-        !formData.email ||
-        !formData.email.trim() || // Check for whitespace-only email
-        !formData.logo ||
-        !formData.currentTitle ||
-        !formData.phone ||
-        !formData.country ||
-        !formData.city ||
-        !formData.address
-      ) {
-        setError(
-          "Please fill all required fields and upload a profile photo before proceeding.",
-        );
+      // Step 1 validation - check each field individually for specific error messages
+      if (!formData.fullName) {
+        setError("Full Name is required");
+        return;
+      }
+      if (!formData.email || !formData.email.trim()) {
+        setError("Email Address is required");
+        return;
+      }
+      if (!formData.logo) {
+        setError("Please upload a profile photo");
+        return;
+      }
+      if (!formData.currentTitle) {
+        setError("Current Title / Role is required");
+        return;
+      }
+      if (formData.currentTitle === "Other" && !formData.customTitle) {
+        setError("Please enter your custom title");
+        return;
+      }
+      if (!formData.phone) {
+        setError("Contact Phone Number is required");
+        return;
+      }
+      if (!formData.country) {
+        setError("Country is required");
+        return;
+      }
+      if (formData.country === "Other" && !formData.customCountry) {
+        setError("Please enter your country name");
+        return;
+      }
+      if (!formData.city) {
+        setError("City is required");
+        return;
+      }
+      if (!formData.address) {
+        setError("Address Line is required");
         return;
       }
     } else if (currentStep === 2) {
-      // Step 2 validation
-      if (!formData.skills || formData.education.length === 0) {
-        setError(
-          "Please fill all required fields and add at least one education entry.",
-        );
+      // Step 2 validation - check each field individually
+      if (!formData.skills) {
+        setError("Key Skills/Expertise is required");
+        return;
+      }
+      if (formData.education.length === 0) {
+        setError("Please add at least one education entry");
         return;
       }
     } else if (currentStep === 3) {
-      // Step 3 validation
-      const minSal = Number(formData.minSalary);
-      const maxSal = Number(formData.maxSalary);
-
-      if (
-        !formData.jobTitle ||
-        !formData.minSalary ||
-        !formData.maxSalary ||
-        formData.employeeType.length === 0
-      ) {
-        setError(
-          "Please fill all required fields and select at least one employment type.",
-        );
+      // Step 3 validation - check each field individually
+      if (!formData.jobTitle) {
+        setError("Target Job Title is required");
+        return;
+      }
+      if (formData.employeeType.length === 0) {
+        setError("Please select at least one Employment Type");
+        return;
+      }
+      if (!formData.minSalary) {
+        setError("Minimum salary is required");
+        return;
+      }
+      if (!formData.maxSalary) {
+        setError("Maximum salary is required");
         return;
       }
 
       // Validate salary range (backend requires maxSalary > minSalary)
+      const minSal = Number(formData.minSalary);
+      const maxSal = Number(formData.maxSalary);
       if (isNaN(minSal) || isNaN(maxSal) || maxSal <= minSal) {
         setError(
           "Please enter valid salary range. Maximum salary must be greater than minimum salary.",
