@@ -218,7 +218,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-base font-medium">Full Name</label>
+            <label className="text-base font-medium">
+              Full Name <span className="text-red-500">*</span>
+            </label>
             <Input
               placeholder="Alex Morgan"
               value={formData.fullName}
@@ -227,7 +229,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
             />
           </div>
           <div className="space-y-2">
-            <label className="text-base font-medium">Email Address</label>
+            <label className="text-base font-medium">
+              Email Address <span className="text-red-500">*</span>
+            </label>
             <Input
               type="email"
               placeholder="alex.morgan@example.com"
@@ -238,7 +242,7 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
           </div>
           <div className="space-y-2">
             <label className="text-base font-medium">
-              Current Title / Role
+              Current Title / Role <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <select
@@ -270,7 +274,7 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
           </div>
           <div className="space-y-2">
             <label className="text-base font-medium">
-              Contact Phone Number
+              Contact Phone Number <span className="text-red-500">*</span>
             </label>
             <Input
               placeholder="+128895949965"
@@ -286,7 +290,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
           <div>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <label className="text-base font-medium">Country</label>
+                <label className="text-base font-medium">
+                  Country <span className="text-red-500">*</span>
+                </label>
                 <div className="relative">
                   <select
                     className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
@@ -317,7 +323,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
                 )}
               </div>
               <div className="space-y-2">
-                <label className="text-base font-medium">City</label>
+                <label className="text-base font-medium">
+                  City <span className="text-red-500">*</span>
+                </label>
                 <Input
                   placeholder="Ottawa"
                   value={formData.city || ""}
@@ -326,7 +334,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-base font-medium">Address Line</label>
+                <label className="text-base font-medium">
+                  Address Line <span className="text-red-500">*</span>
+                </label>
                 <Input
                   placeholder="street address"
                   value={formData.address || ""}
