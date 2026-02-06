@@ -122,7 +122,7 @@ const ContactUsPage = () => {
                   </label>
                   <Input
                     placeholder="John"
-                    className="bg-[#F3F4F6] border-none rounded-lg py-6"
+                    className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
                   />
                 </div>
                 <div className="space-y-2">
@@ -131,7 +131,7 @@ const ContactUsPage = () => {
                   </label>
                   <Input
                     placeholder="Doe"
-                    className="bg-[#F3F4F6] border-none rounded-lg py-6"
+                    className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
                   />
                 </div>
               </div>
@@ -144,7 +144,7 @@ const ContactUsPage = () => {
                   <Input
                     placeholder="info@gmail.com"
                     type="email"
-                    className="bg-[#F3F4F6] border-none rounded-lg py-6"
+                    className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
                   />
                 </div>
                 <div className="space-y-2">
@@ -153,7 +153,7 @@ const ContactUsPage = () => {
                   </label>
                   <Input
                     placeholder="+123456797-1"
-                    className="bg-[#F3F4F6] border-none rounded-lg py-6"
+                    className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
                   />
                 </div>
               </div>
@@ -164,7 +164,7 @@ const ContactUsPage = () => {
                 </label>
                 <Input
                   placeholder="info@gmail.com"
-                  className="bg-[#F3F4F6] border-none rounded-lg py-6"
+                  className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
                 />
               </div>
 
@@ -174,7 +174,7 @@ const ContactUsPage = () => {
                 </label>
                 <Input
                   placeholder="info@gmail.com"
-                  className="bg-[#F3F4F6] border-none rounded-lg py-6"
+                  className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
                 />
               </div>
 
@@ -184,7 +184,7 @@ const ContactUsPage = () => {
                   Skilled 360 Team Members Will Be In Contact With <br /> You.
                 </label>
                 <textarea
-                  className="w-full bg-[#F3F4F6] border-none rounded-xl p-4 min-h-[150px] text-base focus:ring-1 focus:ring-purple-200 outline-none"
+                  className="w-full text-black bg-[#F3F4F6] border-none rounded-xl p-4 min-h-[150px] text-base focus:ring-1 focus:ring-purple-200 outline-none"
                   placeholder="*"
                 />
               </div>
