@@ -6,8 +6,10 @@ import {
   FiBookmark,
   FiCalendar,
 } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 const UserStats = () => {
+  const router = useRouter();
   const stats = [
     {
       label: "Totl Product Purchased",
@@ -50,8 +52,13 @@ const UserStats = () => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 lg:p-6 mb-6 sm:mb-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4 sm:mb-6">
-        <h2 className="text-lg sm:text-xl font-bold text-gray-900">Profile Summary</h2>
-        <button className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#240457] rounded-md text-sm sm:text-sm font-medium hover:bg-gray-100 transition-colors">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+          Profile Summary
+        </h2>
+        <button
+          onClick={() => router.push("/dashboard/user/analytics")}
+          className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 bg-gray-50 text-[#240457] rounded-md text-sm sm:text-sm font-medium hover:bg-gray-100 transition-colors"
+        >
           <span className="hidden sm:inline">Profile Analytics</span>
           <span className="sm:hidden">Analytics</span>
           <div className="w-3 h-3 sm:w-4 sm:h-4 bg-[#240457] rounded-sm flex items-end justify-center p-0.5 gap-0.5">
@@ -76,7 +83,9 @@ const UserStats = () => {
                 <p className="text-sm sm:text-sm font-semibold text-gray-900 mb-2 sm:mb-4 leading-tight">
                   {stat.label}
                 </p>
-                <p className="text-[9px] sm:text-[14px] text-gray-500">{stat.subLabel}</p>
+                <p className="text-[9px] sm:text-[14px] text-gray-500">
+                  {stat.subLabel}
+                </p>
               </div>
               <div
                 className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg ${stat.iconBg} flex items-center justify-center text-white shadow-sm`}

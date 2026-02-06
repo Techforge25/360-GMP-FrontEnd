@@ -149,8 +149,6 @@ const ProductSalesSection = () => {
     {
       title: "Revenue Potential",
       value: `${productMetricsData.revenuePotential}%`,
-      change: "+24%",
-      trend: "up",
       period: "vs last period",
       icon: FiDollarSign,
       iconBg: "bg-yellow-600",
@@ -208,29 +206,33 @@ const ProductSalesSection = () => {
                 <metric.icon className="w-5 h-5" />
               </div>
             </div>
-            <div className="flex items-center gap-1.5 text-sm">
-              {metric.trend === "up" ? (
-                <FiTrendingUp className="w-3.5 h-3.5 text-green-600" />
-              ) : (
-                <FiTrendingDown className="w-3.5 h-3.5 text-red-600" />
-              )}
-              <span
-                className={
-                  metric.trend === "up"
-                    ? "text-green-600 font-semibold"
-                    : "text-red-600 font-semibold"
-                }
-              >
-                {metric.change}
-              </span>
-              <span className="text-gray-500">{metric.period}</span>
-            </div>
+            {metric.trend ? (
+              <div className="flex items-center gap-1.5 text-sm">
+                {metric.trend === "up" ? (
+                  <FiTrendingUp className="w-3.5 h-3.5 text-green-600" />
+                ) : (
+                  <FiTrendingDown className="w-3.5 h-3.5 text-red-600" />
+                )}
+                <span
+                  className={
+                    metric.trend === "up"
+                      ? "text-green-600 font-semibold"
+                      : "text-red-600 font-semibold"
+                  }
+                >
+                  {metric.change}
+                </span>
+                <span className="text-gray-500">{metric.period}</span>
+              </div>
+            ) : metric.period ? (
+              <div className="text-sm text-gray-500">{metric.period}</div>
+            ) : null}
           </div>
         ))}
       </div>
 
       {/* Charts and Alerts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:col-span-3 gap-6">
         {/* Top Performing Products - Bar Chart */}
         <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="mb-4">
