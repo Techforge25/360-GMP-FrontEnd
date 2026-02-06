@@ -445,17 +445,70 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Upload your resume</h3>
-        <FileUpload
-          label="Upload Document"
-          subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
-          onUploadingChange={setIsUploading}
-          onUpload={(file, onProgress) =>
-            uploadToCloudinary(file, "user/resume", onProgress).then((url) => {
-              handleChange("resumeUrl", url);
-              return url;
-            })
-          }
-        />
+
+        {/* Show uploaded resume confirmation */}
+        {formData.resumeUrl && (
+          <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-green-800">
+                Resume uploaded successfully!
+              </p>
+              <p className="text-sm text-green-700 mt-1">
+                Your resume is ready for submission
+              </p>
+              <div className="flex gap-3 mt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleChange("resumeUrl", "");
+                  }}
+                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  Update resume
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleChange("resumeUrl", "")}
+                  className="text-sm text-red-600 hover:text-red-800"
+                >
+                  Remove resume
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Show upload component when no resume */}
+        {!formData.resumeUrl && (
+          <FileUpload
+            label="Upload Document"
+            subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
+            onUploadingChange={setIsUploading}
+            onUpload={(file, onProgress) =>
+              uploadToCloudinary(file, "user/resume", onProgress).then(
+                (url) => {
+                  handleChange("resumeUrl", url);
+                  return url;
+                },
+              )
+            }
+          />
+        )}
       </div>
 
       <div className="space-y-2">
