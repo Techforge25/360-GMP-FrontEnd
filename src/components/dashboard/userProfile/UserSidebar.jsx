@@ -7,6 +7,7 @@ import {
   FiPhone,
   FiTrash2,
   FiPlus,
+  FiDownload,
   FiBriefcase,
 } from "react-icons/fi";
 import {
@@ -720,32 +721,17 @@ const UserSidebar = () => {
               </div>
               <div className="flex gap-2">
                 <a
-                  href={profileData.resumeUrl}
+                  href={profileData.resumeUrl.replace(
+                    "/upload/",
+                    "/upload/fl_attachment/",
+                  )}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:text-blue-700 p-1"
-                  title="View Resume"
+                  title="Download Resume"
                 >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
+                  <FiDownload className="w-4 h-4" />
                 </a>
-                <button
-                  className="text-red-500 hover:text-red-700 p-1"
-                  onClick={handleDeleteResume}
-                >
-                  <FiTrash2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </button>
               </div>
             </div>
           ) : (
