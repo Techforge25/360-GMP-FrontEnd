@@ -163,17 +163,7 @@ const ContactUsPage = () => {
                   Position
                 </label>
                 <Input
-                  placeholder="info@gmail.com"
-                  className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
-                  Position
-                </label>
-                <Input
-                  placeholder="info@gmail.com"
+                  placeholder="Software Engineer"
                   className="bg-[#F3F4F6] text-black border-none rounded-lg py-6"
                 />
               </div>

@@ -12,7 +12,7 @@ const UserStats = () => {
   const router = useRouter();
   const stats = [
     {
-      label: "Totl Product Purchased",
+      label: "Total Product Purchased",
       value: "0",
       subLabel: "Career resources",
       icon: FiBriefcase,
