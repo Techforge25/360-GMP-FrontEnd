@@ -92,7 +92,7 @@ const ProfileSummarySection = () => {
                 <p className="text-sm font-semibold text-gray-900 mb-2 sm:mb-8 leading-tight">
                   {stat.label}
                 </p>
-                <p className="text-xs text-gray-500">{stat.subLabel}</p>{" "}
+                <p className="text-sm text-gray-500">{stat.subLabel}</p>{" "}
                 {/* Fixed className typo from text-smtext-gray-500 */}
               </div>
               <div

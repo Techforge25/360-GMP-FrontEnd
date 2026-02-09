@@ -104,11 +104,11 @@ const InterviewsPage = () => {
                     <h3 className="font-semibold text-gray-900 text-sm truncate">
                       {candidate.name}
                     </h3>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-sm text-gray-500">
                       {candidate.lastMessage}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 truncate">
+                  <p className="text-sm text-gray-500 truncate">
                     {candidate.location} • {candidate.experience}
                   </p>
                 </div>
@@ -148,7 +148,7 @@ const InterviewsPage = () => {
                   <h3 className="font-semibold text-gray-900">
                     {selectedCandidate.name}
                   </h3>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-sm text-gray-500">
                     {selectedCandidate.location} •{" "}
                     {selectedCandidate.experience}
                     {selectedCandidate.online && (
@@ -207,7 +207,7 @@ const InterviewsPage = () => {
             <div className="flex-1 overflow-y-auto p-6 bg-gray-50">
               {/* Date Separator */}
               <div className="flex justify-center mb-6">
-                <span className="px-3 py-1 bg-white rounded-full text-xs text-gray-500 shadow-sm">
+                <span className="px-3 py-1 bg-white rounded-full text-sm text-gray-500 shadow-sm">
                   Today
                 </span>
               </div>
@@ -231,10 +231,10 @@ const InterviewsPage = () => {
                       </p>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-500">
+                      <span className="text-sm text-gray-500">
                         Today, 9:19 AM
                       </span>
-                      <span className="text-xs text-blue-600">✓✓</span>
+                      <span className="text-sm text-blue-600">✓✓</span>
                     </div>
                   </div>
                 </div>
@@ -245,7 +245,7 @@ const InterviewsPage = () => {
                     <div className="bg-gray-200 rounded-lg rounded-tr-none p-3">
                       <p className="text-sm text-gray-800">yes bro</p>
                     </div>
-                    <span className="text-xs text-gray-500 mt-1">
+                    <span className="text-sm text-gray-500 mt-1">
                       Today, 9:20 AM
                     </span>
                   </div>
@@ -266,10 +266,10 @@ const InterviewsPage = () => {
                       <p className="text-sm text-gray-800">ok</p>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-500">
+                      <span className="text-sm text-gray-500">
                         Today, 9:20 AM
                       </span>
-                      <span className="text-xs text-blue-600">✓✓</span>
+                      <span className="text-sm text-blue-600">✓✓</span>
                     </div>
                   </div>
                 </div>
