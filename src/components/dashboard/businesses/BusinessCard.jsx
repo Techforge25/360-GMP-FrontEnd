@@ -194,13 +194,28 @@ const BusinessCard = ({ business, onContactClick }) => {
 
       {/* Actions */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Button
-          variant="outline"
-          className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
-          disabled={isFreeTrial}
-        >
-          <FiGlobe className="mr-2" /> Website
-        </Button>
+        {actions.website !== "#" ? (
+          <a
+            href={actions.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center rounded-md border ${
+              isFreeTrial
+                ? "opacity-50 cursor-not-allowed pointer-events-none"
+                : ""
+            }`}
+          >
+            <FiGlobe className="mr-2" /> Website
+          </a>
+        ) : (
+          <Button
+            variant="outline"
+            className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
+            disabled={true}
+          >
+            <FiGlobe className="mr-2" /> Website
+          </Button>
+        )}
         <Button
           variant="outline"
           className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
