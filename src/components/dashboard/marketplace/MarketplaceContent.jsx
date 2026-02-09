@@ -615,7 +615,16 @@ export default function MarketplaceContent() {
                               >
                                 Add To Cart
                               </button>
-                              <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
+                              <button
+                                onClick={() =>
+                                  router.push(
+                                    isBusinessUser
+                                      ? "/dashboard/business/messages"
+                                      : "/dashboard/user/messages",
+                                  )
+                                }
+                                className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors"
+                              >
                                 Chat Now
                               </button>
                             </div>
@@ -801,7 +810,16 @@ export default function MarketplaceContent() {
                         >
                           Add To Cart
                         </button>
-                        <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
+                        <button
+                          onClick={() =>
+                            router.push(
+                              isBusinessUser
+                                ? "/dashboard/business/messages"
+                                : "/dashboard/user/messages",
+                            )
+                          }
+                          className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors"
+                        >
                           Chat Now
                         </button>
                       </div>
@@ -913,7 +931,16 @@ function TopDealsSection({
                     >
                       Add To Cart
                     </button>
-                    <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
+                    <button
+                      onClick={() =>
+                        router.push(
+                          isBusinessUser
+                            ? "/dashboard/business/messages"
+                            : "/dashboard/user/messages",
+                        )
+                      }
+                      className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors"
+                    >
                       Chat Now
                     </button>
                   </div>
