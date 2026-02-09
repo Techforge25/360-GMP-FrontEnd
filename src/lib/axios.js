@@ -43,6 +43,11 @@ client.interceptors.request.use(
 // Response interceptor
 client.interceptors.response.use(
   (response) => {
+    // For blob responses, return the response as-is
+    if (response.config.responseType === "blob") {
+      return response;
+    }
+
     const headers = response.headers;
     return { ...response.data, headers };
   },
@@ -64,10 +69,18 @@ class ApiRequest {
     activateLoader = true,
     enableSuccessMessage = false,
     enableErrorMessage = true,
+    responseType = "json",
   }) {
     if (activateLoader) startLoading();
     try {
-      const response = await client.get(url);
+      const options = responseType !== "json" ? { responseType } : {};
+      const response = await client.get(url, options);
+
+      // For blob responses, return the raw data
+      if (responseType === "blob") {
+        return response.data;
+      }
+
       if (enableSuccessMessage) showSuccess(response.message);
       return response;
     } catch (error) {

@@ -139,7 +139,7 @@ export default function BusinessesPageContent() {
 
   return (
     <div className="w-full bg-white">
-      <span className="text-[#240457] max-w-[1400px] mx-auto block py-3 sm:py-4 px-3 sm:px-6 lg:px-20 text-sm sm:text-sm">
+      <span className="text-[#240457] max-w-[1400px] mx-auto block py-3 sm:py-4 text-sm sm:text-sm">
         Business List
       </span>
       <main className="pb-16 sm:pb-20 lg:pb-24">

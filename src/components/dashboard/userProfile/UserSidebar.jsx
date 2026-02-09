@@ -284,6 +284,30 @@ const UserSidebar = () => {
     }
   };
 
+  const handleGenerateResume = async () => {
+    try {
+      const response = await userProfileAPI.generateResume();
+
+      // Create blob from response
+      const blob = new Blob([response], { type: "application/pdf" });
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${profileData?.fullName || "User"}-Resume-${Date.now()}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to generate resume:", error);
+      alert("Failed to generate resume. Please try again.");
+    }
+  };
+
   // Work Experience Management - Only Add functionality
   const handleAddExperience = () => {
     setEditingExperience(null);
@@ -728,10 +752,17 @@ const UserSidebar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:text-blue-700 p-1"
-                  title="Download Resume"
+                  title="Download Uploaded Resume"
                 >
                   <FiDownload className="w-4 h-4" />
                 </a>
+                <button
+                  onClick={handleGenerateResume}
+                  className="text-green-500 hover:text-green-700 p-1"
+                  title="Generate New Resume"
+                >
+                  <FiDownload className="w-4 h-4" />
+                </button>
               </div>
             </div>
           ) : (
@@ -803,6 +834,15 @@ const UserSidebar = () => {
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
               )}
+            </button>
+
+            {/* Generate Resume Button */}
+            <button
+              onClick={handleGenerateResume}
+              className="w-full mt-2 bg-green-600 text-white py-2 sm:py-2.5 rounded-lg text-sm sm:text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center gap-1.5 sm:gap-2"
+            >
+              <FiDownload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span>Generate Resume from Profile</span>
             </button>
           </div>
         </div>

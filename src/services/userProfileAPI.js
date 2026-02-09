@@ -222,6 +222,19 @@ class UserProfileAPI {
   }
 
   /**
+   * Generate and download resume PDF
+   */
+  async generateResume() {
+    return await api.get({
+      url: "/userProfile/generate-resume",
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+      responseType: "blob", // Important for file download
+    });
+  }
+
+  /**
    * Delete user profile
    */
   async delete() {
