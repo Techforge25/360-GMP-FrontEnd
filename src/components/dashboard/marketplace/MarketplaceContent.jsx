@@ -178,7 +178,9 @@ export default function MarketplaceContent() {
       {/* Navbar */}
       <nav className="bg-white border-b border-gray-200 px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="max-w-[1400px] mx-auto">
-          <h1 className="text-gray-900 text-sm sm:text-base lg:text-lg font-medium">Market Place</h1>
+          <h1 className="text-gray-900 text-sm sm:text-base lg:text-lg font-medium">
+            Market Place
+          </h1>
         </div>
       </nav>
 
@@ -234,7 +236,9 @@ export default function MarketplaceContent() {
           </div>
 
           <div className="flex flex-wrap items-start sm:items-center gap-2 sm:gap-3">
-            <p className="text-gray-600 text-sm sm:text-base font-medium mb-1 sm:mb-0 w-full sm:w-auto">Popular:</p>
+            <p className="text-gray-600 text-sm sm:text-base font-medium mb-1 sm:mb-0 w-full sm:w-auto">
+              Popular:
+            </p>
             <div className="flex flex-wrap gap-2">
               {popularCategories.map((category, index) => (
                 <button
@@ -451,16 +455,18 @@ export default function MarketplaceContent() {
             {isMobileFilterOpen && (
               <>
                 {/* Backdrop */}
-                <div 
+                <div
                   className="lg:hidden fixed inset-0 bg-black/50 z-50"
                   onClick={() => setIsMobileFilterOpen(false)}
                 />
-                
+
                 {/* Modal */}
                 <div className="lg:hidden fixed inset-x-4 top-4 bottom-4 z-50 bg-white rounded-lg shadow-2xl overflow-y-auto">
                   {/* Modal Header */}
                   <div className="flex items-center justify-between p-4 border-b border-gray-200 sticky top-0 bg-white">
-                    <h3 className="font-semibold text-gray-900 text-lg">Filters</h3>
+                    <h3 className="font-semibold text-gray-900 text-lg">
+                      Filters
+                    </h3>
                     <div className="flex items-center gap-3">
                       {(selectedCategories.length > 0 || selectedCountry) && (
                         <button
@@ -508,8 +514,12 @@ export default function MarketplaceContent() {
                                 <input
                                   type="checkbox"
                                   className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                                  checked={selectedCategories.includes(cat.name)}
-                                  onChange={() => handleCategoryToggle(cat.name)}
+                                  checked={selectedCategories.includes(
+                                    cat.name,
+                                  )}
+                                  onChange={() =>
+                                    handleCategoryToggle(cat.name)
+                                  }
                                 />
                                 <span className="text-base text-gray-700 flex-1">
                                   {cat.name}
@@ -539,7 +549,7 @@ export default function MarketplaceContent() {
 
             {/* Main Content */}
             <div className="flex-1 min-w-0">
-             {/* Featured Products */}
+              {/* Featured Products */}
               <div className="mb-6 sm:mb-8">
                 <h2 className="text-xl sm:text-2xl font-semibold text-black mb-3 sm:mb-4">
                   Featured Products
@@ -559,7 +569,11 @@ export default function MarketplaceContent() {
                           />
                           <div className="absolute top-2 right-2 flex gap-1">
                             <div className="w-6 h-6 rounded-full flex items-center justify-center shadow bg-white">
-                              <img className="w-3 h-3 object-contain" src="/assets/images/star.png" alt="" />
+                              <img
+                                className="w-3 h-3 object-contain"
+                                src="/assets/images/star.png"
+                                alt=""
+                              />
                             </div>
                           </div>
                         </div>
@@ -579,10 +593,12 @@ export default function MarketplaceContent() {
                             </span>
                           </div>
                           {isBusinessUser ? (
-                            <button 
+                            <button
                               onClick={async () => {
                                 await productAPI.getById(product._id);
-                                router.push(`/dashboard/business/businesses/${product.businessId}/products/${product._id}`);
+                                router.push(
+                                  `/dashboard/business/businesses/${product.businessId}/products/${product._id}`,
+                                );
                               }}
                               className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-base hover:bg-[#240457] hover:text-white transition-colors"
                             >
@@ -590,10 +606,10 @@ export default function MarketplaceContent() {
                             </button>
                           ) : (
                             <div className="grid grid-cols-2 gap-2">
-                              <button 
+                              <button
                                 onClick={() => {
                                   addToCart(product, product.minOrderQty || 1);
-                                  router.push('/dashboard/user/cart');
+                                  router.push("/dashboard/user/cart");
                                 }}
                                 className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
                               >
@@ -670,7 +686,9 @@ export default function MarketplaceContent() {
               <div className="bg-gray-800 rounded-lg p-4 sm:p-6 text-white">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 sm:mb-6 gap-3">
                   <div>
-                    <h2 className="text-lg sm:text-xl font-bold mb-1">New Product</h2>
+                    <h2 className="text-lg sm:text-xl font-bold mb-1">
+                      New Product
+                    </h2>
                     <p className="text-gray-400 text-sm sm:text-base">
                       Browse newly-listed products
                     </p>
@@ -723,7 +741,12 @@ export default function MarketplaceContent() {
         )}
 
         {/* Top Deals Section */}
-        <TopDealsSection deals={flashDeals} isBusinessUser={isBusinessUser} />
+        <TopDealsSection
+          deals={flashDeals}
+          isBusinessUser={isBusinessUser}
+          router={router}
+          addToCart={addToCart}
+        />
 
         <section className="w-full bg-white py-8 sm:py-12 px-3 sm:px-6 lg:px-8">
           <div className="max-w-[1400px] mx-auto">
@@ -748,32 +771,34 @@ export default function MarketplaceContent() {
                       {product.detail || product.description}
                     </p>
                     <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm sm:text-sm text-gray-500">
-                              Min: {product.minOrderQty} pc
-                            </span>
-                            <span className="text-sm sm:text-sm text-gray-600">
-                              USD ${product.pricePerUnit}
-                            </span>
-                          </div>
+                      <span className="text-sm sm:text-sm text-gray-500">
+                        Min: {product.minOrderQty} pc
+                      </span>
+                      <span className="text-sm sm:text-sm text-gray-600">
+                        USD ${product.pricePerUnit}
+                      </span>
+                    </div>
                     {isBusinessUser ? (
-                    <button 
-                      onClick={async () => {
-                        await productAPI.getById(product._id);
-                        router.push(`/dashboard/business/businesses/${product.businessId}/products/${product._id}`);
-                      }}
-                      className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm lg:text-base hover:bg-[#240457] hover:text-white transition-colors"
-                    >
-                        View Product
-                    </button>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-2">
-                      <button 
-                        onClick={() => {
-                          addToCart(product, product.minOrderQty || 1);
-                          router.push('/dashboard/user/cart');
+                      <button
+                        onClick={async () => {
+                          await productAPI.getById(product._id);
+                          router.push(
+                            `/dashboard/business/businesses/${product.businessId}/products/${product._id}`,
+                          );
                         }}
-                        className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
+                        className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm lg:text-base hover:bg-[#240457] hover:text-white transition-colors"
                       >
+                        View Product
+                      </button>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => {
+                            addToCart(product, product.minOrderQty || 1);
+                            router.push("/dashboard/user/cart");
+                          }}
+                          className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
+                        >
                           Add To Cart
                         </button>
                         <button className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors">
@@ -806,7 +831,12 @@ export default function MarketplaceContent() {
   );
 }
 
-function TopDealsSection({ deals = [], isBusinessUser = false }) {
+function TopDealsSection({
+  deals = [],
+  isBusinessUser = false,
+  router,
+  addToCart,
+}) {
   if (!deals || deals.length === 0) return null;
 
   return (
@@ -861,10 +891,12 @@ function TopDealsSection({ deals = [], isBusinessUser = false }) {
                 </div>
 
                 {isBusinessUser ? (
-                  <button 
+                  <button
                     onClick={async () => {
-                      await productAPI.getById(product._id);
-                      router.push(`/dashboard/business/businesses/${product.businessId}/products/${product._id}`);
+                      await productAPI.getById(deal._id);
+                      router.push(
+                        `/dashboard/business/businesses/${deal.businessId}/products/${deal._id}`,
+                      );
                     }}
                     className="w-full py-2 border border-[#240457] text-[#240457] rounded-lg text-base hover:bg-[#240457] hover:text-white transition-colors"
                   >
@@ -872,10 +904,10 @@ function TopDealsSection({ deals = [], isBusinessUser = false }) {
                   </button>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
-                    <button 
+                    <button
                       onClick={() => {
-                        addToCart(product, product.minOrderQty || 1);
-                        router.push('/dashboard/user/cart');
+                        addToCart(deal, deal.minOrderQty || 1);
+                        router.push("/dashboard/user/cart");
                       }}
                       className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm hover:bg-[#240457] hover:text-white transition-colors"
                     >

@@ -55,17 +55,33 @@ const ProductSections = () => {
   };
 
   const handleViewAllProducts = () => {
-    if (pathname.includes('/dashboard/business')) {
-      router.push('/dashboard/business/marketplace');
-    } else if (pathname.includes('/dashboard/user')) {
-      router.push('/dashboard/user/marketplace');
+    if (pathname.includes("/dashboard/business")) {
+      router.push("/dashboard/business/marketplace");
+    } else if (pathname.includes("/dashboard/user")) {
+      router.push("/dashboard/user/marketplace");
+    }
+  };
+
+  const handleViewTopRanking = () => {
+    if (pathname.includes("/dashboard/business")) {
+      router.push("/dashboard/business/products/top-ranking");
+    } else if (pathname.includes("/dashboard/user")) {
+      router.push("/dashboard/user/products/top-ranking");
+    }
+  };
+
+  const handleViewNewProducts = () => {
+    if (pathname.includes("/dashboard/business")) {
+      router.push("/dashboard/business/products/new");
+    } else if (pathname.includes("/dashboard/user")) {
+      router.push("/dashboard/user/products/new");
     }
   };
 
   const handleViewProduct = (productId) => {
-    if (pathname.includes('/dashboard/business')) {
+    if (pathname.includes("/dashboard/business")) {
       router.push(`/dashboard/business/products/${productId}`);
-    } else if (pathname.includes('/dashboard/user')) {
+    } else if (pathname.includes("/dashboard/user")) {
       router.push(`/dashboard/user/products/${productId}`);
     }
   };
@@ -138,7 +154,8 @@ const ProductSections = () => {
         Array.isArray(newProductsRes.data) &&
         newProductsRes.data.length > 0
       ) {
-        const transformedNewProducts = newProductsRes.data.map(transformProduct);
+        const transformedNewProducts =
+          newProductsRes.data.map(transformProduct);
         setNewProducts(transformedNewProducts);
       } else {
         setNewProducts([]);
@@ -223,7 +240,7 @@ const ProductSections = () => {
                   Continue your search and access 140+ million product on 360GMP
                 </p>
               </div>
-              <Button 
+              <Button
                 onClick={handleViewAllProducts}
                 className="bg-[#240457] hover:bg-[#1a0340] text-white rounded-xl px-6 py-3 font-medium flex items-center justify-center gap-2 w-fit"
               >
@@ -277,17 +294,17 @@ const ProductSections = () => {
               )}
 
               {/* Products Grid/Carousel */}
-              <div 
+              <div
                 ref={carouselRef}
                 className="overflow-x-auto scrollbar-hide scroll-smooth"
-                style={{ 
-                  width: featured.length <= 3 ? '100%' : '932px', // Show max 3 products (300px each + 16px gap)
-                  maxWidth: '100%'
+                style={{
+                  width: featured.length <= 3 ? "100%" : "932px", // Show max 3 products (300px each + 16px gap)
+                  maxWidth: "100%",
                 }}
               >
                 <div
                   className="flex gap-4 pb-2"
-                  style={{ width: 'max-content' }}
+                  style={{ width: "max-content" }}
                 >
                   {featured.map((prod) => (
                     <div
@@ -334,7 +351,7 @@ const ProductSections = () => {
                         </div>
 
                         {/* View Product Button */}
-                        <button 
+                        <button
                           onClick={() => handleViewProduct(prod.id)}
                           className="w-full py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base"
                         >
@@ -364,11 +381,14 @@ const ProductSections = () => {
                       Highest priced premium products
                     </p>
                   </div>
-                  <span className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline">
+                  <span
+                    onClick={handleViewTopRanking}
+                    className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline"
+                  >
                     View More <ChevronRight />
                   </span>
                 </div>
-                
+
                 {/* Navigation Arrows */}
                 {topRanking.length > 2 && (
                   <>
@@ -386,8 +406,8 @@ const ProductSections = () => {
                     </button>
                   </>
                 )}
-                
-                <div 
+
+                <div
                   ref={topRankingRef}
                   className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
                 >
@@ -439,11 +459,14 @@ const ProductSections = () => {
                       stay ahead with the latest offering
                     </p>
                   </div>
-                  <span className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline">
+                  <span
+                    onClick={handleViewNewProducts}
+                    className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline"
+                  >
                     View More <ChevronRight />
                   </span>
                 </div>
-                
+
                 {/* Carousel Container */}
                 <div className="relative">
                   {/* Navigation Arrows */}
