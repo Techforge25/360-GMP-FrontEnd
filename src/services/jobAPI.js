@@ -55,6 +55,19 @@ class JobAPI {
   }
 
   /**
+   * Get job applications for a specific job
+   */
+  async getJobApplications(jobId, params = {}) {
+    const queryParams = new URLSearchParams(params).toString();
+    return await api.get({
+      url: `/jobApplication/${jobId}${queryParams ? `?${queryParams}` : ""}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
    * Apply for a job
    */
   async apply(jobId, data) {
