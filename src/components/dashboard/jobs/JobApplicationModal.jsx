@@ -147,11 +147,11 @@ export default function JobApplicationModal({
 
       <div className="space-y-2">
         <label className="text-base font-medium text-text-primary">
-          Your Profolio Link
+          Your Portfolio Link
         </label>
         <Input
-        className="text-black"
-          placeholder=""
+          className="text-black"
+          placeholder="https://portfolio.com"
           value={formData.portfolio}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, portfolio: e.target.value }))
@@ -164,7 +164,7 @@ export default function JobApplicationModal({
           How many year of experience
         </label>
         <Input
-        className="text-black"
+          className="text-black"
           placeholder="4"
           value={formData.experience}
           onChange={(e) =>
@@ -177,14 +177,21 @@ export default function JobApplicationModal({
         <label className="text-base font-medium text-text-primary">
           This is urgent role to fill can you join immediatley?
         </label>
-        <Input
-        className="text-black"
-          placeholder="Yes"
+        <select
           value={formData.urgentJoining}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, urgentJoining: e.target.value }))
           }
-        />
+          className={cn(
+            "flex h-10 w-full rounded-md border border-border-light bg-white px-3 py-2 text-base ring-offset-surface file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-text-hint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-black",
+          )}
+        >
+          <option value="" disabled>
+            Select an option
+          </option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
       </div>
 
       <div className="space-y-2">
@@ -192,7 +199,7 @@ export default function JobApplicationModal({
           What is your salary expectation for this role?
         </label>
         <Input
-        className="text-black"
+          className="text-black"
           placeholder="$1000-1500"
           value={formData.salaryExpectation}
           onChange={(e) =>
