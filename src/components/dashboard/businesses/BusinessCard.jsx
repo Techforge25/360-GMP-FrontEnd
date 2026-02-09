@@ -1,17 +1,75 @@
 "use client";
 import React from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FiMapPin, FiGlobe, FiPhone, FiCheck, FiFolder } from "react-icons/fi";
 import { FaCheckCircle, FaStar } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
+import businessProfileAPI from "@/services/businessProfileAPI";
 
 const BusinessCard = ({ business }) => {
   const { user } = useUserRole();
+  const router = useRouter();
   const isFreeTrial = user?.role === "free_trial";
-  
-  const basePath = user?.role === "business" ? "/dashboard/business" : "/dashboard/user";
-  const profileUrl = `${basePath}/businesses/${business?.id || 'mock-id'}`;
+
+  const basePath =
+    user?.role === "business" ? "/dashboard/business" : "/dashboard/user";
+  const profileUrl = `${basePath}/businesses/${business?.id || "mock-id"}`;
+
+  const handleViewProfile = async (e) => {
+    e.preventDefault();
+
+    try {
+      const businessId = business?._id || business?.id;
+
+      console.log("🔍 Attempting to track view for business:", {
+        businessId,
+        businessName: business?.companyName || business?.name,
+        fullBusinessObject: business,
+      });
+
+      if (!businessId) {
+        console.error("❌ No business ID found - cannot track view");
+        router.push(profileUrl);
+        return;
+      }
+
+      // Call the backend API to track the view
+      const response = await businessProfileAPI.viewBusinessProfile(businessId);
+
+      console.log("📡 API Response:", response);
+
+      if (response?.success && response?.data) {
+        const businessData = response.data;
+        const viewCount = businessData.viewsCount || 0;
+        const uniqueViewers = businessData.viewedBy?.length || 0;
+
+        console.log("=".repeat(60));
+        console.log(
+          `✅ Business Profile Viewed: ${businessData.companyName || business?.name}`,
+        );
+        console.log(`📊 Total View Count: ${viewCount}`);
+        console.log(`👥 Unique Viewers: ${uniqueViewers}`);
+        console.log(
+          `ℹ️  Note: Count only increments for first-time unique viewers`,
+        );
+        console.log("=".repeat(60));
+      } else {
+        console.warn(
+          "⚠️ API call succeeded but response structure unexpected:",
+          response,
+        );
+      }
+    } catch (error) {
+      console.error("❌ Failed to track business profile view:");
+      console.error("Error details:", error);
+      console.error("Error message:", error?.message);
+      console.error("Error response:", error?.response);
+    } finally {
+      // Navigate to profile page regardless of tracking success
+      router.push(profileUrl);
+    }
+  };
 
   // Mock data handling if props not provided
   const {
@@ -69,16 +127,18 @@ const BusinessCard = ({ business }) => {
 
         <div className="flex-1">
           <div className="flex flex-wrap items-center gap-2 mb-1">
-            <Link href={profileUrl} className="hover:underline text-gray-900">
-                <h3 className="text-lg font-bold">{name}</h3>
-            </Link>
+            <h3
+              onClick={handleViewProfile}
+              className="text-lg font-bold hover:underline text-gray-900 cursor-pointer"
+            >
+              {name}
+            </h3>
             {verified && <FaCheckCircle className="text-blue-500 text-base" />}
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-2">
             <div className="flex items-center gap-1 text-yellow-500">
-              <FaStar />{" "}
-              <span className="text-gray-400">{rating}</span>
+              <FaStar /> <span className="text-gray-400">{rating}</span>
               <span className="text-gray-400">({reviews})</span>
             </div>
             <span className="flex items-center gap-1">
@@ -105,15 +165,11 @@ const BusinessCard = ({ business }) => {
           <p className="text-sm font-sm text-gray-600">100%</p>
         </div>
         <div>
-          <p className="text-sm text-black font-semibold mb-1">
-            Reorder rate
-          </p>
+          <p className="text-sm text-black font-semibold mb-1">Reorder rate</p>
           <p className="text-sm font-sm text-gray-600">15%</p>
         </div>
         <div>
-          <p className="text-sm text-black font-semibold mb-1">
-            Response time
-          </p>
+          <p className="text-sm text-black font-semibold mb-1">Response time</p>
           <p className="text-sm font-sm text-gray-600">6h</p>
         </div>
         <div>
@@ -123,9 +179,7 @@ const BusinessCard = ({ business }) => {
           <p className="text-sm font-sm text-gray-600">USD $3.6M+</p>
         </div>
         <div>
-          <p className="text-sm text-black font-semibold mb-1">
-            Products Type
-          </p>
+          <p className="text-sm text-black font-semibold mb-1">Products Type</p>
           <p className="text-sm font-sm text-gray-600">210</p>
         </div>
       </div>
@@ -153,12 +207,13 @@ const BusinessCard = ({ business }) => {
         >
           <FiPhone className="mr-2" /> Contact
         </Button>
-        <Link
-          href={profileUrl}
-          className="h-9 text-sm font-medium border border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100 inline-flex items-center justify-center rounded-md px-4 whitespace-nowrap"
+        <Button
+          onClick={handleViewProfile}
+          variant="outline"
+          className="h-9 text-sm font-medium border border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
         >
           <FiFolder className="mr-2" /> View Profile
-        </Link>
+        </Button>
       </div>
     </div>
   );

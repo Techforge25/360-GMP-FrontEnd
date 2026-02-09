@@ -430,6 +430,31 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
 
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 sm:gap-x-4 md:gap-x-6 gap-y-1.5 sm:gap-y-2 mt-1.5 sm:mt-2 text-sm sm:text-sm md:text-base text-gray-500 mb-8 sm:mb-10 md:mb-12">
                 <div className="flex items-center gap-1 sm:gap-1.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  <span className="font-medium">
+                    {profileData.viewsCount || 0} Profile Views
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 sm:gap-1.5">
                   <img
                     src="/assets/images/employeesIcon.png"
                     alt=""
