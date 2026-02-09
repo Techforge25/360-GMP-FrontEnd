@@ -17,6 +17,7 @@ export default function BusinessJobsTab() {
   const [showCandidates, setShowCandidates] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [businessProfile, setBusinessProfile] = useState(null);
+  const [recentApplicationsCount, setRecentApplicationsCount] = useState(0);
   const [hiringStats, setHiringStats] = useState({
     views: { count: 0, period: "30d" },
     applications: 0,
@@ -52,8 +53,8 @@ export default function BusinessJobsTab() {
             [];
           setJobs(jobsData);
 
-          // Calculate hiring stats from jobs data
-          calculateHiringStats(jobsData);
+          // Calculate hiring stats from jobs data and fetch application counts
+          await calculateHiringStats(jobsData);
         }
       }
     } catch (error) {
@@ -63,18 +64,47 @@ export default function BusinessJobsTab() {
     }
   };
 
-  const calculateHiringStats = (jobsData) => {
+  const calculateHiringStats = async (jobsData) => {
     // Calculate total views from all jobs
     const totalViews = jobsData.reduce(
       (sum, job) => sum + (job.viewsCount || 0),
       0,
     );
 
-    // For now, we'll use placeholder values for applications, interview, and hired
-    // These would need separate API endpoints or be included in the job data
+    // Fetch total job applications
+    let totalApplications = 0;
+    try {
+      const applicationsResponse =
+        await businessProfileAPI.getTotalJobApplications();
+      if (
+        applicationsResponse?.success &&
+        applicationsResponse?.data !== undefined
+      ) {
+        totalApplications = applicationsResponse.data;
+      }
+    } catch (error) {
+      console.error("Failed to fetch total job applications:", error);
+    }
+
+    // Fetch recent job applications count
+    let recentApps = 0;
+    try {
+      const recentResponse =
+        await businessProfileAPI.getRecentJobApplications();
+      if (recentResponse?.success && recentResponse?.data) {
+        // The API returns an array of recent applications
+        recentApps = Array.isArray(recentResponse.data)
+          ? recentResponse.data.length
+          : 0;
+      }
+    } catch (error) {
+      console.error("Failed to fetch recent job applications:", error);
+    }
+
+    setRecentApplicationsCount(recentApps);
     setHiringStats({
       views: { count: totalViews, period: "30d" },
-      applications: 0, // TODO: Fetch from applications API
+      applications: totalApplications,
       interview: 0, // TODO: Fetch from applications API
       hired: 0, // TODO: Fetch from applications API
     });
@@ -259,23 +289,30 @@ export default function BusinessJobsTab() {
                             </div>
                           </td>
                           <td className="py-4 px-4">
-                          <div className="flex items-center gap-2 text-sm">
-                            <span className="text-gray-700">All • 0</span>
-                            <span className="text-gray-400">|</span>
-                            <span className="text-gray-700">
-                              New •{" "}
-                              <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-green-100 text-green-700 rounded text-sm font-medium">
-                                00
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="text-gray-700">
+                                All • {job.applicationsCount || 0}
                               </span>
+                              <span className="text-gray-400">|</span>
+                              <span className="text-gray-700">
+                                New •{" "}
+                                <span className="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-green-100 text-green-700 rounded text-sm font-medium">
+                                  {recentApplicationsCount
+                                    .toString()
+                                    .padStart(2, "0")}
                                 </span>
+                              </span>
                             </div>
                           </td>
                           <td className="py-4 px-4 text-sm text-gray-700">
-                          {new Date(job.createdAt).toLocaleDateString("en-US", {
+                            {new Date(job.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
                                 month: "short",
                                 day: "numeric",
                                 year: "numeric",
-                          })}
+                              },
+                            )}
                           </td>
                           <td className="py-4 px-4 text-sm text-gray-700">
                             {businessProfile?.email || "N/A"}

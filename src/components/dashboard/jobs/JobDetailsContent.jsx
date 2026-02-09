@@ -232,7 +232,7 @@ export default function JobDetailsContent() {
                 >
                   <FiEdit /> Edit Job
                 </Button>
-              ) : (
+              ) : user?.role === "user" ? (
                 <Button
                   onClick={() => setIsModalOpen(true)}
                   disabled={job.status !== "open"}
@@ -240,7 +240,7 @@ export default function JobDetailsContent() {
                 >
                   {job.status === "open" ? "Apply Now" : "Position Closed"}
                 </Button>
-              )}
+              ) : null}
             </div>
           </div>
         </div>

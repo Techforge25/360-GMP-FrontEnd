@@ -270,6 +270,30 @@ class BusinessProfileAPI {
       enableErrorMessage: false,
     });
   }
+
+  /**
+   * Get total job applications count for business
+   */
+  async getTotalJobApplications() {
+    return await api.get({
+      url: "/business-profile-management/count-job-applications",
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
+   * Get recent job applications for business
+   */
+  async getRecentJobApplications() {
+    return await api.get({
+      url: "/business-profile-management/recent-job-applicants",
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
 }
 
 const businessProfileAPI = new BusinessProfileAPI();
