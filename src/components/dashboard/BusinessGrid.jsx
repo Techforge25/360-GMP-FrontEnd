@@ -11,7 +11,9 @@ const BusinessGrid = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showMapModal, setShowMapModal] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [selectedBusiness, setSelectedBusiness] = useState(null);
+  const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
   const [mapLocation, setMapLocation] = useState(null);
 
   useEffect(() => {
@@ -66,8 +68,16 @@ const BusinessGrid = () => {
       logo: profile.logo || "/assets/images/profileLogo.png",
       banner: profile.banner || "/assets/images/pBG.png",
       website: profile.website || "#",
+      email: profile.b2bContact?.email || profile.email || "N/A",
       phone: profile.b2bContact?.phone || "#",
     };
+  };
+
+  const handleContactClick = (business, event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSelectedBusinessContact(business);
+    setShowContactModal(true);
   };
 
   const handleGetDirection = async (businessId, businessName, event) => {
@@ -233,13 +243,12 @@ const BusinessGrid = () => {
                       </a>
                     )}
                     {biz.phone !== "#" && (
-                      <a
-                        href={`tel:${biz.phone}`}
-                        onClick={(e) => e.stopPropagation()}
+                      <button
+                        onClick={(e) => handleContactClick(biz, e)}
                         className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
                       >
                         <FiPhone className="w-4 h-4 text-[#240457]" />
-                      </a>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -293,6 +302,80 @@ const BusinessGrid = () => {
                   </a>
                   <button
                     onClick={() => setShowMapModal(false)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Contact Info Modal */}
+        {showContactModal && selectedBusinessContact && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl max-w-md w-full overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Contact Information
+                </h3>
+                <button
+                  onClick={() => setShowContactModal(false)}
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <FiX className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                {/* Business Name */}
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Business Name</p>
+                  <p className="text-base font-semibold text-gray-900">
+                    {selectedBusinessContact.name}
+                  </p>
+                </div>
+
+                {/* Email */}
+                {/* <div>
+                  <p className="text-sm text-gray-500 mb-1">Email</p>
+                  <a
+                    href={`mailto:${selectedBusinessContact.email || "N/A"}`}
+                    className="text-base text-[#240457] hover:underline"
+                  >
+                    {selectedBusinessContact.email || "Not available"}
+                  </a>
+                </div> */}
+
+                {/* Phone */}
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Phone Number</p>
+                  <a
+                    href={`tel:${selectedBusinessContact.phone}`}
+                    className="text-base text-[#240457] hover:underline"
+                  >
+                    {selectedBusinessContact.phone}
+                  </a>
+                </div>
+
+                {/* Location */}
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Location</p>
+                  <p className="text-base text-gray-900">
+                    {selectedBusinessContact.location}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <a
+                    href={`tel:${selectedBusinessContact.phone}`}
+                    className="flex-1 bg-[#240457] text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-[#1a0340] transition-colors"
+                  >
+                    Call Now
+                  </a>
+                  <button
+                    onClick={() => setShowContactModal(false)}
                     className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                   >
                     Close

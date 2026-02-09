@@ -5,6 +5,7 @@ import BusinessCard from "@/components/dashboard/businesses/BusinessCard";
 import FilterSidebar from "@/components/dashboard/businesses/FilterSidebar";
 import { Button } from "@/components/ui/Button";
 import { CiMenuBurger } from "react-icons/ci";
+import { FiX } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
 
 export default function BusinessesPageContent() {
@@ -15,6 +16,8 @@ export default function BusinessesPageContent() {
   const [location, setLocation] = useState("");
   const [filteredBusinesses, setFilteredBusinesses] = useState([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
 
   useEffect(() => {
     fetchBusinessProfiles();
@@ -129,9 +132,16 @@ export default function BusinessesPageContent() {
     };
   };
 
+  const handleContactClick = (business) => {
+    setSelectedBusinessContact(business);
+    setShowContactModal(true);
+  };
+
   return (
     <div className="w-full bg-white">
-      <span className="text-[#240457] max-w-[1400px] mx-auto block py-3 sm:py-4 px-3 sm:px-6 lg:px-20 text-sm sm:text-sm">Business List</span>
+      <span className="text-[#240457] max-w-[1400px] mx-auto block py-3 sm:py-4 px-3 sm:px-6 lg:px-20 text-sm sm:text-sm">
+        Business List
+      </span>
       <main className="pb-16 sm:pb-20 lg:pb-24">
         <BusinessHero
           query={query}
@@ -163,21 +173,22 @@ export default function BusinessesPageContent() {
             {isMobileFilterOpen && (
               <>
                 {/* Backdrop */}
-                <div 
+                <div
                   className="lg:hidden fixed inset-0 bg-black/50 z-50"
                   onClick={() => setIsMobileFilterOpen(false)}
                 />
-                
+
                 {/* Modal */}
                 <div className="lg:hidden fixed inset-x-4 top-4 bottom-4 z-50 bg-white rounded-lg shadow-2xl overflow-y-auto">
                   <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                    <h3 className="font-semibold text-gray-900 text-lg">Filters</h3>
+                    <h3 className="font-semibold text-gray-900 text-lg">
+                      Filters
+                    </h3>
                     <button
                       onClick={() => setIsMobileFilterOpen(false)}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                     >
-                      <span className="sr-only">Close</span>
-                      ×
+                      <span className="sr-only">Close</span>×
                     </button>
                   </div>
                   <div className="p-4">
@@ -244,7 +255,11 @@ export default function BusinessesPageContent() {
               {!loading && !error && filteredBusinesses.length > 0 && (
                 <div className="space-y-3 sm:space-y-4">
                   {filteredBusinesses.map((biz, i) => (
-                    <BusinessCard key={i} business={biz} />
+                    <BusinessCard
+                      key={i}
+                      business={biz}
+                      onContactClick={handleContactClick}
+                    />
                   ))}
                 </div>
               )}
@@ -255,8 +270,12 @@ export default function BusinessesPageContent() {
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <CiMenuBurger className="w-8 h-8 text-gray-400" />
                   </div>
-                  <p className="text-gray-500 text-base font-medium mb-2">No business profiles found</p>
-                  <p className="text-gray-400 text-sm">Try adjusting your search criteria</p>
+                  <p className="text-gray-500 text-base font-medium mb-2">
+                    No business profiles found
+                  </p>
+                  <p className="text-gray-400 text-sm">
+                    Try adjusting your search criteria
+                  </p>
                 </div>
               )}
 
@@ -278,7 +297,9 @@ export default function BusinessesPageContent() {
                   <button className="hidden md:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
                     4
                   </button>
-                  <span className="hidden md:block text-gray-400 text-sm">...</span>
+                  <span className="hidden md:block text-gray-400 text-sm">
+                    ...
+                  </span>
                   <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
                     352
                   </button>
@@ -291,6 +312,70 @@ export default function BusinessesPageContent() {
             </div>
           </div>
         </div>
+
+        {/* Contact Info Modal */}
+        {showContactModal && selectedBusinessContact && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl max-w-md w-full overflow-hidden">
+              <div className="flex items-center justify-between p-4 border-b">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Contact Information
+                </h3>
+                <button
+                  onClick={() => setShowContactModal(false)}
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <FiX className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+              <div className="p-6 space-y-4">
+                {/* Business Name */}
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Business Name</p>
+                  <p className="text-base font-semibold text-gray-900">
+                    {selectedBusinessContact.name}
+                  </p>
+                </div>
+
+                {/* Phone */}
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Phone Number</p>
+                  <a
+                    href={`tel:${selectedBusinessContact.actions?.contact || "#"}`}
+                    className="text-base text-[#240457] hover:underline"
+                  >
+                    {selectedBusinessContact.actions?.contact ||
+                      "Not available"}
+                  </a>
+                </div>
+
+                {/* Location */}
+                <div>
+                  <p className="text-sm text-gray-500 mb-1">Location</p>
+                  <p className="text-base text-gray-900">
+                    {selectedBusinessContact.location}
+                  </p>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <a
+                    href={`tel:${selectedBusinessContact.actions?.contact || "#"}`}
+                    className="flex-1 bg-[#240457] text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-[#1a0340] transition-colors"
+                  >
+                    Call Now
+                  </a>
+                  <button
+                    onClick={() => setShowContactModal(false)}
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

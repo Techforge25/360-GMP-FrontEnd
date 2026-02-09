@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
 import businessProfileAPI from "@/services/businessProfileAPI";
 
-const BusinessCard = ({ business }) => {
+const BusinessCard = ({ business, onContactClick }) => {
   const { user } = useUserRole();
   const router = useRouter();
   const isFreeTrial = user?.role === "free_trial";
@@ -68,6 +68,14 @@ const BusinessCard = ({ business }) => {
     } finally {
       // Navigate to profile page regardless of tracking success
       router.push(profileUrl);
+    }
+  };
+
+  const handleContactClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onContactClick) {
+      onContactClick(business);
     }
   };
 
@@ -201,6 +209,7 @@ const BusinessCard = ({ business }) => {
           <FiMapPin className="mr-2" /> Get Directions
         </Button>
         <Button
+          onClick={handleContactClick}
           variant="outline"
           className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
           disabled={isFreeTrial && role !== "business"}
