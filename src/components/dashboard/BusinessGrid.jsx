@@ -22,12 +22,12 @@ const BusinessGrid = () => {
     try {
       // Call the view API to track view and get complete business data
       await businessProfileAPI.viewBusinessProfile(businessId);
-      // Navigate to the business profile page
-      router.push(`/dashboard/business/businesses/${businessId}`);
+      // Navigate to the shared business profile page (accessible to both users and businesses)
+      router.push(`/dashboard/business-profile/${businessId}`);
     } catch (error) {
       console.error("Failed to view business profile:", error);
       // Still navigate even if tracking fails
-      router.push(`/dashboard/business/businesses/${businessId}`);
+      router.push(`/dashboard/business-profile/${businessId}`);
     }
   };
 
@@ -73,18 +73,21 @@ const BusinessGrid = () => {
   const handleGetDirection = async (businessId, businessName, event) => {
     event.preventDefault();
     event.stopPropagation();
-    
+
     try {
       setSelectedBusiness(businessName);
-      const response = await businessProfileAPI.getDirection?.(businessId) || 
-        await fetch(`/api/businessProfile/${businessId}/getDirection`).then(res => res.json());
-      
+      const response =
+        (await businessProfileAPI.getDirection?.(businessId)) ||
+        (await fetch(`/api/businessProfile/${businessId}/getDirection`).then(
+          (res) => res.json(),
+        ));
+
       if (response?.data?.location) {
         setMapLocation(response.data.location);
         setShowMapModal(true);
       } else {
         // Fallback: Use business location from current data
-        const business = businesses.find(b => b.id === businessId);
+        const business = businesses.find((b) => b.id === businessId);
         if (business) {
           setMapLocation({ address: business.location });
           setShowMapModal(true);
@@ -93,7 +96,7 @@ const BusinessGrid = () => {
     } catch (error) {
       console.error("Failed to get direction:", error);
       // Fallback: Use business location from current data
-      const business = businesses.find(b => b.id === businessId);
+      const business = businesses.find((b) => b.id === businessId);
       if (business) {
         setMapLocation({ address: business.location });
         setShowMapModal(true);
@@ -102,8 +105,11 @@ const BusinessGrid = () => {
   };
 
   const generateMapUrl = (location) => {
-    const address = location.address || 
-      `${location.addressLine || ''}, ${location.city || ''}, ${location.country || ''}`.trim().replace(/^,|,$/g, '');
+    const address =
+      location.address ||
+      `${location.addressLine || ""}, ${location.city || ""}, ${location.country || ""}`
+        .trim()
+        .replace(/^,|,$/g, "");
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
   };
 
@@ -270,8 +276,10 @@ const BusinessGrid = () => {
                 <div className="bg-gray-50 rounded-lg p-4 mb-4">
                   <p className="text-sm text-gray-600 mb-2">Location:</p>
                   <p className="text-base font-medium text-gray-900">
-                    {mapLocation.address || 
-                     `${mapLocation.addressLine || ''}, ${mapLocation.city || ''}, ${mapLocation.country || ''}`.trim().replace(/^,|,$/g, '')}
+                    {mapLocation.address ||
+                      `${mapLocation.addressLine || ""}, ${mapLocation.city || ""}, ${mapLocation.country || ""}`
+                        .trim()
+                        .replace(/^,|,$/g, "")}
                   </p>
                 </div>
                 <div className="flex gap-3">
