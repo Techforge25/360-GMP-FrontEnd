@@ -59,8 +59,8 @@ class CommunityAPI {
    */
   async getMembers(communityId, params = {}) {
     const queryParams = new URLSearchParams(params).toString();
-    const url = queryParams 
-      ? `/community/${communityId}/members?${queryParams}` 
+    const url = queryParams
+      ? `/community/${communityId}/members?${queryParams}`
       : `/community/${communityId}/members`;
 
     return await api.get({
@@ -76,8 +76,8 @@ class CommunityAPI {
    */
   async getPendingRequests(communityId, params = {}) {
     const queryParams = new URLSearchParams(params).toString();
-    const url = queryParams 
-      ? `/community/${communityId}/pending-requests?${queryParams}` 
+    const url = queryParams
+      ? `/community/${communityId}/pending-requests?${queryParams}`
       : `/community/${communityId}/pending-requests`;
 
     return await api.get({
@@ -98,6 +98,30 @@ class CommunityAPI {
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Get suggested communities based on user search history
+   */
+  async getSuggestedCommunities() {
+    return await api.get({
+      url: "/community/suggestions/show",
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  /**
+   * Get communities owned by a specific business
+   */
+  async getOwnedCommunities(businessId) {
+    return await api.get({
+      url: `/community?businessId=${businessId}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
     });
   }
 }

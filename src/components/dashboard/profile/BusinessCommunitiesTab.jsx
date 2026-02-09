@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { FiUsers, FiChevronRight, FiEdit2, FiPlus } from "react-icons/fi";
 import Link from "next/link";
+import communityAPI from "@/services/communityAPI";
+import businessProfileAPI from "@/services/businessProfileAPI";
 
 const BusinessCommunitiesTab = () => {
   const [ownedCommunities, setOwnedCommunities] = useState([]);
@@ -16,77 +18,32 @@ const BusinessCommunitiesTab = () => {
     try {
       setLoading(true);
 
-      // Using dummy data for now - replace with API call later
-      setOwnedCommunities([
-        {
-          _id: "1",
-          name: "Global Manufacturing Community",
-          description:
-            "Creating sustainable place for auto manufacturing professional and corporates.",
-          category: "Manufacturing",
-          memberCount: 56300,
-          lastActive: "2h ago",
-          profileImage: "/assets/images/community1.png",
-          members: [
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-          ],
-        },
-        {
-          _id: "2",
-          name: "Future of Global Supply Chain Forum",
-          description:
-            "Dedicated space for logistics experts to discuss efficient distribution and sourcing.",
-          category: "Manufacturing",
-          memberCount: 56300,
-          lastActive: "2h ago",
-          profileImage: "/assets/images/community2.png",
-          members: [
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-          ],
-        },
-        {
-          _id: "3",
-          name: "Industrial Tech & Automation Nexus",
-          description:
-            "Connect with engineers and innovators to explore IoT, Robotics, and advanced manufacturing trends.",
-          category: "Manufacturing",
-          memberCount: 56300,
-          lastActive: "2h ago",
-          profileImage: "/assets/images/community3.png",
-          members: [
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-          ],
-        },
-      ]);
+      // Fetch business profile to get businessId
+      const businessResponse = await businessProfileAPI.getMyProfile();
+      const businessId = businessResponse?.data?._id;
 
-      setSuggestedCommunities([
-        {
-          _id: "s1",
-          name: "Global Logistics Network",
-          memberCount: 2400,
-          type: "featured",
-          profileImage: "/assets/images/community-suggested1.png",
-        },
-        {
-          _id: "s2",
-          name: "Tech Innovators Hub",
-          memberCount: 2400,
-          type: "featured",
-          profileImage: "/assets/images/community-suggested2.png",
-        },
-        {
-          _id: "s3",
-          name: "Medical Leaders Forum",
-          memberCount: 2400,
-          type: "featured",
-          profileImage: "/assets/images/community-suggested3.png",
-        },
-      ]);
+      // Fetch owned communities
+      if (businessId) {
+        const ownedResponse =
+          await communityAPI.getOwnedCommunities(businessId);
+        if (ownedResponse?.success && ownedResponse?.data) {
+          const communities = ownedResponse.data.docs || ownedResponse.data;
+          setOwnedCommunities(Array.isArray(communities) ? communities : []);
+        }
+      }
+
+      // Fetch suggested communities
+      const suggestedResponse = await communityAPI.getSuggestedCommunities();
+      if (suggestedResponse?.success && suggestedResponse?.data) {
+        const suggestions = Array.isArray(suggestedResponse.data)
+          ? suggestedResponse.data
+          : [];
+        setSuggestedCommunities(suggestions);
+      }
     } catch (error) {
       console.error("Failed to fetch communities:", error);
+      setOwnedCommunities([]);
+      setSuggestedCommunities([]);
     } finally {
       setLoading(false);
     }
@@ -95,7 +52,7 @@ const BusinessCommunitiesTab = () => {
   const handleDeleteCommunity = async (communityId) => {
     if (
       !confirm(
-        "Are you sure you want to delete this community? This action cannot be undone."
+        "Are you sure you want to delete this community? This action cannot be undone.",
       )
     ) {
       return;
@@ -104,9 +61,7 @@ const BusinessCommunitiesTab = () => {
     try {
       // API call to delete community
       // await api.delete({ url: `/community/${communityId}` });
-      setOwnedCommunities((prev) =>
-        prev.filter((c) => c._id !== communityId)
-      );
+      setOwnedCommunities((prev) => prev.filter((c) => c._id !== communityId));
     } catch (error) {
       console.error("Failed to delete community:", error);
     }
@@ -132,8 +87,9 @@ const BusinessCommunitiesTab = () => {
       {/* Main Content - Owned Communities */}
       <div className="flex-1">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900">Owned Communities</h2>
-          
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+            Owned Communities
+          </h2>
         </div>
 
         <div className="space-y-3 sm:space-y-4">
