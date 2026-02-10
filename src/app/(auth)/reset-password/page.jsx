@@ -13,6 +13,7 @@ import {
   CardDescription,
 } from "@/components/ui/Card";
 import { backendURL } from "@/constants";
+import api from "@/lib/axios";
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -36,24 +37,24 @@ function ResetPasswordForm() {
     setError("");
 
     try {
-      const res = await fetch(`${backendURL}/auth/resetPassword/${token}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const res = await api.post({
+        url: `/auth/resetPassword/${token}`,
+        payload: {
           newPassword: password,
           confirmPassword: confirmPassword,
-        }),
+        },
+        enableSuccessMessage: false,
+        enableErrorMessage: false,
+        activateLoader: false,
       });
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (res.success) {
         router.push("/login");
       } else {
-        setError(data.message || "Failed to reset password");
+        setError(res.message || "Failed to reset password");
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

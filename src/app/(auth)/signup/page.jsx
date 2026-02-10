@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/Card";
 
 import { backendURL } from "@/constants";
+import api from "@/lib/axios";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -31,30 +32,27 @@ export default function SignupPage() {
 
     try {
       // Create the account - backend will send OTP automatically
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/signup`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, passwordHash: password }),
-        },
-      );
+      const res = await api.post({
+        url: `/auth/user/signup`,
+        payload: { email, passwordHash: password },
+        enableSuccessMessage: false,
+        enableErrorMessage: false,
+        activateLoader: false,
+      });
 
-      const data = await res.json();
-
-      if (res.ok) {
-        // Backend returns userId in data.data
-        const userId = data.data;
+      if (res.success) {
+        // Backend returns userId in res.data
+        const userId = res.data;
 
         // Redirect to OTP verification page with userId and email
         router.push(
           `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
         );
       } else {
-        setError(data.message || "Signup failed");
+        setError(res.message || "Signup failed");
       }
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      setError(err.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
