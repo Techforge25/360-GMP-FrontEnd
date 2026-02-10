@@ -9,6 +9,8 @@ import {
 } from "react-icons/fi";
 import postsAPI from "@/services/postsAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import CreatePostModal from "./CreatePostModal";
+import ShareDocumentModal from "./ShareDocumentModal";
 
 const FeedInput = ({
   communityId,
@@ -20,6 +22,8 @@ const FeedInput = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
   const fileInputRef = React.useRef(null);
 
   const handleFileSelect = (e) => {
@@ -75,16 +79,6 @@ const FeedInput = ({
         setIsUploading(false);
       }
 
-      console.log("Creating post with:", {
-        communityId,
-        content: content.trim(),
-        fileUrl,
-        fileType,
-        isMember,
-        membershipStatus,
-        canPost,
-      });
-
       const postPayload = {
         communityId,
         content: content.trim(),
@@ -101,8 +95,6 @@ const FeedInput = ({
 
       const response = await postsAPI.createPost(postPayload);
 
-      console.log("Post creation response:", response);
-
       if (response.success && onPostCreated) {
         onPostCreated(response.data);
         setContent("");
@@ -110,8 +102,6 @@ const FeedInput = ({
       }
     } catch (error) {
       console.error("Error creating post:", error);
-
-      // Show user-friendly error message
       const errorMessage =
         error?.message || "Failed to create post. Please try again.";
       alert(errorMessage);
@@ -126,8 +116,23 @@ const FeedInput = ({
       handleSubmit();
     }
   };
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
+      <CreatePostModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={onPostCreated}
+        communityId={communityId}
+      />
+
+      <ShareDocumentModal
+        isOpen={isDocumentModalOpen}
+        onClose={() => setIsDocumentModalOpen(false)}
+        onSubmit={onPostCreated}
+        communityId={communityId}
+      />
+
       {!canPost && (
         <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">
@@ -200,6 +205,7 @@ const FeedInput = ({
 
           <button
             disabled={!canPost}
+            onClick={() => setIsModalOpen(true)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               canPost
                 ? "hover:bg-gray-50 text-gray-600"
@@ -212,7 +218,7 @@ const FeedInput = ({
           </button>
           <button
             disabled={!canPost}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setIsDocumentModalOpen(true)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               canPost
                 ? "hover:bg-gray-50 text-gray-600"
