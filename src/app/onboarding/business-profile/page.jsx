@@ -214,20 +214,19 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => (
             )
           }
         />
-        {formData.certificationDocUrl && (
-            <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
-              <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
-              <div className="relative w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
-                <Image
-                  src={formData.certificationDocUrl}
-                  alt="Certification Document Preview"
-                  width={80}
-                  height={80}
-                  className="object-contain w-full h-full"
-                />
-              </div>
+        {formData.bannerImageUrl && (
+          <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
+            <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
+            <div className="relative w-full h-32 mx-auto border border-gray-200 rounded-lg overflow-hidden">
+              <Image
+                src={formData.bannerImageUrl}
+                alt="Banner Preview"
+                fill
+                className="object-cover w-full h-full"
+              />
             </div>
-          )}
+          </div>
+        )}
       </div>
     </div>
   </div>
@@ -318,19 +317,19 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
         }
       />
       {formData.certificationDocUrl && (
-          <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
-            <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
-            <div className="relative w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
-              <Image
-                src={formData.certificationDocUrl}
-                alt="Certification Document Preview"
-                width={80}
-                height={80}
-                className="object-contain w-full h-full"
-              />
-            </div>
+        <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
+          <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
+          <div className="relative w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
+            <Image
+              src={formData.certificationDocUrl}
+              alt="Certification Document Preview"
+              width={80}
+              height={80}
+              className="object-contain w-full h-full"
+            />
           </div>
-        )}
+        </div>
+      )}
     </div>
 
     <div>
@@ -633,10 +632,12 @@ export default function BusinessProfilePage() {
         !formData.contactPhone ||
         !formData.contactEmail
       ) {
-        setError("Please fill all required contact and location fields before proceeding.");
+        setError(
+          "Please fill all required contact and location fields before proceeding.",
+        );
         return;
       }
-      
+
       if (!isValidEmail(formData.contactEmail)) {
         setError("Please enter a valid email address.");
         return;
