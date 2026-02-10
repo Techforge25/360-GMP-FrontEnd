@@ -361,58 +361,145 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
   }
 
   // Event Post Type
-  if (post.type === "event") {
+  if (post.type === "event" && post.event) {
+    const { name, description, date, location } = post.event;
+    const eventDate = new Date(date);
+    const dateDay = eventDate.getDate();
+    const dateMonth = eventDate
+      .toLocaleString("default", { month: "short" })
+      .toUpperCase();
+    const time = eventDate.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
     return (
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="p-5">
-          {/* Event Header */}
-          <div className="flex gap-4">
-            {/* Date Badge */}
-            <div className="flex-shrink-0 w-14 h-14 bg-blue-500 rounded-lg flex flex-col items-center justify-center text-white">
-              <span className="text-sm font-semibold">
-                {post.date.split(" ")[0]}
+        {/* Author Header */}
+        <div className="p-4 flex items-center justify-between border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+              <img
+                src={author.image}
+                alt={author.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = "/assets/images/Portrait_Placeholder.png";
+                }}
+              />
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900">
+                {author.name}
+              </h4>
+              <p className="text-xs text-gray-500">
+                {formatTimeAgo(post.createdAt)}
+              </p>
+            </div>
+          </div>
+          {/* Options Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setShowOptions(!showOptions)}
+              className="text-gray-400 hover:text-gray-600 p-1 rounded"
+            >
+              <FiMoreHorizontal size={20} />
+            </button>
+            {showOptions && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowOptions(false)}
+                />
+                <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
+                  {isPostAuthor() && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowOptions(false);
+                          handleDelete();
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                        Delete Post
+                      </button>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Event Banner */}
+        {post.images && post.images.length > 0 && (
+          <div className="w-full h-48 sm:h-64 relative">
+            <img
+              src={post.images[0]}
+              alt={name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex flex-col items-center shadow-lg">
+              <span className="text-xs font-bold text-red-500 uppercase">
+                {dateMonth}
               </span>
-              <span className="text-xl font-bold">
-                {post.date.split(" ")[1]}
+              <span className="text-xl font-bold text-gray-900 leading-none">
+                {dateDay}
               </span>
             </div>
+          </div>
+        )}
 
-            {/* Event Details */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="text-base font-bold text-gray-900">
-                  {post.title}
-                </h3>
-                <span className="px-3 py-1 bg-blue-50 text-blue-600 text-sm font-semibold rounded-full whitespace-nowrap">
-                  Event
+        <div className="p-5">
+          {/* Event Details */}
+          <div className="flex gap-4">
+            {!post.images?.length && (
+              <div className="flex-shrink-0 w-14 h-14 bg-blue-50 text-blue-600 rounded-lg flex flex-col items-center justify-center border border-blue-100">
+                <span className="text-xs font-bold uppercase">{dateMonth}</span>
+                <span className="text-xl font-bold leading-none">
+                  {dateDay}
                 </span>
               </div>
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                {post.description}
+            )}
+
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h3 className="text-lg font-bold text-gray-900 leading-tight">
+                  {name}
+                </h3>
+              </div>
+              <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                {description}
               </p>
 
-              <div className="space-y-1.5 text-sm text-gray-500">
-                <div className="flex items-center gap-2">
-                  <FiClock className="w-4 h-4" />
-                  <span>{post.time}</span>
+              <div className="space-y-2 text-sm text-gray-500">
+                <div className="flex items-center gap-2.5">
+                  <FiClock className="w-4 h-4 text-gray-400" />
+                  <span>{time}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <FiMapPin className="w-4 h-4" />
-                  <span>{post.location}</span>
+                <div className="flex items-center gap-2.5">
+                  <FiMapPin className="w-4 h-4 text-gray-400" />
+                  <span className="break-all">{location}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <FiUsers className="w-4 h-4" />
-                  <span>{post.attendees} Attending</span>
+                {/* 
+                <div className="flex items-center gap-2.5">
+                  <FiUsers className="w-4 h-4 text-gray-400" />
+                  <span>{post.attendees || 0} Attending</span>
                 </div>
+                */}
               </div>
             </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-end gap-2 px-5 pb-4">
-          <button className="px-4 py-2 bg-[#240457] text-white rounded-lg font-semibold text-sm hover:bg-[#1a0340] transition-colors">
-            Register
+        <div className="flex items-center justify-between px-5 py-4 bg-gray-50 border-t border-gray-100">
+          <div className="flex -space-x-2">
+            {/* Placeholder for attendees avatars if available */}
+          </div>
+          <button className="px-6 py-2 bg-[#240457] text-white rounded-lg font-semibold text-sm hover:bg-[#1a0340] transition-colors shadow-sm w-full sm:w-auto">
+            View Details
           </button>
         </div>
       </div>

@@ -11,6 +11,7 @@ import postsAPI from "@/services/postsAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import CreatePostModal from "./CreatePostModal";
 import ShareDocumentModal from "./ShareDocumentModal";
+import CreateEventModal from "./CreateEventModal";
 
 const FeedInput = ({
   communityId,
@@ -24,6 +25,7 @@ const FeedInput = ({
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const fileInputRef = React.useRef(null);
 
   const handleFileSelect = (e) => {
@@ -133,6 +135,13 @@ const FeedInput = ({
         communityId={communityId}
       />
 
+      <CreateEventModal
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        onSubmit={onPostCreated}
+        communityId={communityId}
+      />
+
       {!canPost && (
         <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">
@@ -230,6 +239,7 @@ const FeedInput = ({
           </button>
           <button
             disabled={!canPost}
+            onClick={() => setIsEventModalOpen(true)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               canPost
                 ? "hover:bg-gray-50 text-gray-600"
@@ -238,7 +248,6 @@ const FeedInput = ({
           >
             <FiCalendar className="w-4 h-4" />
             <span>Event</span>
-            {showSoonLabels && <span className="text-sm">(Soon)</span>}
           </button>
           <button
             disabled={!canPost}
