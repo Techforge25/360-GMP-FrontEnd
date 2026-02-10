@@ -21,15 +21,15 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   // Fetch members
   const fetchMembers = async () => {
     if (!community?._id) return;
-    
+
     try {
       setLoading(true);
       const response = await communityAPI.getMembers(community._id, {
         page: currentPage,
         limit: itemsPerPage,
-        search: searchQuery
+        search: searchQuery,
       });
-      
+
       if (response.success) {
         setMembers(response.data.members || []);
         setTotalMembers(response.data.total || 0);
@@ -44,19 +44,27 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   // Fetch pending requests (only for owners/admins)
   const fetchPendingRequests = async () => {
     if (!community?._id || !isOwner) return;
-    
+
     try {
       setLoading(activeTab === "requests");
       const response = await communityAPI.getPendingRequests(community._id, {
         page: activeTab === "requests" ? currentPage : 1,
-        limit: itemsPerPage
+        limit: itemsPerPage,
       });
-      
+
       if (response.success) {
         // Handle different possible response structures
-        const requests = response.data?.pendingRequests || response.data?.requests || response.data?.data || (Array.isArray(response.data) ? response.data : []);
-        const total = response.data?.total || response.data?.totalCount || requests.length || 0;
-        
+        const requests =
+          response.data?.pendingRequests ||
+          response.data?.requests ||
+          response.data?.data ||
+          (Array.isArray(response.data) ? response.data : []);
+        const total =
+          response.data?.total ||
+          response.data?.totalCount ||
+          requests.length ||
+          0;
+
         setPendingRequests(requests);
         setTotalPending(total);
       }
@@ -85,8 +93,11 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   }, [community?._id, activeTab, currentPage, searchQuery]);
 
   // Filter for admins from members
-  const filteredAdmins = members.filter(member => 
-    member.role === "admin" || member.role === "owner" || member.role === "moderator"
+  const filteredAdmins = members.filter(
+    (member) =>
+      member.role === "admin" ||
+      member.role === "owner" ||
+      member.role === "moderator",
   );
 
   const getCurrentData = () => {
@@ -104,15 +115,21 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
   const handleAcceptRequest = async (userProfileId) => {
     if (!community?._id) return;
-    
+
     try {
       setProcessingId(userProfileId);
-      const response = await communityAPI.approveMembership(community._id, userProfileId, "approved");
-      
+      const response = await communityAPI.approveMembership(
+        community._id,
+        userProfileId,
+        "approved",
+      );
+
       if (response.success) {
         // Remove from pending requests
-        setPendingRequests(prev => prev.filter(req => req.userProfileId?._id !== userProfileId));
-        setTotalPending(prev => prev - 1);
+        setPendingRequests((prev) =>
+          prev.filter((req) => req.userProfileId?._id !== userProfileId),
+        );
+        setTotalPending((prev) => prev - 1);
         // Refresh members list
         fetchMembers();
       }
@@ -125,20 +142,73 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
   const handleIgnoreRequest = async (userProfileId) => {
     if (!community?._id) return;
-    
+
     try {
       setProcessingId(userProfileId);
-      const response = await communityAPI.approveMembership(community._id, userProfileId, "rejected");
-      
+      const response = await communityAPI.approveMembership(
+        community._id,
+        userProfileId,
+        "rejected",
+      );
+
       if (response.success) {
         // Remove from pending requests
-        setPendingRequests(prev => prev.filter(req => req.userProfileId?._id !== userProfileId));
-        setTotalPending(prev => prev - 1);
+        setPendingRequests((prev) =>
+          prev.filter((req) => req.userProfileId?._id !== userProfileId),
+        );
+        setTotalPending((prev) => prev - 1);
       }
     } catch (error) {
       console.error("Error rejecting request:", error);
     } finally {
       setProcessingId(null);
+    }
+  };
+
+  const [activeDropdown, setActiveDropdown] = useState(null);
+
+  const handleRemoveMember = async (memberId) => {
+    if (!community?._id) return;
+
+    if (confirm("Are you sure you want to remove this member?")) {
+      try {
+        setProcessingId(memberId);
+        const response = await communityAPI.removeMember(
+          community._id,
+          memberId,
+        );
+        if (response.success) {
+          fetchMembers();
+          setActiveDropdown(null);
+        }
+      } catch (error) {
+        console.error("Error removing member:", error);
+      } finally {
+        setProcessingId(null);
+      }
+    }
+  };
+
+  const handleMakeAdmin = async (memberId) => {
+    if (!community?._id) return;
+
+    if (confirm("Are you sure you want to make this member an admin?")) {
+      try {
+        setProcessingId(memberId);
+        const response = await communityAPI.updateMemberRole(
+          community._id,
+          memberId,
+          "admin",
+        );
+        if (response.success) {
+          fetchMembers();
+          setActiveDropdown(null);
+        }
+      } catch (error) {
+        console.error("Error making member admin:", error);
+      } finally {
+        setProcessingId(null);
+      }
     }
   };
 
@@ -150,13 +220,16 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   };
 
   const totalPages = Math.ceil(
-    (activeTab === "requests" ? totalPending : totalMembers) / itemsPerPage
+    (activeTab === "requests" ? totalPending : totalMembers) / itemsPerPage,
   );
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      year: "numeric",
+    });
   };
 
   return (
@@ -196,7 +269,14 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                 {community?.shortDescription || community?.description || ""}
               </p>
               <p className="text-sm text-gray-500 mt-1">
-                {formatMemberCount(community?.memberCount)} Members • {community?.status === 'active' ? 'Active Community' : 'Community'} • <span className="capitalize">{community?.type || "Public"}</span>
+                {formatMemberCount(community?.memberCount)} Members •{" "}
+                {community?.status === "active"
+                  ? "Active Community"
+                  : "Community"}{" "}
+                •{" "}
+                <span className="capitalize">
+                  {community?.type || "Public"}
+                </span>
               </p>
             </div>
           </div>
@@ -217,7 +297,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-24 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
           />
-          <button 
+          <button
             onClick={() => fetchMembers()}
             className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#240457] text-white px-4 py-1.5 rounded-md text-sm font-medium"
           >
@@ -228,7 +308,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
         {/* Tabs */}
         <div className="flex gap-1">
           <button
-            onClick={() => { setActiveTab("all"); setCurrentPage(1); }}
+            onClick={() => {
+              setActiveTab("all");
+              setCurrentPage(1);
+            }}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === "all"
                 ? "bg-[#240457] text-white"
@@ -238,7 +321,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             All Members
           </button>
           <button
-            onClick={() => { setActiveTab("admins"); setCurrentPage(1); }}
+            onClick={() => {
+              setActiveTab("admins");
+              setCurrentPage(1);
+            }}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === "admins"
                 ? "bg-[#240457] text-white"
@@ -249,7 +335,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
           </button>
           {isOwner && (
             <button
-              onClick={() => { setActiveTab("requests"); setCurrentPage(1); }}
+              onClick={() => {
+                setActiveTab("requests");
+                setCurrentPage(1);
+              }}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
                 activeTab === "requests"
                   ? "bg-[#240457] text-white"
@@ -292,34 +381,56 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
               <div className="col-span-1">
                 <input type="checkbox" className="rounded border-gray-300" />
               </div>
-              <div className="col-span-3 text-sm font-medium text-gray-600">Profile</div>
-              <div className="col-span-2 text-sm font-medium text-gray-600">Joined</div>
-              <div className="col-span-2 text-sm font-medium text-gray-600">Role</div>
-              <div className="col-span-2 text-sm font-medium text-gray-600">Status</div>
-              <div className="col-span-2 text-sm font-medium text-gray-600">Actions</div>
+              <div className="col-span-3 text-sm font-medium text-gray-600">
+                Profile
+              </div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">
+                Joined
+              </div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">
+                Role
+              </div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">
+                Status
+              </div>
+              <div className="col-span-2 text-sm font-medium text-gray-600">
+                Actions
+              </div>
             </div>
 
             {/* Table Content */}
             <div className="space-y-3">
               {getCurrentData().length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
-                  {activeTab === "requests" ? "No pending requests" : "No members found"}
+                  {activeTab === "requests"
+                    ? "No pending requests"
+                    : "No members found"}
                 </div>
               ) : activeTab === "requests" ? (
                 // Requests View
                 pendingRequests.map((request) => (
-                  <div key={request._id} className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors">
+                  <div
+                    key={request._id}
+                    className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
                     <div className="col-span-1 flex items-center">
-                      <input type="checkbox" className="rounded border-gray-300" />
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300"
+                      />
                     </div>
                     <div className="col-span-3 flex items-center gap-3">
                       <div className="relative">
                         <img
-                          src={request.userProfileId?.imageProfile || "/assets/images/Portrait_Placeholder.png"}
+                          src={
+                            request.userProfileId?.imageProfile ||
+                            "/assets/images/Portrait_Placeholder.png"
+                          }
                           alt={request.userProfileId?.fullName}
                           className="w-10 h-10 rounded-full object-cover"
                           onError={(e) => {
-                            e.target.src = "/assets/images/Portrait_Placeholder.png";
+                            e.target.src =
+                              "/assets/images/Portrait_Placeholder.png";
                           }}
                         />
                       </div>
@@ -349,14 +460,20 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                     </div>
                     <div className="col-span-2 flex items-center gap-2">
                       <button
-                        onClick={() => handleAcceptRequest(request.userProfileId?._id)}
+                        onClick={() =>
+                          handleAcceptRequest(request.userProfileId?._id)
+                        }
                         disabled={processingId === request.userProfileId?._id}
                         className="px-3 py-1.5 bg-blue-100 text-blue-700 text-sm rounded-md hover:bg-blue-200 transition-colors disabled:opacity-50"
                       >
-                        {processingId === request.userProfileId?._id ? "..." : "Accept"}
+                        {processingId === request.userProfileId?._id
+                          ? "..."
+                          : "Accept"}
                       </button>
                       <button
-                        onClick={() => handleIgnoreRequest(request.userProfileId?._id)}
+                        onClick={() =>
+                          handleIgnoreRequest(request.userProfileId?._id)
+                        }
                         disabled={processingId === request.userProfileId?._id}
                         className="px-3 py-1.5 bg-red-100 text-red-700 text-sm rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
                       >
@@ -368,32 +485,52 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
               ) : (
                 // Members View
                 getCurrentData().map((member) => (
-                  <div key={member._id} className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors">
+                  <div
+                    key={member._id}
+                    className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors"
+                  >
                     <div className="col-span-1 flex items-center">
-                      <input type="checkbox" className="rounded border-gray-300" />
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300"
+                      />
                     </div>
                     <div className="col-span-3 flex items-center gap-3">
                       <div className="relative">
                         <img
-                          src={member.userProfileId?.imageProfile || member.memberId?.imageProfile || "/assets/images/Portrait_Placeholder.png"}
-                          alt={member.userProfileId?.fullName || member.memberId?.companyName}
+                          src={
+                            member.userProfileId?.imageProfile ||
+                            member.memberId?.imageProfile ||
+                            "/assets/images/Portrait_Placeholder.png"
+                          }
+                          alt={
+                            member.userProfileId?.fullName ||
+                            member.memberId?.companyName
+                          }
                           className="w-10 h-10 rounded-full object-cover"
                           onError={(e) => {
-                            e.target.src = "/assets/images/Portrait_Placeholder.png";
+                            e.target.src =
+                              "/assets/images/Portrait_Placeholder.png";
                           }}
                         />
                         {member.memberModel === "BusinessProfile" && (
                           <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#240457] rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">B</span>
+                            <span className="text-white text-sm font-bold">
+                              B
+                            </span>
                           </div>
                         )}
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-gray-900">
-                          {member.userProfileId?.fullName || member.memberId?.companyName || "Unknown"}
+                          {member.userProfileId?.fullName ||
+                            member.memberId?.companyName ||
+                            "Unknown"}
                         </h4>
                         <p className="text-sm text-gray-500">
-                          {member.userProfileId?.title || member.memberId?.industry || "Member"}
+                          {member.userProfileId?.title ||
+                            member.memberId?.industry ||
+                            "Member"}
                         </p>
                       </div>
                     </div>
@@ -403,16 +540,21 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center">
-                      <span className={`px-2 py-1 rounded-full text-sm font-medium ${
-                        member.role === "owner" 
-                          ? "bg-purple-100 text-purple-800"
-                          : member.role === "admin"
-                          ? "bg-blue-100 text-blue-800"
-                          : member.role === "moderator"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}>
-                        {member.role === "owner" ? "Creator" : member.role?.charAt(0).toUpperCase() + member.role?.slice(1) || "Member"}
+                      <span
+                        className={`px-2 py-1 rounded-full text-sm font-medium ${
+                          member.role === "owner"
+                            ? "bg-purple-100 text-purple-800"
+                            : member.role === "admin"
+                              ? "bg-blue-100 text-blue-800"
+                              : member.role === "moderator"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {member.role === "owner"
+                          ? "Creator"
+                          : member.role?.charAt(0).toUpperCase() +
+                              member.role?.slice(1) || "Member"}
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center">
@@ -425,9 +567,48 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                         <BsChat className="w-4 h-4 text-gray-600" />
                       </button>
-                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                        <BiDotsHorizontalRounded className="w-4 h-4 text-gray-600" />
-                      </button>
+                      {isOwner && member.role !== "owner" && (
+                        <div className="relative">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveDropdown(
+                                activeDropdown === member._id
+                                  ? null
+                                  : member._id,
+                              );
+                            }}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                          >
+                            <BiDotsHorizontalRounded className="w-4 h-4 text-gray-600" />
+                          </button>
+
+                          {activeDropdown === member._id && (
+                            <>
+                              <div
+                                className="fixed inset-0 z-10"
+                                onClick={() => setActiveDropdown(null)}
+                              />
+                              <div className="absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-40">
+                                {member.role !== "admin" && (
+                                  <button
+                                    onClick={() => handleMakeAdmin(member._id)}
+                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                  >
+                                    Make Admin
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleRemoveMember(member._id)}
+                                  className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
@@ -438,20 +619,36 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             {getCurrentData().length > 0 && (
               <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200">
                 <p className="text-sm text-gray-500">
-                  Showing <span className="font-semibold">{((currentPage - 1) * itemsPerPage) + 1}-{Math.min(currentPage * itemsPerPage, activeTab === "requests" ? totalPending : totalMembers)}</span> Of <span className="font-semibold">{activeTab === "requests" ? totalPending : totalMembers}</span>
+                  Showing{" "}
+                  <span className="font-semibold">
+                    {(currentPage - 1) * itemsPerPage + 1}-
+                    {Math.min(
+                      currentPage * itemsPerPage,
+                      activeTab === "requests" ? totalPending : totalMembers,
+                    )}
+                  </span>{" "}
+                  Of{" "}
+                  <span className="font-semibold">
+                    {activeTab === "requests" ? totalPending : totalMembers}
+                  </span>
                 </p>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
                     disabled={currentPage === 1}
                     className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <FiChevronLeft className="w-4 h-4" />
                     Back
                   </button>
-                  
+
                   <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => i + 1).map((page) => (
+                    {Array.from(
+                      { length: Math.min(5, totalPages) },
+                      (_, i) => i + 1,
+                    ).map((page) => (
                       <button
                         key={page}
                         onClick={() => setCurrentPage(page)}
@@ -482,7 +679,9 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                   </div>
 
                   <button
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                    }
                     disabled={currentPage === totalPages || totalPages === 0}
                     className="flex items-center gap-1 px-3 py-2 text-sm bg-[#240457] text-white rounded-lg hover:bg-[#1a0340] disabled:opacity-50 disabled:cursor-not-allowed"
                   >

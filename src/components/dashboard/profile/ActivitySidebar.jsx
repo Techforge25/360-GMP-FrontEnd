@@ -21,18 +21,10 @@ import MapModal from "./MapModal";
 import dynamic from "next/dynamic";
 
 // Dynamically import Leaflet map to avoid SSR issues
-const DynamicMap = dynamic(
-  () => import("react-leaflet").then((mod) => mod.MapContainer),
-  { ssr: false },
-);
-const DynamicTileLayer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.TileLayer),
-  { ssr: false },
-);
-const DynamicMarker = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Marker),
-  { ssr: false },
-);
+const BusinessMapView = dynamic(() => import("./BusinessMapView"), {
+  ssr: false,
+  loading: () => <div className="h-full w-full bg-gray-100 animate-pulse" />,
+});
 
 const getSocialIcon = (platform) => {
   const p = platform?.toLowerCase() || "";
@@ -151,7 +143,8 @@ const ActivitySidebar = () => {
 
   const handleSaveMapLocation = async (mapURL, coordinates) => {
     try {
-      await businessProfileAPI.updateMapURL(mapURL);
+      const [lat, lng] = coordinates;
+      await businessProfileAPI.updateMapURL(mapURL, lat, lng);
       setMapLocation(coordinates);
       setShowMapModal(false);
 
@@ -159,6 +152,8 @@ const ActivitySidebar = () => {
       setProfile((prev) => ({
         ...prev,
         mapURL,
+        latitude: lat,
+        longitude: lng,
       }));
     } catch (error) {
       console.error("Failed to update map location:", error);
@@ -230,6 +225,17 @@ const ActivitySidebar = () => {
             }
           } catch (e) {
             console.error("Failed to fetch social links", e);
+          }
+
+          // Set initial map location if available
+          if (
+            profileRes.value.data.latitude &&
+            profileRes.value.data.longitude
+          ) {
+            setMapLocation([
+              profileRes.value.data.latitude,
+              profileRes.value.data.longitude,
+            ]);
           }
         } else if (profileRes.status === "rejected") {
           console.error("Failed to fetch profile:", profileRes.reason);
@@ -533,22 +539,7 @@ const ActivitySidebar = () => {
         {/* Map / Location */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden py-3 px-5 mt-4">
           <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden">
-            {isClient && (
-              <DynamicMap
-                center={mapLocation}
-                zoom={13}
-                style={{ height: "100%", width: "100%" }}
-                scrollWheelZoom={false}
-                dragging={false}
-                zoomControl={false}
-              >
-                <DynamicTileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <DynamicMarker position={mapLocation} />
-              </DynamicMap>
-            )}
+            {isClient && <BusinessMapView center={mapLocation} zoom={13} />}
           </div>
         </div>
         <button

@@ -187,12 +187,12 @@ class BusinessProfileAPI {
   }
 
   /**
-   * Update map URL for business location
+   * Update map URL and coordinates for business location
    */
-  async updateMapURL(mapURL) {
+  async updateMapURL(mapURL, latitude, longitude) {
     return await api.patch({
       url: "/business-profile-management/map-url",
-      payload: { mapURL },
+      payload: { mapURL, latitude, longitude },
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,

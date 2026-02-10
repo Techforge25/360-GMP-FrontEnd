@@ -4,6 +4,14 @@ import { FiMapPin, FiPhone, FiGlobe, FiX } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const BusinessMapView = dynamic(() => import("./profile/BusinessMapView"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-64 w-full bg-gray-100 animate-pulse rounded-lg" />
+  ),
+});
 
 const BusinessGrid = () => {
   const router = useRouter();
@@ -70,6 +78,8 @@ const BusinessGrid = () => {
       website: profile.website || "#",
       email: profile.b2bContact?.email || profile.email || "N/A",
       phone: profile.b2bContact?.phone || "#",
+      latitude: profile.latitude,
+      longitude: profile.longitude,
     };
   };
 
@@ -84,32 +94,32 @@ const BusinessGrid = () => {
     event.preventDefault();
     event.stopPropagation();
 
-    try {
+    const business = businesses.find((b) => b.id === businessId);
+    if (business) {
       setSelectedBusiness(businessName);
-      const response =
-        (await businessProfileAPI.getDirection?.(businessId)) ||
-        (await fetch(`/api/businessProfile/${businessId}/getDirection`).then(
-          (res) => res.json(),
-        ));
 
-      if (response?.data?.location) {
-        setMapLocation(response.data.location);
-        setShowMapModal(true);
-      } else {
-        // Fallback: Use business location from current data
-        const business = businesses.find((b) => b.id === businessId);
-        if (business) {
-          setMapLocation({ address: business.location });
-          setShowMapModal(true);
+      // Initial state with available data
+      setMapLocation({
+        address: business.location,
+        latitude: business.latitude,
+        longitude: business.longitude,
+      });
+      setShowMapModal(true);
+
+      // If coordinates are missing, fetch full profile details
+      if (!business.latitude || !business.longitude) {
+        try {
+          const response = await businessProfileAPI.getById(businessId);
+          if (response?.data?.latitude && response?.data?.longitude) {
+            setMapLocation({
+              address: business.location, // Keep original address string
+              latitude: response.data.latitude,
+              longitude: response.data.longitude,
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch business details for map:", error);
         }
-      }
-    } catch (error) {
-      console.error("Failed to get direction:", error);
-      // Fallback: Use business location from current data
-      const business = businesses.find((b) => b.id === businessId);
-      if (business) {
-        setMapLocation({ address: business.location });
-        setShowMapModal(true);
       }
     }
   };
@@ -272,7 +282,7 @@ const BusinessGrid = () => {
             <div className="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
               <div className="flex items-center justify-between p-4 border-b">
                 <h3 className="text-lg font-semibold text-gray-900">
-                  Get Directions to {selectedBusiness}
+                  Location of {selectedBusiness}
                 </h3>
                 <button
                   onClick={() => setShowMapModal(false)}
@@ -282,23 +292,38 @@ const BusinessGrid = () => {
                 </button>
               </div>
               <div className="p-4">
-                <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                  <p className="text-sm text-gray-600 mb-2">Location:</p>
-                  <p className="text-base font-medium text-gray-900">
-                    {mapLocation.address ||
-                      `${mapLocation.addressLine || ""}, ${mapLocation.city || ""}, ${mapLocation.country || ""}`
-                        .trim()
-                        .replace(/^,|,$/g, "")}
-                  </p>
-                </div>
+                {mapLocation &&
+                (mapLocation.latitude || mapLocation.lat) &&
+                (mapLocation.longitude || mapLocation.lng) ? (
+                  <div className="h-96 w-full rounded-lg overflow-hidden mb-4 border border-gray-200">
+                    <BusinessMapView
+                      center={[
+                        mapLocation.latitude || mapLocation.lat,
+                        mapLocation.longitude || mapLocation.lng,
+                      ]}
+                      zoom={14}
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                    <p className="text-sm text-gray-600 mb-2">Address:</p>
+                    <p className="text-base font-medium text-gray-900">
+                      {mapLocation.address ||
+                        `${mapLocation.addressLine || ""}, ${mapLocation.city || ""}, ${mapLocation.country || ""}`
+                          .trim()
+                          .replace(/^,|,$/g, "")}
+                    </p>
+                  </div>
+                )}
+
                 <div className="flex gap-3">
                   <a
                     href={generateMapUrl(mapLocation)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-[#240457] text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-[#1a0340] transition-colors"
+                    className="flex-1 bg-[#240457] text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-[#1a0340] transition-colors flex items-center justify-center gap-2"
                   >
-                    Open in Google Maps
+                    <FiMapPin className="w-4 h-4" /> Open in Google Maps
                   </a>
                   <button
                     onClick={() => setShowMapModal(false)}

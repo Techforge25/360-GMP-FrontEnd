@@ -124,6 +124,30 @@ class CommunityAPI {
       enableErrorMessage: false,
     });
   }
+  /**
+   * Remove a member from the community
+   */
+  async removeMember(communityId, memberId) {
+    return await api.delete({
+      url: `/community/${communityId}/members/${memberId}`,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
+   * Update a member's role (e.g. make admin)
+   */
+  async updateMemberRole(communityId, memberId, role) {
+    return await api.patch({
+      url: `/community/${communityId}/members/${memberId}`,
+      payload: { role },
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const communityAPI = new CommunityAPI();
