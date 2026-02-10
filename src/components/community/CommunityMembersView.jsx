@@ -27,7 +27,6 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
       const response = await communityAPI.getMembers(community._id, {
         page: currentPage,
         limit: itemsPerPage,
-        search: searchQuery,
       });
 
       if (response.success) {
@@ -83,6 +82,13 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [community?._id, isOwner]);
 
+  // Reset to page 1 when search query changes
+  useEffect(() => {
+    if (searchQuery) {
+      setCurrentPage(1);
+    }
+  }, [searchQuery]);
+
   useEffect(() => {
     if (activeTab === "requests") {
       fetchPendingRequests();
@@ -90,7 +96,19 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
       fetchMembers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [community?._id, activeTab, currentPage, searchQuery]);
+  }, [community?._id, activeTab, currentPage]);
+
+  // Filter members by search query (name only)
+  const filterBySearch = (data) => {
+    if (!searchQuery.trim()) return data;
+
+    const query = searchQuery.toLowerCase();
+    return data.filter((item) => {
+      const name =
+        item.userProfileId?.fullName || item.memberId?.companyName || "";
+      return name.toLowerCase().includes(query);
+    });
+  };
 
   // Filter for admins from members
   const filteredAdmins = members.filter(
@@ -101,16 +119,23 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   );
 
   const getCurrentData = () => {
+    let data;
     switch (activeTab) {
       case "all":
-        return members;
+        data = members;
+        break;
       case "admins":
-        return filteredAdmins;
+        data = filteredAdmins;
+        break;
       case "requests":
-        return pendingRequests;
+        data = pendingRequests;
+        break;
       default:
-        return members;
+        data = members;
     }
+
+    // Apply search filter
+    return filterBySearch(data);
   };
 
   const handleAcceptRequest = async (userProfileId) => {
@@ -292,17 +317,11 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
           <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="text"
-            placeholder="search by name, role and company..."
+            placeholder="search by name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-24 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
+            className="w-full text-black pl-10 pr-24 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
           />
-          <button
-            onClick={() => fetchMembers()}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-[#240457] text-white px-4 py-1.5 rounded-md text-sm font-medium"
-          >
-            Search
-          </button>
         </div>
 
         {/* Tabs */}
@@ -311,6 +330,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             onClick={() => {
               setActiveTab("all");
               setCurrentPage(1);
+              setSearchQuery("");
             }}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === "all"
@@ -324,6 +344,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             onClick={() => {
               setActiveTab("admins");
               setCurrentPage(1);
+              setSearchQuery("");
             }}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
               activeTab === "admins"
@@ -338,6 +359,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
               onClick={() => {
                 setActiveTab("requests");
                 setCurrentPage(1);
+                setSearchQuery("");
               }}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
                 activeTab === "requests"
@@ -364,18 +386,6 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
           </div>
         ) : (
           <>
-            {/* Secondary Search for table */}
-            <div className="flex items-center justify-end mb-4">
-              <div className="relative">
-                <BiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="search by name and role..."
-                  className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent w-64"
-                />
-              </div>
-            </div>
-
             {/* Table Header */}
             <div className="grid grid-cols-12 gap-4 py-3 px-4 bg-gray-50 rounded-lg mb-4">
               <div className="col-span-1">
