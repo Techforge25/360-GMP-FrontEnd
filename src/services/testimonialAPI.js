@@ -15,6 +15,18 @@ class TestimonialAPI {
   }
 
   /**
+   * Create a new review invite
+   */
+  async createReviewInvite() {
+    return await api.post({
+      url: `/testimonials/invite`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
    * Create a new testimonial
    * @param {string} inviteToken
    * @param {object} data - { rating, title, description }

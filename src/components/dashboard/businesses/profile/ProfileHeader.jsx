@@ -8,7 +8,9 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { FiShare2 } from "react-icons/fi";
 import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { useUserRole } from "@/context/UserContext";
-import PostReviewModal from "./PostReviewModal";
+import TestimonialModal from "./TestimonialModal";
+import testimonialAPI from "@/services/testimonialAPI";
+import { toast } from "react-toastify";
 
 export default function ProfileHeader({ business }) {
   const { user } = useUserRole();
