@@ -638,19 +638,33 @@ export default function BusinessProfilePage() {
         return;
       }
     } else if (currentStep === 2) {
-      // Step 2 validation: Location Contact
-      if (
-        !formData.country ||
-        !formData.city ||
-        !formData.address ||
-        !formData.contactName ||
-        !formData.contactTitle ||
-        !formData.contactPhone ||
-        !formData.contactEmail
-      ) {
-        setError(
-          "Please fill all required contact and location fields before proceeding.",
-        );
+      // Step 2 validation: Location Contact with specific field messages
+      if (!formData.country) {
+        setError("Please enter the country.");
+        return;
+      }
+      if (!formData.city) {
+        setError("Please enter the city.");
+        return;
+      }
+      if (!formData.address) {
+        setError("Please enter the address line.");
+        return;
+      }
+      if (!formData.contactName) {
+        setError("Please enter the contact person name.");
+        return;
+      }
+      if (!formData.contactTitle) {
+        setError("Please enter the contact person title.");
+        return;
+      }
+      if (!formData.contactPhone) {
+        setError("Please enter the contact phone number.");
+        return;
+      }
+      if (!formData.contactEmail) {
+        setError("Please enter the support email.");
         return;
       }
 
