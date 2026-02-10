@@ -58,6 +58,15 @@ const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
+const isValidUrl = (url) => {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.protocol === "http:" || urlObj.protocol === "https:";
+  } catch {
+    return false;
+  }
+};
+
 const Step1 = ({ formData, handleChange, setIsUploading }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div className="grid md:grid-cols-2 gap-6">
@@ -619,6 +628,13 @@ export default function BusinessProfilePage() {
         !formData.website
       ) {
         setError("Please fill all required fields before proceeding.");
+        return;
+      }
+
+      if (!isValidUrl(formData.website)) {
+        setError(
+          "Please enter a valid website URL (e.g., https://www.example.com).",
+        );
         return;
       }
     } else if (currentStep === 2) {
