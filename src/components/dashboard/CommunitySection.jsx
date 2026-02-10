@@ -20,6 +20,7 @@ const CommunitySection = () => {
         const response = await communityAPI.getAll({
           limit: 4,
           status: "active",
+          sort: "-memberCount",
         });
 
         // Backend returns paginated response with docs array
@@ -195,9 +196,7 @@ const CommunitySection = () => {
                 key={idx}
                 onClick={() => scrollTo(idx)}
                 className={`h-1.5 rounded-full transition-all duration-300 ${
-                  activeIndex === idx
-                    ? "w-6 bg-[#240457]"
-                    : "w-1.5 bg-gray-300"
+                  activeIndex === idx ? "w-6 bg-[#240457]" : "w-1.5 bg-gray-300"
                 }`}
               />
             ),
