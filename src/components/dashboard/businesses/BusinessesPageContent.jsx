@@ -18,17 +18,22 @@ export default function BusinessesPageContent() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
+  const [filters, setFilters] = useState({
+    industries: [],
+    countries: [],
+    ratings: [],
+  });
 
   useEffect(() => {
     fetchBusinessProfiles();
   }, []);
 
   useEffect(() => {
-    // Initialize filtered list when data loads
+    // Apply filters whenever businesses, query, location, or filters change
     if (businesses.length > 0) {
-      setFilteredBusinesses(businesses);
+      filterBusinesses();
     }
-  }, [businesses]);
+  }, [businesses, query, location, filters]);
 
   const fetchBusinessProfiles = async () => {
     try {
@@ -67,6 +72,7 @@ export default function BusinessesPageContent() {
   const filterBusinesses = () => {
     let filtered = businesses;
 
+    // Search query filter
     if (query) {
       const lowerQuery = query.toLowerCase();
       filtered = filtered.filter(
@@ -78,11 +84,44 @@ export default function BusinessesPageContent() {
       );
     }
 
+    // Location filter
     if (location) {
       const lowerLocation = location.toLowerCase();
       filtered = filtered.filter((biz) =>
         biz.location.toLowerCase().includes(lowerLocation),
       );
+    }
+
+    // Industry filter
+    if (filters.industries && filters.industries.length > 0) {
+      filtered = filtered.filter((biz) =>
+        filters.industries.some((industry) =>
+          biz.category.toLowerCase().includes(industry.toLowerCase()),
+        ),
+      );
+    }
+
+    // Country filter
+    if (filters.countries && filters.countries.length > 0) {
+      filtered = filtered.filter((biz) =>
+        filters.countries.some((country) =>
+          biz.location.toLowerCase().includes(country.toLowerCase()),
+        ),
+      );
+    }
+
+    // Rating filter (simplified - you may need to adjust based on your rating logic)
+    if (filters.ratings && filters.ratings.length > 0) {
+      filtered = filtered.filter((biz) => {
+        const rating = biz.rating || 0;
+        return filters.ratings.some((ratingFilter) => {
+          if (ratingFilter === "5 Stars") return rating >= 5;
+          if (ratingFilter === "4 Stars & Up") return rating >= 4;
+          if (ratingFilter === "3 Stars & Up") return rating >= 3;
+          if (ratingFilter === "2 Stars & Up") return rating >= 2;
+          return true;
+        });
+      });
     }
 
     setFilteredBusinesses(filtered);
@@ -165,7 +204,7 @@ export default function BusinessesPageContent() {
             {/* Desktop Sidebar */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
               <div className="top-4">
-                <FilterSidebar />
+                <FilterSidebar filters={filters} onFilterChange={setFilters} />
               </div>
             </aside>
 
@@ -192,7 +231,10 @@ export default function BusinessesPageContent() {
                     </button>
                   </div>
                   <div className="p-4">
-                    <FilterSidebar />
+                    <FilterSidebar
+                      filters={filters}
+                      onFilterChange={setFilters}
+                    />
                   </div>
                 </div>
               </>

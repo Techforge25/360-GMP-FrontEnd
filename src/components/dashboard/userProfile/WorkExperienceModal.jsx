@@ -2,7 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { FiX } from "react-icons/fi";
 
-const WorkExperienceModal = ({ isOpen, onClose, onSave, editingExperience = null }) => {
+const WorkExperienceModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  editingExperience = null,
+}) => {
   const [formData, setFormData] = useState({
     jobTitle: "",
     employmentType: [],
@@ -16,7 +21,13 @@ const WorkExperienceModal = ({ isOpen, onClose, onSave, editingExperience = null
 
   const [isSaving, setIsSaving] = useState(false);
 
-  const employmentTypes = ["Full Time", "Part-Time", "Contract", "Remote", "Hybrid"];
+  const employmentTypes = [
+    "Full Time",
+    "Part-Time",
+    "Contract",
+    "Remote",
+    "Hybrid",
+  ];
 
   useEffect(() => {
     if (editingExperience) {
@@ -26,8 +37,12 @@ const WorkExperienceModal = ({ isOpen, onClose, onSave, editingExperience = null
         companyName: editingExperience.companyName || "",
         location: editingExperience.location || "",
         description: editingExperience.description || "",
-        startDate: editingExperience.startDate ? new Date(editingExperience.startDate).toISOString().split('T')[0] : "",
-        endDate: editingExperience.endDate ? new Date(editingExperience.endDate).toISOString().split('T')[0] : "",
+        startDate: editingExperience.startDate
+          ? new Date(editingExperience.startDate).toISOString().split("T")[0]
+          : "",
+        endDate: editingExperience.endDate
+          ? new Date(editingExperience.endDate).toISOString().split("T")[0]
+          : "",
         isCurrentlyWorking: editingExperience.isCurrentlyWorking || false,
       });
     } else {
@@ -45,36 +60,43 @@ const WorkExperienceModal = ({ isOpen, onClose, onSave, editingExperience = null
   }, [editingExperience, isOpen]);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleEmploymentTypeChange = (type) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       employmentType: prev.employmentType.includes(type)
-        ? prev.employmentType.filter(t => t !== type)
-        : [...prev.employmentType, type]
+        ? prev.employmentType.filter((t) => t !== type)
+        : [...prev.employmentType, type],
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!formData.jobTitle || !formData.companyName || !formData.location || !formData.startDate) {
+
+    if (
+      !formData.jobTitle ||
+      !formData.companyName ||
+      !formData.location ||
+      !formData.startDate
+    ) {
       alert("Please fill in all required fields");
       return;
     }
 
     setIsSaving(true);
     try {
+      // Send dates as ISO strings for better serialization
       await onSave({
         ...formData,
-        startDate: new Date(formData.startDate),
-        endDate: formData.endDate ? new Date(formData.endDate) : null,
+        startDate: formData.startDate, // Already in YYYY-MM-DD format
+        endDate: formData.endDate || null,
       });
       onClose();
     } catch (error) {
       console.error("Failed to save work experience:", error);
+      alert("Failed to save work experience. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -83,13 +105,13 @@ const WorkExperienceModal = ({ isOpen, onClose, onSave, editingExperience = null
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-lg font-semibold text-gray-900">
             {editingExperience ? "Edit Experience" : "Add Experience"}
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-full"
           >
@@ -154,10 +176,14 @@ const WorkExperienceModal = ({ isOpen, onClose, onSave, editingExperience = null
               <input
                 type="checkbox"
                 checked={formData.isCurrentlyWorking}
-                onChange={(e) => handleInputChange("isCurrentlyWorking", e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange("isCurrentlyWorking", e.target.checked)
+                }
                 className="w-4 h-4 text-[#240457] border-gray-300 rounded focus:ring-[#240457]"
               />
-              <span className="ml-2 text-sm text-gray-700">I Am Currently Working In This Role</span>
+              <span className="ml-2 text-sm text-gray-700">
+                I Am Currently Working In This Role
+              </span>
             </label>
           </div>
 

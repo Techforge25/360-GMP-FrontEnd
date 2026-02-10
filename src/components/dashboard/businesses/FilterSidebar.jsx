@@ -2,8 +2,22 @@
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp, FiSearch, FiFilter } from "react-icons/fi";
 
-const FilterGroup = ({ title, options, isOpenDefault = true }) => {
+const FilterGroup = ({
+  title,
+  options,
+  selectedValues = [],
+  onChange,
+  isOpenDefault = true,
+}) => {
   const [isOpen, setIsOpen] = useState(isOpenDefault);
+
+  const handleCheckboxChange = (option) => {
+    if (selectedValues.includes(option)) {
+      onChange(selectedValues.filter((v) => v !== option));
+    } else {
+      onChange([...selectedValues, option]);
+    }
+  };
 
   return (
     <div className="mb-6">
@@ -25,6 +39,8 @@ const FilterGroup = ({ title, options, isOpenDefault = true }) => {
               <div className="relative flex items-center">
                 <input
                   type="checkbox"
+                  checked={selectedValues.includes(opt)}
+                  onChange={() => handleCheckboxChange(opt)}
                   className="peer w-4 h-4 border-gray-300 rounded text-indigo-600 focus:ring-indigo-500/20"
                 />
               </div>
@@ -39,7 +55,19 @@ const FilterGroup = ({ title, options, isOpenDefault = true }) => {
   );
 };
 
-const FilterSidebar = () => {
+const FilterSidebar = ({ filters = {}, onFilterChange }) => {
+  const handleIndustryChange = (values) => {
+    onFilterChange({ ...filters, industries: values });
+  };
+
+  const handleCountryChange = (values) => {
+    onFilterChange({ ...filters, countries: values });
+  };
+
+  const handleRatingChange = (values) => {
+    onFilterChange({ ...filters, ratings: values });
+  };
+
   return (
     <div className="w-full border border-border-light p-6 rounded-card">
       <div className="flex items-center gap-2 mb-6 text-gray-600 font-bold border-b pb-4">
@@ -58,6 +86,8 @@ const FilterSidebar = () => {
           "Packaging Materials",
           "Furniture & Home Decor",
         ]}
+        selectedValues={filters.industries || []}
+        onChange={handleIndustryChange}
       />
 
       <FilterGroup
@@ -71,11 +101,15 @@ const FilterSidebar = () => {
           "France",
           "South Africa",
         ]}
+        selectedValues={filters.countries || []}
+        onChange={handleCountryChange}
       />
 
       <FilterGroup
         title="Rating"
         options={["5 Stars", "4 Stars & Up", "3 Stars & Up", "2 Stars & Up"]}
+        selectedValues={filters.ratings || []}
+        onChange={handleRatingChange}
       />
     </div>
   );
