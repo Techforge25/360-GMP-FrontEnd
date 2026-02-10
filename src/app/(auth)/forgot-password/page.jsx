@@ -11,6 +11,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/Card";
+import api from "@/lib/axios";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -24,24 +25,21 @@ export default function ForgotPasswordPage() {
     setError("");
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/forgotPassword`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        },
-      );
+      const res = await api.post({
+        url: `/auth/forgotPassword`,
+        payload: { email },
+        enableSuccessMessage: false,
+        enableErrorMessage: false,
+        activateLoader: false,
+      });
 
-      const data = await res.json();
-
-      if (res.ok) {
+      if (res.success) {
         router.push(`/otp-verification?email=${encodeURIComponent(email)}`);
       } else {
-        setError(data.message || "Request failed");
+        setError(res.message || "Request failed");
       }
     } catch (err) {
-      setError("Something went wrong.");
+      setError(err.message || "Something went wrong.");
     } finally {
       setLoading(false);
     }

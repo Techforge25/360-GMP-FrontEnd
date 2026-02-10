@@ -9,6 +9,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/Card";
+import api from "@/lib/axios";
 
 function OTPForm() {
   const router = useRouter();
@@ -86,61 +87,38 @@ function OTPForm() {
           return;
         }
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/user/verify-otp`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              userId,
-              accountVerificationToken: code,
-            }),
+        const res = await api.post({
+          url: `/auth/user/verify-otp`,
+          payload: {
+            userId,
+            accountVerificationToken: code,
           },
-        );
+          enableSuccessMessage: false,
+          enableErrorMessage: false,
+          activateLoader: false,
+        });
 
-        let data;
-        try {
-          data = await res.json();
-        } catch (parseError) {
-          // If response is not valid JSON, show a more helpful error
-          setError(
-            "Server error: Invalid response from server. Please check your backend code.",
-          );
-          setLoading(false);
-          return;
-        }
-
-        if (res.ok) {
+        if (res.success) {
           // Success - redirect to login page
           router.push("/login");
         } else {
-          setError(data.message || "Verification failed");
+          setError(res.message || "Verification failed");
         }
       } else {
         // For password reset, use the old endpoint
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/verifyPasswordResetToken`,
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ passwordResetToken: code, email }),
-          },
-        );
+        const res = await api.post({
+          url: `/auth/verifyPasswordResetToken`,
+          payload: { passwordResetToken: code, email },
+          enableSuccessMessage: false,
+          enableErrorMessage: false,
+          activateLoader: false,
+        });
 
-        let data;
-        try {
-          data = await res.json();
-        } catch (parseError) {
-          setError("Server error: Invalid response from server.");
-          setLoading(false);
-          return;
-        }
-
-        if (res.ok) {
+        if (res.success) {
           // For password reset, redirect to reset password page
           router.push(`/reset-password?token=${code}`);
         } else {
-          setError(data.message || "Verification failed");
+          setError(res.message || "Verification failed");
         }
       }
     } catch (err) {
