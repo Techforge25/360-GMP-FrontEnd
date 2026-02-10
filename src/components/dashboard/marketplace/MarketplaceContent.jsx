@@ -64,7 +64,8 @@ export default function MarketplaceContent() {
     { name: "United Kingdom", flag: "🇬🇧" },
   ];
 
-  const ratings = [5, 4, 3.5, 3, 2.5, 2, 1.5, 1];
+  // const ratings = [5, 4, 3.5, 3, 2.5, 2, 1.5, 1];
+  const ratings = ["Coming soon in phase 5"];
 
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [topRankingProducts, setTopRankingProducts] = useState([]);
@@ -431,11 +432,12 @@ export default function MarketplaceContent() {
                             className="w-4 h-4 text-purple-600 focus:ring-purple-500"
                           />
                           <span className="text-sm sm:text-base text-gray-700">
-                            ★ {rating}
+                            {/* ★ {rating} */}
+                            {rating}
                           </span>
                         </label>
                       ))}
-                      <label className="flex items-center gap-2.5 py-2 cursor-pointer hover:bg-gray-50 -mx-2 px-2 rounded transition-colors">
+                      {/* <label className="flex items-center gap-2.5 py-2 cursor-pointer hover:bg-gray-50 -mx-2 px-2 rounded transition-colors">
                         <input
                           type="radio"
                           name="rating"
@@ -444,7 +446,7 @@ export default function MarketplaceContent() {
                         <span className="text-sm sm:text-base text-gray-700">
                           No rating
                         </span>
-                      </label>
+                      </label> */}
                     </div>
                   )}
                 </div>

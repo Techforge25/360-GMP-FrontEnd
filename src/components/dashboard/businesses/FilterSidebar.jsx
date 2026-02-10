@@ -107,8 +107,9 @@ const FilterSidebar = ({ filters = {}, onFilterChange }) => {
 
       <FilterGroup
         title="Rating"
-        options={["5 Stars", "4 Stars & Up", "3 Stars & Up", "2 Stars & Up"]}
-        selectedValues={filters.ratings || []}
+        // options={["5 Stars", "4 Stars & Up", "3 Stars & Up", "2 Stars & Up"]}
+        options={["Coming soon in phase 5"]}
+        // selectedValues={filters.ratings || []}
         onChange={handleRatingChange}
       />
     </div>
