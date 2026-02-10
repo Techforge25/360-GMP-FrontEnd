@@ -36,7 +36,52 @@ export default function ProfileHeader({ business }) {
     },
   } = business || {};
 
-  const [isReviewModalOpen, setIsReviewModalOpen] = React.useState(false);
+  const [isTestimonialModalOpen, setIsTestimonialModalOpen] =
+    React.useState(false);
+  const [inviteToken, setInviteToken] = React.useState(null);
+  const [isLoadingInvite, setIsLoadingInvite] = React.useState(false);
+
+  const handlePostReview = async () => {
+    setIsLoadingInvite(true);
+    try {
+      // 1. Create review invite
+      const inviteResponse = await testimonialAPI.createReviewInvite();
+
+      if (
+        inviteResponse &&
+        inviteResponse.success &&
+        inviteResponse.data?.inviteToken
+      ) {
+        const token = inviteResponse.data.inviteToken;
+
+        // 2. Check invite token (as requested by user)
+        const checkResponse = await testimonialAPI.checkInviteToken(token);
+
+        if (
+          checkResponse &&
+          checkResponse.success &&
+          !checkResponse.data.isUsed
+        ) {
+          setInviteToken(token);
+          setIsTestimonialModalOpen(true);
+        } else {
+          toast.error(
+            "Generated invite represents an already used review or is invalid.",
+          );
+        }
+      } else {
+        toast.error("Failed to generate review invite. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error creating review invite:", error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Something went wrong while initiating review.",
+      );
+    } finally {
+      setIsLoadingInvite(false);
+    }
+  };
 
   return (
     <div>
@@ -57,10 +102,20 @@ export default function ProfileHeader({ business }) {
         <div className="absolute bottom-4 right-4 flex gap-3">
           {isUserRole && (
             <button
-              onClick={() => setIsReviewModalOpen(true)}
-              className="bg-[#f2994a] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-[#e08a3e] transition-colors"
+              onClick={handlePostReview}
+              disabled={isLoadingInvite}
+              className="bg-[#f2994a] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-[#e08a3e] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Post A Review <FiShare2 />
+              {isLoadingInvite ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Wait...
+                </>
+              ) : (
+                <>
+                  Post A Review <FiShare2 />
+                </>
+              )}
             </button>
           )}
           <button className="bg-white text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-gray-100 transition-colors">
@@ -151,11 +206,16 @@ export default function ProfileHeader({ business }) {
       </div>
 
       {/* Testimonial Modal */}
-      {isReviewModalOpen && (
-        <PostReviewModal
-          isOpen={isReviewModalOpen}
-          onClose={() => setIsReviewModalOpen(false)}
+      {isTestimonialModalOpen && (
+        <TestimonialModal
+          isOpen={isTestimonialModalOpen}
+          onClose={() => setIsTestimonialModalOpen(false)}
           businessName={name}
+          inviteToken={inviteToken}
+          onSuccess={() => {
+            // Optionally refresh reviews list or show notification
+            console.log("Review submitted successfully");
+          }}
         />
       )}
     </div>
