@@ -174,15 +174,20 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   };
 
   const getCommunityIcon = (type) => {
-    switch (type) {
+    // Normalize type to lowercase just in case
+    const normalizedType = type?.toLowerCase();
+
+    switch (normalizedType) {
       case "public":
-        return <FiGlobe className="w-5 h-5 text-blue-600" />;
+        return <BsGlobe2 className="w-5 h-5 text-blue-600" />;
       case "private":
         return <MdLockOutline className="w-5 h-5 text-purple-600" />;
       case "featured":
+      case "premium":
         return <LuCrown className="w-5 h-5 text-yellow-600" />;
       default:
-        return <FiGlobe className="w-5 h-5 text-blue-600" />;
+        // Default to public/globe if unknown
+        return <BsGlobe2 className="w-5 h-5 text-blue-600" />;
     }
   };
 
@@ -284,9 +289,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-semibold text-black">
-                Communities
-              </h2>
+              <h2 className="text-3xl font-semibold text-black">Communities</h2>
               <p className="text-gray-600 mt-1 text-base">
                 Discover Active Groups Matching Your Expertise
               </p>
@@ -361,9 +364,9 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                       </span>
                     </div>
 
-                    {/* Globe Icon */}
-                    <div className="absolute bottom-3 right-3 text-[#240457]/80">
-                      <BsGlobe2 className="w-5 h-5" />
+                    {/* Type Icon */}
+                    <div className="absolute bottom-3 right-3 bg-white/80 p-1.5 rounded-full backdrop-blur-sm shadow-sm">
+                      {getCommunityIcon(community.type || community.privacy)}
                     </div>
                   </div>
 
