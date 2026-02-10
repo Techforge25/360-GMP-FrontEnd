@@ -31,6 +31,9 @@ export default function CreateCommunityPage() {
     region: "",
   });
 
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [coverPreview, setCoverPreview] = useState(null);
+
   const [currentTag, setCurrentTag] = useState("");
 
   const popularTags = [
@@ -85,6 +88,26 @@ export default function CreateCommunityPage() {
   const handleFileUpload = (field, file) => {
     if (file) {
       handleInputChange(field, file);
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (field === "logo") {
+          setLogoPreview(reader.result);
+        } else if (field === "coverImage") {
+          setCoverPreview(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveFile = (field) => {
+    handleInputChange(field, null);
+    if (field === "logo") {
+      setLogoPreview(null);
+    } else if (field === "coverImage") {
+      setCoverPreview(null);
     }
   };
 
@@ -118,17 +141,17 @@ export default function CreateCommunityPage() {
           console.log("📤 Uploading cover image to Cloudinary...");
           const coverImageUrl = await uploadToCloudinary(
             formData.coverImage,
-            "communities/covers"
+            "communities/covers",
           );
           payload.coverImage = coverImageUrl;
           console.log("✅ Cover image uploaded:", coverImageUrl);
         }
-        
+
         if (formData.logo instanceof File) {
           console.log("📤 Uploading profile image to Cloudinary...");
           const profileImageUrl = await uploadToCloudinary(
             formData.logo,
-            "communities/profiles"
+            "communities/profiles",
           );
           payload.profileImage = profileImageUrl;
           console.log("✅ Profile image uploaded:", profileImageUrl);
@@ -245,29 +268,47 @@ export default function CreateCommunityPage() {
                   <label className="block text-sm font-medium text-gray-900 mb-2">
                     Community Logo <span className="text-red-500">*</span>
                   </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer">
-                    <input
-                      type="file"
-                      id="logo-upload"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={(e) =>
-                        handleFileUpload("logo", e.target.files[0])
-                      }
-                    />
-                    <label htmlFor="logo-upload" className="cursor-pointer">
-                      <FiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-gray-700">
-                        Upload
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Recommended: Square image, at least 400×400px
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        SVG, JPG, or PNG. Max file size 5MB.
-                      </p>
-                    </label>
-                  </div>
+                  {logoPreview ? (
+                    <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-gray-200 group">
+                      <img
+                        src={logoPreview}
+                        alt="Logo preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile("logo")}
+                        className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Remove image"
+                      >
+                        <FiX className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                      <input
+                        type="file"
+                        id="logo-upload"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) =>
+                          handleFileUpload("logo", e.target.files[0])
+                        }
+                      />
+                      <label htmlFor="logo-upload" className="cursor-pointer">
+                        <FiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-sm font-medium text-gray-700">
+                          Upload
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Recommended: Square image, at least 400×400px
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          SVG, JPG, or PNG. Max file size 5MB.
+                        </p>
+                      </label>
+                    </div>
+                  )}
                 </div>
 
                 {/* Industry/Category */}
@@ -571,26 +612,44 @@ export default function CreateCommunityPage() {
                   <label className="block text-sm font-medium text-gray-900 mb-2">
                     Cover Image <span className="text-red-500">*</span>
                   </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer">
-                    <input
-                      type="file"
-                      id="cover-upload"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={(e) =>
-                        handleFileUpload("coverImage", e.target.files[0])
-                      }
-                    />
-                    <label htmlFor="cover-upload" className="cursor-pointer">
-                      <FiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-sm font-medium text-gray-700">
-                        Click to upload cover image
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        Recommended: 1200×300px
-                      </p>
-                    </label>
-                  </div>
+                  {coverPreview ? (
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 group">
+                      <img
+                        src={coverPreview}
+                        alt="Cover preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile("coverImage")}
+                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Remove image"
+                      >
+                        <FiX className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                      <input
+                        type="file"
+                        id="cover-upload"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={(e) =>
+                          handleFileUpload("coverImage", e.target.files[0])
+                        }
+                      />
+                      <label htmlFor="cover-upload" className="cursor-pointer">
+                        <FiUpload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-sm font-medium text-gray-700">
+                          Click to upload cover image
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Recommended: 1200×300px
+                        </p>
+                      </label>
+                    </div>
+                  )}
                 </div>
 
                 {/* Highlight Color */}
@@ -712,7 +771,7 @@ export default function CreateCommunityPage() {
 
           {/* Sidebar - Example Communities */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sticky top-8">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 top-8">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Example Communities
               </h3>
