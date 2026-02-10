@@ -30,16 +30,16 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
   const [showComments, setShowComments] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
-  
+
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(post.content || "");
   const [isUpdating, setIsUpdating] = useState(false);
-  
+
   // Read more state
   const [isExpanded, setIsExpanded] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
-  
+
   // Comment state
   const [commentText, setCommentText] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
@@ -50,15 +50,15 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
     console.log("PostCard received post data:", {
       postId: post?._id,
       hasPost: !!post,
-      postKeys: post ? Object.keys(post) : []
+      postKeys: post ? Object.keys(post) : [],
     });
-    
+
     setLiked(post.likedByUser || false);
     setLikeCount(post.likeCount || 0);
     setEditContent(post.content || "");
     // Reset editing state if post changes
     setIsEditing(false);
-    
+
     // Check if read more is needed (more than 3 lines of text)
     if (post.content && post.content.length > 180) {
       setShowReadMore(true);
@@ -66,10 +66,16 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
       setShowReadMore(false);
       setIsExpanded(true);
     }
-    
+
     // Reset comments when post changes
     setComments([]);
-  }, [post.likedByUser, post.likeCount, post._id, post.content, post.commentCount]);
+  }, [
+    post.likedByUser,
+    post.likeCount,
+    post._id,
+    post.content,
+    post.commentCount,
+  ]);
 
   // Load comments when comments section is opened
   React.useEffect(() => {
@@ -81,7 +87,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
   // Helper function to format time ago
   const formatTimeAgo = (dateString) => {
     if (!dateString) return "Just now";
-    
+
     const date = new Date(dateString);
     const now = new Date();
     const diffInMilliseconds = now - date;
@@ -90,40 +96,46 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
     const diffInDays = Math.floor(diffInHours / 24);
 
     if (diffInMinutes < 1) return "Just now";
-    if (diffInMinutes < 60) return `${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''} ago`;
-    if (diffInHours < 24) return `${diffInHours} hour${diffInHours > 1 ? 's' : ''} ago`;
-    return `${diffInDays} day${diffInDays > 1 ? 's' : ''} ago`;
+    if (diffInMinutes < 60)
+      return `${diffInMinutes} minute${diffInMinutes > 1 ? "s" : ""} ago`;
+    if (diffInHours < 24)
+      return `${diffInHours} hour${diffInHours > 1 ? "s" : ""} ago`;
+    return `${diffInDays} day${diffInDays > 1 ? "s" : ""} ago`;
   };
 
   // Handle like/unlike
   const handleLike = async () => {
     if (isLiking) return;
-    
+
     // Validate post ID
     if (!post?._id) {
       console.error("Post ID is missing for like action");
-      alert("Error: Post ID is missing. Please refresh the page and try again.");
+      alert(
+        "Error: Post ID is missing. Please refresh the page and try again.",
+      );
       return;
     }
 
     try {
       setIsLiking(true);
-      
+
       // Optimistic update
       const newLiked = !liked;
-      const newLikeCount = newLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
-      
+      const newLikeCount = newLiked
+        ? likeCount + 1
+        : Math.max(0, likeCount - 1);
+
       setLiked(newLiked);
       setLikeCount(newLikeCount);
-      
+
       console.log("Liking post:", post._id);
       const response = await postsAPI.likePost(post._id);
-      
+
       if (response.success) {
         // Update with actual server response
         setLiked(response.data.isLiked);
         setLikeCount(response.data.likeCount);
-        
+
         if (onUpdate) {
           onUpdate({
             _id: post._id,
@@ -149,7 +161,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
   // Check if current user is post author
   const isPostAuthor = () => {
     if (!currentUser || !post.authorId) return false;
-    
+
     // Compare with current user's profile ID
     if (currentUser.role === "business") {
       return post.authorId._id === currentUser.profilePayload?._id;
@@ -189,7 +201,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
     try {
       setIsUpdating(true);
       const response = await postsAPI.updatePost(post._id, {
-        content: editContent.trim()
+        content: editContent.trim(),
       });
 
       if (response.success) {
@@ -199,14 +211,17 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
             ...post,
             content: editContent.trim(),
             isEdited: true,
-            editedAt: new Date().toISOString()
+            editedAt: new Date().toISOString(),
           });
         }
         setIsEditing(false);
       }
     } catch (error) {
       console.error("Error updating post:", error);
-      alert("Failed to update post: " + (error.response?.data?.message || error.message));
+      alert(
+        "Failed to update post: " +
+          (error.response?.data?.message || error.message),
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -217,34 +232,36 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
     setIsEditing(false);
     setEditContent(post.content || "");
   };
-  
+
   // Handle comment submission
   const handleComment = async () => {
     if (!commentText.trim()) return;
-    
+
     // Validate post ID
     if (!post?._id) {
       console.error("Post ID is missing");
-      alert("Error: Post ID is missing. Please refresh the page and try again.");
+      alert(
+        "Error: Post ID is missing. Please refresh the page and try again.",
+      );
       return;
     }
-    
+
     try {
       setIsCommenting(true);
       console.log("Adding comment to post:", {
         postId: post._id,
         content: commentText.trim(),
-        postTitle: post.content?.substring(0, 50) + '...'
+        postTitle: post.content?.substring(0, 50) + "...",
       });
-      
+
       const response = await postsAPI.addComment(post._id, commentText.trim());
-      
+
       if (response.success) {
         console.log("Comment added successfully:", response.data);
         // Add new comment to local state
-        setComments(prev => [response.data.comment, ...prev]);
+        setComments((prev) => [response.data.comment, ...prev]);
         setCommentText("");
-        
+
         // Update post comment count
         if (onUpdate) {
           onUpdate({
@@ -262,14 +279,18 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
         postId: post._id,
         errorMessage: error.response?.data?.message || error.message,
         errorStatus: error.response?.status,
-        fullErrorResponse: error.response?.data
+        fullErrorResponse: error.response?.data,
       });
-      
+
       const errorMessage = error.response?.data?.message || error.message;
       if (errorMessage.includes("Post ID is required")) {
-        alert("⚠️ Validation Error: The system requires a valid post ID for commenting. Please refresh the page and try again.");
+        alert(
+          "⚠️ Validation Error: The system requires a valid post ID for commenting. Please refresh the page and try again.",
+        );
       } else if (errorMessage.includes("approved member")) {
-        alert("⚠️ Permission Error: You need to be an approved member to comment on this post.");
+        alert(
+          "⚠️ Permission Error: You need to be an approved member to comment on this post.",
+        );
       } else {
         alert("Failed to add comment: " + errorMessage);
       }
@@ -277,7 +298,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
       setIsCommenting(false);
     }
   };
-  
+
   // Handle load comments
   const handleLoadComments = async () => {
     if (comments.length > 0) {
@@ -285,11 +306,11 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
       setShowComments(!showComments);
       return;
     }
-    
+
     try {
       setShowComments(true);
       const response = await postsAPI.getPostComments(post._id, { limit: 5 });
-      
+
       if (response.success) {
         setComments(response.data.comments || []);
       }
@@ -301,19 +322,26 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
 
   // Get author info
   const getAuthorInfo = () => {
-    if (!post.authorId) return { name: "Unknown User", role: "Member", image: "/assets/images/Portrait_Placeholder.png" };
-    
+    if (!post.authorId)
+      return {
+        name: "Unknown User",
+        role: "Member",
+        image: "/assets/images/Portrait_Placeholder.png",
+      };
+
     if (post.authorModel === "BusinessProfile") {
       return {
         name: post.authorId.companyName || "Business",
         role: "Business",
-        image: post.authorId.logo || "/assets/images/Portrait_Placeholder.png"
+        image: post.authorId.logo || "/assets/images/Portrait_Placeholder.png",
       };
     } else {
       return {
         name: post.authorId.fullName || "User",
         role: post.authorId.title || "Member",
-        image: post.authorId.imageProfile || "/assets/images/Portrait_Placeholder.png"
+        image:
+          post.authorId.imageProfile ||
+          "/assets/images/Portrait_Placeholder.png",
       };
     }
   };
@@ -325,7 +353,9 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
     console.error("PostCard: Cannot render post without _id");
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-        <p className="text-red-600 text-sm">Error: Post data is incomplete. Please refresh the page.</p>
+        <p className="text-red-600 text-sm">
+          Error: Post data is incomplete. Please refresh the page.
+        </p>
       </div>
     );
   }
@@ -391,19 +421,27 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
 
   // Document Post Type
   if (post.type === "document") {
+    const file = post.file || {};
+    const fileExtension = file.name?.split(".").pop().toUpperCase() || "DOC";
+
+    const handleDownload = () => {
+      if (file.url) {
+        window.open(file.url, "_blank");
+      } else {
+        alert("File URL not found");
+      }
+    };
+
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         {/* Author Header */}
-        {post.author && (
+        {post.authorId && (
           <div className="flex items-start justify-between mb-4">
             <div className="flex gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                 <img
-                  src={
-                    post.author?.image ||
-                    "/assets/images/Portrait_Placeholder.png"
-                  }
-                  alt={post.author?.name}
+                  src={author.image}
+                  alt={author.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.target.src = "/assets/images/Portrait_Placeholder.png";
@@ -412,18 +450,45 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-gray-900">
-                  {post.author?.name}
+                  {author.name}
                 </h4>
                 <div className="flex items-center text-sm text-gray-500 gap-1">
-                  <span>{post.author?.role}</span>
+                  <span>{author.role}</span>
                   <span>•</span>
-                  <span>{post.timeAgo}</span>
+                  <span>{formatTimeAgo(post.createdAt)}</span>
                 </div>
               </div>
             </div>
-            <button className="text-gray-400 hover:text-gray-600">
-              <FiMoreHorizontal size={20} />
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowOptions(!showOptions)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <FiMoreHorizontal size={20} />
+              </button>
+              {showOptions && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowOptions(false)}
+                  />
+                  <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
+                    {isPostAuthor() && (
+                      <button
+                        onClick={() => {
+                          setShowOptions(false);
+                          handleDelete();
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                        Delete Post
+                      </button>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         )}
 
@@ -432,21 +497,24 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
           {/* File Icon */}
           <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
             <span className="text-green-600 text-sm font-bold">
-              {post.fileType}
+              {fileExtension}
             </span>
           </div>
 
           {/* Document Info */}
           <div className="flex-1 min-w-0">
             <h3 className="text-base font-bold text-gray-900 mb-1">
-              {post.title}
+              {file.name || "Untitled Document"}
             </h3>
             <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              {post.description}
+              {post.content || post.description || "No description"}
             </p>
             <div className="flex items-center gap-1 text-sm text-gray-500">
               <FiDownload className="w-3 h-3" />
-              <span>{post.downloads} Downloads</span>
+              <span>
+                {(file.size / 1024 / 1024).toFixed(2)} MB •{" "}
+                {post.downloads || 0} Downloads
+              </span>
             </div>
           </div>
         </div>
@@ -454,12 +522,18 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
         {/* Actions */}
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
           <div className="flex items-center gap-2">
-            <button className="px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-600 text-sm font-medium transition-colors flex items-center gap-2">
+            <button
+              onClick={handleDownload}
+              className="px-4 py-2 hover:bg-gray-50 rounded-lg text-gray-600 text-sm font-medium transition-colors flex items-center gap-2"
+            >
               <FiEye className="w-4 h-4" />
               <span>Preview</span>
             </button>
           </div>
-          <button className="px-4 py-2 bg-[#240457] text-white rounded-lg font-semibold text-sm hover:bg-[#1a0340] transition-colors flex items-center gap-2">
+          <button
+            onClick={handleDownload}
+            className="px-4 py-2 bg-[#240457] text-white rounded-lg font-semibold text-sm hover:bg-[#1a0340] transition-colors flex items-center gap-2"
+          >
             <FiDownload className="w-4 h-4" />
             <span>Download</span>
           </button>
@@ -499,33 +573,33 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
                 )}
               </p>
             </div>
-            
+
             {/* Options Menu */}
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setShowOptions(!showOptions)}
                 className="text-gray-400 hover:text-gray-600 p-1 rounded"
               >
                 <FiMoreHorizontal size={20} />
               </button>
-              
+
               {showOptions && (
                 <>
-                  <div 
-                    className="fixed inset-0 z-10" 
+                  <div
+                    className="fixed inset-0 z-10"
                     onClick={() => setShowOptions(false)}
                   />
                   <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
                     {isPostAuthor() && (
                       <>
-                        <button 
+                        <button
                           onClick={handleEdit}
                           className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
                         >
                           <FiEdit3 className="w-4 h-4" />
                           Edit Post
                         </button>
-                        <button 
+                        <button
                           onClick={() => {
                             setShowOptions(false);
                             handleDelete();
@@ -545,7 +619,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
               )}
             </div>
           </div>
-          
+
           {/* Shared content indicator */}
           {post.images && post.images.length > 0 && (
             <p className="text-sm text-gray-600 mt-1">
@@ -593,13 +667,12 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
           ) : (
             <div>
               <p className="text-sm text-gray-900 leading-relaxed whitespace-pre-wrap">
-                {showReadMore && !isExpanded 
-                  ? post.content.substring(0, 180) + "..." 
-                  : post.content
-                }
+                {showReadMore && !isExpanded
+                  ? post.content.substring(0, 180) + "..."
+                  : post.content}
               </p>
               {showReadMore && (
-                <button 
+                <button
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="text-sm text-blue-600 hover:text-blue-800 font-medium mt-1"
                 >
@@ -653,7 +726,9 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
 
       {/* Interactions Stats */}
       <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-        <span>{likeCount || 0} Likes • {post.commentCount || 0} Comments • 0 Shares</span>
+        <span>
+          {likeCount || 0} Likes • {post.commentCount || 0} Comments • 0 Shares
+        </span>
       </div>
 
       {/* Divider */}
@@ -693,7 +768,11 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
           <div className="flex gap-3 mb-4">
             <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
               <img
-                src={currentUser?.profilePayload?.imageProfile || currentUser?.profilePayload?.logo || "/assets/images/Portrait_Placeholder.png"}
+                src={
+                  currentUser?.profilePayload?.imageProfile ||
+                  currentUser?.profilePayload?.logo ||
+                  "/assets/images/Portrait_Placeholder.png"
+                }
                 alt="Your profile"
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -710,11 +789,11 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
                   className="w-full bg-gray-50 border text-black border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   rows={1}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';
-                    e.target.style.height = e.target.scrollHeight + 'px';
+                    e.target.style.height = "auto";
+                    e.target.style.height = e.target.scrollHeight + "px";
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
+                    if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
                       handleComment();
                     }
@@ -732,7 +811,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
               </div>
             </div>
           </div>
-          
+
           {/* Comments List */}
           {comments.length > 0 && (
             <div className="space-y-3">
@@ -740,18 +819,29 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
                 <div key={index} className="flex gap-3">
                   <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                     <img
-                      src={comment.userId?.imageProfile || comment.userId?.logo || "/assets/images/Portrait_Placeholder.png"}
-                      alt={comment.userId?.fullName || comment.userId?.companyName || "User"}
+                      src={
+                        comment.userId?.imageProfile ||
+                        comment.userId?.logo ||
+                        "/assets/images/Portrait_Placeholder.png"
+                      }
+                      alt={
+                        comment.userId?.fullName ||
+                        comment.userId?.companyName ||
+                        "User"
+                      }
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.target.src = "/assets/images/Portrait_Placeholder.png";
+                        e.target.src =
+                          "/assets/images/Portrait_Placeholder.png";
                       }}
                     />
                   </div>
                   <div className="flex-1">
                     <div className="bg-gray-50 rounded-lg px-3 py-2">
                       <h5 className="text-sm font-semibold text-gray-900 mb-1">
-                        {comment.userId?.fullName || comment.userId?.companyName || "Anonymous User"}
+                        {comment.userId?.fullName ||
+                          comment.userId?.companyName ||
+                          "Anonymous User"}
                       </h5>
                       <p className="text-sm text-gray-700">{comment.content}</p>
                     </div>
@@ -765,16 +855,17 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
               ))}
             </div>
           )}
-          
+
           {/* View More Comments */}
           {(post.commentCount || 0) > comments.length && (
-            <button 
+            <button
               onClick={() => {
                 handleLoadComments();
               }}
               className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
             >
-              View more comments ({(post.commentCount || 0) - comments.length} more)
+              View more comments ({(post.commentCount || 0) - comments.length}{" "}
+              more)
             </button>
           )}
         </div>

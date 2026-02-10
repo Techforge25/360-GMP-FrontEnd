@@ -968,9 +968,11 @@ export default function UserProfilePage() {
       // Remove fields that shouldn't be sent to backend
       delete payload.employeeType; // Already mapped to employmentType
       delete payload.currentTitle; // Not needed in backend
+      delete payload.customTitle; // Temporary UI field, already mapped to title
       delete payload.jobTitle; // Already mapped to title and targetJob
       delete payload.city; // Already mapped to location
       delete payload.country; // Already mapped to location
+      delete payload.customCountry; // Temporary UI field, already mapped to location
       delete payload.address; // Not in backend schema
 
       const response = await api.post({

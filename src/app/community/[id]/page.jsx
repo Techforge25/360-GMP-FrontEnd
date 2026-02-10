@@ -33,41 +33,43 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   // Fetch community posts
   const fetchCommunityPosts = async (page = 1, filterType = activeTab) => {
     if (!params.id) return;
-    
+
     try {
       setPostsLoading(true);
       const queryParams = {
         page,
         limit: 10,
       };
-      
+
       // Add filter based on active tab
       if (filterType && filterType !== "recent") {
         queryParams.type = filterType;
       }
-      
+
       const response = await postsAPI.getCommunityPosts(params.id, queryParams);
-      
+
       if (response.success) {
         const posts = response.data.posts || [];
-        
+
         // Temporary fix: Check if current user liked posts client-side
-        const processedPosts = posts.map(post => {
+        const processedPosts = posts.map((post) => {
           if (!post.likedByUser && user && post.likes) {
             const currentUserId = user.profilePayload?._id;
             if (currentUserId) {
-              post.likedByUser = post.likes.some(like => 
-                like.userId === currentUserId || like.userId?._id === currentUserId
+              post.likedByUser = post.likes.some(
+                (like) =>
+                  like.userId === currentUserId ||
+                  like.userId?._id === currentUserId,
               );
             }
           }
           return post;
         });
-        
+
         if (page === 1) {
           setPosts(processedPosts);
         } else {
-          setPosts(prev => [...prev, ...processedPosts]);
+          setPosts((prev) => [...prev, ...processedPosts]);
         }
         setPagination(response.data.pagination);
       }
@@ -90,11 +92,11 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const getPostCounts = () => {
     const totalPosts = posts.length;
     const postTypes = posts.reduce((acc, post) => {
-      const type = post.type || 'posts';
+      const type = post.type || "posts";
       acc[type] = (acc[type] || 0) + 1;
       return acc;
     }, {});
-    
+
     return {
       total: totalPosts,
       posts: postTypes.posts || totalPosts, // All posts if no specific type
@@ -106,19 +108,21 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
 
   // Handle new post creation
   const handlePostCreated = (newPost) => {
-    setPosts(prev => [newPost, ...prev]);
+    setPosts((prev) => [newPost, ...prev]);
   };
 
   // Handle post updates (likes, comments, etc.)
   const handlePostUpdate = (updatedPost) => {
-    setPosts(prev => prev.map(post => 
-      post._id === updatedPost._id ? { ...post, ...updatedPost } : post
-    ));
+    setPosts((prev) =>
+      prev.map((post) =>
+        post._id === updatedPost._id ? { ...post, ...updatedPost } : post,
+      ),
+    );
   };
 
   // Handle post deletion
   const handlePostDelete = (postId) => {
-    setPosts(prev => prev.filter(post => post._id !== postId));
+    setPosts((prev) => prev.filter((post) => post._id !== postId));
   };
 
   useEffect(() => {
@@ -126,12 +130,24 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
       try {
         setLoading(true);
         const response = await communityAPI.getById(params.id);
-        
+
+        console.log("Community API Response:", response);
+        console.log("Membership Info:", {
+          isMember: response.data?.isMember,
+          membershipStatus: response.data?.membershipStatus,
+          membership: response.data?.membership,
+        });
+
         if (response.success) {
           setCommunity(response.data.community);
           setIsMember(response.data.isMember || false);
           setMembershipStatus(response.data.membershipStatus || null);
-          
+
+          console.log("State values set:", {
+            isMember: response.data.isMember || false,
+            membershipStatus: response.data.membershipStatus || null,
+          });
+
           // Fetch posts after community is loaded
           fetchCommunityPosts(1);
         } else {
@@ -195,12 +211,12 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const handleMembershipUpdate = (updateData) => {
     setIsMember(updateData.isMember);
     setMembershipStatus(updateData.membershipStatus);
-    
+
     // Optionally update community member count if joined successfully
     if (updateData.isMember && community) {
-      setCommunity(prev => ({
+      setCommunity((prev) => ({
         ...prev,
-        memberCount: (prev.memberCount || 0) + 1
+        memberCount: (prev.memberCount || 0) + 1,
       }));
     }
   };
@@ -251,15 +267,23 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
               />
             ) : (
               <>
-                <FeedInput 
+                {/* Debug membership status */}
+                {console.log("FeedInput props:", {
+                  communityId: community._id,
+                  isMember,
+                  membershipStatus,
+                  canPost: isMember && membershipStatus === "approved",
+                })}
+
+                <FeedInput
                   communityId={community._id}
                   onPostCreated={handlePostCreated}
                   isMember={isMember}
                   membershipStatus={membershipStatus}
                 />
 
-                <FeedTabs 
-                  activeTab={activeTab} 
+                <FeedTabs
+                  activeTab={activeTab}
                   setActiveTab={handleTabChange}
                   postCounts={getPostCounts()}
                 />
@@ -272,24 +296,31 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
                   ) : posts.length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
                       <p className="text-lg font-medium mb-2">No posts yet</p>
-                      <p className="text-sm">Be the first to share something with this community!</p>
+                      <p className="text-sm">
+                        Be the first to share something with this community!
+                      </p>
                     </div>
                   ) : (
                     <>
                       {posts.map((post) => (
-                        <PostCard 
-                          key={post._id} 
-                          post={post} 
+                        <PostCard
+                          key={post._id}
+                          post={post}
                           onUpdate={handlePostUpdate}
                           onDelete={handlePostDelete}
                           currentUser={user}
                         />
                       ))}
-                      
+
                       {pagination && pagination.hasNextPage && (
                         <div className="flex justify-center mt-8 mb-12">
-                          <button 
-                            onClick={() => fetchCommunityPosts(pagination.currentPage + 1, activeTab)}
+                          <button
+                            onClick={() =>
+                              fetchCommunityPosts(
+                                pagination.currentPage + 1,
+                                activeTab,
+                              )
+                            }
                             disabled={postsLoading}
                             className="px-8 py-3 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 shadow-sm transition-colors disabled:opacity-50"
                           >
@@ -305,7 +336,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
           </div>
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
