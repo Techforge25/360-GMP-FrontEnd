@@ -67,179 +67,349 @@ const isValidUrl = (url) => {
   }
 };
 
-const Step1 = ({ formData, handleChange, setIsUploading }) => (
-  <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-    <div className="grid md:grid-cols-2 gap-6">
-      <div className="space-y-2">
-        <label className="text-base font-medium">Company Name</label>
-        <Input
-          placeholder="Global Manufacturing Co."
-          value={formData.companyName}
-          onChange={(e) => handleChange("companyName", e.target.value)}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="text-base font-medium">Select Primary Industry</label>
-        <div className="relative">
-          <select
-            className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
-            value={formData.industry || ""}
-            onChange={(e) => handleChange("industry", e.target.value)}
-            required
-          >
-            <option value="" disabled>
-              Select Primary Industry
-            </option>
-            {IndustryOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
-        </div>
-      </div>
-      <div className="space-y-2">
-        <label className="text-base font-medium">Business Type</label>
-        <Input
-          placeholder="Private Corporation"
-          value={formData.businessType || ""}
-          onChange={(e) => handleChange("businessType", e.target.value)}
-          required
-        />
-      </div>
-      <div className="space-y-2">
-        <label className="text-base font-medium">Company Size</label>
-        <div className="relative">
-          <select
-            className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
-            value={formData.companySize || ""}
-            onChange={(e) => handleChange("companySize", e.target.value)}
-            required
-          >
-            <option value="" disabled>
-              Select Company Size
-            </option>
-            {CompanySizeOptions.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-          <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
-        </div>
-      </div>
-      <div className="space-y-2">
-        <label className="text-base font-medium">Founded Date</label>
-        <div className="relative">
+const DAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+const TIMEZONES = [
+  "PST",
+  "EST",
+  "CST",
+  "MST",
+  "UTC",
+  "GMT",
+  "IST",
+  "CET",
+  "EET",
+  "JST",
+  "AEST",
+];
+
+const generateTimeOptions = () => {
+  const times = [];
+  for (let i = 0; i < 24; i++) {
+    for (let j = 0; j < 2; j++) {
+      const hour = i;
+      const minute = j === 0 ? "00" : "30";
+      const ampm = hour >= 12 ? "PM" : "AM";
+      const displayHour = hour % 12 || 12;
+      times.push(`${displayHour}:${minute} ${ampm}`);
+    }
+  }
+  return times;
+};
+
+const TIME_OPTIONS = generateTimeOptions();
+
+const Step1 = ({ formData, handleChange, setIsUploading }) => {
+  // Parse existing operating hours or set defaults
+  const [schedule, setSchedule] = useState(() => {
+    const defaultSchedule = {
+      startDay: "Monday",
+      endDay: "Friday",
+      startTime: "9:00 AM",
+      endTime: "6:00 PM",
+      timezone: "PST",
+    };
+
+    if (formData.operatingHours) {
+      // Try to parse format: "Monday - Friday: 9:00 AM - 6:00 PM PST"
+      // Regex matches: "Day - Day: Time - Time Zone"
+      const regex = /^(.*?) - (.*?): (.*?) - (.*?) (.*)$/;
+      const match = formData.operatingHours.match(regex);
+      if (match) {
+        return {
+          startDay: match[1],
+          endDay: match[2],
+          startTime: match[3],
+          endTime: match[4],
+          timezone: match[5],
+        };
+      }
+    }
+    return defaultSchedule;
+  });
+
+  // Update formData when schedule changes
+  React.useEffect(() => {
+    const formatted = `${schedule.startDay} - ${schedule.endDay}: ${schedule.startTime} - ${schedule.endTime} ${schedule.timezone}`;
+    if (formatted !== formData.operatingHours) {
+      handleChange("operatingHours", formatted);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schedule]);
+
+  const handleScheduleChange = (field, value) => {
+    setSchedule((prev) => ({ ...prev, [field]: value }));
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label className="text-base font-medium">Company Name</label>
           <Input
-            type="date"
-            className="block"
-            value={formData.foundedDate || ""}
-            onChange={(e) => handleChange("foundedDate", e.target.value)}
+            placeholder="Global Manufacturing Co."
+            value={formData.companyName}
+            onChange={(e) => handleChange("companyName", e.target.value)}
             required
           />
         </div>
-      </div>
-      <div className="space-y-2">
-        <label className="text-base font-medium">Operating Hours</label>
-        <div className="relative">
+        <div className="space-y-2">
+          <label className="text-base font-medium">
+            Select Primary Industry
+          </label>
+          <div className="relative">
+            <select
+              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+              value={formData.industry || ""}
+              onChange={(e) => handleChange("industry", e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Select Primary Industry
+              </option>
+              {IndustryOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <label className="text-base font-medium">Business Type</label>
           <Input
-            type="time"
-            className="block"
-            value={formData.operatingHours || ""}
-            onChange={(e) => handleChange("operatingHours", e.target.value)}
-            placeholder="09:00"
+            placeholder="Private Corporation"
+            value={formData.businessType || ""}
+            onChange={(e) => handleChange("businessType", e.target.value)}
             required
           />
         </div>
-      </div>
-    </div>
-
-    <div className="space-y-2">
-      <label className="text-base font-medium">Official Company Website</label>
-      <Input
-        placeholder="https://www.example.com"
-        value={formData.website || ""}
-        onChange={(e) => handleChange("website", e.target.value)}
-        required
-      />
-    </div>
-
-    <div className="space-y-2">
-      <label className="text-base font-medium">Company Mission And Bio</label>
-      <textarea
-        className="w-full min-h-[120px] rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
-        placeholder="..."
-        value={formData.bio || ""}
-        onChange={(e) => handleChange("bio", e.target.value)}
-      ></textarea>
-    </div>
-
-    <div className="grid md:grid-cols-2 gap-6">
-      <div className="space-y-2">
-        <label className="text-base font-medium">Profile Image</label>
-        <FileUpload
-          label="Upload Profile Image"
-          subLabel="JPG, PNG (Max 10MB)"
-          onUploadingChange={setIsUploading}
-          onUpload={(file, onProgress) =>
-            uploadToCloudinary(file, "business/profile", onProgress).then(
-              (url) => {
-                handleChange("profileImageUrl", url);
-                return url;
-              },
-            )
-          }
-        />
-        {formData.profileImageUrl && (
-          <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
-            <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
-            <div className="w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
-              <Image
-                src={formData.profileImageUrl}
-                alt="Profile Preview"
-                width={80}
-                height={80}
-                className="object-cover w-full h-full"
-              />
-            </div>
+        <div className="space-y-2">
+          <label className="text-base font-medium">Company Size</label>
+          <div className="relative">
+            <select
+              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+              value={formData.companySize || ""}
+              onChange={(e) => handleChange("companySize", e.target.value)}
+              required
+            >
+              <option value="" disabled>
+                Select Company Size
+              </option>
+              {CompanySizeOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </select>
+            <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
           </div>
-        )}
-      </div>
-      <div className="space-y-2">
-        <label className="text-base font-medium">Banner Image</label>
-        <FileUpload
-          label="Upload Banner Image"
-          subLabel="Dimension 1440×300 (Max 10MB)"
-          onUploadingChange={setIsUploading}
-          onUpload={(file, onProgress) =>
-            uploadToCloudinary(file, "business/banner", onProgress).then(
-              (url) => {
-                handleChange("bannerImageUrl", url);
-                return url;
-              },
-            )
-          }
-        />
-        {formData.bannerImageUrl && (
-          <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
-            <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
-            <div className="relative w-full h-32 mx-auto border border-gray-200 rounded-lg overflow-hidden">
-              <Image
-                src={formData.bannerImageUrl}
-                alt="Banner Preview"
-                fill
-                className="object-cover w-full h-full"
-              />
-            </div>
+        </div>
+        <div className="space-y-2">
+          <label className="text-base font-medium">Founded Date</label>
+          <div className="relative">
+            <Input
+              type="date"
+              className="block"
+              value={formData.foundedDate || ""}
+              onChange={(e) => handleChange("foundedDate", e.target.value)}
+              required
+            />
           </div>
-        )}
+        </div>
+        <div className="space-y-2 md:col-span-1">
+          <label className="text-base font-medium">Operating Hours</label>
+          <div className="space-y-3">
+            {/* Days Row */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="relative">
+                <select
+                  className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+                  value={schedule.startDay}
+                  onChange={(e) =>
+                    handleScheduleChange("startDay", e.target.value)
+                  }
+                >
+                  {DAYS.map((d) => (
+                    <option key={`start-${d}`} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+                <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none w-4 h-4" />
+              </div>
+              <div className="relative">
+                <select
+                  className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+                  value={schedule.endDay}
+                  onChange={(e) =>
+                    handleScheduleChange("endDay", e.target.value)
+                  }
+                >
+                  {DAYS.map((d) => (
+                    <option key={`end-${d}`} value={d}>
+                      {d}
+                    </option>
+                  ))}
+                </select>
+                <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none w-4 h-4" />
+              </div>
+            </div>
+
+            {/* Times Row */}
+            <div className="grid grid-cols-3 gap-2">
+              <div className="relative col-span-1">
+                <select
+                  className="w-full h-11 rounded-md border border-border-light bg-surface px-2 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none truncate"
+                  value={schedule.startTime}
+                  onChange={(e) =>
+                    handleScheduleChange("startTime", e.target.value)
+                  }
+                >
+                  {TIME_OPTIONS.map((t) => (
+                    <option key={`start-${t}`} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+                <FiChevronDown className="absolute right-2 top-3.5 text-text-secondary pointer-events-none w-3 h-3" />
+              </div>
+              <div className="relative col-span-1">
+                <select
+                  className="w-full h-11 rounded-md border border-border-light bg-surface px-2 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none truncate"
+                  value={schedule.endTime}
+                  onChange={(e) =>
+                    handleScheduleChange("endTime", e.target.value)
+                  }
+                >
+                  {TIME_OPTIONS.map((t) => (
+                    <option key={`end-${t}`} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+                <FiChevronDown className="absolute right-2 top-3.5 text-text-secondary pointer-events-none w-3 h-3" />
+              </div>
+              <div className="relative col-span-1">
+                <select
+                  className="w-full h-11 rounded-md border border-border-light bg-surface px-2 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none truncate"
+                  value={schedule.timezone}
+                  onChange={(e) =>
+                    handleScheduleChange("timezone", e.target.value)
+                  }
+                >
+                  {TIMEZONES.map((tz) => (
+                    <option key={tz} value={tz}>
+                      {tz}
+                    </option>
+                  ))}
+                </select>
+                <FiChevronDown className="absolute right-2 top-3.5 text-text-secondary pointer-events-none w-3 h-3" />
+              </div>
+            </div>
+            <p className="text-xs text-gray-500">
+              Format: Day - Day: Time - Time Zone
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-base font-medium">
+          Official Company Website
+        </label>
+        <Input
+          placeholder="https://www.example.com"
+          value={formData.website || ""}
+          onChange={(e) => handleChange("website", e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-base font-medium">Company Mission And Bio</label>
+        <textarea
+          className="w-full min-h-[120px] rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+          placeholder="..."
+          value={formData.bio || ""}
+          onChange={(e) => handleChange("bio", e.target.value)}
+        ></textarea>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label className="text-base font-medium">Profile Image</label>
+          <FileUpload
+            label="Upload Profile Image"
+            subLabel="JPG, PNG (Max 10MB)"
+            onUploadingChange={setIsUploading}
+            onUpload={(file, onProgress) =>
+              uploadToCloudinary(file, "business/profile", onProgress).then(
+                (url) => {
+                  handleChange("profileImageUrl", url);
+                  return url;
+                },
+              )
+            }
+          />
+          {formData.profileImageUrl && (
+            <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
+              <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
+              <div className="w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
+                <Image
+                  src={formData.profileImageUrl}
+                  alt="Profile Preview"
+                  width={80}
+                  height={80}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="space-y-2">
+          <label className="text-base font-medium">Banner Image</label>
+          <FileUpload
+            label="Upload Banner Image"
+            subLabel="Dimension 1440×300 (Max 10MB)"
+            onUploadingChange={setIsUploading}
+            onUpload={(file, onProgress) =>
+              uploadToCloudinary(file, "business/banner", onProgress).then(
+                (url) => {
+                  handleChange("bannerImageUrl", url);
+                  return url;
+                },
+              )
+            }
+          />
+          {formData.bannerImageUrl && (
+            <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
+              <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
+              <div className="relative w-full h-32 mx-auto border border-gray-200 rounded-lg overflow-hidden">
+                <Image
+                  src={formData.bannerImageUrl}
+                  alt="Banner Preview"
+                  fill
+                  className="object-cover w-full h-full"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Step2 = ({ formData, handleChange, setIsUploading }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">

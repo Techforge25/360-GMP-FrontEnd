@@ -10,7 +10,7 @@ import { AiOutlineSafetyCertificate } from "react-icons/ai";
 import { useUserRole } from "@/context/UserContext";
 import TestimonialModal from "./TestimonialModal";
 import testimonialAPI from "@/services/testimonialAPI";
-import { toast } from "react-toastify";
+import { showError } from "@/utils/toasterMessage";
 
 export default function ProfileHeader({ business }) {
   const { user } = useUserRole();
@@ -65,16 +65,16 @@ export default function ProfileHeader({ business }) {
           setInviteToken(token);
           setIsTestimonialModalOpen(true);
         } else {
-          toast.error(
+          showError(
             "Generated invite represents an already used review or is invalid.",
           );
         }
       } else {
-        toast.error("Failed to generate review invite. Please try again.");
+        showError("Failed to generate review invite. Please try again.");
       }
     } catch (error) {
       console.error("Error creating review invite:", error);
-      toast.error(
+      showError(
         error?.response?.data?.message ||
           "Something went wrong while initiating review.",
       );
@@ -102,7 +102,7 @@ export default function ProfileHeader({ business }) {
         <div className="absolute bottom-4 right-4 flex gap-3">
           {isUserRole && (
             <button
-              onClick={handlePostReview}
+              // onClick={handlePostReview}
               disabled={isLoadingInvite}
               className="bg-[#f2994a] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-[#e08a3e] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
             >

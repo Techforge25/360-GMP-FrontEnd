@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { FiX } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
 import testimonialAPI from "@/services/testimonialAPI";
-import { toast } from "react-toastify";
+import { showSuccess, showError } from "@/utils/toasterMessage";
 
 export default function TestimonialModal({
   isOpen,
@@ -50,7 +50,7 @@ export default function TestimonialModal({
       );
 
       if (response && response.success) {
-        toast.success("Review submitted successfully!");
+        showSuccess("Review submitted successfully!");
         if (onSuccess) onSuccess();
         onClose();
       } else {
@@ -58,7 +58,7 @@ export default function TestimonialModal({
       }
     } catch (err) {
       console.error("Failed to submit review:", err);
-      setError(
+      showError(
         err?.response?.data?.message ||
           err?.message ||
           "An error occurred while submitting your review",

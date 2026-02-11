@@ -13,6 +13,8 @@ export const metadata = {
 
 import { UserProvider } from "@/context/UserContext";
 import { CartProvider } from "@/context/CartContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({ children }) {
   return (
@@ -22,7 +24,10 @@ export default function RootLayout({ children }) {
         suppressHydrationWarning
       >
         <CartProvider>
-          <UserProvider>{children}</UserProvider>
+          <UserProvider>
+            {children}
+            <ToastContainer />
+          </UserProvider>
         </CartProvider>
       </body>
     </html>

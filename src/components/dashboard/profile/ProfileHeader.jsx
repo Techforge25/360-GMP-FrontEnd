@@ -17,6 +17,7 @@ import {
 } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { showSuccess, showError } from "@/utils/toasterMessage";
 
 const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   const [profileData, setProfileData] = useState(null);
@@ -179,7 +180,10 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
       console.error("Error message:", error?.message);
       console.error("Error statusCode:", error?.statusCode);
       console.error("Error data:", error?.data);
-      alert(`Failed to update profile: ${error?.message || "Unknown error"}`);
+      console.error("Error data:", error?.data);
+      showError(
+        `Failed to update profile: ${error?.message || "Unknown error"}`,
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -202,7 +206,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
       }
     } catch (error) {
       console.error("Failed to update business info:", error);
-      alert(
+      showError(
         `Failed to update business info: ${error?.message || "Unknown error"}`,
       );
     } finally {
