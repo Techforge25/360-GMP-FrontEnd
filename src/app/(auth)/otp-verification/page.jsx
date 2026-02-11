@@ -19,17 +19,27 @@ function OTPForm() {
   const type = searchParams.get("type"); // 'signup' or 'password-reset'
 
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [timer, setTimer] = useState(54);
+  const [timer, setTimer] = useState(60);
+  const [canResend, setCanResend] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
   const [error, setError] = useState("");
   const inputRefs = useRef([]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [timer]);
 
   // Auto focus first input on component mount
   useEffect(() => {
@@ -65,7 +75,65 @@ function OTPForm() {
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `00:${secs < 10 ? "0" : ""}${secs}`;
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+  const handleResendOTP = async () => {
+    if (!canResend || resending) return;
+
+    setResending(true);
+    setError("");
+
+    try {
+      if (type === "signup") {
+        // Resend account verification OTP by calling signup endpoint
+        // Backend handles resending if user status is "pending"
+        const res = await api.post({
+          url: `/auth/user/resend-verification-otp`,
+          payload: { userId },
+          enableSuccessMessage: true,
+          enableErrorMessage: false,
+          activateLoader: false,
+        });
+
+        if (res.success) {
+          // Reset timer and OTP input
+          setTimer(60);
+          setCanResend(false);
+          setOtp(["", "", "", "", "", ""]);
+          if (inputRefs.current[0]) {
+            inputRefs.current[0].focus();
+          }
+        } else {
+          setError(res.message || "Failed to resend OTP");
+        }
+      } else {
+        // Resend password reset OTP
+        const res = await api.post({
+          url: `/auth/resendPasswordResetToken`,
+          payload: { email },
+          enableSuccessMessage: true,
+          enableErrorMessage: false,
+          activateLoader: false,
+        });
+
+        if (res.success) {
+          // Reset timer and OTP input
+          setTimer(60);
+          setCanResend(false);
+          setOtp(["", "", "", "", "", ""]);
+          if (inputRefs.current[0]) {
+            inputRefs.current[0].focus();
+          }
+        } else {
+          setError(res.message || "Failed to resend OTP");
+        }
+      }
+    } catch (err) {
+      setError(err.message || "Failed to resend OTP. Please try again.");
+    } finally {
+      setResending(false);
+    }
   };
 
   const handleVerify = async () => {
@@ -184,14 +252,28 @@ function OTPForm() {
         </Button>
 
         <div className="text-center text-sm xs:text-sm sm:text-base text-text-secondary">
-          <p className="mb-1 xs:mb-2">
-            Resend OTP in{" "}
-            <span className="font-bold text-brand-primary">
-              {formatTime(timer)}
-            </span>
-          </p>
-          <button className="text-text-secondary underline decoration-text-secondary/50 hover:text-brand-primary text-[10px] xs:text-sm sm:text-sm">
-            Resend OTP
+          {!canResend ? (
+            <p className="mb-1 xs:mb-2">
+              Resend OTP in{" "}
+              <span className="font-bold text-brand-primary">
+                {formatTime(timer)}
+              </span>
+            </p>
+          ) : (
+            <p className="mb-1 xs:mb-2 text-green-600 font-medium">
+              You can now resend OTP
+            </p>
+          )}
+          <button
+            onClick={handleResendOTP}
+            disabled={!canResend || resending}
+            className={`text-sm sm:text-base font-medium transition-colors ${
+              canResend && !resending
+                ? "text-brand-primary underline decoration-brand-primary/50 hover:text-brand-primary/80 cursor-pointer"
+                : "text-text-secondary/50 cursor-not-allowed"
+            }`}
+          >
+            {resending ? "Sending..." : "Resend OTP"}
           </button>
         </div>
       </CardContent>
