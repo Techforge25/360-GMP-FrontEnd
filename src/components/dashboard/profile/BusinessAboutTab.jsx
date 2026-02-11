@@ -8,9 +8,7 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white px-3 py-2 shadow-lg rounded-lg border border-gray-200">
-        <p className="text-sm font-semibold text-gray-900">
-          {payload[0].name}
-        </p>
+        <p className="text-sm font-semibold text-gray-900">{payload[0].name}</p>
         <p className="text-sm text-gray-600">{payload[0].value}%</p>
       </div>
     );
@@ -18,7 +16,60 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const BusinessAboutTab = () => {
+import UploadGalleryModal from "./UploadGalleryModal";
+import ViewAlbumModal from "./ViewAlbumModal";
+import galleryAPI from "@/services/galleryAPI";
+import { useUserRole } from "@/context/UserContext";
+
+const BusinessAboutTab = ({ businessId }) => {
+  const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
+  const [isViewAlbumModalOpen, setIsViewAlbumModalOpen] = useState(false);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [gallery, setGallery] = useState([]);
+  const { role, user } = useUserRole();
+  // Helper to decode JWT (internal or from utils)
+  const getProfileIdFromToken = (token) => {
+    if (!token) return null;
+    try {
+      if (typeof window === "undefined") return null;
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        window
+          .atob(base64)
+          .split("")
+          .map(function (c) {
+            return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join(""),
+      );
+      const decoded = JSON.parse(jsonPayload);
+      return decoded.profiles?.businessProfileId;
+    } catch (e) {
+      console.error("Failed to decode token", e);
+      return null;
+    }
+  };
+
+  const tokenBusinessId = getProfileIdFromToken(
+    user?.accessToken || user?.token,
+  );
+
+  // Use the ID from props or current user's profile or token
+  const derivedBusinessId =
+    user?.profiles?.businessProfileId || tokenBusinessId;
+  const targetBusinessId = businessId || derivedBusinessId;
+
+  console.log("Debug IDs:", {
+    propBusinessId: businessId,
+    userProfileId: user?.profiles?.businessProfileId,
+    tokenBusinessId,
+    finalTargetId: targetBusinessId,
+  });
+
+  // const isOwner =
+  //   role === "business" && (derivedBusinessId === businessId || !businessId);
+
   // Mock data - replace with API data later
   const [aboutData] = useState({
     storyMission:
@@ -48,26 +99,43 @@ const BusinessAboutTab = () => {
     },
   ]);
 
-  const [gallery] = useState([
-    {
-      id: 1,
-      title: "lab",
-      description: "quality control and testing lab.",
-      image: "/assets/images/gallery1.jpg",
-    },
-    {
-      id: 2,
-      title: "lab",
-      description: "quality control and testing lab.",
-      image: "/assets/images/gallery2.jpg",
-    },
-    {
-      id: 3,
-      title: "Packaging Area",
-      description: "automated packaging and shipping",
-      image: "/assets/images/gallery3.jpg",
-    },
-  ]);
+  // Fetch albums on component mount
+  const fetchAlbums = async () => {
+    if (targetBusinessId) {
+      try {
+        console.log("Fetching albums for:", targetBusinessId);
+        const response = await galleryAPI.fetchAlbums(targetBusinessId);
+        console.log("Fetch albums FULL response:", response);
+
+        if (response.success) {
+          // Handle various possible response structures:
+          // 1. Direct array: response.data = [...]
+          // 2. Paginated: response.data.docs = [...]
+          // 3. Profile object: response.data.gallery = [...]
+
+          let galleryData = [];
+          if (Array.isArray(response.data)) {
+            galleryData = response.data;
+          } else if (Array.isArray(response.data?.docs)) {
+            galleryData = response.data.docs;
+          } else if (Array.isArray(response.data?.gallery)) {
+            galleryData = response.data.gallery;
+          }
+
+          console.log("Extracted gallery data:", galleryData);
+          setGallery(galleryData);
+        } else {
+          console.error("Fetch albums failed:", response.message);
+        }
+      } catch (error) {
+        console.error("Failed to fetch gallery:", error);
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    fetchAlbums();
+  }, [targetBusinessId]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
@@ -79,11 +147,13 @@ const BusinessAboutTab = () => {
             <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Our Story & Mission
             </h2>
+            {/* {isOwner && ( */}
             <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
               <span className="hidden sm:inline">Edit About Section</span>
               <span className="sm:hidden">Edit</span>
               <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
+            {/* )} */}
           </div>
 
           <p className="text-sm sm:text-sm text-gray-600 leading-relaxed">
@@ -97,11 +167,13 @@ const BusinessAboutTab = () => {
             <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Export Market Distribution
             </h2>
+            {/* {isOwner && ( */}
             <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
               <span className="hidden sm:inline">Manage Featured Products</span>
               <span className="sm:hidden">Manage</span>
               <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
+            {/* )} */}
           </div>
 
           {/* Chart */}
@@ -129,8 +201,12 @@ const BusinessAboutTab = () => {
 
               {/* Center Label */}
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg shadow-sm border border-gray-100">
-                <p className="text-sm sm:text-sm text-gray-500">European Union</p>
-                <p className="text-base sm:text-lg font-bold text-orange-500">30</p>
+                <p className="text-sm sm:text-sm text-gray-500">
+                  European Union
+                </p>
+                <p className="text-base sm:text-lg font-bold text-orange-500">
+                  30
+                </p>
               </div>
             </div>
 
@@ -142,7 +218,9 @@ const BusinessAboutTab = () => {
                     className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
                     style={{ backgroundColor: item.color }}
                   />
-                  <span className="text-sm sm:text-sm text-gray-600">{item.name}</span>
+                  <span className="text-sm sm:text-sm text-gray-600">
+                    {item.name}
+                  </span>
                 </div>
               ))}
             </div>
@@ -153,58 +231,103 @@ const BusinessAboutTab = () => {
         <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
             <h2 className="text-lg font-bold text-gray-900">Gallery</h2>
-            <button className="flex items-center gap-2 text-[#240457] text-sm font-semibold hover:underline">
+            {/* {isOwner && ( */}
+            <button
+              onClick={() => setIsGalleryModalOpen(true)}
+              className="flex items-center gap-2 text-[#240457] text-sm font-semibold hover:underline"
+            >
               Add To Your Profile
               <span className="text-gray-400">|</span>
               <FiCamera className="w-4 h-4 text-green-600" />
               <span className="text-green-600">Photo/Video</span>
             </button>
+            {/* )} */}
           </div>
 
           {/* Gallery Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {gallery.map((item) => (
-              <div
-                key={item.id}
-                className="relative rounded-xl overflow-hidden group aspect-[4/3]"
-              >
-                {/* Image */}
-                <div className="absolute inset-0 bg-gray-200">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                      e.target.parentElement.style.background =
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-                    }}
-                  />
-                </div>
+          {gallery.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {gallery.map((album) => (
+                <div
+                  key={album._id || album.id}
+                  onClick={() => {
+                    setSelectedAlbum(album);
+                    setIsViewAlbumModalOpen(true);
+                  }}
+                  className="relative rounded-xl overflow-hidden group aspect-[4/3] cursor-pointer"
+                >
+                  {/* Image */}
+                  <div className="absolute inset-0 bg-gray-200">
+                    <img
+                      src={
+                        album.images?.[0] || "/assets/images/placeholder.png"
+                      }
+                      alt={album.albumName || album.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                        e.target.parentElement.style.background =
+                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+                      }}
+                    />
+                  </div>
 
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:via-black/40" />
 
-                {/* Action Buttons */}
-                <div className="absolute top-3 left-3 flex gap-2">
-                  <button className="p-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
-                    <FiTrash2 className="w-3.5 h-3.5" />
-                  </button>
-                  <button className="p-1.5 bg-white text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
-                    <FiEdit2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                  {/* Image Count Badge */}
+                  {album.images?.length > 1 && (
+                    <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md flex items-center gap-1">
+                      <FiCamera className="w-3 h-3" />
+                      {album.images.length}
+                    </div>
+                  )}
 
-                {/* Content */}
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3 className="text-white font-semibold text-base">
-                    {item.title}
-                  </h3>
-                  <p className="text-white/80 text-sm">{item.description}</p>
+                  {/* Action Buttons */}
+                  {/* {isOwner && ( */}
+                  <div className="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <button className="p-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                      <FiTrash2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button className="p-1.5 bg-white text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
+                      <FiEdit2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  {/* )} */}
+
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 transform transition-transform duration-300 translate-y-2 group-hover:translate-y-0">
+                    <h3 className="text-white font-semibold text-base mb-1 line-clamp-1">
+                      {album.albumName || album.title}
+                    </h3>
+                    <p className="text-white/80 text-xs sm:text-sm line-clamp-2">
+                      {album.description}
+                    </p>
+                  </div>
                 </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+              <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                <FiCamera className="w-6 h-6 text-gray-400" />
               </div>
-            ))}
-          </div>
+              <h3 className="text-base font-medium text-gray-900">
+                No albums yet
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Share photos of your facilities and products.
+              </p>
+              {/* {isOwner && ( */}
+              <button
+                onClick={() => setIsGalleryModalOpen(true)}
+                className="mt-4 text-[#240457] font-medium text-sm hover:underline"
+              >
+                Create your first album
+              </button>
+              {/* )} */}
+            </div>
+          )}
         </div>
       </div>
 
@@ -213,9 +336,11 @@ const BusinessAboutTab = () => {
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-gray-900">Certifications</h3>
+            {/* {isOwner && ( */}
             <button className="text-[#240457] text-sm font-semibold hover:underline">
               Manage
             </button>
+            {/* )} */}
           </div>
 
           <div className="space-y-3">
@@ -244,6 +369,21 @@ const BusinessAboutTab = () => {
           </div>
         </div>
       </div>
+
+      <UploadGalleryModal
+        isOpen={isGalleryModalOpen}
+        onClose={() => setIsGalleryModalOpen(false)}
+        onUploadSuccess={fetchAlbums}
+      />
+
+      <ViewAlbumModal
+        isOpen={isViewAlbumModalOpen}
+        onClose={() => {
+          setIsViewAlbumModalOpen(false);
+          setSelectedAlbum(null);
+        }}
+        album={selectedAlbum}
+      />
     </div>
   );
 };

@@ -86,11 +86,17 @@ function OTPForm() {
 
     try {
       if (type === "signup") {
-        // Resend account verification OTP by calling signup endpoint
-        // Backend handles resending if user status is "pending"
+        // Resend account verification OTP
+        // Backend expects email as per the controller
+        if (!email) {
+          setError("Email is missing. Please try signing up again.");
+          setResending(false);
+          return;
+        }
+
         const res = await api.post({
-          url: `/auth/user/resend-verification-otp`,
-          payload: { userId },
+          url: `/auth/user/resend-otp`,
+          payload: { email },
           enableSuccessMessage: true,
           enableErrorMessage: false,
           activateLoader: false,
