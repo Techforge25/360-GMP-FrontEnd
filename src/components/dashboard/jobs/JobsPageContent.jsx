@@ -12,14 +12,12 @@ import api from "@/lib/axios";
 export default function JobsPageContent() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
   const [sortBy, setSortBy] = useState("newest");
-  const [hasMore, setHasMore] = useState(true);
 
   // Filter states from sidebar
   const [filters, setFilters] = useState({
@@ -31,76 +29,48 @@ export default function JobsPageContent() {
   });
 
   // Set items per page to 20 as requested
-  const itemsPerPage = 20;
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    // Reset and fetch initial data when filters change
-    setCurrentPage(1);
-    setHasMore(true);
-    fetchInitialJobs();
-  }, [sortBy, filters]);
+    fetchJobs();
+  }, [currentPage, sortBy, filters, searchQuery, locationQuery]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
   };
 
-  const fetchInitialJobs = async () => {
+  const fetchJobs = async () => {
     try {
       setLoading(true);
       const queryParams = new URLSearchParams({
-        page: 1,
+        page: currentPage,
         limit: itemsPerPage,
         status: "open",
       });
 
       if (searchQuery) {
         queryParams.append("search", searchQuery);
-        queryParams.append("keyword", searchQuery);
-        queryParams.append("category", searchQuery);
       }
       if (locationQuery) {
-        queryParams.append("location", locationQuery);
         queryParams.append("country", locationQuery);
-        queryParams.append("city", locationQuery);
-        queryParams.append("location.city", locationQuery);
-        queryParams.append("location.country", locationQuery);
       }
 
       // Add filter parameters
       if (filters.pay.length > 0) {
-        // Backend logic 'Number(payRange)' expects a single value.
         queryParams.append("payRange", filters.pay[filters.pay.length - 1]);
       }
       if (filters.categories.length > 0) {
-        filters.categories.forEach((cat) =>
-          queryParams.append("jobCategory", cat),
-        );
+        queryParams.append("jobCategory", filters.categories.join("|"));
       }
       if (filters.jobTypes.length > 0) {
-        filters.jobTypes.forEach((type) =>
-          queryParams.append("employmentType", type),
-        );
+        queryParams.append("employmentType", filters.jobTypes.join("|"));
       }
       if (filters.locations.length > 0) {
-        // Backend logic 'if(country)' expects a single value for regex.
-        queryParams.append(
-          "country",
-          filters.locations[filters.locations.length - 1],
-        );
+        queryParams.append("country", filters.locations.join("|"));
       }
       if (filters.datePosted.length > 0) {
-        // Handle date posted filters
-        filters.datePosted.forEach((date) =>
-          queryParams.append("datePosted", date),
-        );
-      }
-
-      // Add sort parameter
-      if (sortBy) {
-        queryParams.append(
-          "sort",
-          sortBy === "newest" ? "-createdAt" : "createdAt",
-        );
+        queryParams.append("datePosted", filters.datePosted[0]);
       }
 
       const response = await api.get({
@@ -118,117 +88,30 @@ export default function JobsPageContent() {
         setTotalJobs(
           response.data.totalDocs || response.data.pagination?.totalJobs || 0,
         );
-        setHasMore(
-          response.data.hasNextPage ??
-            response.data.pagination?.hasNextPage ??
-            false,
-        );
-        setCurrentPage(2); // Next page to fetch
       } else {
         setJobs([]);
-        setHasMore(false);
+        setTotalPages(1);
+        setTotalJobs(0);
       }
     } catch (error) {
-      console.error("Failed to fetch jobs. Full error:", error);
-      if (error.response) {
-        console.error("Error data:", error.response.data);
-        console.error("Error status:", error.response.status);
-      }
+      console.error("Failed to fetch jobs:", error);
       setJobs([]);
+      setTotalPages(1);
+      setTotalJobs(0);
     } finally {
       setLoading(false);
     }
   };
 
-  const loadMoreJobs = async () => {
-    if (loadingMore || !hasMore) return;
-
-    try {
-      setLoadingMore(true);
-      const queryParams = new URLSearchParams({
-        page: currentPage,
-        limit: itemsPerPage,
-        status: "open",
-      });
-
-      if (searchQuery) {
-        queryParams.append("search", searchQuery);
-        queryParams.append("keyword", searchQuery);
-        queryParams.append("category", searchQuery);
-      }
-      if (locationQuery) {
-        queryParams.append("location", locationQuery);
-        queryParams.append("country", locationQuery);
-        queryParams.append("city", locationQuery);
-        queryParams.append("location.city", locationQuery);
-        queryParams.append("location.country", locationQuery);
-      }
-
-      // Add filter parameters
-      if (filters.pay.length > 0) {
-        // Backend logic 'Number(payRange)' expects a single value.
-        queryParams.append("payRange", filters.pay[filters.pay.length - 1]);
-      }
-      if (filters.categories.length > 0) {
-        filters.categories.forEach((cat) =>
-          queryParams.append("jobCategory", cat),
-        );
-      }
-      if (filters.jobTypes.length > 0) {
-        filters.jobTypes.forEach((type) =>
-          queryParams.append("employmentType", type),
-        );
-      }
-      if (filters.locations.length > 0) {
-        // Backend logic 'if(country)' expects a single value for regex.
-        queryParams.append(
-          "country",
-          filters.locations[filters.locations.length - 1],
-        );
-      }
-      if (filters.datePosted.length > 0) {
-        filters.datePosted.forEach((date) =>
-          queryParams.append("datePosted", date),
-        );
-      }
-
-      // Add sort parameter
-      if (sortBy) {
-        queryParams.append(
-          "sort",
-          sortBy === "newest" ? "-createdAt" : "createdAt",
-        );
-      }
-
-      const response = await api.get({
-        url: `/jobs?${queryParams.toString()}`,
-        enableErrorMessage: false,
-        enableSuccessMessage: false,
-        activateLoader: false,
-      });
-
-      if (response.success && response.data) {
-        const newJobs = response.data.docs || response.data.jobs || [];
-        setJobs((prev) => [...prev, ...newJobs]);
-        setHasMore(
-          response.data.hasNextPage ??
-            response.data.pagination?.hasNextPage ??
-            false,
-        );
-        setCurrentPage((prev) => prev + 1);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error("Failed to load more jobs:", error.message || error);
-    } finally {
-      setLoadingMore(false);
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages && newPage !== currentPage) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const handleSearch = () => {
     setCurrentPage(1);
-    fetchInitialJobs();
   };
 
   console.log("JobsPageContent Rendered: ", { jobs, loading, filters });
@@ -316,9 +199,9 @@ export default function JobsPageContent() {
               />
             </div>
           </div>
-          
-          <Button 
-            className="h-12 rounded-xl lg:h-auto px-6 sm:px-8 text-sm sm:text-base font-medium w-full sm:w-auto" 
+
+          <Button
+            className="h-12 rounded-xl lg:h-auto px-6 sm:px-8 text-sm sm:text-base font-medium w-full sm:w-auto"
             onClick={handleSearch}
           >
             Search Jobs
@@ -338,7 +221,9 @@ export default function JobsPageContent() {
                     Showing {jobs.length} of {totalJobs} Jobs
                   </p>
                   <div className="flex items-center gap-2 sm:gap-3">
-                    <span className="text-sm sm:text-base text-gray-700 whitespace-nowrap">Sort By</span>
+                    <span className="text-sm sm:text-base text-gray-700 whitespace-nowrap">
+                      Sort By
+                    </span>
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value)}
@@ -353,15 +238,21 @@ export default function JobsPageContent() {
                 {loading ? (
                   <div className="text-center py-8 sm:py-12">
                     <div className="w-8 h-8 border-3 border-gray-300 border-t-brand-primary rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-500 text-sm sm:text-base">Loading jobs...</p>
+                    <p className="text-gray-500 text-sm sm:text-base">
+                      Loading jobs...
+                    </p>
                   </div>
                 ) : jobs.length === 0 ? (
                   <div className="text-center py-12 sm:py-16">
                     <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <FiSearch className="w-8 h-8 text-gray-400" />
                     </div>
-                    <p className="text-gray-500 text-lg font-medium mb-2">No jobs found</p>
-                    <p className="text-gray-400 text-sm">Try adjusting your search criteria or filters</p>
+                    <p className="text-gray-500 text-lg font-medium mb-2">
+                      No jobs found
+                    </p>
+                    <p className="text-gray-400 text-sm">
+                      Try adjusting your search criteria or filters
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-3 sm:space-y-4">
@@ -371,22 +262,52 @@ export default function JobsPageContent() {
                   </div>
                 )}
 
-                {/* Load More Button */}
-                {hasMore && (
-                  <div className="mt-6 sm:mt-8 flex justify-center">
+                {/* Pagination Controls */}
+                {!loading && jobs.length > 0 && totalPages > 1 && (
+                  <div className="flex justify-center items-center mt-8 sm:mt-12 gap-1 sm:gap-2 px-2">
                     <button
-                      onClick={loadMoreJobs}
-                      disabled={loadingMore}
-                      className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-2.5 bg-white border border-gray-300 rounded-lg text-sm sm:text-base font-medium text-gray-700 hover:bg-gray-50 hover:shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 touch-manipulation"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {loadingMore ? (
-                        <>
-                          <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-                          <span>Loading...</span>
-                        </>
-                      ) : (
-                        "Load More Jobs"
-                      )}
+                      Prev
+                    </button>
+
+                    {/* Dynamic Page Numbers */}
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => handlePageChange(pageNum)}
+                          className={`px-3 py-1.5 rounded text-sm lg:text-base transition-colors ${
+                            currentPage === pageNum
+                              ? "bg-[#240457] text-white"
+                              : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <span className="hidden sm:inline">Next &gt;</span>
+                      <span className="sm:hidden">&gt;</span>
                     </button>
                   </div>
                 )}
