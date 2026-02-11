@@ -30,6 +30,18 @@ export default function SignupPage() {
     setLoading(true);
     setError("");
 
+    // Backend validation requires exactly 8 characters (based on user request)
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters");
+      setLoading(false);
+      return;
+    }
+    if (password.length > 8) {
+      setError("Password must be no more than 8 characters");
+      setLoading(false);
+      return;
+    }
+
     try {
       // Create the account - backend will send OTP automatically
       const res = await api.post({
