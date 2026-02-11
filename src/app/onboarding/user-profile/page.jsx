@@ -562,7 +562,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
       </div>
 
       <div className="space-y-4">
-        <label className="text-base font-medium">Education <span className="text-red-500">*</span></label>
+        <label className="text-base font-medium">
+          Education <span className="text-red-500">*</span>
+        </label>
 
         <p className="text-sm text-text-secondary">
           {formData.education.length} Education Entries Added
