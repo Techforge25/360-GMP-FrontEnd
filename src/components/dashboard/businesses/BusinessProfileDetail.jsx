@@ -24,9 +24,9 @@ export default function BusinessProfileDetail({ businessId }) {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await businessProfileAPI.viewBusinessProfile(businessId);
-      
+
       console.log("Business Profile Detail API Response:", response);
 
       if (response.success && response.data) {
@@ -34,23 +34,31 @@ export default function BusinessProfileDetail({ businessId }) {
         const transformedData = {
           ...response.data,
           name: response.data.companyName || "Unknown Company",
-          location: response.data.location 
-            ? `${response.data.location.city || ""}, ${response.data.location.country || ""}`.replace(/^,\s*/, '').replace(/,\s*$/, '')
+          location: response.data.location
+            ? `${response.data.location.city || ""}, ${response.data.location.country || ""}`
+                .replace(/^,\s*/, "")
+                .replace(/,\s*$/, "")
             : "Location not specified",
-          verified: response.data.isVerified || response.data.certifications?.length > 0 || false,
+          verified:
+            response.data.isVerified ||
+            response.data.certifications?.length > 0 ||
+            false,
           employees: response.data.companySize || "N/A",
-          age: response.data.foundedDate 
+          age: response.data.foundedDate
             ? `${new Date().getFullYear() - new Date(response.data.foundedDate).getFullYear()} yrs`
             : "N/A",
-          industry: response.data.primaryIndustry || response.data.businessType || "General",
+          industry:
+            response.data.primaryIndustry ||
+            response.data.businessType ||
+            "General",
           rating: 4.9, // Default until backend provides ratings
           stats: {
             delivery: "100%",
             reorder: "<15%",
             response: "≤6h",
             revenue: "USD $3.6M+",
-            products: "210"
-          }
+            products: "210",
+          },
         };
         setBusinessData(transformedData);
       } else {
@@ -69,7 +77,9 @@ export default function BusinessProfileDetail({ businessId }) {
       <div className="bg-gray-50 min-h-screen">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-center items-center py-20">
-            <div className="text-gray-500 text-lg">Loading business profile...</div>
+            <div className="text-gray-500 text-lg">
+              Loading business profile...
+            </div>
           </div>
         </div>
       </div>
@@ -112,17 +122,17 @@ export default function BusinessProfileDetail({ businessId }) {
     <div className="bg-gray-50 min-h-screen">
       {/* Full width banner section */}
       <div className="w-full">
-         <ProfileHeader business={businessData} />
+        <ProfileHeader business={businessData} />
       </div>
-      
+
       {/* Constrained content */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-         <ProfileOverview business={businessData} />
-         <ProfileJobs businessId={businessId} />
-         <ProfileProducts businessId={businessId} />
-         <ProfileCommunities businessId={businessId} />
-         <ProfileGallery />
-         <ProfileTestimonials />
+        <ProfileOverview business={businessData} />
+        <ProfileJobs businessId={businessId} />
+        <ProfileProducts businessId={businessId} />
+        <ProfileCommunities businessId={businessId} />
+        <ProfileGallery businessProfileId={businessId} />
+        <ProfileTestimonials />
       </div>
     </div>
   );
