@@ -881,25 +881,66 @@ export default function BusinessProfilePage() {
     }
   };
 
-  const handleSuccessNext = () => {
-    // Update user role in localStorage
+  const handleSuccessNext = async () => {
+    // Update user auth and profile in localStorage
     if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+      const baseUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+      // Try to refresh auth token so backend gets latest businessId/profileId.
+      // This mirrors logging in again, which is why things work on 2nd login.
+      let refreshedUser = { ...baseUser };
+      try {
+        const refresh = await api.get({
+          url: "/auth/refreshToken/updateRole?role=business",
+          activateLoader: false,
+          enableSuccessMessage: false,
+          enableErrorMessage: false,
+        });
+
+        if (refresh?.success) {
+          refreshedUser = {
+            ...refreshedUser,
+            ...(refresh.data || {}),
+          };
+
+          const refreshedToken =
+            refresh.accessToken ||
+            refresh.token ||
+            refresh.data?.accessToken ||
+            refresh.data?.token;
+
+          if (refreshedToken) {
+            refreshedUser.accessToken = refreshedToken;
+            refreshedUser.token = refreshedToken;
+          }
+        }
+      } catch (e) {
+        console.warn("Token refresh after business profile creation failed", e);
+      }
+
+      // Ensure we keep correct role and onboarding flags
+      const finalUser = {
+        ...refreshedUser,
+        role: "business",
+        isNewToPlatform: false,
+      };
+
+      // Store the created business profile payload for convenient access
       if (createdProfile) {
-        storedUser.profilePayload = createdProfile;
+        finalUser.profilePayload = createdProfile;
       }
 
-      // Update token if a new one was received
+      // Fallback to token from profile creation if present
       if (newToken) {
-        storedUser.accessToken = newToken;
-        storedUser.token = newToken; // Legacy support
+        finalUser.accessToken = newToken;
+        finalUser.token = newToken;
       }
 
-      localStorage.setItem("user", JSON.stringify(storedUser));
+      localStorage.setItem("user", JSON.stringify(finalUser));
 
-      // Update global context to refresh axios headers immediately
+      // Update global context so axios immediately sends the fresh token
       if (login) {
-        login(storedUser);
+        login(finalUser);
       }
 
       window.location.href = "/dashboard/business";

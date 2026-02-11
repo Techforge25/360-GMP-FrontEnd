@@ -43,6 +43,21 @@ export const UserProvider = ({ children }) => {
           role: role, // Ensure role is explicitly set locally
           profileData: role === "business" ? "business" : "user",
         };
+
+        // Capture any fresh access token returned by backend so subsequent
+        // requests (subscription, profile creation, dashboards) don't use
+        // a stale token that can cause 403 "Access Denied" on first login.
+        const token =
+          response.accessToken ||
+          response.token ||
+          response.data?.accessToken ||
+          response.data?.token;
+
+        if (token) {
+          updatedUser.accessToken = token;
+          updatedUser.token = token; // legacy key support
+        }
+
         login(updatedUser);
       } else {
         console.warn("setOnboardingRole failed:", response.message);

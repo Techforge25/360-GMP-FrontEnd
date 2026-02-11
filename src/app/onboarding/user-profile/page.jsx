@@ -1132,29 +1132,69 @@ export default function UserProfilePage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSuccessNext = () => {
-    // Update user role in localStorage
+  const handleSuccessNext = async () => {
+    // Update user role and auth token in localStorage
     if (typeof window !== "undefined") {
-      const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-      storedUser.role = "user";
-      storedUser.isNewToPlatform = false;
+      const baseUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+      // Try to refresh auth token so backend gets latest userId/profileId
+      // This mimics the "second login" so protected endpoints like
+      // /userProfile or /businessProfile don't return 403 right after signup.
+      let refreshedUser = { ...baseUser };
+      try {
+        const refresh = await api.get({
+          url: "/auth/refreshToken/updateRole?role=user",
+          activateLoader: false,
+          enableSuccessMessage: false,
+          enableErrorMessage: false,
+        });
+
+        if (refresh?.success) {
+          refreshedUser = {
+            ...refreshedUser,
+            ...(refresh.data || {}),
+          };
+
+          const refreshedToken =
+            refresh.accessToken ||
+            refresh.token ||
+            refresh.data?.accessToken ||
+            refresh.data?.token;
+
+          if (refreshedToken) {
+            refreshedUser.accessToken = refreshedToken;
+            refreshedUser.token = refreshedToken;
+          }
+        }
+      } catch (e) {
+        // If refresh fails, we'll still proceed with existing token/newToken
+        console.warn("Token refresh after profile creation failed", e);
+      }
+
+      // Ensure final user object has correct role and onboarding flags
+      const finalUser = {
+        ...refreshedUser,
+        role: "user",
+        isNewToPlatform: false,
+      };
 
       // Persist the newly created profile as profilePayload
       if (createdProfile) {
-        storedUser.profilePayload = createdProfile;
+        finalUser.profilePayload = createdProfile;
       }
 
-      // Update token if a new one was received
+      // Fallback: if backend didn't send a refreshed token but profile
+      // creation did, keep using newToken to avoid stale auth.
       if (newToken) {
-        storedUser.accessToken = newToken;
-        storedUser.token = newToken; // Legacy support
+        finalUser.accessToken = newToken;
+        finalUser.token = newToken;
       }
 
-      localStorage.setItem("user", JSON.stringify(storedUser));
+      localStorage.setItem("user", JSON.stringify(finalUser));
 
       // Update global context to refresh axios headers immediately
       if (login) {
-        login(storedUser);
+        login(finalUser);
       }
 
       window.location.href = "/dashboard/user";
@@ -1205,7 +1245,7 @@ export default function UserProfilePage() {
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
-              onUpdateLogo={handleUpdateLogo}
+              onUpdateLogo={user?.profilePayload ? handleUpdateLogo : undefined}
             />
           )}
           {currentStep === 2 && (
