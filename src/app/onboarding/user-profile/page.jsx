@@ -877,6 +877,9 @@ export default function UserProfilePage() {
     logo: "", // Profile photo URL
     banner: "", // Banner image URL
   });
+  const [createdProfile, setCreatedProfile] = useState(null);
+  const [newToken, setNewToken] = useState(null);
+  const { login } = useUserRole();
   const router = useRouter();
 
   const handleSubmit = async () => {
@@ -985,6 +988,22 @@ export default function UserProfilePage() {
       if (!response.success) {
         setError(response.message || "Signup failed");
         return false;
+      }
+
+      // Save the created profile data to state for the success handler
+      if (response.data) {
+        setCreatedProfile(response.data);
+      }
+
+      // Capture new token if provided (fixes 403 stale token issue)
+      const token =
+        response.accessToken ||
+        response.token ||
+        response.data?.accessToken ||
+        response.data?.token;
+      if (token) {
+        setNewToken(token);
+        console.log("New token captured from profile creation");
       }
 
       return true;
@@ -1119,7 +1138,25 @@ export default function UserProfilePage() {
       const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
       storedUser.role = "user";
       storedUser.isNewToPlatform = false;
+
+      // Persist the newly created profile as profilePayload
+      if (createdProfile) {
+        storedUser.profilePayload = createdProfile;
+      }
+
+      // Update token if a new one was received
+      if (newToken) {
+        storedUser.accessToken = newToken;
+        storedUser.token = newToken; // Legacy support
+      }
+
       localStorage.setItem("user", JSON.stringify(storedUser));
+
+      // Update global context to refresh axios headers immediately
+      if (login) {
+        login(storedUser);
+      }
+
       window.location.href = "/dashboard/user";
     }
   };

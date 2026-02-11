@@ -129,7 +129,7 @@ class CommunityAPI {
    */
   async removeMember(communityId, memberId) {
     return await api.delete({
-      url: `/community/${communityId}/members/${memberId}`,
+      url: `/community-membership/${communityId}/members/${memberId}/remove`,
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,
@@ -146,6 +146,17 @@ class CommunityAPI {
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,
+    });
+  }
+  /**
+   * Get all communities the user is a member of (including business profiles)
+   */
+  async getMyCommunities() {
+    return await api.get({
+      url: "/my-communities/show",
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
     });
   }
 }

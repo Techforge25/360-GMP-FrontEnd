@@ -25,6 +25,7 @@ import { BsPersonFill } from "react-icons/bs";
 import api from "@/lib/axios";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { useUserRole } from "@/context/UserContext";
 
 const IndustryOptions = [
   "Manufacturing",
@@ -689,6 +690,9 @@ export default function BusinessProfilePage() {
     certificationDocUrl: "",
     compliances: [],
   });
+  const [createdProfile, setCreatedProfile] = useState(null);
+  const [newToken, setNewToken] = useState(null);
+  const { login } = useUserRole();
 
   const router = useRouter();
 
@@ -772,6 +776,20 @@ export default function BusinessProfilePage() {
       if (!response.success) {
         setError(response.message || "Signup failed");
         return false;
+      }
+      if (response.data) {
+        setCreatedProfile(response.data);
+      }
+
+      // Capture new token if provided (fixes 403 stale token issue)
+      const token =
+        response.accessToken ||
+        response.token ||
+        response.data?.accessToken ||
+        response.data?.token;
+      if (token) {
+        setNewToken(token);
+        console.log("New token captured from business profile creation");
       }
 
       return true;
@@ -867,9 +885,23 @@ export default function BusinessProfilePage() {
     // Update user role in localStorage
     if (typeof window !== "undefined") {
       const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
-      storedUser.role = "business";
-      storedUser.isNewToPlatform = false;
+      if (createdProfile) {
+        storedUser.profilePayload = createdProfile;
+      }
+
+      // Update token if a new one was received
+      if (newToken) {
+        storedUser.accessToken = newToken;
+        storedUser.token = newToken; // Legacy support
+      }
+
       localStorage.setItem("user", JSON.stringify(storedUser));
+
+      // Update global context to refresh axios headers immediately
+      if (login) {
+        login(storedUser);
+      }
+
       window.location.href = "/dashboard/business";
     }
   };

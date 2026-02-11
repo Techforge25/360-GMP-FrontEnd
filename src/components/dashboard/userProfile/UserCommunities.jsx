@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FiUsers, FiChevronRight } from "react-icons/fi";
 import Link from "next/link";
 import api from "@/lib/axios";
+import communityAPI from "@/services/communityAPI";
 
 const UserCommunities = () => {
   const [joinedCommunities, setJoinedCommunities] = useState([]);
@@ -16,165 +17,32 @@ const UserCommunities = () => {
   const fetchCommunities = async () => {
     try {
       setLoading(true);
-      
-      // Fetch joined communities
-      const joinedResponse = await api.get({
-        url: `/community/joined?page=1&limit=10`,
-        enableErrorMessage: false,
-        enableSuccessMessage: false,
-      });
 
-      // Fetch suggested communities
-      const suggestedResponse = await api.get({
-        url: `/community?page=1&limit=3&status=active`,
-        enableErrorMessage: false,
-        enableSuccessMessage: false,
-      });
-
-      if (joinedResponse.success && joinedResponse.data?.docs) {
-        setJoinedCommunities(joinedResponse.data.docs);
-      } else {
-        // Fallback mock data for joined communities
-        setJoinedCommunities([
-          {
-            _id: "1",
-            name: "Job Search Support Group",
-            description: "Job search support you to find the best jobs according to your expertise",
-            category: "General",
-            memberCount: 66300,
-            lastActive: "2h ago",
-            profileImage: "/assets/images/community1.png",
-            members: [
-              { avatar: "/assets/images/Portrait_Placeholder.png" },
-              { avatar: "/assets/images/Portrait_Placeholder.png" },
-              { avatar: "/assets/images/Portrait_Placeholder.png" },
-            ],
-          },
-          {
-            _id: "2",
-            name: "Future of Global Supply Chain Forum",
-            description: "Dedicated space for logistics experts to discuss efficient distribution and sourcing.",
-            category: "Manufacturing",
-            memberCount: 56300,
-            lastActive: "2h ago",
-            profileImage: "/assets/images/community2.png",
-            members: [
-              { avatar: "/assets/images/Portrait_Placeholder.png" },
-              { avatar: "/assets/images/Portrait_Placeholder.png" },
-            ],
-          },
-          {
-            _id: "3",
-            name: "Industrial Tech & Automation Nexus",
-            description: "Connect with engineers and innovators to explore IoT, Robotics, and advanced manufacturing trends.",
-            category: "Manufacturing",
-            memberCount: 56300,
-            lastActive: "2h ago",
-            profileImage: "/assets/images/community3.png",
-            members: [
-              { avatar: "/assets/images/Portrait_Placeholder.png" },
-              { avatar: "/assets/images/Portrait_Placeholder.png" },
-            ],
-          },
-        ]);
+      // Fetch joined communities using getMyCommunities
+      try {
+        const joinedResult = await communityAPI.getMyCommunities();
+        if (joinedResult.success && joinedResult.data) {
+          setJoinedCommunities(joinedResult.data);
+        } else {
+          setJoinedCommunities([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch joined communities:", err);
       }
 
-      if (suggestedResponse.success && suggestedResponse.data?.docs) {
-        setSuggestedCommunities(suggestedResponse.data.docs);
-      } else {
-        // Fallback mock data for suggested communities
-        setSuggestedCommunities([
-          {
-            _id: "s1",
-            name: "Global Logistics Network",
-            memberCount: 2400,
-            type: "featured",
-            profileImage: "/assets/images/community-suggested1.png",
-          },
-          {
-            _id: "s2",
-            name: "Tech Innovators Hub",
-            memberCount: 2400,
-            type: "featured",
-            profileImage: "/assets/images/community-suggested2.png",
-          },
-          {
-            _id: "s3",
-            name: "Medical Leaders Forum",
-            memberCount: 2400,
-            type: "featured",
-            profileImage: "/assets/images/community-suggested3.png",
-          },
-        ]);
+      // Fetch suggested communities using getSuggestedCommunities
+      try {
+        const suggestedResult = await communityAPI.getSuggestedCommunities();
+        if (suggestedResult.success && suggestedResult.data) {
+          setSuggestedCommunities(
+            suggestedResult.data.docs || suggestedResult.data,
+          );
+        }
+      } catch (err) {
+        console.error("Failed to fetch suggested communities:", err);
       }
     } catch (error) {
       console.error("Failed to fetch communities:", error);
-      // Set fallback data on error
-      setJoinedCommunities([
-        {
-          _id: "1",
-          name: "Job Search Support Group",
-          description: "Job search support you to find the best jobs according to your expertise",
-          category: "General",
-          memberCount: 66300,
-          lastActive: "2h ago",
-          profileImage: "/assets/images/community1.png",
-          members: [
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-          ],
-        },
-        {
-          _id: "2",
-          name: "Future of Global Supply Chain Forum",
-          description: "Dedicated space for logistics experts to discuss efficient distribution and sourcing.",
-          category: "Manufacturing",
-          memberCount: 56300,
-          lastActive: "2h ago",
-          profileImage: "/assets/images/community2.png",
-          members: [
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-          ],
-        },
-        {
-          _id: "3",
-          name: "Industrial Tech & Automation Nexus",
-          description: "Connect with engineers and innovators to explore IoT, Robotics, and advanced manufacturing trends.",
-          category: "Manufacturing",
-          memberCount: 56300,
-          lastActive: "2h ago",
-          profileImage: "/assets/images/community3.png",
-          members: [
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-            { avatar: "/assets/images/Portrait_Placeholder.png" },
-          ],
-        },
-      ]);
-      setSuggestedCommunities([
-        {
-          _id: "s1",
-          name: "Global Logistics Network",
-          memberCount: 2400,
-          type: "featured",
-          profileImage: "/assets/images/community-suggested1.png",
-        },
-        {
-          _id: "s2",
-          name: "Tech Innovators Hub",
-          memberCount: 2400,
-          type: "featured",
-          profileImage: "/assets/images/community-suggested2.png",
-        },
-        {
-          _id: "s3",
-          name: "Medical Leaders Forum",
-          memberCount: 2400,
-          type: "featured",
-          profileImage: "/assets/images/community-suggested3.png",
-        },
-      ]);
     } finally {
       setLoading(false);
     }
@@ -187,9 +55,7 @@ const UserCommunities = () => {
         enableErrorMessage: true,
         enableSuccessMessage: true,
       });
-      setJoinedCommunities((prev) =>
-        prev.filter((c) => c._id !== communityId)
-      );
+      setJoinedCommunities((prev) => prev.filter((c) => c._id !== communityId));
     } catch (error) {
       console.error("Failed to leave community:", error);
     }
@@ -226,7 +92,8 @@ const UserCommunities = () => {
                 No Communities Joined
               </h3>
               <p className="text-sm sm:text-base text-gray-500 mb-3 sm:mb-4">
-                You have not joined any communities yet. Explore and join communities to connect with others.
+                You have not joined any communities yet. Explore and join
+                communities to connect with others.
               </p>
               <Link href="/dashboard/user/communities">
                 <button className="px-4 sm:px-6 py-2 sm:py-2.5 bg-[#240457] text-white rounded-lg text-sm sm:text-base font-medium hover:bg-[#1a0340] transition-colors">
@@ -316,7 +183,9 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
                 </span>
               </div>
               <p className="text-sm sm:text-sm text-gray-500 mt-1 line-clamp-2">
-                {community.description || community.purpose || "A community for like-minded professionals."}
+                {community.description ||
+                  community.purpose ||
+                  "A community for like-minded professionals."}
               </p>
             </div>
           </div>
@@ -332,11 +201,15 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
                     className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full border-2 border-white overflow-hidden bg-gray-200"
                   >
                     <img
-                      src={member.avatar || "/assets/images/Portrait_Placeholder.png"}
+                      src={
+                        member.avatar ||
+                        "/assets/images/Portrait_Placeholder.png"
+                      }
                       alt="Member"
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.target.src = "/assets/images/Portrait_Placeholder.png";
+                        e.target.src =
+                          "/assets/images/Portrait_Placeholder.png";
                       }}
                     />
                   </div>

@@ -197,6 +197,12 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
     if (confirm("Are you sure you want to remove this member?")) {
       try {
+        console.log(
+          "Attempting to remove member. CommunityID:",
+          community._id,
+          "TargetMemberID:",
+          memberId,
+        );
         setProcessingId(memberId);
         const response = await communityAPI.removeMember(
           community._id,
@@ -609,7 +615,12 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                                   </button>
                                 )}
                                 <button
-                                  onClick={() => handleRemoveMember(member._id)}
+                                  onClick={() =>
+                                    handleRemoveMember(
+                                      member.userProfileId?._id ||
+                                        member.memberId?._id,
+                                    )
+                                  }
                                   className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                                 >
                                   Remove

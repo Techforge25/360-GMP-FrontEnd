@@ -3,9 +3,16 @@ import React, { useState } from "react";
 import { FiUsers } from "react-icons/fi";
 import communityAPI from "@/services/communityAPI";
 
-const CommunityHeader = ({ community, isOwner, isMember, membershipStatus, user, onMembershipUpdate }) => {
+const CommunityHeader = ({
+  community,
+  isOwner,
+  isMember,
+  membershipStatus,
+  user,
+  onMembershipUpdate,
+}) => {
   const [isJoining, setIsJoining] = useState(false);
-  
+
   if (!community) return null;
 
   const formatMemberCount = (count) => {
@@ -17,21 +24,24 @@ const CommunityHeader = ({ community, isOwner, isMember, membershipStatus, user,
 
   // Get business info if populated
   const businessInfo = community.businessId;
-  const businessName = businessInfo?.companyName || businessInfo?.name || "Unknown Business";
+  const businessName =
+    businessInfo?.companyName || businessInfo?.name || "Unknown Business";
 
   const handleJoinCommunity = async () => {
-    if (!user || user.role !== "user") return;
-    
+    // Modify condition to allow business owners to join if they aren't members
+    if (!user) return;
+    if (user.role !== "user" && !isOwner) return; // Only allow business if they are the owner
+
     try {
       setIsJoining(true);
       const response = await communityAPI.join(community._id);
-      
+
       if (response.success) {
         // Call callback to update parent component state
         if (onMembershipUpdate) {
           onMembershipUpdate({
-            isMember: response.data.status === 'approved',
-            membershipStatus: response.data.status
+            isMember: response.data.status === "approved",
+            membershipStatus: response.data.status,
           });
         }
       }
@@ -51,10 +61,10 @@ const CommunityHeader = ({ community, isOwner, isMember, membershipStatus, user,
         </button>
       );
     }
-    
+
     if (membershipStatus === "pending") {
       return (
-        <button 
+        <button
           disabled
           className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-yellow-100 text-yellow-800 rounded-lg font-semibold text-sm whitespace-nowrap cursor-not-allowed"
         >
@@ -62,10 +72,10 @@ const CommunityHeader = ({ community, isOwner, isMember, membershipStatus, user,
         </button>
       );
     }
-    
+
     if (membershipStatus === "rejected") {
       return (
-        <button 
+        <button
           disabled
           className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-red-100 text-red-800 rounded-lg font-semibold text-sm whitespace-nowrap cursor-not-allowed"
         >
@@ -75,7 +85,7 @@ const CommunityHeader = ({ community, isOwner, isMember, membershipStatus, user,
     }
 
     return (
-      <button 
+      <button
         onClick={handleJoinCommunity}
         disabled={isJoining}
         className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-colors text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
@@ -128,14 +138,18 @@ const CommunityHeader = ({ community, isOwner, isMember, membershipStatus, user,
                 {formatMemberCount(community.memberCount)} members
               </span>
               <span className="w-1 h-1 rounded-full bg-gray-300" />
-              <span>{community.status === 'active' ? 'Active Community' : 'Community'}</span>
+              <span>
+                {community.status === "active"
+                  ? "Active Community"
+                  : "Community"}
+              </span>
               <span className="w-1 h-1 rounded-full bg-gray-300" />
               <span className="capitalize">{community.type || "Public"}</span>
             </div>
           </div>
 
           {/* Action Buttons */}
-          {user?.role === "user" && (
+          {(user?.role === "user" || (isOwner && !isMember)) && (
             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               {getJoinButtonContent()}
             </div>
