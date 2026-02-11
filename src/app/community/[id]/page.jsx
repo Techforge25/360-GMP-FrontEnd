@@ -43,7 +43,15 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
 
       // Add filter based on active tab
       if (filterType && filterType !== "recent") {
-        queryParams.type = filterType;
+        // Map tab names to post types
+        const typeMapping = {
+          posts: "post",
+          events: "event",
+          polls: "poll",
+          discussions: "discussion",
+          resources: "document",
+        };
+        queryParams.type = typeMapping[filterType] || filterType;
       }
 
       const response = await postsAPI.getCommunityPosts(params.id, queryParams);
@@ -92,16 +100,17 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const getPostCounts = () => {
     const totalPosts = posts.length;
     const postTypes = posts.reduce((acc, post) => {
-      const type = post.type || "posts";
+      const type = post.type || "post";
       acc[type] = (acc[type] || 0) + 1;
       return acc;
     }, {});
 
     return {
       total: totalPosts,
-      posts: postTypes.posts || totalPosts, // All posts if no specific type
+      posts: postTypes.post || 0,
       discussions: postTypes.discussion || 0,
       events: postTypes.event || 0,
+      polls: postTypes.poll || 0,
       resources: postTypes.document || postTypes.resource || 0,
     };
   };

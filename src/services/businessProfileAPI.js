@@ -8,6 +8,8 @@ class BusinessProfileAPI {
    * Get all business profiles
    */
   async getAll(params = {}) {
+    // If params contain arrays (like industries), we might need to join them
+    // But BusinessesPageContent will handle joining for regex fields
     const queryParams = new URLSearchParams(params).toString();
     const url = queryParams
       ? `/businessProfile?${queryParams}`

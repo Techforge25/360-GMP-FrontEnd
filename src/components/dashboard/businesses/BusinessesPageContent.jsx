@@ -14,10 +14,16 @@ export default function BusinessesPageContent() {
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
-  const [filteredBusinesses, setFilteredBusinesses] = useState([]);
+  const [filteredBusinesses, setFilteredBusinesses] = useState([]); // Keep for compatibility with render
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [itemsPerPage] = useState(10);
+
   const [filters, setFilters] = useState({
     industries: [],
     countries: [],
@@ -26,40 +32,55 @@ export default function BusinessesPageContent() {
 
   useEffect(() => {
     fetchBusinessProfiles();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, query, filters]);
 
-  useEffect(() => {
-    // Apply filters whenever businesses, query, location, or filters change
-    if (businesses.length > 0) {
-      filterBusinesses();
-    }
-  }, [businesses, query, location, filters]);
+  // Reset page when filters change (handled in handleFilterChange usually, but good to have safety)
+  // However, handleFilterChange is cleaner.
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+    setCurrentPage(1);
+  };
 
   const fetchBusinessProfiles = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await businessProfileAPI.getAll();
 
-      console.log("Business Profile API Response:", response);
+      const params = {
+        page: currentPage,
+        limit: itemsPerPage,
+        search: query,
+      };
+
+      // Handle location prop vs filter
+      if (location) {
+        params.country = location;
+      } else if (filters.countries.length > 0) {
+        params.country = filters.countries.join("|");
+      }
+
+      if (filters.industries.length > 0) {
+        params.industry = filters.industries.join("|");
+      }
+
+      const response = await businessProfileAPI.getAll(params);
 
       if (response.success && response.data) {
-        // Backend returns paginated data: { docs: [...], totalDocs, hasNextPage, etc. }
-        const businessData = response.data.docs || response.data;
+        const { docs, totalPages: total, page } = response.data;
 
-        console.log("Extracted business data:", businessData);
+        const businessData = docs || [];
+        const transformed = businessData.map(transformBusinessProfile);
 
-        // Transform backend data to match component expectations
-        const transformedData = Array.isArray(businessData)
-          ? businessData.map(transformBusinessProfile)
-          : [transformBusinessProfile(businessData)];
-
-        setBusinesses(transformedData);
-        setFilteredBusinesses(transformedData);
+        setBusinesses(transformed);
+        setFilteredBusinesses(transformed); // "filtered" is now just the current page data
+        setTotalPages(total || 1);
+        setCurrentPage(page || 1);
       } else {
-        console.warn("No business profiles in response or invalid structure");
         setBusinesses([]);
         setFilteredBusinesses([]);
+        setTotalPages(1);
       }
     } catch (err) {
       console.error("Failed to fetch business profiles:", err);
@@ -69,88 +90,37 @@ export default function BusinessesPageContent() {
     }
   };
 
-  const filterBusinesses = () => {
-    let filtered = businesses;
-
-    // Search query filter
-    if (query) {
-      const lowerQuery = query.toLowerCase();
-      filtered = filtered.filter(
-        (biz) =>
-          biz.name.toLowerCase().includes(lowerQuery) ||
-          biz.category.toLowerCase().includes(lowerQuery) ||
-          (biz.tags &&
-            biz.tags.some((tag) => tag.toLowerCase().includes(lowerQuery))),
-      );
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-
-    // Location filter
-    if (location) {
-      const lowerLocation = location.toLowerCase();
-      filtered = filtered.filter((biz) =>
-        biz.location.toLowerCase().includes(lowerLocation),
-      );
-    }
-
-    // Industry filter
-    if (filters.industries && filters.industries.length > 0) {
-      filtered = filtered.filter((biz) =>
-        filters.industries.some((industry) =>
-          biz.category.toLowerCase().includes(industry.toLowerCase()),
-        ),
-      );
-    }
-
-    // Country filter
-    if (filters.countries && filters.countries.length > 0) {
-      filtered = filtered.filter((biz) =>
-        filters.countries.some((country) =>
-          biz.location.toLowerCase().includes(country.toLowerCase()),
-        ),
-      );
-    }
-
-    // Rating filter (simplified - you may need to adjust based on your rating logic)
-    if (filters.ratings && filters.ratings.length > 0) {
-      filtered = filtered.filter((biz) => {
-        const rating = biz.rating || 0;
-        return filters.ratings.some((ratingFilter) => {
-          if (ratingFilter === "5 Stars") return rating >= 5;
-          if (ratingFilter === "4 Stars & Up") return rating >= 4;
-          if (ratingFilter === "3 Stars & Up") return rating >= 3;
-          if (ratingFilter === "2 Stars & Up") return rating >= 2;
-          return true;
-        });
-      });
-    }
-
-    setFilteredBusinesses(filtered);
   };
 
   const handleSearch = () => {
-    filterBusinesses();
+    setCurrentPage(1); // Trigger fetch via useEffect dependency
   };
 
   // Transform backend schema to component schema
   const transformBusinessProfile = (profile) => {
     return {
-      id: profile._id || profile.id || "mock-id", // Add ID for routing
+      id: profile._id || profile.id || "mock-id",
       name: profile.companyName || "Unknown Company",
       description: profile.description || "No description available",
       verified: profile.certifications?.length > 0 || false,
       location: profile.location
         ? `${profile.location.city || ""}, ${profile.location.country || ""}`
         : "Location not specified",
-      rating: 4.8, // Default rating (backend doesn't provide this yet)
-      reviews: 124, // Default reviews count
+      rating: 4.8,
+      reviews: 124,
       category: profile.businessType || profile.primaryIndustry || "General",
       established: profile.foundedDate
         ? new Date(profile.foundedDate).getFullYear().toString()
         : "N/A",
       stats: {
         minOrder: "Contact for details",
-        responseRate: ">95%", // Default value
-        onTime: "98%", // Default value
+        responseRate: ">95%",
+        onTime: "98%",
         transactions: "Supplier",
         products: "Contact for details",
       },
@@ -163,7 +133,6 @@ export default function BusinessesPageContent() {
       logo: profile.logo || "/assets/images/profileLogo.png",
       banner: profile.banner || null,
       sponsored: false,
-      // Additional data from backend
       companySize: profile.companySize,
       operationHour: profile.operationHour,
       certifications: profile.certifications,
@@ -204,7 +173,10 @@ export default function BusinessesPageContent() {
             {/* Desktop Sidebar */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
               <div className="top-4">
-                <FilterSidebar filters={filters} onFilterChange={setFilters} />
+                <FilterSidebar
+                  filters={filters}
+                  onFilterChange={handleFilterChange}
+                />
               </div>
             </aside>
 
@@ -233,7 +205,7 @@ export default function BusinessesPageContent() {
                   <div className="p-4">
                     <FilterSidebar
                       filters={filters}
-                      onFilterChange={setFilters}
+                      onFilterChange={handleFilterChange}
                     />
                   </div>
                 </div>
@@ -246,8 +218,8 @@ export default function BusinessesPageContent() {
                 <h2 className="text-lg sm:text-xl text-center lg:text-left font-medium text-black">
                   {loading
                     ? "Loading..."
-                    : `${filteredBusinesses.length} ${
-                        filteredBusinesses.length === 1
+                    : `${businesses.length} ${
+                        businesses.length === 1
                           ? "Registered Company"
                           : "Registered Companies"
                       } `}
@@ -294,9 +266,9 @@ export default function BusinessesPageContent() {
               )}
 
               {/* Business List */}
-              {!loading && !error && filteredBusinesses.length > 0 && (
+              {!loading && !error && businesses.length > 0 && (
                 <div className="space-y-3 sm:space-y-4">
-                  {filteredBusinesses.map((biz, i) => (
+                  {businesses.map((biz, i) => (
                     <BusinessCard
                       key={i}
                       business={biz}
@@ -322,30 +294,49 @@ export default function BusinessesPageContent() {
               )}
 
               {/* Pagination */}
-              {!loading && businesses.length > 0 && (
+              {!loading && businesses.length > 0 && totalPages > 1 && (
                 <div className="flex justify-center items-center mt-8 sm:mt-12 gap-1 sm:gap-2 px-2">
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     Prev
                   </button>
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-[#240457] text-white rounded text-sm sm:text-sm lg:text-base">
-                    1
-                  </button>
-                  <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
-                    2
-                  </button>
-                  <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
-                    3
-                  </button>
-                  <button className="hidden md:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
-                    4
-                  </button>
-                  <span className="hidden md:block text-gray-400 text-sm">
-                    ...
-                  </span>
-                  <button className="hidden sm:block px-3 py-1.5 bg-white border border-gray-200 rounded text-gray-600 text-sm lg:text-base hover:bg-gray-50 transition-colors">
-                    352
-                  </button>
-                  <button className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors">
+
+                  {/* Dynamic Page Numbers */}
+                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                    let pageNum;
+                    if (totalPages <= 5) {
+                      pageNum = i + 1;
+                    } else if (currentPage <= 3) {
+                      pageNum = i + 1;
+                    } else if (currentPage >= totalPages - 2) {
+                      pageNum = totalPages - 4 + i;
+                    } else {
+                      pageNum = currentPage - 2 + i;
+                    }
+
+                    return (
+                      <button
+                        key={pageNum}
+                        onClick={() => handlePageChange(pageNum)}
+                        className={`px-3 py-1.5 rounded text-sm lg:text-base transition-colors ${
+                          currentPage === pageNum
+                            ? "bg-[#240457] text-white"
+                            : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                        }`}
+                      >
+                        {pageNum}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
                     <span className="hidden sm:inline">Next &gt;</span>
                     <span className="sm:hidden">&gt;</span>
                   </button>

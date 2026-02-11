@@ -629,6 +629,334 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
     );
   }
 
+  // Poll Post Type
+  if (post.type === "poll" && post.poll) {
+    const { question, options, duration } = post.poll;
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [hasVoted, setHasVoted] = useState(false);
+    const [pollOptions, setPollOptions] = useState(options || []);
+
+    const totalVotes = pollOptions.reduce(
+      (sum, opt) => sum + (opt.votes || 0),
+      0,
+    );
+    const isPollExpired = duration && new Date(duration) < new Date();
+
+    const handleVote = async (optionIndex) => {
+      if (hasVoted || isPollExpired) return;
+
+      try {
+        // Optimistic update
+        const newOptions = [...pollOptions];
+        newOptions[optionIndex].votes =
+          (newOptions[optionIndex].votes || 0) + 1;
+        setPollOptions(newOptions);
+        setSelectedOption(optionIndex);
+        setHasVoted(true);
+
+        // TODO: Call API to record vote
+        // const response = await postsAPI.votePoll(post._id, optionIndex);
+      } catch (error) {
+        console.error("Error voting on poll:", error);
+        // Revert on error
+        setPollOptions(options);
+        setSelectedOption(null);
+        setHasVoted(false);
+      }
+    };
+
+    const formatDuration = (dateString) => {
+      if (!dateString) return "No expiration";
+      const date = new Date(dateString);
+      const now = new Date();
+      const diff = date - now;
+
+      if (diff < 0) return "Poll ended";
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor(
+        (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+      );
+
+      if (days > 0) return `${days} day${days > 1 ? "s" : ""} left`;
+      if (hours > 0) return `${hours} hour${hours > 1 ? "s" : ""} left`;
+      return "Less than 1 hour left";
+    };
+
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
+        {/* Author Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+              <img
+                src={author.image}
+                alt={author.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = "/assets/images/Portrait_Placeholder.png";
+                }}
+              />
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-gray-900">{author.name}</h4>
+              <div className="flex items-center text-sm text-gray-500 gap-1">
+                <span>{author.role}</span>
+                <span>•</span>
+                <span>{formatTimeAgo(post.createdAt)}</span>
+              </div>
+            </div>
+          </div>
+          <div className="relative">
+            <button
+              onClick={() => setShowOptions(!showOptions)}
+              className="text-gray-400 hover:text-gray-600"
+            >
+              <FiMoreHorizontal size={20} />
+            </button>
+            {showOptions && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowOptions(false)}
+                />
+                <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
+                  {isPostAuthor() && (
+                    <button
+                      onClick={() => {
+                        setShowOptions(false);
+                        handleDelete();
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                      Delete Post
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Poll Question */}
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-gray-900 mb-2">{question}</h3>
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <FiClock className="w-4 h-4" />
+            <span>{formatDuration(duration)}</span>
+            <span>•</span>
+            <span>
+              {totalVotes} vote{totalVotes !== 1 ? "s" : ""}
+            </span>
+          </div>
+        </div>
+
+        {/* Poll Options */}
+        <div className="space-y-3 mb-4">
+          {pollOptions.map((option, index) => {
+            const percentage =
+              totalVotes > 0 ? ((option.votes || 0) / totalVotes) * 100 : 0;
+            const isSelected = selectedOption === index;
+
+            return (
+              <button
+                key={index}
+                onClick={() => handleVote(index)}
+                disabled={hasVoted || isPollExpired}
+                className={`w-full text-left relative overflow-hidden rounded-lg border-2 transition-all ${
+                  hasVoted
+                    ? isSelected
+                      ? "border-[#240457] bg-purple-50"
+                      : "border-gray-200 bg-gray-50"
+                    : "border-gray-200 hover:border-[#240457] hover:bg-purple-50"
+                } ${isPollExpired ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+              >
+                {/* Progress Bar */}
+                {hasVoted && (
+                  <div
+                    className={`absolute inset-0 ${isSelected ? "bg-purple-100" : "bg-gray-100"} transition-all`}
+                    style={{ width: `${percentage}%` }}
+                  />
+                )}
+
+                {/* Option Content */}
+                <div className="relative px-4 py-3 flex items-center justify-between">
+                  <span className="font-medium text-gray-900 text-sm">
+                    {option.option}
+                  </span>
+                  {hasVoted && (
+                    <span className="font-semibold text-gray-700 text-sm">
+                      {percentage.toFixed(0)}%
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tags */}
+        {post.tags && (
+          <div className="mb-4">
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Tagged:</span> {post.tags}
+            </p>
+          </div>
+        )}
+
+        {/* Interactions Stats */}
+        <div className="flex items-center justify-between text-sm text-gray-600 mb-2 pt-3 border-t border-gray-100">
+          <span>
+            {likeCount || 0} Likes • {post.commentCount || 0} Comments
+          </span>
+        </div>
+
+        {/* Divider */}
+        <hr className="border-gray-200 mb-3" />
+
+        {/* Action Buttons */}
+        <div className="flex items-center justify-around">
+          <button
+            onClick={handleLike}
+            disabled={isLiking}
+            className={`flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-sm font-medium transition-colors ${liked ? "text-blue-600" : "text-gray-600"} disabled:opacity-50`}
+          >
+            {liked ? (
+              <AiFillLike className="w-4 h-4" />
+            ) : (
+              <FiThumbsUp className="w-4 h-4" />
+            )}
+            <span>Like</span>
+          </button>
+          <button
+            onClick={() => setShowComments(!showComments)}
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-gray-600 text-sm font-medium transition-colors"
+          >
+            <FiMessageSquare className="w-4 h-4" />
+            <span>Comment</span>
+          </button>
+          <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-gray-600 text-sm font-medium transition-colors">
+            <FiShare2 className="w-4 h-4" />
+            <span>Share</span>
+          </button>
+        </div>
+
+        {/* Comments Section */}
+        {showComments && (
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            {/* Comment Input */}
+            <div className="flex gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                <img
+                  src={
+                    currentUser?.profilePayload?.imageProfile ||
+                    currentUser?.profilePayload?.logo ||
+                    "/assets/images/Portrait_Placeholder.png"
+                  }
+                  alt="Your profile"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "/assets/images/Portrait_Placeholder.png";
+                  }}
+                />
+              </div>
+              <div className="flex-1">
+                <div className="relative">
+                  <textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Write a comment..."
+                    className="w-full bg-gray-50 border text-black border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    rows={1}
+                    onInput={(e) => {
+                      e.target.style.height = "auto";
+                      e.target.style.height = e.target.scrollHeight + "px";
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleComment();
+                      }
+                    }}
+                  />
+                  {commentText.trim() && (
+                    <button
+                      onClick={handleComment}
+                      disabled={isCommenting}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-800 disabled:opacity-50 text-sm font-medium"
+                    >
+                      {isCommenting ? "Posting..." : "Post"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Comments List */}
+            {comments.length > 0 && (
+              <div className="space-y-3">
+                {comments.map((comment, index) => (
+                  <div key={index} className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                      <img
+                        src={
+                          comment.userId?.imageProfile ||
+                          comment.userId?.logo ||
+                          "/assets/images/Portrait_Placeholder.png"
+                        }
+                        alt={
+                          comment.userId?.fullName ||
+                          comment.userId?.companyName ||
+                          "User"
+                        }
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "/assets/images/Portrait_Placeholder.png";
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="bg-gray-50 rounded-lg px-3 py-2">
+                        <h5 className="text-sm font-semibold text-gray-900 mb-1">
+                          {comment.userId?.fullName ||
+                            comment.userId?.companyName ||
+                            "Anonymous User"}
+                        </h5>
+                        <p className="text-sm text-gray-700">
+                          {comment.content}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                        <span>{formatTimeAgo(comment.commentedAt)}</span>
+                        <button className="hover:text-gray-700">Like</button>
+                        <button className="hover:text-gray-700">Reply</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* View More Comments */}
+            {(post.commentCount || 0) > comments.length && (
+              <button
+                onClick={() => {
+                  handleLoadComments();
+                }}
+                className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
+              >
+                View more comments ({(post.commentCount || 0) - comments.length}{" "}
+                more)
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Regular Post (with optional image, video, or poll)
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-4">
