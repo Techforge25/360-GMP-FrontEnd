@@ -392,7 +392,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
               <h4 className="text-sm font-semibold text-gray-900">
                 {author.name}
               </h4>
-              <p className="text-xs text-gray-500">
+              <p className="text-sm text-gray-500">
                 {formatTimeAgo(post.createdAt)}
               </p>
             </div>
@@ -441,7 +441,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
               className="w-full h-full object-cover"
             />
             <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1.5 flex flex-col items-center shadow-lg">
-              <span className="text-xs font-bold text-red-500 uppercase">
+              <span className="text-sm font-bold text-red-500 uppercase">
                 {dateMonth}
               </span>
               <span className="text-xl font-bold text-gray-900 leading-none">
@@ -456,7 +456,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
           <div className="flex gap-4">
             {!post.images?.length && (
               <div className="flex-shrink-0 w-14 h-14 bg-blue-50 text-blue-600 rounded-lg flex flex-col items-center justify-center border border-blue-100">
-                <span className="text-xs font-bold uppercase">{dateMonth}</span>
+                <span className="text-sm font-bold uppercase">{dateMonth}</span>
                 <span className="text-xl font-bold leading-none">
                   {dateDay}
                 </span>

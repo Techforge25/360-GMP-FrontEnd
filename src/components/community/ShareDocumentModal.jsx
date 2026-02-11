@@ -207,7 +207,7 @@ const ShareDocumentModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                     <p className="text-sm font-medium text-gray-900">
                       {selectedDocument.name}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm text-gray-500">
                       {formatFileSize(selectedDocument.size)}
                     </p>
                   </div>

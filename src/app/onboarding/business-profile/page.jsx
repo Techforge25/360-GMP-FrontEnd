@@ -316,7 +316,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
                 <FiChevronDown className="absolute right-2 top-3.5 text-text-secondary pointer-events-none w-3 h-3" />
               </div>
             </div>
-            <p className="text-xs text-gray-500">
+            <p className="text-sm text-gray-500">
               Format: Day - Day: Time - Time Zone
             </p>
           </div>
