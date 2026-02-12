@@ -153,7 +153,7 @@ class CommunityAPI {
    */
   async getMyCommunities() {
     return await api.get({
-      url: "/my-communities/show",
+      url: "/community/my-communities/show",
       activateLoader: false,
       enableSuccessMessage: false,
       enableErrorMessage: false,
