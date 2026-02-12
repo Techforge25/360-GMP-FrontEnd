@@ -173,7 +173,7 @@ const AuthNavbar = () => {
             </Link>
 
             {/* Desktop Navigation Links - Centered */}
-            <div className="hidden lg:flex items-center justify-center flex-1 mx-8">
+            <div className="hidden sm:flex items-center justify-center flex-1 mx-8">
               <div className="flex items-center space-x-8">
                 {navLinks.map((link) => {
                   const isActive = pathname === link.href;
@@ -195,7 +195,7 @@ const AuthNavbar = () => {
             </div>
 
             {/* Right Side Icons */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-4">
               {/* Icon Group */}
               <div className="flex items-center gap-4 border border-gray-200 rounded-full py-2 px-4">
                 {/* Cart Icon */}
@@ -394,7 +394,7 @@ const AuthNavbar = () => {
             </div>
 
             {/* Mobile Menu Toggle */}
-            <div className="lg:hidden flex items-center gap-4">
+            <div className="sm:hidden flex items-center gap-4">
               <Link
                 href={
                   user?.role === "business"
@@ -420,7 +420,7 @@ const AuthNavbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 z-40">
+          <div className="sm:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 z-40">
             <div className="px-6 py-6">
               {/* Navigation Links Section */}
               <div className="mb-6">

@@ -19,6 +19,7 @@ const CustomTooltip = ({ active, payload }) => {
 import UploadGalleryModal from "./UploadGalleryModal";
 import ViewAlbumModal from "./ViewAlbumModal";
 import galleryAPI from "@/services/galleryAPI";
+import businessProfileAPI from "@/services/businessProfileAPI";
 import { useUserRole } from "@/context/UserContext";
 
 const BusinessAboutTab = ({ businessId }) => {
@@ -26,6 +27,8 @@ const BusinessAboutTab = ({ businessId }) => {
   const [isViewAlbumModalOpen, setIsViewAlbumModalOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [gallery, setGallery] = useState([]);
+  const [profileData, setProfileData] = useState(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const { role, user } = useUserRole();
   // Helper to decode JWT (internal or from utils)
   const getProfileIdFromToken = (token) => {
@@ -79,7 +82,7 @@ const BusinessAboutTab = ({ businessId }) => {
   const [exportData] = useState([
     { name: "North America", value: 25, color: "#6366F1" },
     { name: "South America", value: 15, color: "#8B5CF6" },
-    { name: "European Union", value: 30, color: "#F97316" },
+    { name: "European Union", value: 0, color: "#F97316" },
     { name: "Asia Pacific", value: 20, color: "#3B82F6" },
     { name: "Other", value: 10, color: "#6B7280" },
   ]);
@@ -98,6 +101,29 @@ const BusinessAboutTab = ({ businessId }) => {
       icon: "✓",
     },
   ]);
+
+  // Fetch Profile data
+  const fetchProfile = async () => {
+    if (targetBusinessId) {
+      try {
+        setIsLoadingProfile(true);
+        // If viewing own profile from dashboard, we might want to use getMyProfile
+        // but since we have targetBusinessId, viewBusinessProfile is more versatile
+        const response =
+          await businessProfileAPI.viewBusinessProfile(targetBusinessId);
+
+        if (response.success && response.data) {
+          setProfileData(response.data);
+        } else {
+          console.error("Fetch profile failed:", response.message);
+        }
+      } catch (error) {
+        console.error("Failed to fetch business profile:", error);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    }
+  };
 
   // Fetch albums on component mount
   const fetchAlbums = async () => {
@@ -135,6 +161,7 @@ const BusinessAboutTab = ({ businessId }) => {
 
   React.useEffect(() => {
     fetchAlbums();
+    fetchProfile();
   }, [targetBusinessId]);
 
   return (
@@ -149,16 +176,25 @@ const BusinessAboutTab = ({ businessId }) => {
             </h2>
             {/* {isOwner && ( */}
             <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
-              <span className="hidden sm:inline">Edit About Section</span>
+              {/* <span className="hidden sm:inline">Edit About Section</span> */}
               <span className="sm:hidden">Edit</span>
               <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
             {/* )} */}
           </div>
 
-          <p className="text-sm sm:text-sm text-gray-600 leading-relaxed">
-            {aboutData.storyMission}
-          </p>
+          <div className="text-sm sm:text-sm text-gray-600 leading-relaxed min-h-[100px]">
+            {isLoadingProfile ? (
+              <span className="flex items-center gap-2 text-gray-400">
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
+                Loading description...
+              </span>
+            ) : profileData?.description ? (
+              profileData.description
+            ) : (
+              "No description available."
+            )}
+          </div>
         </div>
 
         {/* Export Market Distribution */}
@@ -205,7 +241,7 @@ const BusinessAboutTab = ({ businessId }) => {
                   European Union
                 </p>
                 <p className="text-base sm:text-lg font-bold text-orange-500">
-                  30
+                  0
                 </p>
               </div>
             </div>
@@ -239,7 +275,7 @@ const BusinessAboutTab = ({ businessId }) => {
               Add To Your Profile
               <span className="text-gray-400">|</span>
               <FiCamera className="w-4 h-4 text-green-600" />
-              <span className="text-green-600">Photo/Video</span>
+              <span className="text-green-600">Photo</span>
             </button>
             {/* )} */}
           </div>
@@ -344,28 +380,37 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
 
           <div className="space-y-3">
-            {certifications.map((cert) => (
-              <div
-                key={cert.id}
-                className="flex items-start gap-3 p-4 bg-[#F8F5FF] rounded-xl"
-              >
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-                  {cert.name.includes("ISO") ? (
-                    <span className="text-lg">🏅</span>
-                  ) : (
+            {isLoadingProfile ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="w-8 h-8 border-4 border-[#240457]/10 border-t-[#240457] rounded-full animate-spin"></div>
+              </div>
+            ) : profileData?.certifications &&
+              profileData.certifications.length > 0 ? (
+              profileData.certifications.map((cert, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-4 bg-[#F8F5FF] rounded-xl"
+                >
+                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                     <div className="w-6 h-6 bg-[#240457] rounded-full flex items-center justify-center">
                       <span className="text-white text-sm">✓</span>
                     </div>
-                  )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-bold text-gray-900">{cert}</h4>
+                    <p className="text-sm text-gray-500">
+                      Verified Certification
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-bold text-gray-900">
-                    {cert.name}
-                  </h4>
-                  <p className="text-sm text-gray-500">{cert.description}</p>
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                <p className="text-sm text-gray-500">
+                  No certifications listed
+                </p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

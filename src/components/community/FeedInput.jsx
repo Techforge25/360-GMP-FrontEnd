@@ -233,7 +233,7 @@ const FeedInput = ({
             }`}
           >
             <FiImage className="w-4 h-4" />
-            <span>Photo/video</span>
+            <span>Photo</span>
             {showSoonLabels && <span className="text-sm">(Soon)</span>}
           </button>
           <button

@@ -182,9 +182,9 @@ const HiringMarketSection = () => {
 
   // Mock data for export market distribution
   const marketData = [
-    { name: "North America", value: 45, color: "#2563eb" },
-    { name: "Europe", value: 30, color: "#16a34a" },
-    { name: "Asia", value: 25, color: "#f59e0b" },
+    { name: "North America", value: 0, color: "#2563eb" },
+    { name: "Europe", value: 0, color: "#16a34a" },
+    { name: "Asia", value: 5, color: "#f59e0b" },
   ];
 
   return (

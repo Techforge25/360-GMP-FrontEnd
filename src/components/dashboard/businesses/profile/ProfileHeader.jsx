@@ -21,9 +21,9 @@ export default function ProfileHeader({ business }) {
     banner = "/assets/images/business-banner.jpg", // You might need a placeholder or create one
     logo = "/assets/images/profileLogo.png",
     verified = true,
-    rating = 4.9,
+    rating = "N/A",
     employees = "500-1000 Employees",
-    revenue = "USD $3.6M+",
+    revenue = "N/A",
     age = "3 yrs",
     industry = "IT consulting",
     displayLocation = "New York USA",
@@ -32,8 +32,8 @@ export default function ProfileHeader({ business }) {
       delivery: "100%",
       reorder: "<15%",
       response: "≤6h",
-      revenue: "USD $3.6M+",
-      products: "210",
+      revenue: "N/A",
+      products: "0",
     },
   } = business || {};
 
@@ -95,10 +95,17 @@ export default function ProfileHeader({ business }) {
       </div>
 
       {/* Banner - full width */}
-      <div className="h-48 md:h-64 relative bg-gray-900 ">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/50 to-blue-900/50 mix-blend-multiply"></div>
-        {/* Placeholder for banner image */}
-        <div className="absolute inset-0 bg-[url('/assets/images/businessInnerPageBanner.png')] bg-cover bg-center opacity-60"></div>
+      <div className="h-48 md:h-64 relative bg-gray-900 overflow-hidden">
+        <div className="absolute inset-0 z-10  mix-blend-multiply"></div>
+
+        {/* Dynamic banner image */}
+        <Image
+          src={banner}
+          alt={`${name} Banner`}
+          fill
+          className="object-cover opacity-60"
+          priority
+        />
 
         <div className="absolute bottom-4 right-4 flex gap-3">
           {isUserRole && (
@@ -147,7 +154,7 @@ export default function ProfileHeader({ business }) {
           <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 text-sm text-gray-500 mb-6">
             <div className="flex items-center gap-1">
               <FaStar className="text-yellow-400" />
-              <span className="text-gray-500">{rating} / 5</span>
+              <span className="text-gray-500">{rating}</span>
             </div>
             <div className="flex items-center gap-1">
               <BsBuildings />

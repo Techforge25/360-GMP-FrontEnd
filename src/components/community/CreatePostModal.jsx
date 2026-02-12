@@ -231,7 +231,7 @@ const CreatePostModal = ({ isOpen, onClose, onSubmit, communityId }) => {
             >
               <IoCameraOutline className="text-[#22c55e] w-6 h-6" />
               <span className="text-[#22c55e] font-medium text-base">
-                Photo/Video
+                Photo
               </span>
             </button>
             <input

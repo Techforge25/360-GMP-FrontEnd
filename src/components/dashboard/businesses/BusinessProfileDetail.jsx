@@ -52,13 +52,13 @@ export default function BusinessProfileDetail({ businessId }) {
             response.data.primaryIndustry ||
             response.data.businessType ||
             "General",
-          rating: 4.9, // Default until backend provides ratings
+          rating: "N/A",
           stats: {
             delivery: "100%",
             reorder: "<15%",
             response: "≤6h",
-            revenue: "USD $3.6M+",
-            products: "210",
+            revenue: "N/A",
+            products: "0",
           },
         };
         setBusinessData(transformedData);

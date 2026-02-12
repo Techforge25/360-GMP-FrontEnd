@@ -463,13 +463,13 @@ function PlansList() {
       id: "silver",
       variant: "orange",
       color: "orange",
-      buttonText: isBusiness ? "Upgrade to Silver" : "Buy Membership",
+      buttonText: "Buy Membership",
     },
     premium: {
       id: "premium",
       variant: "purple",
       color: "purple",
-      buttonText: isBusiness ? "Upgrade to Premium" : "Buy Membership",
+      buttonText: "Buy Membership",
     },
   };
 
