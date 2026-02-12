@@ -34,7 +34,8 @@ export default function BusinessProfileDetail({ businessId }) {
         const transformedData = {
           ...response.data,
           name: response.data.companyName || "Unknown Company",
-          location: response.data.location
+          location: response.data.location || null,
+          displayLocation: response.data.location
             ? `${response.data.location.city || ""}, ${response.data.location.country || ""}`
                 .replace(/^,\s*/, "")
                 .replace(/,\s*$/, "")

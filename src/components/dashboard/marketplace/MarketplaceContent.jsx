@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Search,
   ChevronDown,
@@ -26,6 +26,7 @@ export default function MarketplaceContent() {
     ratings: false,
   });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleCategory = (category) => {
     setExpandedCategories((prev) => ({ ...prev, [category]: !prev[category] }));
@@ -155,6 +156,22 @@ export default function MarketplaceContent() {
         return [...prev, categoryName];
       }
     });
+  };
+
+  const handleViewTopRanking = () => {
+    if (pathname.includes("/dashboard/business")) {
+      router.push("/dashboard/business/products/top-ranking");
+    } else if (pathname.includes("/dashboard/user")) {
+      router.push("/dashboard/user/products/top-ranking");
+    }
+  };
+
+  const handleViewNewProducts = () => {
+    if (pathname.includes("/dashboard/business")) {
+      router.push("/dashboard/business/products/new");
+    } else if (pathname.includes("/dashboard/user")) {
+      router.push("/dashboard/user/products/new");
+    }
   };
 
   const handleCountrySelect = (countryName) => {
@@ -646,7 +663,7 @@ export default function MarketplaceContent() {
               <div className="mb-6 sm:mb-8 bg-[#9747FF] rounded-lg p-4 sm:p-6 text-white">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
                   <h2 className="text-lg sm:text-xl font-bold">Top Ranking</h2>
-                  <button className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center">
+                  <button onClick={handleViewTopRanking} className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center">
                     View More <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -704,7 +721,7 @@ export default function MarketplaceContent() {
                       Browse newly-listed products
                     </p>
                   </div>
-                  <button className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center">
+                  <button onClick={handleViewNewProducts} className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center">
                     View More <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>

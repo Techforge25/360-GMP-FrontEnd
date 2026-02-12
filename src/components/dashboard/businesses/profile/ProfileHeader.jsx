@@ -26,7 +26,8 @@ export default function ProfileHeader({ business }) {
     revenue = "USD $3.6M+",
     age = "3 yrs",
     industry = "IT consulting",
-    location = "New York USA",
+    displayLocation = "New York USA",
+    location: rawLocation,
     stats = {
       delivery: "100%",
       reorder: "<15%",
@@ -165,7 +166,7 @@ export default function ProfileHeader({ business }) {
             </div>
             <div className="flex items-center gap-1">
               <HiOutlineLocationMarker />
-              <span>{location}</span>
+              <span>{displayLocation}</span>
             </div>
           </div>
 
