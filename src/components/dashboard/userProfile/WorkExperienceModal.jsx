@@ -22,7 +22,7 @@ const WorkExperienceModal = ({
   const [isSaving, setIsSaving] = useState(false);
 
   const employmentTypes = [
-    "Full Time",
+    "Full-Time",
     "Part-Time",
     "Contract",
     "Remote",
