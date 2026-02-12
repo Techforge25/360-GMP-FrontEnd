@@ -94,7 +94,7 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
 
       const payload = {
         communityId,
-        content: formData.description, // Main content is the description
+        // content: formData.description, // Main content is the description
         type: "event",
         event: {
           name: formData.name,

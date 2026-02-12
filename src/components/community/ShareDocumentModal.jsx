@@ -81,8 +81,8 @@ const ShareDocumentModal = ({ isOpen, onClose, onSubmit, communityId }) => {
       // Create post payload
       const postPayload = {
         communityId,
-        content: content.trim(),
-        type: "document",
+        content: content.trim() || documentTitle.trim(), // Fallback to title if content empty
+        type: "post",
         file: {
           url: documentUrl,
           name: documentTitle.trim(),

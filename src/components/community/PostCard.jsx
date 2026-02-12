@@ -507,7 +507,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
   }
 
   // Document Post Type
-  if (post.type === "document") {
+  if (post.type === "file" || (post.type === "post" && post.file)) {
     const file = post.file || {};
     const fileExtension = file.name?.split(".").pop().toUpperCase() || "DOC";
 

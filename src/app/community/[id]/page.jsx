@@ -212,17 +212,30 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   }
 
   // Owner check: community is owned by business profile (businessId)
-  const userBusinessId =
-    user?.businessId ||
-    user?.profiles?.businessProfileId ||
-    user?.profilePayload?._id ||
-    user?.id;
   const communityBusinessId = community.businessId?._id || community.businessId;
+
+  // Get all possible user business IDs to check against
+  const userBusinessIds = [
+    user?.businessId,
+    user?.profiles?.businessProfileId,
+    user?.profilePayload?._id,
+    user?.id,
+    user?._id,
+  ]
+    .filter(Boolean)
+    .map(String);
+
   const isOwner =
     user?.role === "business" &&
-    userBusinessId &&
-    communityBusinessId &&
-    String(communityBusinessId) === String(userBusinessId);
+    !!communityBusinessId &&
+    userBusinessIds.includes(String(communityBusinessId));
+
+  console.log("DEBUG: FIX APPLIED - isOwner V2", {
+    isOwner,
+    userIds: userBusinessIds,
+    communityId: String(communityBusinessId),
+    userProfilePayloadId: user?.profilePayload?._id,
+  });
 
   const handleMembershipUpdate = (updateData) => {
     setIsMember(updateData.isMember);

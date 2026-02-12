@@ -109,7 +109,7 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
       <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-900">
-            Create Question/Poll
+            Create Poll
           </h2>
           <button
             onClick={handleClose}
@@ -122,7 +122,7 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
         <div className="p-6 space-y-6">
           <div>
             <h3 className="text-base font-semibold text-gray-900 mb-4">
-              Question/Poll Setup
+              Poll Setup
             </h3>
 
             <div className="space-y-4">

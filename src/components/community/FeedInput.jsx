@@ -87,7 +87,8 @@ const FeedInput = ({
       const postPayload = {
         communityId,
         content: content.trim(),
-        type: selectedFile ? "document" : "post",
+        type: "post", // Always use "post" type as per backend schema requirements
+
         ...(fileUrl && {
           file: {
             url: fileUrl,
