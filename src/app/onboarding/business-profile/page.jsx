@@ -154,7 +154,9 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-base font-medium">Company Name</label>
+          <label className="text-base font-medium">
+            Company Name <span className="text-red-500">*</span>
+          </label>
           <Input
             placeholder="Global Manufacturing Co."
             value={formData.companyName}
@@ -164,7 +166,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
         </div>
         <div className="space-y-2">
           <label className="text-base font-medium">
-            Select Primary Industry
+            Select Primary Industry <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <select
@@ -186,7 +188,9 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
           </div>
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Business Type</label>
+          <label className="text-base font-medium">
+            Business Type <span className="text-red-500">*</span>
+          </label>
           <Input
             placeholder="Private Corporation"
             value={formData.businessType || ""}
@@ -195,7 +199,9 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
           />
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Company Size</label>
+          <label className="text-base font-medium">
+            Company Size <span className="text-red-500">*</span>
+          </label>
           <div className="relative">
             <select
               className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
@@ -216,7 +222,9 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
           </div>
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Founded Date</label>
+          <label className="text-base font-medium">
+            Founded Date <span className="text-red-500">*</span>
+          </label>
           <div className="relative">
             <Input
               type="date"
@@ -228,7 +236,9 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
           </div>
         </div>
         <div className="space-y-2 md:col-span-1">
-          <label className="text-base font-medium">Operating Hours</label>
+          <label className="text-base font-medium">
+            Operating Hours <span className="text-red-500">*</span>
+          </label>
           <div className="space-y-3">
             {/* Days Row */}
             <div className="grid grid-cols-2 gap-2">
@@ -326,7 +336,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
 
       <div className="space-y-2">
         <label className="text-base font-medium">
-          Official Company Website
+          Official Company Website <span className="text-red-500">*</span>
         </label>
         <Input
           placeholder="https://www.example.com"
@@ -339,7 +349,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <label className="text-base font-medium">
-            Company Mission And Bio
+            Company Mission And Bio <span className="text-red-500">*</span>
           </label>
           <span
             className={cn(
@@ -442,7 +452,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
       <h3 className="text-lg font-semibold mb-4">Company Location</h3>
       <div className="grid md:grid-cols-3 gap-6">
         <div className="space-y-2">
-          <label className="text-base font-medium">Country</label>
+          <label className="text-base font-medium">
+            Country <span className="text-red-500">*</span>
+          </label>
           <Input
             placeholder="e.g Canada"
             value={formData.country || ""}
@@ -451,7 +463,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">City</label>
+          <label className="text-base font-medium">
+            City <span className="text-red-500">*</span>
+          </label>
           <Input
             placeholder="Ottawa"
             value={formData.city || ""}
@@ -460,7 +474,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Address Line</label>
+          <label className="text-base font-medium">
+            Address Line <span className="text-red-500">*</span>
+          </label>
           <Input
             placeholder="street address"
             value={formData.address || ""}
@@ -540,7 +556,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
       <h3 className="text-lg font-semibold mb-4">Primary B2B Contact</h3>
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-base font-medium">Contact Person Name</label>
+          <label className="text-base font-medium">
+            Contact Person Name <span className="text-red-500">*</span>
+          </label>
           <Input
             value={formData.contactName || ""}
             onChange={(e) => handleChange("contactName", e.target.value)}
@@ -548,7 +566,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Title</label>
+          <label className="text-base font-medium">
+            Title <span className="text-red-500">*</span>
+          </label>
           <Input
             value={formData.contactTitle || ""}
             onChange={(e) => handleChange("contactTitle", e.target.value)}
@@ -556,7 +576,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Phone</label>
+          <label className="text-base font-medium">
+            Phone <span className="text-red-500">*</span>
+          </label>
           <Input
             value={formData.contactPhone || ""}
             onChange={(e) => handleChange("contactPhone", e.target.value)}
@@ -564,7 +586,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           />
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Support Email</label>
+          <label className="text-base font-medium">
+            Support Email <span className="text-red-500">*</span>
+          </label>
           <Input
             value={formData.contactEmail || ""}
             onChange={(e) => handleChange("contactEmail", e.target.value)}

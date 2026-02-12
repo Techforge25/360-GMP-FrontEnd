@@ -482,30 +482,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           />
         </div>
       </div>
-
-      <div className="space-y-3 pt-4 border-t border-gray-100">
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="radio"
-            name="publishStatus"
-            className="text-indigo-600 focus:ring-indigo-500"
-            defaultChecked
-          />
-          <span className="text-sm font-medium text-gray-700">
-            Set as featured
-          </span>
-        </label>
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="radio"
-            name="publishStatus"
-            className="text-gray-400  focus:ring-gray-400"
-          />
-          <span className="text-sm font-medium text-gray-700">
-            Save as draft
-          </span>
-        </label>
-      </div>
     </div>
   );
 

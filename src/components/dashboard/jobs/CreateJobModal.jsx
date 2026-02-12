@@ -53,7 +53,7 @@ export default function CreateJobModal({
     jobTitle: "",
     jobCategory: "",
     experienceLevel: "",
-    employmentTypes: [],
+    employmentType: "",
     location: {
       country: "",
       city: "",
@@ -96,24 +96,25 @@ export default function CreateJobModal({
     }));
   };
 
-  const handleEmploymentTypeToggle = (typeParams) => {
-    // typeParams is the id of the selected type
-    const isSelected = formData.employmentTypes.includes(typeParams);
-    let newTypes;
-    if (isSelected) {
-      newTypes = formData.employmentTypes.filter((t) => t !== typeParams);
-    } else {
-      newTypes = [...formData.employmentTypes, typeParams];
-    }
+  const handleEmploymentTypeToggle = (typeLabel) => {
     setFormData((prev) => ({
       ...prev,
-      employmentTypes: newTypes,
+      employmentType: prev.employmentType === typeLabel ? "" : typeLabel,
     }));
   };
 
   const handleSubmit = async () => {
     // Basic Validation
-    if (!formData.jobTitle || !formData.jobCategory || !formData.description) {
+    if (
+      !formData.jobTitle ||
+      !formData.jobCategory ||
+      !formData.description ||
+      !formData.employmentType ||
+      !formData.location.country ||
+      !formData.location.city ||
+      !formData.salary.min ||
+      !formData.salary.max
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -136,7 +137,7 @@ export default function CreateJobModal({
         businessId, // Added businessId to payload
         jobTitle: formData.jobTitle,
         jobCategory: formData.jobCategory,
-        employmentType: formData.employmentTypes.join(", "), // Backend schema has String, so joining array
+        employmentType: formData.employmentType,
         experienceLevel: formData.experienceLevel,
         description: formData.description,
         salaryMin: Number(formData.salary.min),
@@ -178,7 +179,7 @@ export default function CreateJobModal({
           {/* Job Title */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-700">
-              Job Title
+              Job Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -193,7 +194,7 @@ export default function CreateJobModal({
             {/* Job Category */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                Job Category
+                Job Category <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <select
@@ -278,13 +279,11 @@ export default function CreateJobModal({
           {/* Employment Type */}
           <div className="space-y-3">
             <label className="text-sm font-medium text-gray-700">
-              Employment Type
+              Employment Type <span className="text-red-500">*</span>
             </label>
             <div className="flex flex-wrap gap-3">
               {EMPLOYMENT_TYPES.map((type) => {
-                const isSelected = formData.employmentTypes.includes(
-                  type.label,
-                );
+                const isSelected = formData.employmentType === type.label;
                 return (
                   <button
                     key={type.id}

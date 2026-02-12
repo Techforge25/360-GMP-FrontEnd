@@ -377,7 +377,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
 
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <label className="text-base font-medium">Description</label>
+        <label className="text-base font-medium">
+          Description <span className="text-red-500">*</span>
+        </label>
         <span
           className={cn(
             "text-sm font-medium",
@@ -782,7 +784,9 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
 const Step3 = ({ formData, handleChange }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div className="space-y-2">
-      <label className="text-base font-medium">Target Job Title</label>
+      <label className="text-base font-medium">
+        Target Job Title <span className="text-red-500">*</span>
+      </label>
       <Input
         placeholder="e.g Supply Chain Analyst"
         value={formData.jobTitle || ""}
@@ -796,7 +800,7 @@ const Step3 = ({ formData, handleChange }) => (
 
     <div>
       <label className="text-base font-medium mb-3 block">
-        Employment Type
+        Employment Type <span className="text-red-500">*</span>
       </label>
       <div className="space-y-3">
         {["Full Time", "Remote", "Contract", "Hybrid", "Part-Time"].map(
@@ -829,7 +833,8 @@ const Step3 = ({ formData, handleChange }) => (
 
     <div>
       <label className="text-base font-medium mb-2 block">
-        Preferred Annual Salary Range (USD)
+        Preferred Annual Salary Range (USD){" "}
+        <span className="text-red-500">*</span>
       </label>
       <div className="grid grid-cols-2 gap-4">
         <Input
