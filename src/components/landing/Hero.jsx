@@ -90,7 +90,7 @@ const Hero = () => {
                   </p>
 
                   <div className="flex sm:items-start items-center flex-col sm:flex-row gap-4 justify-center sm:justify-start animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-                    <Link href="/onboarding/role">
+                    <Link href="/landing/pricing">
                       <Button
                         variant="secondary"
                         className="bg-white text-gray-900 hover:bg-gray-100 transition-all duration-300 px-8 py-3.5 rounded-lg font-semibold flex items-center justify-center gap-2 shadow-lg"

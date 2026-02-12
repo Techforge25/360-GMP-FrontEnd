@@ -74,9 +74,11 @@ const AboutPage = () => {
             }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#240457]/80 via-transparent to-transparent flex items-end justify-center pb-8 md:pb-16">
-            <Button className="bg-white text-black hover:bg-gray-100 px-10 py-4 rounded-xl font-semibold text-base shadow-lg">
-              Join Us Now →
-            </Button>
+            <Link href="/landing/contact-us">
+              <Button className="bg-white text-black hover:bg-gray-100 px-10 py-4 rounded-xl font-semibold text-base shadow-lg">
+                Join Us Now →
+              </Button>
+            </Link>
           </div>
         </div>
 
@@ -117,12 +119,6 @@ const AboutPage = () => {
               fostering innovation, and connecting global markets that drive
               sustainable success
             </p>
-            <Link href="/onboarding/role">
-              <button className="border mt-10 border-gray-300 hover:border-purple-600 text-gray-900 hover:text-purple-700 px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
-                Learn More
-                <FiArrowRight />
-              </button>
-            </Link>
           </div>
         </div>
 
@@ -154,9 +150,9 @@ const AboutPage = () => {
               Global Marketplace. We strive to be the ultimate resource hub for
               business owners and entrepreneurs worldwide
             </p>
-            <Link href="/about">
+            <Link href="/landing/pricing">
               <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
-                Learn More
+                Start Your 14 Day Free Trial
                 <FiArrowRight />
               </button>
             </Link>

@@ -77,7 +77,7 @@ export default function Home() {
                       Become a Premium Member <FaArrowRight className="ml-2" />
                     </Button>
                   </Link>
-                  <Link href="#">
+                  <Link href="/landing/pricing">
                     <Button
                       variant="outline"
                       className=" px-6 border border-gray-900"

@@ -6,6 +6,7 @@ import UnlockPotentialCTA from "@/components/landing/UnlockPotentialCTA";
 import { Button } from "@/components/ui/Button";
 import { FaCheckCircle, FaRegDotCircle } from "react-icons/fa";
 import { LuCircleDot } from "react-icons/lu";
+import Link from "next/link";
 
 const WhyChooseUsPage = () => {
   return (
@@ -160,9 +161,11 @@ const WhyChooseUsPage = () => {
         </div>
 
         <div className="flex justify-center mt-12 pb-20">
-          <Button className="bg-[#240457] hover:bg-[#1a0340] text-white px-10 py-4 rounded-xl font-semibold transition-all shadow-lg text-lg flex items-center gap-2">
-            Get Started →
-          </Button>
+          <Link href="/landing/contact-us">
+            <Button className="bg-[#240457] hover:bg-[#1a0340] text-white px-10 py-4 rounded-xl font-semibold transition-all shadow-lg text-lg flex items-center gap-2">
+              Get Started →
+            </Button>
+          </Link>
         </div>
       </main>
 

@@ -59,7 +59,7 @@ export default function RoleSelectionPage() {
       <Card className="w-full max-w-[280px] xs:max-w-sm sm:max-w-md lg:max-w-2xl rounded-2xl xs:rounded-3xl border-none shadow-xl bg-surface-elevated z-10 relative">
         <CardHeader className="text-center pb-1 xs:pb-2 px-4 xs:px-6 pt-4 xs:pt-6 sm:pt-8">
           <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold bg-gradient-to-r from-brand-primary to-brand-primary-light bg-clip-text text-transparent leading-tight">
-            Welcome To 360 GMP
+            Welcome To 360GMP
           </CardTitle>
           <CardDescription className="text-sm xs:text-sm sm:text-base text-text-secondary mt-1">
             One Platform Many Solutions

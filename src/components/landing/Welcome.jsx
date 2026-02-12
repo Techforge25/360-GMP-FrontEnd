@@ -47,9 +47,11 @@ const Welcome = () => {
               unique selections tailored to meet your every need. We appreciate
               you choosing us as your one stop global hub!
             </p>
-            <Button className="bg-[#240457] text-white px-10 py-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
-              Join Now <FiArrowRight className="ml-2 text-xl" />
-            </Button>
+            <Link href="/landing/pricing">
+              <Button className="bg-[#240457] text-white px-10 py-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
+                Join Now <FiArrowRight className="ml-2 text-xl" />
+              </Button>
+            </Link>
           </div>
         </div>
 

@@ -55,13 +55,13 @@ const AboutVision = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 items-center sm:items-start">
-              <Link href="/about">
+              <Link href="/landing/pricing">
                 <button className="bg-[#240457] text-white px-8 py-3 rounded-xl text-base font-semibold transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg whitespace-nowrap">
                   Subscribe Now
                   <FiArrowRight />
                 </button>
               </Link>
-              <Link href="/onboarding/role">
+              <Link href="/landing/about">
                 <button className="border border-gray-300 hover:border-[#240457] text-gray-900 hover:text-[#240457] px-8 py-3 rounded-xl text-base font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap">
                   Learn More
                   <FiArrowRight />
@@ -119,7 +119,7 @@ const AboutVision = () => {
               sustainable success
             </p>
             <div className="flex justify-center md:justify-start mt-10">
-              <Link href="/onboarding/role">
+              <Link href="/landing/about">
                 <button className="border border-gray-300 hover:border-[#240457] text-gray-900 hover:text-[#240457] px-8 py-3 rounded-xl text-base font-semibold transition-all flex items-center justify-center gap-2 whitespace-nowrap">
                   Learn More
                   <FiArrowRight />
@@ -158,7 +158,7 @@ const AboutVision = () => {
               business owners and entrepreneurs worldwide
             </p>
             <div className="flex justify-center md:justify-start mt-8">
-              <Link href="/about">
+              <Link href="/landing/about">
                 <button className="bg-[#240457] text-white px-8 py-3 rounded-xl text-base font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 whitespace-nowrap">
                   Learn More
                   <FiArrowRight />
