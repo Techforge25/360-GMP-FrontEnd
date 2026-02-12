@@ -286,7 +286,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
               alt=""
               className="w-3 h-3 sm:w-4 sm:h-4"
             />
-            <span className="hidden sm:inline">View as a user</span>
+            {/* <span className="hidden sm:inline">View as a user</span> */}
             <span className="sm:hidden">View</span>
           </button>
           <button

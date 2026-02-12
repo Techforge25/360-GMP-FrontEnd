@@ -8,9 +8,11 @@ import ProfileCommunities from "./profile/ProfileCommunities";
 import ProfileGallery from "./profile/ProfileGallery";
 import ProfileTestimonials from "./profile/ProfileTestimonials";
 import businessProfileAPI from "@/services/businessProfileAPI";
+import socialLinkAPI from "@/services/socialLinkAPI";
 
 export default function BusinessProfileDetail({ businessId }) {
   const [businessData, setBusinessData] = useState(null);
+  const [socialLinks, setSocialLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -62,6 +64,18 @@ export default function BusinessProfileDetail({ businessId }) {
           },
         };
         setBusinessData(transformedData);
+
+        // Fetch social links
+        try {
+          const socialResponse =
+            await socialLinkAPI.getByBusinessProfileId(businessId);
+          if (socialResponse?.success && socialResponse.data) {
+            setSocialLinks(socialResponse.data);
+          }
+        } catch (socialErr) {
+          console.error("Failed to fetch social links:", socialErr);
+          // Don't fail the whole profile if social links fail
+        }
       } else {
         setError("Failed to load business profile");
       }
@@ -128,7 +142,7 @@ export default function BusinessProfileDetail({ businessId }) {
 
       {/* Constrained content */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <ProfileOverview business={businessData} />
+        <ProfileOverview business={businessData} socialLinks={socialLinks} />
         <ProfileJobs businessId={businessId} />
         <ProfileProducts businessId={businessId} />
         <ProfileCommunities businessId={businessId} />

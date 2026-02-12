@@ -14,13 +14,23 @@ import {
   HiOutlineLocationMarker,
 } from "react-icons/hi";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import { FiGlobe } from "react-icons/fi";
 
-export default function ProfileOverview({ business }) {
+export default function ProfileOverview({ business, socialLinks = [] }) {
   if (!business) return null;
 
   const description = business.description || "No description provided.";
   const businessType =
     business.businessType || business.primaryIndustry || "Business Profile";
+
+  const getSocialIcon = (platform) => {
+    const p = platform?.toLowerCase() || "";
+    if (p.includes("linkedin")) return FaLinkedinIn;
+    if (p.includes("twitter")) return FaTwitter;
+    if (p.includes("facebook")) return FaFacebookF;
+    if (p.includes("instagram")) return FaInstagram;
+    return FiGlobe;
+  };
 
   // Format founded date
   const foundedDate = business.foundedDate
@@ -143,21 +153,27 @@ export default function ProfileOverview({ business }) {
             </li>
           </ul>
 
-          <div className="mb-4">
-            <p className="text-sm text-gray-500 mb-3">Social Media</p>
-            <div className="flex gap-3">
-              {[FaLinkedinIn, FaTwitter, FaFacebookF, FaInstagram].map(
-                (Icon, i) => (
-                  <div
-                    key={i}
-                    className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-900 hover:bg-indigo-100 cursor-pointer transition-colors"
-                  >
-                    <Icon className="text-sm" />
-                  </div>
-                ),
-              )}
+          {socialLinks.length > 0 && (
+            <div className="mb-4">
+              <p className="text-sm text-gray-500 mb-3">Social Media</p>
+              <div className="flex gap-3">
+                {socialLinks.map((link) => {
+                  const Icon = getSocialIcon(link.platformName);
+                  return (
+                    <a
+                      key={link._id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-900 hover:bg-indigo-100 cursor-pointer transition-colors"
+                    >
+                      <Icon className="text-sm" />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Map Display */}
           {business.latitude && business.longitude ? (

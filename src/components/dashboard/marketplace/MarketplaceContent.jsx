@@ -185,6 +185,24 @@ export default function MarketplaceContent() {
     setQuery("");
   };
 
+  const handleProductClick = async (product) => {
+    const productId = product._id || product.id;
+    const businessId =
+      typeof product.businessId === "object"
+        ? product.businessId?._id
+        : product.businessId;
+
+    if (!productId || !businessId) {
+      console.error("Missing productId or businessId", { product });
+      return;
+    }
+
+    // Pre-fetch product data if needed (optional optimization)
+    // await productAPI.getById(productId);
+
+    const basePath = isBusinessUser ? "/dashboard/business" : "/dashboard/user";
+    router.push(`${basePath}/businesses/${businessId}/products/${productId}`);
+  };
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSearch();
@@ -580,11 +598,12 @@ export default function MarketplaceContent() {
                         key={idx}
                         className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
                       >
-                        <div className="relative bg-gray-100 h-40 sm:h-48">
+                        <div className="relative bg-gray-100 h-40 sm:h-48 cursor-pointer group">
                           <img
                             src={product.image}
                             alt={product.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onClick={() => handleProductClick(product)}
                           />
                           <div className="absolute top-2 right-2 flex gap-1">
                             <div className="w-6 h-6 rounded-full flex items-center justify-center shadow bg-white">
@@ -613,12 +632,7 @@ export default function MarketplaceContent() {
                           </div>
                           {isBusinessUser ? (
                             <button
-                              onClick={async () => {
-                                await productAPI.getById(product._id);
-                                router.push(
-                                  `/dashboard/business/businesses/${product.businessId}/products/${product._id}`,
-                                );
-                              }}
+                              onClick={() => handleProductClick(product)}
                               className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-base hover:bg-[#240457] hover:text-white transition-colors"
                             >
                               View Product
@@ -663,7 +677,10 @@ export default function MarketplaceContent() {
               <div className="mb-6 sm:mb-8 bg-[#9747FF] rounded-lg p-4 sm:p-6 text-white">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
                   <h2 className="text-lg sm:text-xl font-bold">Top Ranking</h2>
-                  <button onClick={handleViewTopRanking} className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center">
+                  <button
+                    onClick={handleViewTopRanking}
+                    className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center"
+                  >
                     View More <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -677,11 +694,12 @@ export default function MarketplaceContent() {
                         key={idx}
                         className="bg-white rounded-lg overflow-hidden"
                       >
-                        <div className="bg-gray-100 h-28 sm:h-32">
+                        <div className="bg-gray-100 h-28 sm:h-32 cursor-pointer group">
                           <img
                             src={product.image}
                             alt={product.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onClick={() => handleProductClick(product)}
                           />
                         </div>
                         <div className="p-3 sm:p-4">
@@ -721,7 +739,10 @@ export default function MarketplaceContent() {
                       Browse newly-listed products
                     </p>
                   </div>
-                  <button onClick={handleViewNewProducts} className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center">
+                  <button
+                    onClick={handleViewNewProducts}
+                    className="text-sm sm:text-base hover:underline flex items-center gap-1 self-start sm:self-center"
+                  >
                     View More <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -732,11 +753,12 @@ export default function MarketplaceContent() {
                         key={idx}
                         className="bg-white rounded-lg overflow-hidden"
                       >
-                        <div className="bg-gray-100 h-32 sm:h-40">
+                        <div className="bg-gray-100 h-32 sm:h-40 cursor-pointer group">
                           <img
                             src={product.image}
                             alt={product.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            onClick={() => handleProductClick(product)}
                           />
                         </div>
                         <div className="p-3 sm:p-4">
@@ -774,6 +796,7 @@ export default function MarketplaceContent() {
           isBusinessUser={isBusinessUser}
           router={router}
           addToCart={addToCart}
+          onProductClick={handleProductClick}
         />
 
         <section className="w-full bg-white py-8 sm:py-12 px-3 sm:px-6 lg:px-8">
@@ -784,11 +807,12 @@ export default function MarketplaceContent() {
                   key={index}
                   className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+                  <div className="aspect-[4/3] bg-gray-100 overflow-hidden cursor-pointer group">
                     <img
                       src={product.image}
                       alt={product.title}
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                      onClick={() => handleProductClick(product)}
                     />
                   </div>
                   <div className="p-3 sm:p-4">
@@ -808,12 +832,7 @@ export default function MarketplaceContent() {
                     </div>
                     {isBusinessUser ? (
                       <button
-                        onClick={async () => {
-                          await productAPI.getById(product._id);
-                          router.push(
-                            `/dashboard/business/businesses/${product.businessId}/products/${product._id}`,
-                          );
-                        }}
+                        onClick={() => handleProductClick(product)}
                         className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm lg:text-base hover:bg-[#240457] hover:text-white transition-colors"
                       >
                         View Product
@@ -873,6 +892,7 @@ function TopDealsSection({
   isBusinessUser = false,
   router,
   addToCart,
+  onProductClick,
 }) {
   if (!deals || deals.length === 0) return null;
 
@@ -892,11 +912,12 @@ function TopDealsSection({
               key={idx}
               className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
             >
-              <div className="relative bg-gray-100 h-48 flex items-center justify-center">
+              <div className="relative bg-gray-100 h-48 flex items-center justify-center cursor-pointer group">
                 <img
                   src={deal.image}
                   alt={deal.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  onClick={() => onProductClick(deal)}
                 />
                 {deal.extras && (
                   <div className="absolute top-2 left-2">
@@ -929,12 +950,7 @@ function TopDealsSection({
 
                 {isBusinessUser ? (
                   <button
-                    onClick={async () => {
-                      await productAPI.getById(deal._id);
-                      router.push(
-                        `/dashboard/business/businesses/${deal.businessId}/products/${deal._id}`,
-                      );
-                    }}
+                    onClick={() => onProductClick(deal)}
                     className="w-full py-2 border border-[#240457] text-[#240457] rounded-lg text-base hover:bg-[#240457] hover:text-white transition-colors"
                   >
                     View Product

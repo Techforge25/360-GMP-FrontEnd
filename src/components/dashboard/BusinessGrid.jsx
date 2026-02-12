@@ -5,6 +5,7 @@ import businessProfileAPI from "@/services/businessProfileAPI";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import { useUserRole } from "@/context/UserContext";
 
 const BusinessMapView = dynamic(() => import("./profile/BusinessMapView"), {
   ssr: false,
@@ -23,6 +24,20 @@ const BusinessGrid = () => {
   const [selectedBusiness, setSelectedBusiness] = useState(null);
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
   const [mapLocation, setMapLocation] = useState(null);
+  const { user } = useUserRole();
+  const role = user?.role;
+
+  // Debug role to ensure correct redirection
+  useEffect(() => {
+    if (role) {
+      console.log("Current user role in BusinessGrid:", role);
+    }
+  }, [role]);
+
+  const basePath =
+    role?.toLowerCase() === "user"
+      ? "/dashboard/user/businesses"
+      : "/dashboard/business/businesses";
 
   useEffect(() => {
     fetchBusinessProfiles();
@@ -32,12 +47,12 @@ const BusinessGrid = () => {
     try {
       // Call the view API to track view and get complete business data
       await businessProfileAPI.viewBusinessProfile(businessId);
-      // Navigate to the shared business profile page (accessible to both users and businesses)
-      router.push(`/dashboard/business-profile/${businessId}`);
+      // Navigate to the role-based business profile page
+      router.push(`${basePath}/${businessId}`);
     } catch (error) {
       console.error("Failed to view business profile:", error);
       // Still navigate even if tracking fails
-      router.push(`/dashboard/business-profile/${businessId}`);
+      router.push(`${basePath}/${businessId}`);
     }
   };
 
@@ -269,7 +284,7 @@ const BusinessGrid = () => {
 
         <div className="flex justify-center mt-10">
           <Link
-            href="/dashboard/business/businesses"
+            href={basePath}
             className="px-6 py-2 bg-white border border-gray-300 rounded-xl  text-base font-medium text-gray-900 hover:bg-gray-50 shadow-sm"
           >
             Browse All Businesses

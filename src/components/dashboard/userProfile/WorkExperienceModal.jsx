@@ -60,7 +60,13 @@ const WorkExperienceModal = ({
   }, [editingExperience, isOpen]);
 
   const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => {
+      const newState = { ...prev, [field]: value };
+      if (field === "isCurrentlyWorking" && value === true) {
+        newState.endDate = new Date().toISOString().split("T")[0];
+      }
+      return newState;
+    });
   };
 
   const handleEmploymentTypeChange = (type) => {
@@ -202,19 +208,22 @@ const WorkExperienceModal = ({
           </div>
 
           {/* End Date */}
-          {!formData.isCurrentlyWorking && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                End Date
-              </label>
-              <input
-                type="date"
-                value={formData.endDate}
-                onChange={(e) => handleInputChange("endDate", e.target.value)}
-                className="w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
-              />
-            </div>
-          )}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              End Date
+            </label>
+            <input
+              type="date"
+              value={formData.endDate}
+              disabled={formData.isCurrentlyWorking}
+              onChange={(e) => handleInputChange("endDate", e.target.value)}
+              className={`w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent ${
+                formData.isCurrentlyWorking
+                  ? "bg-gray-100 cursor-not-allowed"
+                  : ""
+              }`}
+            />
+          </div>
 
           {/* Location */}
           <div>

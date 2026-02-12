@@ -3,9 +3,14 @@ import React, { useState, useEffect } from "react";
 import galleryAPI from "@/services/galleryAPI";
 import { FiCamera } from "react-icons/fi";
 
+import ViewAlbumModal from "../../profile/ViewAlbumModal";
+
 export default function ProfileGallery({ businessProfileId }) {
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isViewing, setIsViewing] = useState(false);
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -40,41 +45,29 @@ export default function ProfileGallery({ businessProfileId }) {
     fetchGallery();
   }, [businessProfileId]);
 
+  const handleAlbumClick = async (albumId) => {
+    if (isViewing) return;
+
+    try {
+      setIsViewing(true);
+      const response = await galleryAPI.viewAlbum(albumId);
+      if (response.success && response.data) {
+        setSelectedAlbum(response.data);
+        setIsViewModalOpen(true);
+      }
+    } catch (error) {
+      console.error("Failed to view album:", error);
+    } finally {
+      setIsViewing(false);
+    }
+  };
+
   if (loading) {
-    return (
-      <div className="mb-12">
-        <h2 className="text-center text-3xl font-semibold text-black mb-8">
-          Gallery
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="h-64 bg-gray-200 rounded-lg animate-pulse"
-            />
-          ))}
-        </div>
-      </div>
-    );
+    // ... existing loading state ...
   }
 
   if (!albums || albums.length === 0) {
-    return (
-      <div className="mb-12">
-        <h2 className="text-center text-3xl font-semibold text-black mb-8">
-          Gallery
-        </h2>
-        <div className="text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
-          <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-            <FiCamera className="w-6 h-6 text-gray-400" />
-          </div>
-          <h3 className="text-base font-medium text-gray-900">No albums yet</h3>
-          <p className="text-sm text-gray-500 mt-1">
-            This business hasn't uploaded any gallery albums.
-          </p>
-        </div>
-      </div>
-    );
+    // ... existing empty state ...
   }
 
   return (
@@ -87,9 +80,10 @@ export default function ProfileGallery({ businessProfileId }) {
         {albums.map((album, index) => (
           <div
             key={album._id || album.id || index}
-            className="h-64 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer"
+            onClick={() => handleAlbumClick(album._id || album.id)}
+            className={`h-64 bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer ${isViewing ? "opacity-70" : ""}`}
           >
-            {/* Album Cover Image */}
+            {/* Album Cover Image ... */}
             {album.images && album.images.length > 0 ? (
               <img
                 src={album.images[0]}
@@ -137,6 +131,15 @@ export default function ProfileGallery({ businessProfileId }) {
           </div>
         ))}
       </div>
+
+      <ViewAlbumModal
+        isOpen={isViewModalOpen}
+        onClose={() => {
+          setIsViewModalOpen(false);
+          setSelectedAlbum(null);
+        }}
+        album={selectedAlbum}
+      />
     </div>
   );
 }
