@@ -104,10 +104,74 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
     const query = searchQuery.toLowerCase();
     return data.filter((item) => {
-      const name =
-        item.userProfileId?.fullName || item.memberId?.companyName || "";
+      const name = getMemberDisplayName(item);
       return name.toLowerCase().includes(query);
     });
+  };
+
+  // Creator = business profile. Use community.businessId for owner, else memberId when BusinessProfile
+  const getMemberDisplayName = (member) => {
+    if (member.role === "owner" && community?.businessId) {
+      return (
+        community.businessId?.companyName ||
+        community.businessId?.name ||
+        "Business"
+      );
+    }
+    if (member.memberModel === "BusinessProfile") {
+      return (
+        member.memberId?.companyName ||
+        member.userProfileId?.fullName ||
+        "Unknown"
+      );
+    }
+    return (
+      member.userProfileId?.fullName ||
+      member.memberId?.companyName ||
+      "Unknown"
+    );
+  };
+
+  const getMemberDisplayImage = (member) => {
+    if (member.role === "owner" && community?.businessId) {
+      return (
+        community.businessId?.logo || "/assets/images/Portrait_Placeholder.png"
+      );
+    }
+    if (member.memberModel === "BusinessProfile") {
+      return (
+        member.memberId?.logo ||
+        member.userProfileId?.imageProfile ||
+        "/assets/images/Portrait_Placeholder.png"
+      );
+    }
+    return (
+      member.userProfileId?.imageProfile ||
+      member.memberId?.logo ||
+      "/assets/images/Portrait_Placeholder.png"
+    );
+  };
+
+  const getMemberDisplaySubtitle = (member) => {
+    if (member.role === "owner" && community?.businessId) {
+      return (
+        community.businessId?.primaryIndustry ||
+        community.businessId?.businessType ||
+        "Business"
+      );
+    }
+    if (member.memberModel === "BusinessProfile") {
+      return (
+        member.memberId?.primaryIndustry ||
+        member.memberId?.businessType ||
+        "Business"
+      );
+    }
+    return (
+      member.userProfileId?.title ||
+      member.memberId?.primaryIndustry ||
+      "Member"
+    );
   };
 
   // Filter for admins from members
@@ -514,22 +578,17 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                     <div className="col-span-3 flex items-center gap-3">
                       <div className="relative">
                         <img
-                          src={
-                            member.userProfileId?.imageProfile ||
-                            member.memberId?.imageProfile ||
-                            "/assets/images/Portrait_Placeholder.png"
-                          }
-                          alt={
-                            member.userProfileId?.fullName ||
-                            member.memberId?.companyName
-                          }
+                          src={getMemberDisplayImage(member)}
+                          alt={getMemberDisplayName(member)}
                           className="w-10 h-10 rounded-full object-cover"
                           onError={(e) => {
                             e.target.src =
                               "/assets/images/Portrait_Placeholder.png";
                           }}
                         />
-                        {member.memberModel === "BusinessProfile" && (
+                        {(member.memberModel === "BusinessProfile" ||
+                          (member.role === "owner" &&
+                            community?.businessId)) && (
                           <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#240457] rounded-full flex items-center justify-center">
                             <span className="text-white text-sm font-bold">
                               B
@@ -539,14 +598,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-gray-900">
-                          {member.userProfileId?.fullName ||
-                            member.memberId?.companyName ||
-                            "Unknown"}
+                          {getMemberDisplayName(member)}
                         </h4>
                         <p className="text-sm text-gray-500">
-                          {member.userProfileId?.title ||
-                            member.memberId?.industry ||
-                            "Member"}
+                          {getMemberDisplaySubtitle(member)}
                         </p>
                       </div>
                     </div>

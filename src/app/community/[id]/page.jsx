@@ -211,11 +211,18 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
     );
   }
 
+  // Owner check: community is owned by business profile (businessId)
+  const userBusinessId =
+    user?.businessId ||
+    user?.profiles?.businessProfileId ||
+    user?.profilePayload?._id ||
+    user?.id;
+  const communityBusinessId = community.businessId?._id || community.businessId;
   const isOwner =
     user?.role === "business" &&
-    (community.businessId?._id === user?.businessId ||
-      community.businessId === user?.businessId ||
-      community.businessId?._id === user?.profilePayload?._id);
+    userBusinessId &&
+    communityBusinessId &&
+    String(communityBusinessId) === String(userBusinessId);
 
   const handleMembershipUpdate = (updateData) => {
     setIsMember(updateData.isMember);
@@ -261,6 +268,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
             <CommunityInfoCard community={community} />
             <CommunityMembersWidget
               communityId={community._id}
+              community={community}
               totalCount={community.memberCount}
               onViewAll={() => setShowMembersView(true)}
             />
@@ -276,19 +284,12 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
               />
             ) : (
               <>
-                {/* Debug membership status */}
-                {console.log("FeedInput props:", {
-                  communityId: community._id,
-                  isMember,
-                  membershipStatus,
-                  canPost: isMember && membershipStatus === "approved",
-                })}
-
                 <FeedInput
                   communityId={community._id}
                   onPostCreated={handlePostCreated}
                   isMember={isMember}
                   membershipStatus={membershipStatus}
+                  isOwner={isOwner}
                 />
 
                 <FeedTabs

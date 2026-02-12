@@ -13,12 +13,12 @@ const CommunityInfoCard = ({ community }) => {
 
   const formatFoundedDate = (date) => {
     if (!date) return "Unknown";
-    
+
     try {
       const createdDate = new Date(date);
-      return createdDate.toLocaleDateString('en-US', { 
-        month: 'short', 
-        year: 'numeric' 
+      return createdDate.toLocaleDateString("en-US", {
+        month: "short",
+        year: "numeric",
       });
     } catch (error) {
       return "Unknown";
@@ -30,7 +30,9 @@ const CommunityInfoCard = ({ community }) => {
       <h3 className="text-base font-bold text-gray-900 mb-4">Community Info</h3>
 
       <p className="text-gray-600 text-sm leading-relaxed mb-5">
-        {community.description || community.purpose || "No description available."}
+        {community.description ||
+          community.purpose ||
+          "No description available."}
       </p>
 
       <div className="space-y-3">
@@ -46,7 +48,16 @@ const CommunityInfoCard = ({ community }) => {
             {formatFoundedDate(community.createdAt)}
           </span>
         </div>
-
+        {community.businessId && (
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Created by</span>
+            <span className="font-bold text-gray-900">
+              {community.businessId?.companyName ||
+                community.businessId?.name ||
+                "Business"}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

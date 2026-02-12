@@ -19,6 +19,7 @@ const FeedInput = ({
   onPostCreated,
   isMember = false,
   membershipStatus = null,
+  isOwner = false,
 }) => {
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,8 +49,8 @@ const FeedInput = ({
     }
   };
 
-  // Check if user has posting privileges
-  const canPost = isMember && membershipStatus === "approved";
+  // Check if user has posting privileges (owner can always post)
+  const canPost = isOwner || (isMember && membershipStatus === "approved");
   const showSoonLabels = !canPost;
 
   const handleSubmit = async () => {

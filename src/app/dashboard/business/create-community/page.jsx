@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { FiUpload, FiPlus, FiX, FiGlobe, FiLock } from "react-icons/fi";
 import { LuCrown } from "react-icons/lu";
 import { IoChevronBack } from "react-icons/io5";
@@ -116,7 +116,13 @@ export default function CreateCommunityPage() {
     setIsSubmitting(true);
 
     try {
-      // Build payload based on community type
+      // Creator = business profile (not user). Send businessProfileId so backend can set owner correctly.
+      const businessProfileId =
+        user?.businessId ||
+        user?.profilePayload?._id ||
+        user?.profiles?.businessProfileId ||
+        user?.id;
+
       let payload = {
         name: formData.name,
         type: formData.privacyType,

@@ -3,21 +3,26 @@ import React, { useState, useEffect } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import communityAPI from "@/services/communityAPI";
 
-const CommunityMembersWidget = ({ communityId, totalCount = 0, onViewAll }) => {
+const CommunityMembersWidget = ({
+  communityId,
+  community,
+  totalCount = 0,
+  onViewAll,
+}) => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMembers = async () => {
       if (!communityId) return;
-      
+
       try {
         setLoading(true);
         const response = await communityAPI.getMembers(communityId, {
           page: 1,
-          limit: 6 // Only fetch first 6 for widget preview
+          limit: 6, // Only fetch first 6 for widget preview
         });
-        
+
         if (response.success) {
           setMembers(response.data.members || []);
         }
@@ -51,28 +56,69 @@ const CommunityMembersWidget = ({ communityId, totalCount = 0, onViewAll }) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {members.slice(0, 6).map((member, index) => (
-            <div key={member._id || index} className="flex items-center gap-3">
-              <div className="w-10 h-10 flex-shrink-0 rounded-full overflow-hidden bg-gray-100">
-                <img
-                  src={member.userProfileId?.imageProfile || member.memberId?.imageProfile || "/assets/images/Portrait_Placeholder.png"}
-                  alt={member.userProfileId?.fullName || member.memberId?.companyName || "Member"}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = "/assets/images/Portrait_Placeholder.png";
-                  }}
-                />
+          {members.slice(0, 6).map((member, index) => {
+            // Creator = business profile. Use community.businessId for owner
+            const isCreator = member.role === "owner" && community?.businessId;
+            const isBusiness =
+              member.memberModel === "BusinessProfile" || isCreator;
+            const displayName = isCreator
+              ? community.businessId?.companyName ||
+                community.businessId?.name ||
+                "Business"
+              : isBusiness
+                ? member.memberId?.companyName ||
+                  member.userProfileId?.fullName ||
+                  "Unknown"
+                : member.userProfileId?.fullName ||
+                  member.memberId?.companyName ||
+                  "Unknown Member";
+            const displayImage = isCreator
+              ? community.businessId?.logo ||
+                "/assets/images/Portrait_Placeholder.png"
+              : isBusiness
+                ? member.memberId?.logo ||
+                  member.userProfileId?.imageProfile ||
+                  "/assets/images/Portrait_Placeholder.png"
+                : member.userProfileId?.imageProfile ||
+                  member.memberId?.logo ||
+                  "/assets/images/Portrait_Placeholder.png";
+            const displaySubtitle = isCreator
+              ? community.businessId?.primaryIndustry ||
+                community.businessId?.businessType ||
+                "Business"
+              : isBusiness
+                ? member.memberId?.primaryIndustry ||
+                  member.memberId?.businessType ||
+                  "Business"
+                : member.userProfileId?.title ||
+                  member.memberId?.industry ||
+                  "Member";
+            return (
+              <div
+                key={member._id || index}
+                className="flex items-center gap-3"
+              >
+                <div className="w-10 h-10 flex-shrink-0 rounded-full overflow-hidden bg-gray-100">
+                  <img
+                    src={displayImage}
+                    alt={displayName}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = "/assets/images/Portrait_Placeholder.png";
+                    }}
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-semibold text-gray-900 truncate">
+                    {displayName}
+                  </h4>
+                  <p className="text-sm text-gray-500 truncate">
+                    {displaySubtitle}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-semibold text-gray-900 truncate">
-                  {member.userProfileId?.fullName || member.memberId?.companyName || "Unknown Member"}
-                </h4>
-                <p className="text-sm text-gray-500 truncate">
-                  {member.userProfileId?.title || member.memberId?.industry || "Member"}
-                </p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
