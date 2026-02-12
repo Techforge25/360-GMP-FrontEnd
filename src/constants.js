@@ -1,5 +1,8 @@
 // Automatically switch backend URL based on environment
-export const backendURL = "https://gmp-backend.techforgeinnovations.com/api/v1";
+export const backendURL =
+  process.env.NODE_ENV === "production"
+    ? "https://gmp-backend.techforgeinnovations.com/api/v1"
+    : "http://localhost:3000/api/v1";
 
 export const axiosOptions = { withCredentials: true };
 
