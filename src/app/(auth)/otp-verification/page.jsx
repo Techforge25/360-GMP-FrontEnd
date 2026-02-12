@@ -266,9 +266,7 @@ function OTPForm() {
               </span>
             </p>
           ) : (
-            <p className="mb-1 xs:mb-2 text-green-600 font-medium">
-              You can now resend OTP
-            </p>
+            <p className="mb-1 xs:mb-2 text-red-500 font-medium">OTP Expired</p>
           )}
           <button
             onClick={handleResendOTP}

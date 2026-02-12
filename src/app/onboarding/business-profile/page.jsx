@@ -337,13 +337,37 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
       </div>
 
       <div className="space-y-2">
-        <label className="text-base font-medium">Company Mission And Bio</label>
+        <div className="flex justify-between items-center">
+          <label className="text-base font-medium">
+            Company Mission And Bio
+          </label>
+          <span
+            className={cn(
+              "text-sm font-medium",
+              (formData.bio?.length || 0) > 5000
+                ? "text-red-500"
+                : "text-text-secondary",
+            )}
+          >
+            {formData.bio?.length || 0} / 5000
+          </span>
+        </div>
         <textarea
-          className="w-full min-h-[120px] rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+          className={cn(
+            "w-full min-h-[120px] rounded-md border bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary",
+            (formData.bio?.length || 0) > 5000
+              ? "border-red-500 ring-1 ring-red-500"
+              : "border-border-light",
+          )}
           placeholder="..."
           value={formData.bio || ""}
           onChange={(e) => handleChange("bio", e.target.value)}
         ></textarea>
+        {(formData.bio?.length || 0) > 5000 && (
+          <p className="text-sm text-red-500 font-medium">
+            Description cannot exceed 5000 characters
+          </p>
+        )}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -813,9 +837,20 @@ export default function BusinessProfilePage() {
         !formData.companySize ||
         !formData.foundedDate ||
         !formData.operatingHours ||
-        !formData.website
+        !formData.website ||
+        !formData.bio
       ) {
         setError("Please fill all required fields before proceeding.");
+        return;
+      }
+
+      if (formData.bio.trim().length === 0) {
+        setError("Company Mission And Bio is required.");
+        return;
+      }
+
+      if (formData.bio.length > 5000) {
+        setError("Company Mission And Bio cannot exceed 5000 characters.");
         return;
       }
 

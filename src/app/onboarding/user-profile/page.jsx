@@ -376,13 +376,35 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
     </div>
 
     <div className="space-y-2">
-      <label className="text-base font-medium">Description</label>
+      <div className="flex justify-between items-center">
+        <label className="text-base font-medium">Description</label>
+        <span
+          className={cn(
+            "text-sm font-medium",
+            (formData.bio?.length || 0) > 1000
+              ? "text-red-500"
+              : "text-text-secondary",
+          )}
+        >
+          {formData.bio?.length || 0} / 1000
+        </span>
+      </div>
       <textarea
-        className="w-full min-h-[150px] rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+        className={cn(
+          "w-full min-h-[150px] rounded-md border bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary",
+          (formData.bio?.length || 0) > 1000
+            ? "border-red-500 ring-1 ring-red-500"
+            : "border-border-light",
+        )}
         placeholder="..."
         value={formData.bio || ""}
         onChange={(e) => handleChange("bio", e.target.value)}
       ></textarea>
+      {(formData.bio?.length || 0) > 1000 && (
+        <p className="text-sm text-red-500 font-medium">
+          Description cannot exceed 1000 characters
+        </p>
+      )}
     </div>
   </div>
 );
@@ -1060,6 +1082,14 @@ export default function UserProfilePage() {
       }
       if (!formData.address) {
         setError("Address Line is required");
+        return;
+      }
+      if (!formData.bio || !formData.bio.trim()) {
+        setError("Description (Bio) is required");
+        return;
+      }
+      if (formData.bio && formData.bio.length > 1000) {
+        setError("Description cannot exceed 1000 characters");
         return;
       }
     } else if (currentStep === 2) {
