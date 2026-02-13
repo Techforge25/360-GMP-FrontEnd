@@ -448,13 +448,26 @@ export default function CreateJobModal({
 
           {/* Job Description */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">
-              Job Description
-            </label>
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-medium text-gray-700">
+                Job Description
+              </label>
+              <span
+                className={cn(
+                  "text-xs font-medium",
+                  formData.description.length >= 5000
+                    ? "text-red-500"
+                    : "text-gray-400",
+                )}
+              >
+                {formData.description.length}/5000
+              </span>
+            </div>
             <div className="relative">
               <textarea
                 placeholder="*"
                 value={formData.description}
+                maxLength={5000}
                 onChange={(e) =>
                   handleInputChange("description", e.target.value)
                 }
