@@ -13,6 +13,7 @@ const JOB_CATEGORIES = [
   "Education",
   "Marketing",
   "Sales",
+  "Other",
 ];
 
 const EXPERIENCE_LEVELS = [
@@ -45,6 +46,7 @@ export default function CreateJobModal({
   const [formData, setFormData] = useState({
     jobTitle: "",
     jobCategory: "",
+    customCategory: "",
     experienceLevel: "",
     employmentType: "",
     location: {
@@ -101,6 +103,7 @@ export default function CreateJobModal({
     if (
       !formData.jobTitle ||
       !formData.jobCategory ||
+      (formData.jobCategory === "Other" && !formData.customCategory) ||
       !formData.description ||
       !formData.employmentType ||
       !formData.location.country ||
@@ -129,7 +132,10 @@ export default function CreateJobModal({
       const payload = {
         businessId, // Added businessId to payload
         jobTitle: formData.jobTitle,
-        jobCategory: formData.jobCategory,
+        jobCategory:
+          formData.jobCategory === "Other"
+            ? formData.customCategory
+            : formData.jobCategory,
         employmentType: formData.employmentType,
         experienceLevel: formData.experienceLevel,
         description: formData.description,
@@ -189,40 +195,56 @@ export default function CreateJobModal({
               <label className="text-sm font-medium text-gray-700">
                 Job Category <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <select
-                  value={formData.jobCategory}
-                  onChange={(e) =>
-                    handleInputChange("jobCategory", e.target.value)
-                  }
-                  className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
-                >
-                  <option value="" disabled>
-                    Select Category
-                  </option>
-                  {JOB_CATEGORIES.map((cat) => (
-                    <option key={cat} value={cat}>
-                      {cat}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                  <svg
-                    width="12"
-                    height="8"
-                    viewBox="0 0 12 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+              <div className="space-y-3">
+                <div className="relative">
+                  <select
+                    value={formData.jobCategory}
+                    onChange={(e) =>
+                      handleInputChange("jobCategory", e.target.value)
+                    }
+                    className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
                   >
-                    <path
-                      d="M1 1.5L6 6.5L11 1.5"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                    <option value="" disabled>
+                      Select Category
+                    </option>
+                    {JOB_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <svg
+                      width="12"
+                      height="8"
+                      viewBox="0 0 12 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M1 1.5L6 6.5L11 1.5"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
                 </div>
+
+                {formData.jobCategory === "Other" && (
+                  <div className="animate-in slide-in-from-top-2 duration-200">
+                    <input
+                      type="text"
+                      placeholder="Enter custom category"
+                      value={formData.customCategory}
+                      onChange={(e) =>
+                        handleInputChange("customCategory", e.target.value)
+                      }
+                      className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none transition-all"
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
