@@ -10,6 +10,7 @@ import { Stepper } from "@/components/ui/Stepper";
 import { useStepper } from "@/hooks/useStepper";
 import { SuccessModal } from "@/components/ui/SuccessModal";
 import { useUserRole } from "@/context/UserContext";
+import { CountrySelect } from "@/components/ui/CountrySelect";
 import {
   FiArrowLeft,
   FiArrowRight,
@@ -34,59 +35,7 @@ const IndustryOptions = [
   "Other",
 ];
 
-const CountryOptions = [
-  "United States",
-  "Canada",
-  "United Kingdom",
-  "Australia",
-  "Germany",
-  "France",
-  "India",
-  "China",
-  "Japan",
-  "Brazil",
-  "Mexico",
-  "Spain",
-  "Italy",
-  "Netherlands",
-  "Sweden",
-  "Norway",
-  "Denmark",
-  "Finland",
-  "Switzerland",
-  "Austria",
-  "Belgium",
-  "Poland",
-  "Ireland",
-  "New Zealand",
-  "Singapore",
-  "South Korea",
-  "United Arab Emirates",
-  "Saudi Arabia",
-  "South Africa",
-  "Argentina",
-  "Chile",
-  "Colombia",
-  "Peru",
-  "Portugal",
-  "Greece",
-  "Czech Republic",
-  "Hungary",
-  "Romania",
-  "Turkey",
-  "Israel",
-  "Egypt",
-  "Nigeria",
-  "Kenya",
-  "Pakistan",
-  "Bangladesh",
-  "Vietnam",
-  "Thailand",
-  "Malaysia",
-  "Indonesia",
-  "Philippines",
-  "Other",
-];
+// CountryOptions removed in favor of dynamic CountrySelect
 
 const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -318,22 +267,11 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
                 <label className="text-base font-medium">
                   Country <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
-                  <select
-                    className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
-                    value={formData.country || ""}
-                    onChange={(e) => handleChange("country", e.target.value)}
-                    required
-                  >
-                    <option value="">Select Country</option>
-                    {CountryOptions.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </select>
-                  <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
-                </div>
+                <CountrySelect
+                  value={formData.country || ""}
+                  onChange={(value) => handleChange("country", value)}
+                  required
+                />
 
                 {/* Show custom input when "Other" is selected */}
                 {formData.country === "Other" && (

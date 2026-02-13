@@ -27,6 +27,7 @@ import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { useUserRole } from "@/context/UserContext";
 import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
+import { CountrySelect } from "@/components/ui/CountrySelect";
 
 const IndustryOptions = [
   "Manufacturing",
@@ -459,12 +460,20 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           <label className="text-base font-medium">
             Country <span className="text-red-500">*</span>
           </label>
-          <Input
-            placeholder="e.g Canada"
+          <CountrySelect
             value={formData.country || ""}
-            onChange={(e) => handleChange("country", e.target.value)}
+            onChange={(value) => handleChange("country", value)}
             required
           />
+          {formData.country === "Other" && (
+            <Input
+              placeholder="Enter your country"
+              className="mt-2"
+              value={formData.customCountry || ""}
+              onChange={(e) => handleChange("customCountry", e.target.value)}
+              required
+            />
+          )}
         </div>
         <div className="space-y-2">
           <label className="text-base font-medium">
@@ -781,6 +790,7 @@ export default function BusinessProfilePage() {
     certificationDocUrl: "",
     compliances: [],
     customCompliance: "",
+    customCountry: "",
   });
   const [createdProfile, setCreatedProfile] = useState(null);
   const [newToken, setNewToken] = useState(null);
