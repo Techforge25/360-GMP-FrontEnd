@@ -496,6 +496,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           "TUV SUD",
           "FDA Approved",
           "Ethical Sourcing",
+          "Other",
         ].map((cert) => (
           <label key={cert} className="flex items-center gap-2 cursor-pointer">
             <input
@@ -517,6 +518,20 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
           </label>
         ))}
       </div>
+
+      {(formData.compliances || []).includes("Other") && (
+        <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          <label className="text-sm font-medium mb-1.5 block">
+            Custom Certificate Name <span className="text-red-500">*</span>
+          </label>
+          <Input
+            placeholder="Enter certificate name (e.g. ISO 14001)"
+            value={formData.customCompliance || ""}
+            onChange={(e) => handleChange("customCompliance", e.target.value)}
+            required
+          />
+        </div>
+      )}
     </div>
 
     <div className="space-y-2">
@@ -688,6 +703,30 @@ const Step3 = ({ formData }) => (
       </div>
     </div>
 
+    {((formData.compliances || []).length > 0 || formData.customCompliance) && (
+      <div className="p-6 border border-border-light rounded-lg bg-white mt-6">
+        <h3 className="font-bold mb-3">Certifications & Compliance</h3>
+        <div className="flex flex-wrap gap-2">
+          {formData.compliances
+            ?.filter((c) => c !== "Other")
+            .map((cert) => (
+              <span
+                key={cert}
+                className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-medium"
+              >
+                {cert}
+              </span>
+            ))}
+          {formData.compliances?.includes("Other") &&
+            formData.customCompliance && (
+              <span className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-medium border border-brand-primary/20">
+                {formData.customCompliance}
+              </span>
+            )}
+        </div>
+      </div>
+    )}
+
     <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-base text-orange-800">
       <div className="pt-0.5">
         <div className="w-4 h-4 rounded-full bg-orange-200 flex items-center justify-center text-[14px] font-bold">
@@ -737,6 +776,7 @@ export default function BusinessProfilePage() {
     bannerImageUrl: "",
     certificationDocUrl: "",
     compliances: [],
+    customCompliance: "",
   });
   const [createdProfile, setCreatedProfile] = useState(null);
   const [newToken, setNewToken] = useState(null);
@@ -813,7 +853,13 @@ export default function BusinessProfilePage() {
           supportEmail: formData.contactEmail || "",
         },
         // Backend expects `certifications` array, use selected compliances
-        certifications: formData.compliances || [],
+        certifications: [
+          ...(formData.compliances || []).filter((c) => c !== "Other"),
+          ...(formData.compliances?.includes("Other") &&
+          formData.customCompliance
+            ? [formData.customCompliance]
+            : []),
+        ],
       };
 
       const response = await api.post({
@@ -917,6 +963,14 @@ export default function BusinessProfilePage() {
 
       if (!isValidEmail(formData.contactEmail)) {
         setError("Please enter a valid email address.");
+        return;
+      }
+
+      if (
+        formData.compliances?.includes("Other") &&
+        !formData.customCompliance
+      ) {
+        setError("Please enter your custom certificate name.");
         return;
       }
     }

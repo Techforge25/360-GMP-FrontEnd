@@ -172,7 +172,7 @@ const BusinessAboutTab = ({ businessId }) => {
         <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 lg:p-5 xl:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3 sm:mb-4">
             <h2 className="text-base sm:text-lg font-bold text-gray-900">
-              Our Story & Mission
+              Company Mission And Bio
             </h2>
             {/* {isOwner && ( */}
             <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
