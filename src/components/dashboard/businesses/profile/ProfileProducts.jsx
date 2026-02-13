@@ -44,7 +44,8 @@ export default function ProfileProducts({ products, businessId }) {
     }
   };
 
-  const productList = featuredProducts.length > 0 ? featuredProducts : products;
+  const productList =
+    featuredProducts?.length > 0 ? featuredProducts : products || [];
 
   if (loading) {
     return (

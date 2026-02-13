@@ -2,15 +2,21 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { FiMapPin, FiGlobe, FiPhone, FiCheck, FiFolder } from "react-icons/fi";
-import { FaCheckCircle, FaStar } from "react-icons/fa";
+import { FaCheckCircle, FaStar, FaCrown } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
 import businessProfileAPI from "@/services/businessProfileAPI";
 
 const BusinessCard = ({ business, onContactClick }) => {
   const { user } = useUserRole();
+  const role = user?.role;
   const router = useRouter();
-  const isFreeTrial = user?.role === "free_trial";
+
+  // More robust check for free trial (role or subscription plan)
+  const isFreeTrial =
+    role === "free_trial" ||
+    user?.subscription?.planName?.toLowerCase()?.includes("trial") ||
+    user?.subscription?.plan?.name?.toLowerCase()?.includes("trial");
 
   const basePath =
     user?.role === "business" ? "/dashboard/business" : "/dashboard/user";
@@ -184,11 +190,20 @@ const BusinessCard = ({ business, onContactClick }) => {
           <p className="text-sm text-black font-semibold mb-1">
             Online revenue
           </p>
-          <p className="text-sm font-sm text-gray-600">USD $3.6M+</p>
+          {isFreeTrial ? (
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-purple-50 border border-purple-100 rounded-full group cursor-pointer hover:bg-purple-100 transition-colors">
+              <FaCrown className="text-purple-600 text-[10px]" />
+              <span className="text-[11px] font-bold text-purple-600 uppercase tracking-tight">
+                Upgrade
+              </span>
+            </div>
+          ) : (
+            <p className="text-sm font-sm text-gray-600">N/A</p>
+          )}
         </div>
         <div>
-          <p className="text-sm text-black font-semibold mb-1">Products Type</p>
-          <p className="text-sm font-sm text-gray-600">210</p>
+          <p className="text-sm text-black font-semibold mb-1">Products</p>
+          <p className="text-sm font-sm text-gray-600">0</p>
         </div>
       </div>
 
