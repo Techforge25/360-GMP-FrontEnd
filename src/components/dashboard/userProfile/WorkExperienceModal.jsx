@@ -217,16 +217,19 @@ const WorkExperienceModal = ({
           {/* End Date */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              End Date
+              End Date{" "}
+              {!formData.isCurrentlyWorking && (
+                <span className="text-red-500">*</span>
+              )}
             </label>
             <input
               type="date"
-              value={formData.endDate}
+              value={formData.endDate || ""}
               disabled={formData.isCurrentlyWorking}
               onChange={(e) => handleInputChange("endDate", e.target.value)}
               className={`w-full text-black px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent ${
                 formData.isCurrentlyWorking
-                  ? "bg-gray-100 cursor-not-allowed"
+                  ? "bg-gray-100 cursor-not-allowed text-gray-400"
                   : ""
               }`}
             />
