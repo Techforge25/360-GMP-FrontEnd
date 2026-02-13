@@ -316,19 +316,28 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         />
       </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Description
-        </label>
+        <div className="flex justify-between items-center mb-1">
+          <label className="block text-sm font-semibold text-gray-700">
+            Description
+          </label>
+          <span className={`text-[12px] ${formData.description?.length >= 2000 ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
+            {formData.description?.length || 0} / 2000
+          </span>
+        </div>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleInputChange}
           rows={4}
-          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none"
+          maxLength={2000}
+          className={`w-full text-black text-base p-2.5 bg-gray-50 border rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none ${
+            formData.description?.length >= 2000 ? 'border-red-500' : 'border-gray-200'
+          }`}
         ></textarea>
+        {formData.description?.length >= 2000 && (
+          <p className="text-red-500 text-[12px] mt-1 italic">Maximum character limit reached.</p>
+        )}
       </div>
-    </div>
   );
 
   const renderStep2 = () => (

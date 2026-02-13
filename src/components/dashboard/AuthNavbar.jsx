@@ -167,7 +167,7 @@ const AuthNavbar = () => {
                 alt="3SIXTY Logo"
                 width={120}
                 height={40}
-                className="h-auto w-auto object-contain"
+                className="h-auto  w-auto object-contain"
                 priority
               />
             </Link>
@@ -260,7 +260,7 @@ const AuthNavbar = () => {
                     <img
                       src={profileImage}
                       alt="Profile"
-                      className="w-9 h-9 rounded-md object-contain"
+                      className="w-9 h-9 rounded-full object-contain"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = "/assets/images/Logo.png";
