@@ -72,7 +72,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.error("Login Error:", err);
-      setError("Something went wrong. Please try again.");
+      setError("Invalid credentials");
     } finally {
       setLoading(false);
     }

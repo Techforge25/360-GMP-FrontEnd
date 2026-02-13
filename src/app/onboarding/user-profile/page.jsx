@@ -701,30 +701,44 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               required
             />
 
-            <div className="flex gap-2">
-              <Input
-                type="date"
-                className="block"
-                value={educationDraft.startDate}
-                onChange={(e) =>
-                  setEducationDraft((p) => ({
-                    ...p,
-                    startDate: e.target.value,
-                  }))
-                }
-                required
-              />
+            <div className="flex gap-4">
+              <div className="flex-1 space-y-1">
+                <label className="text-sm font-medium text-text-secondary">
+                  Start Date <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="date"
+                  className="block"
+                  value={educationDraft.startDate}
+                  onChange={(e) =>
+                    setEducationDraft((p) => ({
+                      ...p,
+                      startDate: e.target.value,
+                    }))
+                  }
+                  required
+                />
+              </div>
 
-              <Input
-                type="date"
-                className="block"
-                disabled={educationDraft.isCurrent}
-                value={educationDraft.endDate}
-                onChange={(e) =>
-                  setEducationDraft((p) => ({ ...p, endDate: e.target.value }))
-                }
-                required={!educationDraft.isCurrent}
-              />
+              <div className="flex-1 space-y-1">
+                <label className="text-sm font-medium text-text-secondary">
+                  {educationDraft.isCurrent ? "End Date" : "End Date"}{" "}
+                  <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="date"
+                  className="block"
+                  disabled={educationDraft.isCurrent}
+                  value={educationDraft.endDate}
+                  onChange={(e) =>
+                    setEducationDraft((p) => ({
+                      ...p,
+                      endDate: e.target.value,
+                    }))
+                  }
+                  required={!educationDraft.isCurrent}
+                />
+              </div>
             </div>
 
             <label className="flex items-center gap-2 text-base">
