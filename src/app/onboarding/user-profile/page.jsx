@@ -770,7 +770,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               </span>
               <span
                 className={cn(
-                  "text-xs font-medium",
+                  "text-sm font-medium",
                   (educationDraft.description?.length || 0) >= 1000
                     ? "text-red-500"
                     : "text-text-secondary",
@@ -800,7 +800,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               }}
             />
             {(educationDraft.description?.length || 0) >= 1000 && (
-              <p className="text-xs text-red-500 font-medium">
+              <p className="text-sm text-red-500 font-medium">
                 Description cannot exceed 1000 characters
               </p>
             )}

@@ -454,7 +454,7 @@ export default function CreateJobModal({
               </label>
               <span
                 className={cn(
-                  "text-xs font-medium",
+                  "text-sm font-medium",
                   formData.description.length >= 5000
                     ? "text-red-500"
                     : "text-gray-400",

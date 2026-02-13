@@ -617,7 +617,7 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => (
                 />
               </div>
               <div className="flex justify-between items-center mt-2">
-                <span className="text-xs font-medium text-text-secondary truncate pr-2">
+                <span className="text-sm font-medium text-text-secondary truncate pr-2">
                   Certification {index + 1}
                 </span>
                 <button
@@ -628,7 +628,7 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => (
                     );
                     handleChange("certificationDocs", updatedDocs);
                   }}
-                  className="p-1 px-2 text-xs font-medium text-red-500 hover:bg-red-50 rounded transition-colors"
+                  className="p-1 px-2 text-sm font-medium text-red-500 hover:bg-red-50 rounded transition-colors"
                 >
                   Remove
                 </button>

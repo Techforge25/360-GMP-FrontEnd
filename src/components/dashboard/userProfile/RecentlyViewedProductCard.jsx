@@ -30,24 +30,24 @@
 //         <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1 line-clamp-1">
 //           {product.title}
 //         </h3>
-//         <p className="text-xs sm:text-sm text-gray-500 mb-4 line-clamp-1 font-medium">
+//         <p className="text-sm sm:text-sm text-gray-500 mb-4 line-clamp-1 font-medium">
 //           {product.detail}
 //         </p>
 
 //         {/* MOQ and Price Row */}
-//         <div className="flex items-center justify-between text-xs sm:text-sm text-gray-400 font-medium mb-5">
+//         <div className="flex items-center justify-between text-sm sm:text-sm text-gray-400 font-medium mb-5">
 //           <span>MOQ: {product.minOrderQty} pc</span>
 //           <span className="text-gray-400">USD ${product.pricePerUnit}</span>
 //         </div>
 
 //         {/* Action Buttons */}
 //         <div className="grid grid-cols-2 gap-3">
-//           <Button className="bg-[#1e0a45] hover:bg-[#2d1166] text-white text-[11px] sm:text-xs font-bold h-9 sm:h-10 rounded-lg shadow-sm border-none">
+//           <Button className="bg-[#1e0a45] hover:bg-[#2d1166] text-white text-[11px] sm:text-sm font-bold h-9 sm:h-10 rounded-lg shadow-sm border-none">
 //             Add To Cart
 //           </Button>
 //           <Button
 //             variant="outline"
-//             className="border-gray-200 text-[#1e0a45] hover:bg-gray-50 text-[11px] sm:text-xs font-bold h-9 sm:h-10 rounded-lg"
+//             className="border-gray-200 text-[#1e0a45] hover:bg-gray-50 text-[11px] sm:text-sm font-bold h-9 sm:h-10 rounded-lg"
 //           >
 //             Chat Now
 //           </Button>

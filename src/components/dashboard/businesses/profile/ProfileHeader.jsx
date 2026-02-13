@@ -134,7 +134,7 @@ export default function ProfileHeader({ business }) {
                 </>
               ) : (
                 <>
-                  {isFreeTrial && <FaCrown className="text-xs" />}
+                  {isFreeTrial && <FaCrown className="text-sm" />}
                   Post A Review <FiShare2 />
                 </>
               )}

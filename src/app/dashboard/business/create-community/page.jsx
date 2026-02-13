@@ -434,7 +434,7 @@ export default function CreateCommunityPage() {
                         }}
                         className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base disabled:bg-gray-50 disabled:cursor-not-allowed"
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
                         {formData.tags.length}/3
                       </span>
                     </div>
