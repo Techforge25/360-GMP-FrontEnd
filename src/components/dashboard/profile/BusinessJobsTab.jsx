@@ -7,6 +7,7 @@ import jobAPI from "@/services/jobAPI";
 
 import CreateJobModal from "@/components/dashboard/jobs/CreateJobModal";
 import CandidatesView from "@/components/dashboard/jobs/CandidatesView";
+import { cn } from "@/lib/utils";
 
 export default function BusinessJobsTab() {
   const router = useRouter();
@@ -18,6 +19,8 @@ export default function BusinessJobsTab() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [businessProfile, setBusinessProfile] = useState(null);
   const [recentApplicationsCount, setRecentApplicationsCount] = useState(0);
+  const [selectedJobIds, setSelectedJobIds] = useState([]);
+  const [activeStatusMenu, setActiveStatusMenu] = useState(null); // track which job's status menu is open
   const [hiringStats, setHiringStats] = useState({
     views: { count: 0, period: "30d" },
     applications: 0,
@@ -132,6 +135,41 @@ export default function BusinessJobsTab() {
     );
   };
 
+  const updateJobStatus = async (jobId, newStatus, e) => {
+    if (e) e.stopPropagation();
+    try {
+      const response = await jobAPI.update(jobId, { status: newStatus });
+      if (response?.success) {
+        setJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job._id === jobId ? { ...job, status: newStatus } : job,
+          ),
+        );
+        setActiveStatusMenu(null);
+      }
+    } catch (error) {
+      console.error("Failed to update job status:", error);
+    }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      const allIds = jobs.map((job) => job._id);
+      setSelectedJobIds(allIds);
+    } else {
+      setSelectedJobIds([]);
+    }
+  };
+
+  const toggleSelectJob = (jobId, e) => {
+    e.stopPropagation(); // Prevent row click navigation
+    setSelectedJobIds((prev) =>
+      prev.includes(jobId)
+        ? prev.filter((id) => id !== jobId)
+        : [...prev, jobId],
+    );
+  };
+
   return (
     <>
       {showCandidates && selectedJob ? (
@@ -223,7 +261,12 @@ export default function BusinessJobsTab() {
                       <th className="py-3 text-left">
                         <input
                           type="checkbox"
-                          className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-[#240457]"
+                          onChange={handleSelectAll}
+                          checked={
+                            jobs.length > 0 &&
+                            selectedJobIds.length === jobs.length
+                          }
+                          className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-[#240457] cursor-pointer"
                         />
                       </th>
                       <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
@@ -235,9 +278,7 @@ export default function BusinessJobsTab() {
                       <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
                         Date Posted
                       </th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
-                        Email
-                      </th>
+
                       <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
                         Job Status
                       </th>
@@ -275,7 +316,10 @@ export default function BusinessJobsTab() {
                           <td className="py-4">
                             <input
                               type="checkbox"
-                              className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-[#240457]"
+                              checked={selectedJobIds.includes(job._id)}
+                              onChange={(e) => toggleSelectJob(job._id, e)}
+                              onClick={(e) => e.stopPropagation()} // Extra safety for some browsers
+                              className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-[#240457] cursor-pointer"
                             />
                           </td>
                           <td className="py-4 px-4">
@@ -314,30 +358,74 @@ export default function BusinessJobsTab() {
                               },
                             )}
                           </td>
-                          <td className="py-4 px-4 text-sm text-gray-700">
-                            {businessProfile?.email || "N/A"}
-                          </td>
                           <td className="py-4 px-4">
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`inline-flex items-center gap-1 text-sm font-medium ${
-                                  job.status === "open"
-                                    ? "text-green-700"
-                                    : "text-gray-700"
-                                }`}
+                            <div className="relative">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setActiveStatusMenu(
+                                    activeStatusMenu === job._id
+                                      ? null
+                                      : job._id,
+                                  );
+                                }}
+                                className="flex items-center gap-2 hover:bg-gray-50 p-1 rounded transition-colors"
                               >
                                 <span
-                                  className={`w-2 h-2 rounded-full ${
+                                  className={`inline-flex items-center gap-1 text-sm font-medium ${
                                     job.status === "open"
-                                      ? "bg-green-500"
-                                      : "bg-gray-500"
+                                      ? "text-green-700"
+                                      : job.status === "paused"
+                                        ? "text-yellow-700"
+                                        : "text-gray-700"
                                   }`}
-                                ></span>
-                                {job.status === "open" ? "Open" : "Closed"}
-                              </span>
-                              <button className="p-1 hover:bg-gray-100 rounded">
+                                >
+                                  <span
+                                    className={`w-2 h-2 rounded-full ${
+                                      job.status === "open"
+                                        ? "bg-green-500"
+                                        : job.status === "paused"
+                                          ? "bg-yellow-500"
+                                          : "bg-gray-500"
+                                    }`}
+                                  ></span>
+                                  {job.status.charAt(0).toUpperCase() +
+                                    job.status.slice(1)}
+                                </span>
                                 <FiChevronDown className="w-4 h-4 text-gray-500" />
                               </button>
+
+                              {activeStatusMenu === job._id && (
+                                <>
+                                  <div
+                                    className="fixed inset-0 z-10"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setActiveStatusMenu(null);
+                                    }}
+                                  />
+                                  <div className="absolute left-0 mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1 overflow-hidden">
+                                    {["open", "paused", "closed"].map(
+                                      (status) => (
+                                        <button
+                                          key={status}
+                                          onClick={(e) =>
+                                            updateJobStatus(job._id, status, e)
+                                          }
+                                          className={cn(
+                                            "w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors capitalize",
+                                            job.status === status
+                                              ? "text-[#240457] font-semibold bg-gray-50"
+                                              : "text-gray-700",
+                                          )}
+                                        >
+                                          {status}
+                                        </button>
+                                      ),
+                                    )}
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </td>
                           <td className="py-4 px-4">

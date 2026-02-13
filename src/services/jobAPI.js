@@ -105,6 +105,19 @@ class JobAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Update a job
+   */
+  async update(jobId, jobData) {
+    return await api.put({
+      url: `/jobs/${jobId}`,
+      payload: jobData,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
 }
 
 const jobAPI = new JobAPI();
