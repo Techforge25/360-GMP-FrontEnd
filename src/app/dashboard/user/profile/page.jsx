@@ -9,6 +9,7 @@ import UserJobPreferences from "@/components/dashboard/userProfile/UserJobPrefer
 import UserSidebar from "@/components/dashboard/userProfile/UserSidebar";
 import UserApplications from "@/components/dashboard/userProfile/UserApplications";
 import UserCommunities from "@/components/dashboard/userProfile/UserCommunities";
+// import RecentlyViewedProducts from "@/components/dashboard/userProfile/RecentlyViewedProducts";
 // import UserOrders from "@/components/dashboard/userProfile/UserOrders";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 
@@ -39,6 +40,9 @@ export default function UserProfilePage() {
                 <UserEducation />
                 <UserJobPreferences />
               </div>
+
+              {/* Recently Viewed Products */}
+              {/* <RecentlyViewedProducts /> */}
             </div>
 
             {/* Right Sidebar Column */}

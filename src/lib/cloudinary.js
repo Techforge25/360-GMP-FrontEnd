@@ -10,10 +10,22 @@ export const uploadToCloudinary = (file, folder, onProgress) => {
     );
     formData.append("folder", folder);
 
+    // Dynamically determine resource type
+    // Images use 'image', PDF/Docs use 'raw', others can use 'auto'
+    let resourceType = "auto";
+    if (file.type.startsWith("image/")) {
+      resourceType = "image";
+    } else if (
+      file.type === "application/pdf" ||
+      file.type.includes("msword") ||
+      file.type.includes("officedocument.wordprocessingml.document")
+    ) {
+      resourceType = "raw";
+    }
+
     xhr.open(
       "POST",
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`,
-      // `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`,
+      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/${resourceType}/upload`,
     );
 
     xhr.upload.onprogress = (event) => {

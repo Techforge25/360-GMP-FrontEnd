@@ -195,6 +195,64 @@ class ProductAPI {
       enableErrorMessage: true,
     });
   }
+
+  /**
+   * Get recently viewed products (Mocked for UI development)
+   */
+//   async getRecentlyViewed(limit = 4) {
+//     // Simulating API response delay
+//     await new Promise((resolve) => setTimeout(resolve, 500));
+
+//     const mockProducts = [
+//       {
+//         _id: "65c123abc456def789000001",
+//         title: "Precision Disc Brake System",
+//         detail: "Precision milling and turning of complex geometries ..",
+//         stockQty: 145,
+//         minOrderQty: 300,
+//         pricePerUnit: 1256,
+//         image:
+//           "https://res.cloudinary.com/dzt6v3z7v/image/upload/v1739431800/brake_system.png",
+//       },
+//       {
+//         _id: "65c123abc456def789000002",
+//         title: "IoT-Enabled Temperature Sensor Module",
+//         detail: "Precision milling and turning of complex geometries...",
+//         stockQty: 14,
+//         minOrderQty: 200,
+//         pricePerUnit: 230,
+//         image:
+//           "https://res.cloudinary.com/dzt6v3z7v/image/upload/v1739431801/sensor_module.png",
+//       },
+//       {
+//         _id: "65c123abc456def789000003",
+//         title: "Heavy-Duty Pallet Jack (Hydraulic)",
+//         detail:
+//           "Ergonomic, 5,500 lb capacity hydraulic pallet truck for warehouse..",
+//         stockQty: 100,
+//         minOrderQty: 100,
+//         pricePerUnit: 980,
+//         image:
+//           "https://res.cloudinary.com/dzt6v3z7v/image/upload/v1739431802/pallet_jack.png",
+//       },
+//       {
+//         _id: "65c123abc456def789000004",
+//         title: "Precision CNC Machined Aluminum Enclosure",
+//         detail:
+//           "High-tolerance, corrosion-resistant housing for industrial sensors.",
+//         stockQty: 145,
+//         minOrderQty: 300,
+//         pricePerUnit: 1256,
+//         image:
+//           "https://res.cloudinary.com/dzt6v3z7v/image/upload/v1739431803/cnc_enclosure.png",
+//       },
+//     ];
+
+//     return {
+//       success: true,
+//       data: mockProducts.slice(0, limit),
+//     };
+//   }
 }
 
 const productAPI = new ProductAPI();
