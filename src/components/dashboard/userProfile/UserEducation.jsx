@@ -115,7 +115,7 @@ const UserEducation = () => {
                   : formatDate(profileData.education.endDate)}
               </p>
               {profileData.education.description && (
-                <p className="text-sm text-gray-600 leading-relaxed max-w-2xl">
+                <p className="text-sm  break-words whitespace-pre-wrap text-gray-600 leading-relaxed max-w-2xl">
                   {profileData.education.description}
                 </p>
               )}
