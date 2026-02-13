@@ -118,7 +118,12 @@ const generateTimeOptions = () => {
 
 const TIME_OPTIONS = generateTimeOptions();
 
-const Step1 = ({ formData, handleChange, setIsUploading }) => {
+const Step1 = ({
+  formData,
+  handleChange,
+  setIsUploading,
+  companyNameError,
+}) => {
   // Parse existing operating hours or set defaults
   const [schedule, setSchedule] = useState(() => {
     const defaultSchedule = {
@@ -172,7 +177,15 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
             value={formData.companyName}
             onChange={(e) => handleChange("companyName", e.target.value)}
             required
+            className={cn(
+              companyNameError && "border-red-500 focus-visible:ring-red-500",
+            )}
           />
+          {companyNameError && (
+            <p className="text-sm text-red-500 mt-1 font-medium animate-in fade-in slide-in-from-top-1 duration-200">
+              {companyNameError}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <label className="text-base font-medium">
@@ -552,35 +565,76 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => (
       )}
     </div>
 
-    <div className="space-y-2">
-      <label className="text-base font-medium">
-        Upload Certification Document
-      </label>
-      <FileUpload
-        label="Upload Certification Document"
-        subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
-        onUploadingChange={setIsUploading}
-        onUpload={(file, onProgress) =>
-          uploadToCloudinary(file, "business/certifications", onProgress).then(
-            (url) => {
-              handleChange("certificationDocUrl", url);
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <label className="text-base font-medium">
+          Upload Certification Documents (Max 3)
+        </label>
+        <span className="text-sm text-text-secondary">
+          {(formData.certificationDocs || []).length} / 3
+        </span>
+      </div>
+
+      {(formData.certificationDocs || []).length < 3 ? (
+        <FileUpload
+          label="Upload Certification Document"
+          subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
+          onUploadingChange={setIsUploading}
+          onUpload={(file, onProgress) =>
+            uploadToCloudinary(
+              file,
+              "business/certifications",
+              onProgress,
+            ).then((url) => {
+              const currentDocs = formData.certificationDocs || [];
+              handleChange("certificationDocs", [...currentDocs, url]);
               return url;
-            },
-          )
-        }
-      />
-      {formData.certificationDocUrl && (
-        <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
-          <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
-          <div className="relative w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
-            <Image
-              src={formData.certificationDocUrl}
-              alt="Certification Document Preview"
-              width={80}
-              height={80}
-              className="object-contain w-full h-full"
-            />
-          </div>
+            })
+          }
+        />
+      ) : (
+        <div className="p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50 text-center">
+          <p className="text-sm text-gray-500 font-medium">
+            Maximum of 3 certifications reached. Remove an existing one to
+            upload a new document.
+          </p>
+        </div>
+      )}
+
+      {(formData.certificationDocs || []).length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          {formData.certificationDocs.map((url, index) => (
+            <div
+              key={index}
+              className="relative group p-3 border border-border-light rounded-lg bg-white hover:border-brand-primary/30 transition-all"
+            >
+              <div className="relative aspect-video w-full border border-gray-100 rounded-md overflow-hidden bg-gray-50">
+                <Image
+                  src={url}
+                  alt={`Certification ${index + 1}`}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-xs font-medium text-text-secondary truncate pr-2">
+                  Certification {index + 1}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updatedDocs = formData.certificationDocs.filter(
+                      (_, i) => i !== index,
+                    );
+                    handleChange("certificationDocs", updatedDocs);
+                  }}
+                  className="p-1 px-2 text-xs font-medium text-red-500 hover:bg-red-50 rounded transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
@@ -747,6 +801,58 @@ const Step3 = ({ formData }) => (
               </span>
             )}
         </div>
+
+        {/* Certification Documents Preview in Step 3 */}
+        {(formData.certificationDocs || []).length > 0 && (
+          <div className="mt-6 pt-6 border-t border-border-light">
+            <h4 className="text-sm font-bold text-text-primary mb-3">
+              Uploaded Documents
+            </h4>
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
+              {formData.certificationDocs.map((url, index) => (
+                <div
+                  key={index}
+                  className="relative aspect-square border border-border-light rounded-lg overflow-hidden bg-gray-50"
+                >
+                  <Image
+                    src={url}
+                    alt={`Certification ${index + 1}`}
+                    fill
+                    className="object-contain"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:bg-black/20 hover:opacity-100 transition-opacity">
+                    <a
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-1 bg-white rounded-full shadow-sm text-brand-primary"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                        />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     )}
 
@@ -779,6 +885,7 @@ export default function BusinessProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [companyNameError, setCompanyNameError] = useState("");
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -798,7 +905,7 @@ export default function BusinessProfilePage() {
     contactEmail: "",
     profileImageUrl: "",
     bannerImageUrl: "",
-    certificationDocUrl: "",
+    certificationDocs: [],
     compliances: [],
     customCompliance: "",
     customCountry: "",
@@ -822,6 +929,15 @@ export default function BusinessProfilePage() {
         );
       } else {
         setPhoneError("");
+      }
+    }
+
+    // Real-time validation for companyName
+    if (field === "companyName") {
+      if (!value || value.trim() === "") {
+        setCompanyNameError("Company name is required");
+      } else {
+        setCompanyNameError("");
       }
     }
   };
@@ -892,13 +1008,14 @@ export default function BusinessProfilePage() {
             : "",
           supportEmail: formData.contactEmail || "",
         },
-        // Backend expects `certifications` array, use selected compliances
+        // Backend expects `certifications` array, merge both names and document URLs
         certifications: [
           ...(formData.compliances || []).filter((c) => c !== "Other"),
           ...(formData.compliances?.includes("Other") &&
           formData.customCompliance
             ? [formData.customCompliance]
             : []),
+          ...(formData.certificationDocs || []),
         ],
       };
 
@@ -1138,6 +1255,7 @@ export default function BusinessProfilePage() {
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
+              companyNameError={companyNameError}
             />
           )}
           {currentStep === 2 && (
