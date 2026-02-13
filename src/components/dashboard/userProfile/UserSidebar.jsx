@@ -8,6 +8,7 @@ import {
   FiTrash2,
   FiPlus,
   FiDownload,
+  FiEye,
   FiBriefcase,
 } from "react-icons/fi";
 import {
@@ -234,9 +235,12 @@ const UserSidebar = () => {
       "application/pdf",
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
     ];
     if (!allowedTypes.includes(file.type)) {
-      alert("Please upload a PDF or Word document");
+      alert("Please upload a PDF, Word document, or image (JPG, PNG)");
       return;
     }
 
@@ -254,16 +258,31 @@ const UserSidebar = () => {
 
       const response = await userProfileAPI.updateResume({ resumeUrl });
       if (response?.data) {
+        // Support both object response and string response
+        const newUrl =
+          response.data.resumeUrl ||
+          (typeof response.data === "string" ? response.data : resumeUrl);
+
         setProfileData((prev) => ({
           ...prev,
-          resumeUrl: response.data.resumeUrl,
+          resumeUrl: newUrl,
         }));
+
+        // Optional: Re-fetch profile to ensure everything (like updatedAt) is in sync
+        const freshProfile = await userProfileAPI.getMyProfile();
+        if (freshProfile?.data) {
+          setProfileData(freshProfile.data);
+        }
       }
     } catch (error) {
       console.error("Failed to upload resume:", error);
       alert("Failed to upload resume. Please try again.");
     } finally {
       setIsUploadingResume(false);
+      // Clear the input so the same file can be selected again
+      if (event.target) {
+        event.target.value = "";
+      }
     }
   };
 
@@ -745,24 +764,14 @@ const UserSidebar = () => {
               </div>
               <div className="flex gap-2">
                 <a
-                  href={profileData.resumeUrl.replace(
-                    "/upload/",
-                    "/upload/fl_attachment/",
-                  )}
+                  href={profileData.resumeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:text-blue-700 p-1"
-                  title="Download Uploaded Resume"
+                  title="View Uploaded Resume"
                 >
-                  <FiDownload className="w-4 h-4" />
+                  <FiEye className="w-4 h-4" />
                 </a>
-                <button
-                  onClick={handleGenerateResume}
-                  className="text-green-500 hover:text-green-700 p-1"
-                  title="Generate New Resume"
-                >
-                  <FiDownload className="w-4 h-4" />
-                </button>
               </div>
             </div>
           ) : (
@@ -793,7 +802,7 @@ const UserSidebar = () => {
           <div className="relative">
             <input
               type="file"
-              accept=".pdf,.doc,.docx"
+              accept=".pdf,.doc,.docx,image/*"
               onChange={handleResumeUpload}
               className="hidden"
               id="resume-upload"
