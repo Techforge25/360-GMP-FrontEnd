@@ -16,8 +16,8 @@ const FeedTabs = ({ activeTab, setActiveTab, postCounts }) => {
       count: postCounts?.posts || 0,
     },
     {
-      id: "discussions",
-      label: "Discussions",
+      id: "discussion",
+      label: "Documents",
       count: postCounts?.discussions || 0,
     },
     {
@@ -29,11 +29,6 @@ const FeedTabs = ({ activeTab, setActiveTab, postCounts }) => {
       id: "polls",
       label: "Polls",
       count: postCounts?.polls || 0,
-    },
-    {
-      id: "resources",
-      label: "Resources",
-      count: postCounts?.resources || 0,
     },
   ];
 

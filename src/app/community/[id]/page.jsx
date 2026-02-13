@@ -43,13 +43,12 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
 
       // Add filter based on active tab
       if (filterType && filterType !== "recent") {
-        // Map tab names to post types
+        // Map tab names to backend types for API filtering
         const typeMapping = {
           posts: "post",
           events: "event",
           polls: "poll",
-          discussions: "discussion",
-          resources: "document",
+          discussion: "post", // Documents are created as 'post' type with files
         };
         queryParams.type = typeMapping[filterType] || filterType;
       }
@@ -57,10 +56,10 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
       const response = await postsAPI.getCommunityPosts(params.id, queryParams);
 
       if (response.success) {
-        const posts = response.data.posts || [];
+        const postsData = response.data.posts || [];
 
         // Temporary fix: Check if current user liked posts client-side
-        const processedPosts = posts.map((post) => {
+        const processedPosts = postsData.map((post) => {
           if (!post.likedByUser && user && post.likes) {
             const currentUserId = user.profilePayload?._id;
             if (currentUserId) {
@@ -96,23 +95,48 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
     fetchCommunityPosts(1, newTab); // Fetch posts for new tab
   };
 
-  // Get post counts by type for tabs
-  const getPostCounts = () => {
-    const totalPosts = posts.length;
-    const postTypes = posts.reduce((acc, post) => {
-      const type = post.type || "post";
-      acc[type] = (acc[type] || 0) + 1;
-      return acc;
-    }, {});
+  // Client-side filtering logic to ensure precision within the fetched data
+  const filteredPosts = posts.filter((post) => {
+    if (activeTab === "recent") return true;
 
-    return {
-      total: totalPosts,
-      posts: postTypes.post || 0,
-      discussions: postTypes.discussion || 0,
-      events: postTypes.event || 0,
-      polls: postTypes.poll || 0,
-      resources: postTypes.document || postTypes.resource || 0,
-    };
+    // Posts tab: Show only simple text/image posts (no documents/polls/events)
+    if (activeTab === "posts") {
+      return post.type === "post" && !post.file;
+    }
+
+    // Documents (discussion) tab: Show posts with files
+    if (activeTab === "discussion") {
+      return post.type === "file" || (post.type === "post" && !!post.file);
+    }
+
+    // Events tab
+    if (activeTab === "events") {
+      return post.type === "event";
+    }
+
+    // Polls tab
+    if (activeTab === "polls") {
+      return post.type === "poll";
+    }
+
+    return true;
+  });
+
+  // Get post counts for tabs based on all available data
+  const getPostCounts = () => {
+    const counts = posts.reduce(
+      (acc, post) => {
+        if (post.type === "event") acc.events++;
+        else if (post.type === "poll") acc.polls++;
+        else if (post.type === "file" || (post.type === "post" && post.file))
+          acc.discussions++;
+        else if (post.type === "post" && !post.file) acc.posts++;
+        return acc;
+      },
+      { total: posts.length, posts: 0, discussions: 0, events: 0, polls: 0 },
+    );
+
+    return counts;
   };
 
   // Handle new post creation
@@ -316,7 +340,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
                     <div className="flex items-center justify-center py-12">
                       <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#240457]"></div>
                     </div>
-                  ) : posts.length === 0 ? (
+                  ) : filteredPosts.length === 0 ? (
                     <div className="text-center py-12 text-gray-500">
                       <p className="text-lg font-medium mb-2">No posts yet</p>
                       <p className="text-sm">
@@ -325,7 +349,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
                     </div>
                   ) : (
                     <>
-                      {posts.map((post) => (
+                      {filteredPosts.map((post) => (
                         <PostCard
                           key={post._id}
                           post={post}
