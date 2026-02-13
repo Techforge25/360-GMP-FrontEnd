@@ -201,7 +201,7 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
             </div>
           ) : (
             <div className="rounded-lg overflow-hidden h-24 bg-gray-100 flex items-center justify-center border border-dashed border-gray-300">
-              <p className="text-xs text-gray-500">
+              <p className="text-sm text-gray-500">
                 Location coordinates not available
               </p>
             </div>

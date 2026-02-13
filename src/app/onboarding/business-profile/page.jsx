@@ -61,6 +61,11 @@ const isValidEmail = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 };
 
+const isValidPhone = (phone) => {
+  const cleanPhone = phone.replace(/\s+/g, "");
+  return /^\+[1-9]\d{6,14}$/.test(cleanPhone);
+};
+
 const isValidUrl = (url) => {
   try {
     const urlObj = new URL(url);
@@ -863,7 +868,9 @@ export default function BusinessProfilePage() {
         b2bContact: {
           name: formData.contactName || "",
           title: formData.contactTitle || "",
-          phone: formData.contactPhone || "",
+          phone: formData.contactPhone
+            ? formData.contactPhone.replace(/\s+/g, "")
+            : "",
           supportEmail: formData.contactEmail || "",
         },
         // Backend expects `certifications` array, use selected compliances
@@ -968,6 +975,12 @@ export default function BusinessProfilePage() {
       }
       if (!formData.contactPhone) {
         setError("Please enter the contact phone number.");
+        return;
+      }
+      if (!isValidPhone(formData.contactPhone)) {
+        setError(
+          "Please enter a valid international phone number (e.g., +923001234567).",
+        );
         return;
       }
       if (!formData.contactEmail) {

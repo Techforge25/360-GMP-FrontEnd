@@ -64,7 +64,7 @@ const ViewAlbumModal = ({ isOpen, onClose, album }) => {
         </div>
 
         {/* Footer info (optional) */}
-        <div className="px-6 py-3 border-t border-gray-100 bg-white text-xs text-gray-400 flex justify-between items-center shrink-0">
+        <div className="px-6 py-3 border-t border-gray-100 bg-white text-sm text-gray-400 flex justify-between items-center shrink-0">
           <div className="flex items-center gap-2">
             <FiCalendar className="w-3.5 h-3.5" />
             <span>

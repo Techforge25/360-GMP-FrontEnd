@@ -167,7 +167,7 @@ const UploadGalleryModal = ({ isOpen, onClose, onUploadSuccess }) => {
                     className="flex flex-col items-center justify-center aspect-square border-2 border-dashed border-gray-300 rounded-lg text-gray-400 hover:text-[#240457] hover:border-[#240457] hover:bg-purple-50 transition-colors"
                   >
                     <FiUpload className="w-5 h-5" />
-                    <span className="text-xs mt-1">Add More</span>
+                    <span className="text-sm mt-1">Add More</span>
                   </button>
                 </div>
               ) : (
@@ -179,7 +179,7 @@ const UploadGalleryModal = ({ isOpen, onClose, onUploadSuccess }) => {
                       </span>
                       Create New Album
                     </div>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm text-gray-400">
                       Drag & drop multiple images or click to browse
                     </p>
                   </div>

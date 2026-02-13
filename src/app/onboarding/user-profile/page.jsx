@@ -11,6 +11,7 @@ import { useStepper } from "@/hooks/useStepper";
 import { SuccessModal } from "@/components/ui/SuccessModal";
 import { useUserRole } from "@/context/UserContext";
 import { CountrySelect } from "@/components/ui/CountrySelect";
+import { TagInput } from "@/components/ui/TagInput";
 import {
   FiArrowLeft,
   FiArrowRight,
@@ -36,6 +37,21 @@ const IndustryOptions = [
 ];
 
 // CountryOptions removed in favor of dynamic CountrySelect
+
+const SuggestedSkills = ["JavaScript", "React", "Node.js", "Python", "SQL"];
+
+const SuggestedJobTitles = [
+  "Software Engineer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Product Manager",
+  "Data Analyst",
+];
+
+const isValidPhone = (phone) => {
+  const cleanPhone = phone.replace(/\s+/g, "");
+  return /^\+[1-9]\d{6,14}$/.test(cleanPhone);
+};
 
 const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -380,9 +396,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
       !degree ||
       !fieldOfStudy ||
       !startDate ||
-      (!isCurrent && !endDate) ||
-      !description ||
-      !grade
+      (!isCurrent && !endDate)
     ) {
       alert("Please fill all education fields");
       return;
@@ -515,12 +529,36 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
         <label className="text-base font-medium">
           Key Skills/Expertise <span className="text-red-500">*</span>
         </label>
-        <Input
-          placeholder="e.g Python,Java,Figma,"
-          value={formData.skills || ""}
-          onChange={(e) => handleChange("skills", e.target.value)}
-          required
+        <TagInput
+          tags={formData.skills || []}
+          onChange={(tags) => handleChange("skills", tags)}
+          maxTags={5}
+          placeholder="Type a skill and press Enter or comma (e.g. Python, Java)"
         />
+        <div className="flex flex-wrap gap-2 mt-2">
+          <span className="text-sm text-text-hint w-full mb-1">
+            Suggestions:
+          </span>
+          {SuggestedSkills.map((skill) => (
+            <button
+              key={skill}
+              type="button"
+              onClick={() => {
+                const current = formData.skills || [];
+                if (current.length < 5 && !current.includes(skill)) {
+                  handleChange("skills", [...current, skill]);
+                }
+              }}
+              disabled={(formData.skills || []).length >= 5}
+              className="px-2 py-0.5 text-sm bg-gray-100 text-text-secondary rounded hover:bg-brand-primary/10 hover:text-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              + {skill}
+            </button>
+          ))}
+        </div>
+        <p className="text-sm text-text-secondary mt-1">
+          Add up to 5 skills to showcase your expertise.
+        </p>
       </div>
 
       <div className="space-y-4">
@@ -688,7 +726,6 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               onChange={(e) =>
                 setEducationDraft((p) => ({ ...p, grade: e.target.value }))
               }
-              required
             />
 
             <textarea
@@ -701,7 +738,6 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
                   description: e.target.value,
                 }))
               }
-              required
             />
 
             <div className="flex justify-end gap-2 pt-2">
@@ -725,12 +761,33 @@ const Step3 = ({ formData, handleChange }) => (
       <label className="text-base font-medium">
         Target Job Title <span className="text-red-500">*</span>
       </label>
-      <Input
-        placeholder="e.g Supply Chain Analyst"
-        value={formData.jobTitle || ""}
-        onChange={(e) => handleChange("jobTitle", e.target.value)}
-        required
+      <TagInput
+        tags={Array.isArray(formData.jobTitle) ? formData.jobTitle : []}
+        onChange={(tags) => handleChange("jobTitle", tags)}
+        maxTags={5}
+        placeholder="Type a job title and press Enter (e.g. Supply Chain Analyst)"
       />
+      <div className="flex flex-wrap gap-2 mt-2">
+        <span className="text-sm text-text-hint w-full mb-1">Suggestions:</span>
+        {SuggestedJobTitles.map((title) => (
+          <button
+            key={title}
+            type="button"
+            onClick={() => {
+              const current = Array.isArray(formData.jobTitle)
+                ? formData.jobTitle
+                : [];
+              if (current.length < 5 && !current.includes(title)) {
+                handleChange("jobTitle", [...current, title]);
+              }
+            }}
+            disabled={(formData.jobTitle || []).length >= 5}
+            className="px-2 py-0.5 text-sm bg-gray-100 text-text-secondary rounded hover:bg-brand-primary/10 hover:text-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            + {title}
+          </button>
+        ))}
+      </div>
       <p className="text-sm text-text-secondary">
         This Focus Your Job Recomendation
       </p>
@@ -832,8 +889,8 @@ export default function UserProfilePage() {
     city: "",
     address: "",
     bio: "",
-    skills: "",
-    jobTitle: "",
+    skills: [],
+    jobTitle: [],
     minSalary: "",
     education: [],
     maxSalary: "",
@@ -883,13 +940,9 @@ export default function UserProfilePage() {
       // Format payload to match backend schema
       const payload = {
         ...formData,
+        phone: formData.phone.replace(/\s+/g, ""), // Sanitize phone number (remove spaces)
         email: formData.email.trim().toLowerCase(), // Ensure email is trimmed and lowercase
-        skills: formData.skills
-          ? formData.skills
-              .split(",")
-              .map((s) => s.trim())
-              .filter(Boolean)
-          : [],
+        skills: Array.isArray(formData.skills) ? formData.skills : [],
         employmentType: formData.employeeType,
 
         // Convert salary fields to numbers as expected by backend
@@ -899,13 +952,20 @@ export default function UserProfilePage() {
         // Convert education array to object format for backend
         education:
           formData.education.length > 0
-            ? formData.education[0]
+            ? {
+                ...formData.education[0],
+                endDate: formData.education[0].isCurrent
+                  ? null
+                  : formData.education[0].endDate || null,
+                description: formData.education[0].description || "",
+                grade: formData.education[0].grade || "",
+              }
             : {
                 institution: "",
                 degree: "",
                 fieldOfStudy: "",
                 startDate: "",
-                endDate: "",
+                endDate: null,
                 isCurrent: false,
                 description: "",
                 grade: "",
@@ -918,8 +978,10 @@ export default function UserProfilePage() {
             ? formData.customTitle
             : formData.currentTitle,
 
-        // Optional targetJob field
-        targetJob: formData.jobTitle,
+        // Optional targetJob field - join as string for backend
+        targetJob: Array.isArray(formData.jobTitle)
+          ? formData.jobTitle.join(", ")
+          : formData.jobTitle,
 
         // Location mapping - use customCountry if "Other" is selected
         location: `${formData.city || ""}, ${
@@ -1011,6 +1073,12 @@ export default function UserProfilePage() {
         setError("Contact Phone Number is required");
         return;
       }
+      if (!isValidPhone(formData.phone)) {
+        setError(
+          "Please enter a valid international phone number (e.g., +923001234567)",
+        );
+        return;
+      }
       if (!formData.country) {
         setError("Country is required");
         return;
@@ -1037,8 +1105,8 @@ export default function UserProfilePage() {
       }
     } else if (currentStep === 2) {
       // Step 2 validation - check each field individually
-      if (!formData.skills || !formData.skills.trim()) {
-        setError("Key Skills/Expertise is required");
+      if (!formData.skills || formData.skills.length === 0) {
+        setError("At least one Key Skill/Expertise is required");
         return;
       }
       if (formData.education.length === 0) {
@@ -1047,8 +1115,8 @@ export default function UserProfilePage() {
       }
     } else if (currentStep === 3) {
       // Step 3 validation - check each field individually
-      if (!formData.jobTitle) {
-        setError("Target Job Title is required");
+      if (!formData.jobTitle || formData.jobTitle.length === 0) {
+        setError("At least one Target Job Title is required");
         return;
       }
       if (formData.employeeType.length === 0) {

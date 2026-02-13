@@ -110,12 +110,12 @@ export default function ProfileGallery({ businessProfileId }) {
                 {album.albumName || "Untitled Album"}
               </h3>
               {album.description && (
-                <p className="text-white/80 text-xs line-clamp-2">
+                <p className="text-white/80 text-sm line-clamp-2">
                   {album.description}
                 </p>
               )}
               {album.images && album.images.length > 1 && (
-                <p className="text-white/60 text-xs mt-1">
+                <p className="text-white/60 text-sm mt-1">
                   {album.images.length} photos
                 </p>
               )}
@@ -123,7 +123,7 @@ export default function ProfileGallery({ businessProfileId }) {
 
             {/* Image Count Badge */}
             {album.images && album.images.length > 1 && (
-              <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md flex items-center gap-1">
+              <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-sm px-2 py-1 rounded-md flex items-center gap-1">
                 <FiCamera className="w-3 h-3" />
                 {album.images.length}
               </div>

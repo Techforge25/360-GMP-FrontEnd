@@ -313,7 +313,7 @@ const BusinessAboutTab = ({ businessId }) => {
 
                   {/* Image Count Badge */}
                   {album.images?.length > 1 && (
-                    <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-md flex items-center gap-1">
+                    <div className="absolute top-3 right-3 bg-black/50 backdrop-blur-sm text-white text-sm px-2 py-1 rounded-md flex items-center gap-1">
                       <FiCamera className="w-3 h-3" />
                       {album.images.length}
                     </div>
@@ -336,7 +336,7 @@ const BusinessAboutTab = ({ businessId }) => {
                     <h3 className="text-white font-semibold text-base mb-1 line-clamp-1">
                       {album.albumName || album.title}
                     </h3>
-                    <p className="text-white/80 text-xs sm:text-sm line-clamp-2">
+                    <p className="text-white/80 text-sm sm:text-sm line-clamp-2">
                       {album.description}
                     </p>
                   </div>

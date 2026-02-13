@@ -63,7 +63,7 @@ const WorkExperienceModal = ({
     setFormData((prev) => {
       const newState = { ...prev, [field]: value };
       if (field === "isCurrentlyWorking" && value === true) {
-        newState.endDate = new Date().toISOString().split("T")[0];
+        newState.endDate = ""; // Clear end date when currently working
       }
       return newState;
     });
@@ -87,7 +87,14 @@ const WorkExperienceModal = ({
       !formData.location ||
       !formData.startDate
     ) {
-      alert("Please fill in all required fields");
+      alert(
+        "Please fill in all required fields (Job Title, Company, Location, Start Date)",
+      );
+      return;
+    }
+
+    if (!formData.isCurrentlyWorking && !formData.endDate) {
+      alert("Please provide an end date or select 'Currently Working'");
       return;
     }
 
@@ -96,8 +103,8 @@ const WorkExperienceModal = ({
       // Send dates as ISO strings for better serialization
       await onSave({
         ...formData,
-        startDate: formData.startDate, // Already in YYYY-MM-DD format
-        endDate: formData.endDate || null,
+        startDate: formData.startDate,
+        endDate: formData.isCurrentlyWorking ? null : formData.endDate || null,
       });
       onClose();
     } catch (error) {
