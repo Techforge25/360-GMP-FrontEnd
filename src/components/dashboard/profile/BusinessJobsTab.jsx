@@ -1,7 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FiChevronDown, FiMoreVertical, FiChevronRight } from "react-icons/fi";
+import {
+  FiChevronDown,
+  FiMoreVertical,
+  FiChevronRight,
+  FiCheck,
+} from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import jobAPI from "@/services/jobAPI";
 
@@ -175,7 +180,7 @@ export default function BusinessJobsTab() {
       {showCandidates && selectedJob ? (
         <CandidatesView job={selectedJob} onBack={handleBackToJobs} />
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200">
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 lg:p-8 border-b border-gray-200 gap-3 sm:gap-0">
             <h2 className="text-lg sm:text-xl font-bold text-gray-900">Jobs</h2>
@@ -253,7 +258,7 @@ export default function BusinessJobsTab() {
             </div>
 
             {/* Jobs Table */}
-            <div className="overflow-x-auto -mx-6 md:-mx-8">
+            <div className="overflow-x-auto -mx-6 md:-mx-8 pb-32 -mb-32">
               <div className="inline-block min-w-full align-middle px-6 md:px-8">
                 <table className="min-w-full">
                   <thead>
@@ -404,7 +409,12 @@ export default function BusinessJobsTab() {
                                       setActiveStatusMenu(null);
                                     }}
                                   />
-                                  <div className="absolute left-0 mt-1 w-32 bg-white border border-gray-200 rounded-lg shadow-lg z-20 py-1 overflow-hidden">
+                                  <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-100 rounded-xl shadow-xl z-20 py-1.5 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                                    <div className="px-3 py-2 border-b border-gray-50 mb-1">
+                                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                        Update Status
+                                      </p>
+                                    </div>
                                     {["open", "paused", "closed"].map(
                                       (status) => (
                                         <button
@@ -413,13 +423,28 @@ export default function BusinessJobsTab() {
                                             updateJobStatus(job._id, status, e)
                                           }
                                           className={cn(
-                                            "w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors capitalize",
+                                            "w-full flex items-center justify-between px-4 py-2.5 text-sm transition-all duration-200 capitalize group",
                                             job.status === status
-                                              ? "text-[#240457] font-semibold bg-gray-50"
-                                              : "text-gray-700",
+                                              ? "bg-[#240457]/5 text-[#240457] font-semibold"
+                                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                                           )}
                                         >
-                                          {status}
+                                          <div className="flex items-center gap-2">
+                                            <span
+                                              className={cn(
+                                                "w-2 h-2 rounded-full",
+                                                status === "open"
+                                                  ? "bg-green-500"
+                                                  : status === "paused"
+                                                    ? "bg-yellow-500"
+                                                    : "bg-gray-500",
+                                              )}
+                                            ></span>
+                                            {status}
+                                          </div>
+                                          {job.status === status && (
+                                            <FiCheck className="w-4 h-4 text-[#240457]" />
+                                          )}
                                         </button>
                                       ),
                                     )}
