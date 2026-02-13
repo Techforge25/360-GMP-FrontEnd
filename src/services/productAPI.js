@@ -29,6 +29,26 @@ class ProductAPI {
   }
 
   /**
+   * Get business-specific featured products (Shown on business profile)
+   */
+  async getBusinessFeaturedProducts(
+    businessId,
+    params = { page: 1, limit: 10 },
+  ) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams
+      ? `/products/business/${businessId}?${queryParams}`
+      : `/products/business/${businessId}`;
+
+    return await api.get({
+      url,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
    * Get products sorted by price (highest first)
    */
   async getTopRanking(limit = 8) {

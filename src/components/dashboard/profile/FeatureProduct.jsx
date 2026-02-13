@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FiEdit2, FiTrash2, FiSliders } from "react-icons/fi";
 import productAPI from "@/services/productAPI";
+import businessProfileAPI from "@/services/businessProfileAPI";
 import { useRouter, usePathname } from "next/navigation";
 
 const FeatureProduct = ({ onManageClick }) => {
@@ -21,7 +22,19 @@ const FeatureProduct = ({ onManageClick }) => {
       setLoading(true);
       setError(null);
 
-      const response = await productAPI.getFeatured(4); // Fetch 4 featured products
+      // First, get the business profile to get our businessId
+      const profileResponse = await businessProfileAPI.getMyProfile();
+      if (!profileResponse?.success || !profileResponse?.data?._id) {
+        throw new Error("Business profile not found");
+      }
+
+      const businessId = profileResponse.data._id;
+      const response = await productAPI.getBusinessFeaturedProducts(
+        businessId,
+        {
+          limit: 4,
+        },
+      );
 
       if (
         response.success &&

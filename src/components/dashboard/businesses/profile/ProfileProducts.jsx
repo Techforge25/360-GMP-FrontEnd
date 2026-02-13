@@ -24,23 +24,18 @@ export default function ProfileProducts({ products, businessId }) {
   const fetchFeaturedProducts = async () => {
     try {
       setLoading(true);
-      const response = await productAPI.getFeatured(8);
+      const response = await productAPI.getBusinessFeaturedProducts(
+        businessId,
+        {
+          limit: 8,
+        },
+      );
 
       console.log("Featured Products API Response:", response);
 
       if (response.success && response.data) {
         const productsData = response.data.docs || response.data || [];
-        // Filter products by businessId if available
-        const filteredProducts = productsData.filter(
-          (product) =>
-            product.businessProfileId === businessId ||
-            product.businessProfile === businessId,
-        );
-        setFeaturedProducts(
-          filteredProducts.length > 0
-            ? filteredProducts
-            : productsData.slice(0, 8),
-        );
+        setFeaturedProducts(productsData);
       }
     } catch (error) {
       console.error("Failed to fetch featured products:", error);
