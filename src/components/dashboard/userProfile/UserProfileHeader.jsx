@@ -11,6 +11,7 @@ import {
 import userProfileAPI from "@/services/userProfileAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { FaRegUser } from "react-icons/fa";
+import { showSuccess, showError } from "@/utils/toasterMessage";
 
 const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
   const [profileData, setProfileData] = useState(null);
@@ -68,11 +69,17 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        alert("File must be under 10MB");
+        showError("File must be under 10MB");
         return;
       }
       const previewUrl = URL.createObjectURL(file);
       setNewCover({ file, previewUrl });
+
+      console.log("User cover selected, starting upload...", {
+        fileName: file.name,
+        fileSize: file.size,
+      });
+
       // Immediately update profile with new cover
       try {
         setIsUploadingCover(true);
@@ -88,8 +95,14 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           if (previewUrl) URL.revokeObjectURL(previewUrl);
         }
       } catch (error) {
-        console.error("Failed to update cover:", error);
-        alert(`Failed to update cover: ${error?.message || "Unknown error"}`);
+        console.error("Failed to update cover:", {
+          message: error?.message,
+          error: error,
+          stack: error?.stack,
+        });
+        showError(
+          `Failed to update cover: ${error?.message || "Unknown error"}`,
+        );
       } finally {
         setIsUploadingCover(false);
         setIsUpdating(false);
@@ -101,11 +114,17 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        alert("File must be under 10MB");
+        showError("File must be under 10MB");
         return;
       }
       const previewUrl = URL.createObjectURL(file);
       setNewAvatar({ file, previewUrl });
+
+      console.log("User avatar selected, starting upload...", {
+        fileName: file.name,
+        fileSize: file.size,
+      });
+
       // Immediately update profile with new avatar
       try {
         setIsUploadingAvatar(true);
@@ -119,8 +138,14 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           if (previewUrl) URL.revokeObjectURL(previewUrl);
         }
       } catch (error) {
-        console.error("Failed to update avatar:", error);
-        alert(`Failed to update avatar: ${error?.message || "Unknown error"}`);
+        console.error("Failed to update avatar:", {
+          message: error?.message,
+          error: error,
+          stack: error?.stack,
+        });
+        showError(
+          `Failed to update avatar: ${error?.message || "Unknown error"}`,
+        );
       } finally {
         setIsUploadingAvatar(false);
         setIsUpdating(false);
@@ -183,11 +208,14 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         }
       }
     } catch (error) {
-      console.error("Failed to update profile:", error);
-      console.error("Error message:", error?.message);
-      console.error("Error statusCode:", error?.statusCode);
-      console.error("Error data:", error?.data);
-      alert(`Failed to update profile: ${error?.message || "Unknown error"}`);
+      console.error("Failed to update profile:", {
+        message: error?.message,
+        error: error,
+        stack: error?.stack,
+      });
+      showError(
+        `Failed to update profile: ${error?.message || "Unknown error"}`,
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -209,8 +237,12 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         setShowEditModal(false);
       }
     } catch (error) {
-      console.error("Failed to update basic info:", error);
-      alert(
+      console.error("Failed to update basic info:", {
+        message: error?.message,
+        error: error,
+        stack: error?.stack,
+      });
+      showError(
         `Failed to update basic info: ${error?.message || "Unknown error"}`,
       );
     } finally {

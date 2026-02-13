@@ -255,7 +255,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         Home <span className="text-[#240457]">/ {profileData.companyName}</span>
       </p>
       {/* Cover Image */}
-      <div className="h-40 sm:h-48 md:h-56 lg:h-64 w-full relative bg-gray-200">
+      <div className="h-40 w-full relative bg-gray-200">
         <Image
           src={
             newBanner?.previewUrl ||
@@ -264,7 +264,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           }
           alt="Cover"
           fill
-          className="object-cover"
+          className="object-cover h-full w-full "
         />
         {newBanner && (
           <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-sm sm:text-sm font-medium">

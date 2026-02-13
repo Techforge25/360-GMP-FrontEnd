@@ -34,6 +34,7 @@ const AuthNavbar = () => {
   const [isSwitchModalOpen, setIsSwitchModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
+  const [businessProfile, setBusinessProfile] = useState(null);
   const { user } = useUserRole();
   const { cartCount } = useCart();
   const pathname = usePathname();
@@ -44,18 +45,27 @@ const AuthNavbar = () => {
       if (!user?.role) return;
 
       try {
-        if (user.role === "business") {
-          // Fetch business profile
-          const response = await api.get({
+        // Always try to fetch business profile to get companyName for the switch modal
+        const busResponse = await api
+          .get({
             url: "/businessProfile/me",
             enableSuccessMessage: false,
             enableErrorMessage: false,
+          })
+          .catch((err) => {
+            if (err?.status === 404 || err?.statusCode === 404) return null;
+            throw err;
           });
-          if (response?.data?.logo) {
-            setProfileImage(response.data.logo);
+
+        if (busResponse?.data) {
+          setBusinessProfile(busResponse.data);
+          if (user.role === "business" && busResponse.data.logo) {
+            setProfileImage(busResponse.data.logo);
           }
-        } else {
-          // Fetch user profile using userProfileAPI
+        }
+
+        if (user.role !== "business") {
+          // Fetch user profile using userProfileAPI for avatar
           const response = await userProfileAPI.getMyProfile();
           if (response?.data?.logo) {
             setProfileImage(response.data.logo);
@@ -65,10 +75,9 @@ const AuthNavbar = () => {
         // Handle 404 errors gracefully (profile doesn't exist yet)
         if (error?.status === 404 || error?.statusCode === 404) {
           console.log("Profile not found - user hasn't created profile yet");
-          setProfileImage(null); // Use default avatar
           return;
         }
-        console.error("Failed to fetch profile image:", error);
+        console.error("Failed to fetch profile image or business data:", error);
       }
     };
 
@@ -268,9 +277,11 @@ const AuthNavbar = () => {
                     />
                   ) : (
                     <div className="w-9 h-9 rounded-md bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-base">
-                      {user?.role === "business" 
-                        ? (user?.companyName?.[0]?.toUpperCase() || "B")
-                        : (user?.firstName?.[0]?.toUpperCase() || user?.fullName?.[0]?.toUpperCase() || "U")}
+                      {user?.role === "business"
+                        ? user?.companyName?.[0]?.toUpperCase() || "B"
+                        : user?.firstName?.[0]?.toUpperCase() ||
+                          user?.fullName?.[0]?.toUpperCase() ||
+                          "U"}
                     </div>
                   )}
                   <FiChevronDown
@@ -361,7 +372,7 @@ const AuthNavbar = () => {
                         >
                           <FiHelpCircle className="w-5 h-5 text-gray-900" />
                           <span>Support</span>
-                        </Link> 
+                        </Link>
 
                         <div className="h-px bg-gray-100 my-1 mx-4" />
 
@@ -468,7 +479,7 @@ const AuthNavbar = () => {
                     </div>
                     <span>Messages</span>
                   </Link>
-                  
+
                   <Link
                     href={
                       user?.role === "business"
@@ -598,6 +609,8 @@ const AuthNavbar = () => {
         onClose={() => setIsSwitchModalOpen(false)}
         userRole={user?.role}
         onSwitch={handleSwitch}
+        businessName={businessProfile?.companyName}
+        businessLogo={businessProfile?.logo}
       />
 
       {/* Sign Out Modal */}

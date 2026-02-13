@@ -5,7 +5,14 @@ import { BsBuilding } from "react-icons/bs";
 import Link from "next/link";
 import { useUserRole } from "@/context/UserContext";
 
-const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
+const ProfileSwitchModal = ({
+  isOpen,
+  onClose,
+  userRole,
+  onSwitch,
+  businessName,
+  businessLogo,
+}) => {
   if (!isOpen) return null;
 
   const isBusiness = userRole === "business";
@@ -20,20 +27,30 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
         description: (
           <span>
             You are leaving the{" "}
-            <strong className="text-gray-900">Global Manufacturing Co.</strong>{" "}
+            <strong className="text-gray-900">
+              {businessName || "Global Manufacturing Co."}
+            </strong>{" "}
             dashboard. Switch to your Personal Profile to continue shopping,
             message other suppliers, or track your job applications
           </span>
         ),
         stayBtnText: "Stay On Business Profile",
         switchBtnText: "Switch To User Profile & Continue",
-        footerText: "Don't Have A User Profile?",
-        footerLinkText: "Create One",
+        // footerText: "Don't Have A User Profile?",
+        // footerLinkText: "Create One",
         sourceIcon: (
           <div className="w-20 h-20 rounded-full border-2 border-blue-500 bg-white flex items-center justify-center mb-3">
-            <div className="w-10 h-10 bg-orange-500 rounded flex items-center justify-center text-white font-bold text-xl">
-              M
-            </div>
+            {businessLogo ? (
+              <img
+                src={businessLogo}
+                alt={businessName}
+                className="w-16 h-16 rounded-full object-contain"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-orange-500 rounded flex items-center justify-center text-white font-bold text-xl text-center">
+                {businessName?.[0]?.toUpperCase() || "B"}
+              </div>
+            )}
           </div>
         ),
         targetIcon: (
@@ -59,14 +76,14 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
         description: (
           <span>
             Ready to get back to work? Switch to{" "}
-            <strong>Global Manufacturing Co.</strong> to fulfill pending orders,
-            update your product inventory, or review job applicants. Your
-            personal browsing history will be saved
+            <strong>{businessName || "Global Manufacturing Co."}</strong> to
+            fulfill pending orders, update your product inventory, or review job
+            applicants. Your personal browsing history will be saved
           </span>
         ),
         stayBtnText: "Stay On User Profile",
         switchBtnText: "Switch To Business Profile",
-        footerText: "Don't Have A Business Profile?", // Adjusted logic as per typical flow, though image says "Don't Have A User Profile?" on the business switch one too? Wait, let me check the image again.
+        // footerText: "Don't Have A Business Profile?", // Adjusted logic as per typical flow, though image says "Don't Have A User Profile?" on the business switch one too? Wait, let me check the image again.
         // Image 1 (User -> Business): Footer says "Don't Have A User Profile? Create One". This seems like a typo in the design or I'm misinterpreting.
         // If I'm switching TO Business, I might need to create a Business profile.
         // But the image "uploaded_image_0..." (Personal -> Business) says "Don't Have A User Profile?". That's odd.
@@ -77,7 +94,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
         // Let's look closely at image 0 (Switch to Business). Footer: "Don't Have A User Profile? Create One".
         // Let's look closely at image 1 (Switch to Personal). Footer: "Don't Have A User Profile? Create One".
         // Okay, I will use that exact text for both cases to be safe.
-        footerLinkText: "Create One",
+        // footerLinkText: "Create One",
         sourceIcon: (
           <div className="w-20 h-20 rounded-full border-2 border-purple-500 bg-white flex items-center justify-center mb-3">
             <img
@@ -94,9 +111,17 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
         ),
         targetIcon: (
           <div className="w-20 h-20 rounded-full border-2 border-blue-500 bg-white flex items-center justify-center mb-3">
-            <div className="w-10 h-10 bg-orange-500 rounded flex items-center justify-center text-white font-bold text-xl">
-              M
-            </div>
+            {businessLogo ? (
+              <img
+                src={businessLogo}
+                alt={businessName}
+                className="w-16 h-16 rounded-full object-contain"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-orange-500 rounded flex items-center justify-center text-white font-bold text-xl">
+                {businessName?.[0]?.toUpperCase() || "B"}
+              </div>
+            )}
           </div>
         ),
       };
@@ -176,7 +201,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
           </div>
 
           {/* Footer */}
-          <div className="mt-8 text-base text-gray-600 mb-8">
+          {/* <div className="mt-8 text-base text-gray-600 mb-8">
             {isBusiness
               ? "Don't Have A User Profile?"
               : "Don't Have A Business Profile?"}{" "}
@@ -190,7 +215,7 @@ const ProfileSwitchModal = ({ isOpen, onClose, userRole, onSwitch }) => {
             >
               {config.footerLinkText}
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
