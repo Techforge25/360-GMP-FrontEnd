@@ -153,7 +153,7 @@ const BusinessCard = ({ business, onContactClick }) => {
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-2">
             <div className="flex items-center gap-1 text-yellow-500">
               <FaStar /> <span className="text-gray-400">{rating}</span>
-              <span className="text-gray-400">({reviews})</span>
+              {/* <span className="text-gray-400">({reviews})</span> */}
             </div>
             <span className="flex items-center gap-1">
               <FiFolder /> {category}

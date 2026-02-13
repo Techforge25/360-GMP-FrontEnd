@@ -178,7 +178,7 @@ const ShareDocumentModal = ({ isOpen, onClose, onSubmit, communityId }) => {
           </div>
 
           {/* Tags Section */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <label className="text-lg font-semibold text-gray-900">Tags</label>
             <div className="relative">
               <input
@@ -193,7 +193,7 @@ const ShareDocumentModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                 <FiChevronDown className="text-gray-400 w-5 h-5" />
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Document Preview */}
           {selectedDocument && (

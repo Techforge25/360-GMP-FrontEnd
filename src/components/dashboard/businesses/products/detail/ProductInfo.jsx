@@ -161,7 +161,7 @@ export default function ProductInfo({ product }) {
                 </span>
               </div>
               <p className="text-[13px] font-medium text-slate-500">
-                grade plan for bulk order
+                Upgrade plan for bulk order
               </p>
             </div>
           )}

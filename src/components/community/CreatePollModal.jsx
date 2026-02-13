@@ -194,7 +194,7 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                 </select>
               </div>
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Tags
                 </label>
@@ -205,7 +205,7 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                   placeholder="Tag business or user (@company or @user)"
                   className="w-full text-black px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#240457] focus:border-transparent outline-none text-sm"
                 />
-              </div>
+              </div> */}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">

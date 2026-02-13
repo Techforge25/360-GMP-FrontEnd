@@ -16,6 +16,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   const [totalMembers, setTotalMembers] = useState(0);
   const [totalPending, setTotalPending] = useState(0);
   const [processingId, setProcessingId] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
   const itemsPerPage = 5;
 
   // Fetch members
@@ -97,6 +98,11 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [community?._id, activeTab, currentPage]);
+
+  // Clear selection when tab or page changes
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [activeTab, currentPage]);
 
   // Filter members by search query (name only)
   const filterBySearch = (data) => {
@@ -200,6 +206,25 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
     // Apply search filter
     return filterBySearch(data);
+  };
+
+  const handleToggleSelectAll = () => {
+    const pageData = getCurrentData();
+    const pageIds = pageData.map((item) => item._id);
+    const allSelected =
+      pageIds.length > 0 && pageIds.every((id) => selectedIds.includes(id));
+
+    if (allSelected) {
+      setSelectedIds((prev) => prev.filter((id) => !pageIds.includes(id)));
+    } else {
+      setSelectedIds((prev) => [...new Set([...prev, ...pageIds])]);
+    }
+  };
+
+  const handleToggleSelectId = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    );
   };
 
   const handleAcceptRequest = async (userProfileId) => {
@@ -410,7 +435,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
           >
             All Members
           </button>
-          <button
+          {/* <button
             onClick={() => {
               setActiveTab("admins");
               setCurrentPage(1);
@@ -423,7 +448,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             }`}
           >
             Admins
-          </button>
+          </button> */}
           {isOwner && (
             <button
               onClick={() => {
@@ -459,7 +484,17 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
             {/* Table Header */}
             <div className="grid grid-cols-12 gap-4 py-3 px-4 bg-gray-50 rounded-lg mb-4">
               <div className="col-span-1">
-                <input type="checkbox" className="rounded border-gray-300" />
+                <input
+                  type="checkbox"
+                  className="rounded border-gray-300"
+                  checked={
+                    getCurrentData().length > 0 &&
+                    getCurrentData().every((item) =>
+                      selectedIds.includes(item._id),
+                    )
+                  }
+                  onChange={handleToggleSelectAll}
+                />
               </div>
               <div className="col-span-3 text-sm font-medium text-gray-600">
                 Profile
@@ -497,6 +532,8 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       <input
                         type="checkbox"
                         className="rounded border-gray-300"
+                        checked={selectedIds.includes(request._id)}
+                        onChange={() => handleToggleSelectId(request._id)}
                       />
                     </div>
                     <div className="col-span-3 flex items-center gap-3">
@@ -573,6 +610,8 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       <input
                         type="checkbox"
                         className="rounded border-gray-300"
+                        checked={selectedIds.includes(member._id)}
+                        onChange={() => handleToggleSelectId(member._id)}
                       />
                     </div>
                     <div className="col-span-3 flex items-center gap-3">

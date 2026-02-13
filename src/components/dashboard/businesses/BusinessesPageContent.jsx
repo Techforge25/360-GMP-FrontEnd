@@ -111,8 +111,8 @@ export default function BusinessesPageContent() {
       location: profile.location
         ? `${profile.location.city || ""}, ${profile.location.country || ""}`
         : "Location not specified",
-      rating: 4.8,
-      reviews: 124,
+      rating: "N/A",
+      // reviews: "N/A",
       category: profile.businessType || profile.primaryIndustry || "General",
       established: profile.foundedDate
         ? new Date(profile.foundedDate).getFullYear().toString()

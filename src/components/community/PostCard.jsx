@@ -836,10 +836,10 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
             <FiMessageSquare className="w-4 h-4" />
             <span>Comment</span>
           </button>
-          <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-gray-600 text-sm font-medium transition-colors">
+          {/* <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-gray-600 text-sm font-medium transition-colors">
             <FiShare2 className="w-4 h-4" />
             <span>Share</span>
-          </button>
+          </button> */}
         </div>
 
         {/* Comments Section */}
@@ -1142,7 +1142,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
       {/* Interactions Stats */}
       <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
         <span>
-          {likeCount || 0} Likes • {post.commentCount || 0} Comments • 0 Shares
+          {likeCount || 0} Likes • {post.commentCount || 0} Comments
         </span>
       </div>
 
@@ -1170,10 +1170,10 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
           <FiMessageSquare className="w-4 h-4" />
           <span>Comment</span>
         </button>
-        <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-gray-600 text-sm font-medium transition-colors">
+        {/* <button className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 rounded text-gray-600 text-sm font-medium transition-colors">
           <FiShare2 className="w-4 h-4" />
           <span>Share</span>
-        </button>
+        </button> */}
       </div>
 
       {/* Comments Section */}

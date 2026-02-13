@@ -279,7 +279,7 @@ export default function MarketplaceContent() {
             </button>
           </div>
 
-          <div className="flex flex-wrap items-start sm:items-center gap-2 sm:gap-3">
+          {/* <div className="flex flex-wrap items-start sm:items-center gap-2 sm:gap-3">
             <p className="text-gray-600 text-sm sm:text-base font-medium mb-1 sm:mb-0 w-full sm:w-auto">
               Popular:
             </p>
@@ -293,7 +293,7 @@ export default function MarketplaceContent() {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

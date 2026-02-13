@@ -213,7 +213,7 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
             </div>
 
             {/* Tags Section */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Tags</label>
               <div className="relative">
                 <input
@@ -228,7 +228,7 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                   <FiChevronDown className="text-gray-400 w-4 h-4" />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Share To Section */}
             <div className="space-y-3">

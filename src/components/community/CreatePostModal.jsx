@@ -201,7 +201,7 @@ const CreatePostModal = ({ isOpen, onClose, onSubmit, communityId }) => {
           )}
 
           {/* Tags Section */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <label className="text-lg font-semibold text-gray-900">Tags</label>
             <div className="relative">
               <input
@@ -216,7 +216,7 @@ const CreatePostModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                 <FiChevronDown className="text-gray-400 w-5 h-5" />
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Add To Your Post Section */}
           <div className="flex items-center gap-3 py-3 border-t border-gray-50">
