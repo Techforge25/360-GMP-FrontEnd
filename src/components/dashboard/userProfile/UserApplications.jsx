@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 const TABS = [
   { id: "all", label: "All" },
-  { id: "applied", label: "Applied", showBadge: true },
+  { id: "applied", label: "Applied"},
   { id: "saved", label: "Saved" },
   { id: "hired", label: "Hired" },
 ];

@@ -221,9 +221,7 @@ export default function CreateCommunityPage() {
               Home
             </Link>
             <span className="text-gray-400">›</span>
-            <span className="text-gray-900 font-medium">
-              Global Manufacturing Co.
-            </span>
+            <span className="text-gray-900 font-medium">Create Community</span>
           </div>
 
           {/* Title */}

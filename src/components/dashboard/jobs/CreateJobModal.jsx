@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { FiX, FiCheck } from "react-icons/fi";
 import { cn } from "@/lib/utils";
 import jobAPI from "@/services/jobAPI";
+import { CountrySelect } from "@/components/ui/CountrySelect";
 
 const JOB_CATEGORIES = [
   "Manufacturing",
@@ -25,14 +26,6 @@ const EXPERIENCE_LEVELS = [
 const SALARY_PERIODS = ["Month", "Year", "Hour"];
 
 const POSTING_DURATIONS = ["15 Days", "30 Days", "60 Days", "90 Days"];
-
-const COUNTRIES = [
-  "United States",
-  "Canada",
-  "United Kingdom",
-  "Australia",
-  "Germany",
-];
 
 const EMPLOYMENT_TYPES = [
   { id: "full-time", label: "Full Time" },
@@ -316,43 +309,13 @@ export default function CreateJobModal({
             {/* Country */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">
-                Country
+                Country <span className="text-red-500">*</span>
               </label>
-              <div className="relative">
-                <select
-                  value={formData.location.country}
-                  onChange={(e) =>
-                    handleLocationChange("country", e.target.value)
-                  }
-                  className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
-                >
-                  <option value="" disabled>
-                    Select Country
-                  </option>
-                  {COUNTRIES.map((country) => (
-                    <option key={country} value={country}>
-                      {country}
-                    </option>
-                  ))}
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                  <svg
-                    width="12"
-                    height="8"
-                    viewBox="0 0 12 8"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1 1.5L6 6.5L11 1.5"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              </div>
+              <CountrySelect
+                value={formData.location.country}
+                onChange={(value) => handleLocationChange("country", value)}
+                className="h-12 text-black border-gray-200 focus:ring-2 focus:ring-[#2E1065]"
+              />
             </div>
 
             {/* City */}
