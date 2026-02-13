@@ -725,13 +725,13 @@ export default function CreateCommunityPage() {
                     >
                       Cancel
                     </Link>
-                    <button
+                    {/* <button
                       type="button"
                       className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
                       disabled={isSubmitting}
                     >
                       View as Public
-                    </button>
+                    </button> */}
                     <button
                       type="submit"
                       disabled={isSubmitting}
