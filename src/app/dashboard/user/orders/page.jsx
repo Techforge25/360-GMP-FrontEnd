@@ -13,11 +13,10 @@ export default function UserOrdersPage() {
             <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <FiShoppingBag className="w-10 h-10" />
             </div>
-            <h1 className="text-3xl font-bold mb-4">
-              My Orders & History
-            </h1>
+            <h1 className="text-3xl font-bold mb-4">My Orders & History</h1>
             <p className="text-gray-200 text-lg max-w-2xl mx-auto">
-              Track your purchases, monitor deliveries, and manage your order history with 360GMP secure escrow protection.
+              Track your purchases, monitor deliveries, and manage your order
+              history with 360GMP secure escrow protection.
             </p>
           </div>
 
@@ -33,7 +32,9 @@ export default function UserOrdersPage() {
               </h2>
 
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                We're building an advanced order tracking system for your purchases. Soon you'll be able to see live updates on your shipments, confirm delivery, and access detailed order invoices.
+                We're building an advanced order tracking system for your
+                purchases. Soon you'll be able to see live updates on your
+                shipments, confirm delivery, and access detailed order invoices.
               </p>
 
               {/* Features Preview */}
@@ -43,15 +44,21 @@ export default function UserOrdersPage() {
                     <FiTruck className="w-4 h-4" />
                   </div>
                   <h3 className="font-semibold mb-2">Live Tracking</h3>
-                  <p className="text-sm text-gray-600">Know exactly where your package is at all times</p>
+                  <p className="text-sm text-gray-600">
+                    Know exactly where your package is at all times
+                  </p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg">
                   <div className="w-8 h-8 bg-[#9747FF] rounded-lg flex items-center justify-center mx-auto mb-3 text-white">
                     <FiShield className="w-4 h-4" />
                   </div>
-                  <h3 className="font-semibold mb-2 text-gray-900">Secure Escrow</h3>
-                  <p className="text-sm text-gray-600">Payments held safely until you confirm delivery</p>
+                  <h3 className="font-semibold mb-2 text-gray-900">
+                    Secure Escrow
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Payments held safely until you confirm delivery
+                  </p>
                 </div>
 
                 <div className="p-4 bg-gray-50 rounded-lg text-gray-900">
@@ -59,7 +66,9 @@ export default function UserOrdersPage() {
                     <FiShoppingBag className="w-4 h-4" />
                   </div>
                   <h3 className="font-semibold mb-2">Order History</h3>
-                  <p className="text-sm text-gray-600">Easy access to all your past transactions</p>
+                  <p className="text-sm text-gray-600">
+                    Easy access to all your past transactions
+                  </p>
                 </div>
               </div>
 
@@ -69,7 +78,8 @@ export default function UserOrdersPage() {
                   Waiting for your orders?
                 </h3>
                 <p className="text-gray-200 mb-4">
-                  We'll send you an update as soon as the order history dashboard becomes available.
+                  We'll send you an update as soon as the order history
+                  dashboard becomes available.
                 </p>
                 <button className="bg-white text-[#240457] px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                   Notify Me
@@ -83,7 +93,6 @@ export default function UserOrdersPage() {
   );
 }
 
-/*
 // "use client";
 // import DashboardFooter from "@/components/dashboard/DashboardFooter";
 // import React, { useState } from "react";
@@ -399,4 +408,3 @@ export default function UserOrdersPage() {
 // };
 
 // export default UserOrdersPage;
-*/
