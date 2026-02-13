@@ -26,13 +26,13 @@ import userProfileAPI from "@/services/userProfileAPI";
 import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 
 const IndustryOptions = [
-  "Manufacturing",
-  "Technology",
-  "Retail",
-  "Healthcare",
-  "Finance",
-  "Construction",
-  "Education",
+  "Software Engineer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Data Analyst",
+  "Product Manager",
+  "DevOps Engineer",
+  "UI/UX Designer",
   "Other",
 ];
 
