@@ -170,7 +170,7 @@ const ProfilePerformanceSection = () => {
     {
       title: "New Leads/Quotes",
       value: data.leads,
-      change: "+4%",
+      change: "0%",
       trend: "up",
       period: "vs last period",
       icon: FiFileText,
@@ -182,7 +182,7 @@ const ProfilePerformanceSection = () => {
     {
       title: "Conversion Rate",
       value: `${data.conversion} %`,
-      change: "+24%",
+      change: "0%",
       trend: "up",
       period: "vs last period",
       icon: FiRefreshCw,
@@ -194,7 +194,7 @@ const ProfilePerformanceSection = () => {
     {
       title: "Critical Alerts",
       value: data.criticalAlerts,
-      change: "-0.5%",
+      change: "0%",
       trend: "down",
       period: "vs last period",
       icon: FiAlertCircle,
@@ -207,9 +207,9 @@ const ProfilePerformanceSection = () => {
 
   // Mock data for donut chart (Traffic Sources)
   const trafficData = [
-    { name: "Search", value: 55, color: "#2563eb" },
-    { name: "Community", value: 26, color: "#16a34a" },
-    { name: "Direct Link", value: 19, color: "#f59e0b" },
+    { name: "Search", value: 0, color: "#2563eb" },
+    { name: "Community", value: 0, color: "#16a34a" },
+    { name: "Direct Link", value: 0, color: "#f59e0b" },
   ];
 
   return (

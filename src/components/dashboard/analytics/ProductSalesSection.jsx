@@ -140,7 +140,7 @@ const ProductSalesSection = () => {
     {
       title: "Quote Conversion",
       value: `${productMetricsData.conversion}%`,
-      change: "-1.2%",
+      change: "0%",
       trend: "down",
       period: "vs last period",
       icon: FiFileText,
@@ -159,19 +159,19 @@ const ProductSalesSection = () => {
   const inventoryAlerts = [
     {
       name: "CNC Machine Component",
-      stock: 32,
+      stock: 0,
       status: "Low Stock",
       statusColor: "bg-yellow-100 text-yellow-700 border-yellow-300",
     },
     {
       name: "Industrial Pump X1",
-      stock: 2,
+      stock: 0,
       status: "Critical",
       statusColor: "bg-red-100 text-red-700 border-red-300",
     },
     {
       name: "Precision Disc Brake System",
-      stock: 40,
+      stock: 0,
       status: "Low Stock",
       statusColor: "bg-yellow-100 text-yellow-700 border-yellow-300",
     },
@@ -300,7 +300,7 @@ const ProductSalesSection = () => {
         </div>
 
         {/* Inventory Alerts */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
+        {/* <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="mb-4">
             <h3 className="text-lg font-bold text-gray-900 mb-1">
               Inventory Alerts
@@ -335,7 +335,7 @@ const ProductSalesSection = () => {
               <FiArrowRight className="w-4 h-4" />
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

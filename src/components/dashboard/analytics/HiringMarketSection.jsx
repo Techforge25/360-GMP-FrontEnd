@@ -140,7 +140,7 @@ const HiringMarketSection = () => {
   const hiringMetrics = [
     {
       title: "Total Job Views",
-      value: "3,450",
+      value: "0",
       change: "+12%",
       trend: "up",
       icon: FiBriefcase,
@@ -148,16 +148,16 @@ const HiringMarketSection = () => {
     },
     {
       title: "Applications",
-      value: "348",
-      change: "+12%",
+      value: "0",
+      change: "0%",
       trend: "up",
       icon: FiUsers,
       iconBg: "bg-blue-500",
     },
     {
       title: "Hired",
-      value: "45",
-      change: "-1.2%",
+      value: "0",
+      change: "0%",
       trend: "down",
       period: "Faster than industry avg",
       icon: FiUserCheck,
@@ -165,8 +165,8 @@ const HiringMarketSection = () => {
     },
     {
       title: "Interview",
-      value: "234",
-      change: "+24%",
+      value: "0",
+      change: "0%",
       trend: "up",
       icon: FiMessageSquare,
       iconBg: "bg-yellow-600",
@@ -175,16 +175,16 @@ const HiringMarketSection = () => {
 
   // Mock data for sourcing channels
   const sourcingChannels = [
-    { name: "360GMP Search", value: 55, color: "#16a34a" },
-    { name: "Community", value: 26, color: "#16a34a" },
-    { name: "Direct", value: 20, color: "#16a34a" },
+    { name: "360GMP Search", value: 0, color: "#16a34a" },
+    { name: "Community", value: 0, color: "#16a34a" },
+    { name: "Direct", value: 0, color: "#16a34a" },
   ];
 
   // Mock data for export market distribution
   const marketData = [
     { name: "North America", value: 0, color: "#2563eb" },
     { name: "Europe", value: 0, color: "#16a34a" },
-    { name: "Asia", value: 5, color: "#f59e0b" },
+    { name: "Asia", value: 0, color: "#f59e0b" },
   ];
 
   return (
