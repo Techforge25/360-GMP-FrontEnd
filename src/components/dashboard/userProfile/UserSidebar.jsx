@@ -133,8 +133,11 @@ const UserSidebar = () => {
 
     let strength = 0;
 
-    // Profile image (logo) - 20%
-    if (profileData.logo) strength += 20;
+    // Profile image (logo) - 10%
+    if (profileData.logo) strength += 10;
+
+    // Social Links - 10%
+    if (socialLinks && socialLinks.length > 0) strength += 10;
 
     // Profile Banner - 10%
     if (profileData.banner) strength += 10;
@@ -304,6 +307,19 @@ const UserSidebar = () => {
       });
     }
 
+    if (!socialLinks || socialLinks.length === 0) {
+      missing.push({
+        id: "social",
+        label: "Social Links",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-[#240457]">
+            <FiPlus className="w-4 h-4" />
+          </div>
+        ),
+        description: "Add your LinkedIn or Portfolio links.",
+      });
+    }
+
     return missing;
   };
 
@@ -354,6 +370,38 @@ const UserSidebar = () => {
       ...prev,
       [field]: value,
     }));
+  };
+
+  // Handle checklist item clicks
+  const handleChecklistItemClick = (itemId) => {
+    // Close checklist modal first
+    setShowChecklistModal(false);
+
+    // Trigger specific action based on item ID
+    switch (itemId) {
+      case "experience":
+        handleAddExperience();
+        break;
+      case "social":
+        handleAddSocialLink();
+        break;
+      case "resume":
+        document.getElementById("resume-upload")?.click();
+        break;
+      case "contact":
+        handleEditContact();
+        break;
+      case "logo":
+      case "banner":
+      case "info":
+      case "education":
+      case "preferences":
+        // Scroll to top for general profile fields as they are usually in the main form
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        break;
+      default:
+        break;
+    }
   };
 
   // Handle resume upload
@@ -1182,23 +1230,27 @@ const UserSidebar = () => {
                   </div>
 
                   {missingItems.map((item) => (
-                    <div
+                    <button
                       key={item.id}
-                      className="flex items-start gap-4 p-3 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group"
+                      onClick={() => handleChecklistItemClick(item.id)}
+                      className="w-full flex items-start text-left gap-4 p-4 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/50 transition-all group relative overflow-hidden"
                     >
-                      <div className="shrink-0 mt-0.5">{item.icon}</div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-gray-900 mb-0.5">
+                      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/0 via-indigo-500/0 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="shrink-0 mt-0.5 relative z-10">
+                        {item.icon}
+                      </div>
+                      <div className="flex-1 min-w-0 relative z-10">
+                        <h4 className="text-sm font-bold text-gray-900 mb-0.5 group-hover:text-indigo-600 transition-colors">
                           {item.label}
                         </h4>
-                        <p className="text-sm text-gray-500 line-clamp-2">
+                        <p className="text-xs sm:text-sm text-gray-500 line-clamp-2">
                           {item.description}
                         </p>
                       </div>
-                      <div className="self-center">
+                      <div className="self-center relative z-10 translation-transform group-hover:translate-x-1 duration-200">
                         <FiChevronRight className="w-5 h-5 text-gray-300 group-hover:text-indigo-500 transition-colors" />
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               ) : (
