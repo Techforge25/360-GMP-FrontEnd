@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import {
@@ -22,6 +23,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login } = useUserRole();
   const router = useRouter();
@@ -150,15 +152,28 @@ export default function LoginPage() {
             >
               Password
             </label>
-            <Input
-              id="password"
-              placeholder="••••••"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base"
-              required
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                placeholder="••••••"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-brand-primary transition-colors focus:outline-none"
+              >
+                {showPassword ? (
+                  <FiEyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
+                ) : (
+                  <FiEye className="h-4 w-4 sm:h-5 sm:w-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-between gap-2 xs:gap-0">
