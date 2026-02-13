@@ -370,9 +370,9 @@ const CandidatesView = ({ job, onBack }) => {
                   Move To Interview
                   <span>→</span>
                 </button>
-                <button className="w-full sm:w-auto px-8 py-3 border-2 border-orange-400 text-orange-500 rounded-lg font-semibold hover:bg-orange-50 transition-colors">
+                {/* <button className="w-full sm:w-auto px-8 py-3 border-2 border-orange-400 text-orange-500 rounded-lg font-semibold hover:bg-orange-50 transition-colors">
                   Reject
-                </button>
+                </button> */}
               </div>
             </div>
           ) : (
