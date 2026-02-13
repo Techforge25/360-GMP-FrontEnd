@@ -456,7 +456,7 @@ const Step1 = ({ formData, handleChange, setIsUploading }) => {
   );
 };
 
-const Step2 = ({ formData, handleChange, setIsUploading }) => (
+const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
     <div>
       <h3 className="text-lg font-semibold mb-4">Company Location</h3>
@@ -617,6 +617,11 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => (
             onChange={(value) => handleChange("contactPhone", value)}
             required
           />
+          {phoneError && (
+            <p className="text-sm text-red-500 mt-1 font-medium animate-in fade-in slide-in-from-top-1 duration-200">
+              {phoneError}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <label className="text-base font-medium">
@@ -773,6 +778,7 @@ export default function BusinessProfilePage() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -805,6 +811,19 @@ export default function BusinessProfilePage() {
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Real-time phone validation for contactPhone
+    if (field === "contactPhone") {
+      if (!value) {
+        setPhoneError("");
+      } else if (!isValidPhone(value)) {
+        setPhoneError(
+          "Please enter a valid international phone number (e.g., +923001234567)",
+        );
+      } else {
+        setPhoneError("");
+      }
+    }
   };
 
   const onSubmit = async () => {
@@ -1126,6 +1145,7 @@ export default function BusinessProfilePage() {
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
+              phoneError={phoneError}
             />
           )}
           {currentStep === 3 && <Step3 formData={formData} />}

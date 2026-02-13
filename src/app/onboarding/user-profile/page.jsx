@@ -53,7 +53,13 @@ const isValidPhone = (phone) => {
   return /^\+[1-9]\d{6,14}$/.test(cleanPhone);
 };
 
-const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
+const Step1 = ({
+  formData,
+  handleChange,
+  setIsUploading,
+  onUpdateLogo,
+  phoneError,
+}) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
     {/* Required Fields Notice */}
     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3">
@@ -272,6 +278,11 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
               onChange={(value) => handleChange("phone", value)}
               required
             />
+            {phoneError && (
+              <p className="text-sm text-red-500 mt-1 font-medium animate-in fade-in slide-in-from-top-1 duration-200">
+                {phoneError}
+              </p>
+            )}
           </div>
         </div>
 
@@ -337,7 +348,7 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
         <span
           className={cn(
             "text-sm font-medium",
-            (formData.bio?.length || 0) > 1000
+            (formData.bio?.length || 0) >= 1000
               ? "text-red-500"
               : "text-text-secondary",
           )}
@@ -348,15 +359,21 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
       <textarea
         className={cn(
           "w-full min-h-[150px] rounded-md border bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary",
-          (formData.bio?.length || 0) > 1000
+          (formData.bio?.length || 0) >= 1000
             ? "border-red-500 ring-1 ring-red-500"
             : "border-border-light",
         )}
         placeholder="..."
         value={formData.bio || ""}
-        onChange={(e) => handleChange("bio", e.target.value)}
+        maxLength={1000}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (value.length <= 1000) {
+            handleChange("bio", value);
+          }
+        }}
       ></textarea>
-      {(formData.bio?.length || 0) > 1000 && (
+      {(formData.bio?.length || 0) >= 1000 && (
         <p className="text-sm text-red-500 font-medium">
           Description cannot exceed 1000 characters
         </p>
@@ -390,6 +407,11 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
       description,
       grade,
     } = educationDraft;
+
+    if (description && description.length >= 1000) {
+      alert("Description cannot exceed 1000 characters");
+      return;
+    }
 
     if (
       !institution ||
@@ -728,17 +750,46 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
               }
             />
 
+            <div className="flex justify-between items-center mt-1">
+              <span className="text-sm font-medium text-text-secondary">
+                Description
+              </span>
+              <span
+                className={cn(
+                  "text-xs font-medium",
+                  (educationDraft.description?.length || 0) >= 1000
+                    ? "text-red-500"
+                    : "text-text-secondary",
+                )}
+              >
+                {educationDraft.description?.length || 0} / 1000
+              </span>
+            </div>
             <textarea
-              className="w-full min-h-[80px] rounded-md border border-border-light px-3 py-2 text-base"
-              placeholder="Description"
+              className={cn(
+                "w-full min-h-[100px] rounded-md border px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary",
+                (educationDraft.description?.length || 0) >= 1000
+                  ? "border-red-500 ring-1 ring-red-500"
+                  : "border-border-light",
+              )}
+              placeholder="Tell us about your studies, achievements, etc."
               value={educationDraft.description}
-              onChange={(e) =>
-                setEducationDraft((p) => ({
-                  ...p,
-                  description: e.target.value,
-                }))
-              }
+              maxLength={1000}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length <= 1000) {
+                  setEducationDraft((p) => ({
+                    ...p,
+                    description: value,
+                  }));
+                }
+              }}
             />
+            {(educationDraft.description?.length || 0) >= 1000 && (
+              <p className="text-xs text-red-500 font-medium">
+                Description cannot exceed 1000 characters
+              </p>
+            )}
 
             <div className="flex justify-end gap-2 pt-2">
               <Button variant="outline" onClick={handleCancelEdit}>
@@ -875,6 +926,7 @@ export default function UserProfilePage() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const { user } = useUserRole();
 
   const [formData, setFormData] = useState({
@@ -1171,6 +1223,19 @@ export default function UserProfilePage() {
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+
+    // Real-time phone validation
+    if (field === "phone") {
+      if (!value) {
+        setPhoneError("");
+      } else if (!isValidPhone(value)) {
+        setPhoneError(
+          "Please enter a valid international phone number (e.g., +923001234567)",
+        );
+      } else {
+        setPhoneError("");
+      }
+    }
   };
 
   const handleSuccessNext = async () => {
@@ -1287,6 +1352,7 @@ export default function UserProfilePage() {
               handleChange={handleChange}
               setIsUploading={setIsUploading}
               onUpdateLogo={user?.profilePayload ? handleUpdateLogo : undefined}
+              phoneError={phoneError}
             />
           )}
           {currentStep === 2 && (
