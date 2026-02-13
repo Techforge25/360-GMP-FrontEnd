@@ -1365,7 +1365,11 @@ export default function UserProfilePage() {
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
-              onUpdateLogo={user?.profilePayload ? handleUpdateLogo : undefined}
+              onUpdateLogo={
+                user?.role === "user" && user?.profilePayload
+                  ? handleUpdateLogo
+                  : undefined
+              }
               phoneError={phoneError}
             />
           )}
