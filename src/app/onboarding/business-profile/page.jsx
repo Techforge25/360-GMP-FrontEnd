@@ -78,19 +78,22 @@ const DAYS = [
   "Sunday",
 ];
 
-const TIMEZONES = [
-  "PST",
-  "EST",
-  "CST",
-  "MST",
-  "UTC",
-  "GMT",
-  "IST",
-  "CET",
-  "EET",
-  "JST",
-  "AEST",
-];
+// Remove hardcoded TIMEZONES and generate them dynamically
+const TIMEZONES = Intl.supportedValuesOf
+  ? Intl.supportedValuesOf("timeZone")
+  : [
+      "PST",
+      "EST",
+      "CST",
+      "MST",
+      "UTC",
+      "GMT",
+      "IST",
+      "CET",
+      "EET",
+      "JST",
+      "AEST",
+    ];
 
 const generateTimeOptions = () => {
   const times = [];
