@@ -13,11 +13,11 @@ import {
 
 const SalaryDistributionSection = () => {
   const data = [
-    { name: "$60k-80k", count: 15, fill: "#cbd5e1" },
-    { name: "$80k-100k", count: 35, fill: "#cbd5e1" },
-    { name: "$100k-120k", count: 55, fill: "#000000" }, // Highlighted
-    { name: "$120k-140k", count: 25, fill: "#cbd5e1" },
-    { name: "$140k+", count: 10, fill: "#cbd5e1" },
+    { name: "$60k-80k", count: 0, fill: "#cbd5e1" },
+    { name: "$80k-100k", count: 0, fill: "#cbd5e1" },
+    { name: "$100k-120k", count: 0, fill: "#000000" }, // Highlighted
+    { name: "$120k-140k", count: 0, fill: "#cbd5e1" },
+    { name: "$140k+", count: 0, fill: "#cbd5e1" },
   ];
 
   return (

@@ -3,14 +3,14 @@ import React from "react";
 
 const TopSearchKeywordsSection = () => {
   const keywords = [
-    { text: "Data Analyst", count: 45 },
-    { text: "Product Designer", count: 30 },
-    { text: "Architecture Designer", count: 30 },
-    { text: "Data Annalist", count: 45 },
-    { text: "Architecture Designer", count: 30 },
-    { text: "Data Annalist", count: 45 },
-    { text: "Data Annalist", count: 45 },
-    { text: "Product Designer", count: 30 },
+    { text: "Data Analyst", count: 0 },
+    { text: "Product Designer", count: 0 },
+    { text: "Architecture Designer", count: 0 },
+    { text: "Data Annalist", count: 0 },
+    { text: "Architecture Designer", count: 0 },
+    { text: "Data Annalist", count: 0 },
+    { text: "Data Annalist", count: 0 },
+    { text: "Product Designer", count: 0 },
   ];
 
   return (

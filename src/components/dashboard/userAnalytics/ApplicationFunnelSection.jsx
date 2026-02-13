@@ -13,10 +13,10 @@ import {
 
 const ApplicationFunnelSection = () => {
   const data = [
-    { name: "Applied", value: 100 },
-    { name: "Hired", value: 65 },
-    { name: "Interviewing", value: 25 },
-    { name: "Rejected", value: 8 },
+    { name: "Applied", value: 0 },
+    { name: "Hired", value: 0 },
+    { name: "Interviewing", value: 0 },
+    { name: "Rejected", value: 0 },
   ];
 
   // Custom colors based on design - muted blue shades

@@ -13,11 +13,11 @@ import {
 
 const TopCategoriesSection = () => {
   const data = [
-    { name: "CNC Machined X1", value: 80 },
-    { name: "Safety Valve V2", value: 65 },
-    { name: "Control Panel A", value: 50 },
-    { name: "Hydraulic Seal", value: 25 },
-    { name: "Filter Mesh", value: 15 },
+    { name: "CNC Machined X1", value: 0 },
+    { name: "Safety Valve V2", value: 0 },
+    { name: "Control Panel A", value: 0 },
+    { name: "Hydraulic Seal", value: 0 },
+    { name: "Filter Mesh", value: 0 },
   ];
 
   return (
@@ -32,7 +32,7 @@ const TopCategoriesSection = () => {
           </p>
         </div>
         <span className="text-smfont-semibold text-purple-700 bg-purple-50 px-2 py-1 rounded-md h-fit">
-          5 Categories
+          0 Categories
         </span>
       </div>
 

@@ -7,7 +7,7 @@ const InterviewRateSection = () => {
   // Data for the semi-circle gauge
   // Value is 24.6%, so the filled part is 24.6 and empty is 100-24.6
   const data = [
-    { name: "Rate", value: 24.6, color: "#9333ea" }, // Purple
+    { name: "Rate", value: 0, color: "#9333ea" }, // Purple
     { name: "Remaining", value: 75.4, color: "#e5e7eb" }, // Gray
   ];
 
@@ -41,14 +41,14 @@ const InterviewRateSection = () => {
 
         {/* Percentage Text Centered */}
         <div className="text-center relative mt-10 z-10">
-          <div className="text-4xl font-bold text-gray-900">24.6 %</div>
+          <div className="text-4xl font-bold text-gray-900">0 %</div>
           <div className="text-sm font-medium text-gray-500">Conversion</div>
         </div>
       </div>
 
       <div className="text-center mb-6">
-        <p className="text-smtext-purple-600 font-medium bg-purple-50 inline-block px-3 py-1 rounded-full">
-          All Time Success Rate 15%
+        <p className="text-sm text-purple-600 font-medium bg-purple-50 inline-block px-3 py-1 rounded-full">
+          All Time Success Rate 0%
         </p>
         <p className="text-[10px] text-gray-400 mt-1 max-w-[200px] mx-auto leading-tight">
           Total Interview Invites / Total Job Applications
@@ -62,8 +62,8 @@ const InterviewRateSection = () => {
             <FiMousePointer className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-smtext-gray-500">Profile CTR</p>
-            <p className="text-sm font-bold text-gray-900">6.8 %</p>
+            <p className="text-sm text-gray-500">Profile CTR</p>
+            <p className="text-sm font-bold text-gray-900">0 %</p>
           </div>
         </div>
 
@@ -73,8 +73,8 @@ const InterviewRateSection = () => {
             <FiClock className="w-4 h-4" />
           </div>
           <div>
-            <p className="text-smtext-gray-500">Avg Response Time</p>
-            <p className="text-sm font-bold text-gray-900">4.2 Days</p>
+            <p className="text-sm text-gray-500">Avg Response Time</p>
+            <p className="text-sm font-bold text-gray-900">0 Days</p>
           </div>
         </div>
       </div>
