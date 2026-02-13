@@ -36,11 +36,6 @@ export default function SignupPage() {
       setLoading(false);
       return;
     }
-    if (password.length > 8) {
-      setError("Password must be no more than 8 characters");
-      setLoading(false);
-      return;
-    }
 
     try {
       // Create the account - backend will send OTP automatically
