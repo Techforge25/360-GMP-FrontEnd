@@ -177,8 +177,8 @@ const BusinessAboutTab = ({ businessId }) => {
             {/* {isOwner && ( */}
             <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
               {/* <span className="hidden sm:inline">Edit About Section</span> */}
-              <span className="sm:hidden">Edit</span>
-              <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              {/* <span className="sm:hidden">Edit</span> */}
+              {/* <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> */}
             </button>
             {/* )} */}
           </div>
@@ -205,9 +205,9 @@ const BusinessAboutTab = ({ businessId }) => {
             </h2>
             {/* {isOwner && ( */}
             <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
-              <span className="hidden sm:inline">Manage Featured Products</span>
-              <span className="sm:hidden">Manage</span>
-              <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              {/* <span className="hidden sm:inline">Manage Featured Products</span> */}
+              {/* <span className="sm:hidden">Manage</span> */}
+              {/* <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> */}
             </button>
             {/* )} */}
           </div>
@@ -373,9 +373,9 @@ const BusinessAboutTab = ({ businessId }) => {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-bold text-gray-900">Certifications</h3>
             {/* {isOwner && ( */}
-            <button className="text-[#240457] text-sm font-semibold hover:underline">
+            {/* <button className="text-[#240457] text-sm font-semibold hover:underline">
               Manage
-            </button>
+            </button> */}
             {/* )} */}
           </div>
 
@@ -386,24 +386,31 @@ const BusinessAboutTab = ({ businessId }) => {
               </div>
             ) : profileData?.certifications &&
               profileData.certifications.length > 0 ? (
-              profileData.certifications.map((cert, index) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-3 p-4 bg-[#F8F5FF] rounded-xl"
-                >
-                  <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <div className="w-6 h-6 bg-[#240457] rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm">✓</span>
+              profileData.certifications
+                .filter(
+                  (cert) =>
+                    typeof cert === "string" && !cert.startsWith("http"),
+                )
+                .map((cert, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-3 p-4 bg-[#F8F5FF] rounded-xl"
+                  >
+                    <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <div className="w-6 h-6 bg-[#240457] rounded-full flex items-center justify-center">
+                        <span className="text-white text-sm">✓</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-bold text-gray-900">
+                        {cert}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Verified Certification
+                      </p>
                     </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-bold text-gray-900">{cert}</h4>
-                    <p className="text-sm text-gray-500">
-                      Verified Certification
-                    </p>
-                  </div>
-                </div>
-              ))
+                ))
             ) : (
               <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                 <p className="text-sm text-gray-500">

@@ -54,16 +54,21 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
 
   // Handle certifications (potential array of strings or objects)
   const rawCertifications = business.certifications || [];
-  const certifications = rawCertifications.map((cert) => {
-    if (typeof cert === "string") {
-      return { name: cert, desc: "Certified Professional", icon: "iso" };
-    }
-    return {
-      name: cert.name || cert.title || "Certification",
-      desc: cert.desc || cert.description || "Verified Credential",
-      icon: cert.icon || "iso",
-    };
-  });
+  const certifications = rawCertifications
+    .filter((cert) => {
+      const name = typeof cert === "string" ? cert : cert.name || cert.title;
+      return name && !name.startsWith("http");
+    })
+    .map((cert) => {
+      if (typeof cert === "string") {
+        return { name: cert, desc: "Certified Professional", icon: "iso" };
+      }
+      return {
+        name: cert.name || cert.title || "Certification",
+        desc: cert.desc || cert.description || "Verified Credential",
+        icon: cert.icon || "iso",
+      };
+    });
 
   const contact = {
     email:

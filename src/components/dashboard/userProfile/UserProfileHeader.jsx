@@ -312,11 +312,11 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         />
 
         <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <button className="bg-white/90 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2">
+          <button className="bg-transparent px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2">
             <img
               src="/assets/images/eyeIcon.png"
               alt=""
-              className="w-3 h-3 sm:w-4 sm:h-4"
+              className="w-3 hidden h-3 sm:w-4 sm:h-4"
             />
             {/* <span className="hidden sm:inline">View as a user</span> */}
             <span className="sm:hidden">View</span>
