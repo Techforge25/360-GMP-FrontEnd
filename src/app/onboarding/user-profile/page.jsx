@@ -21,6 +21,7 @@ import api from "@/lib/axios";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import userProfileAPI from "@/services/userProfileAPI";
+import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 
 const IndustryOptions = [
   "Manufacturing",
@@ -301,10 +302,9 @@ const Step1 = ({ formData, handleChange, setIsUploading, onUpdateLogo }) => (
             <label className="text-base font-medium">
               Contact Phone Number <span className="text-red-500">*</span>
             </label>
-            <Input
-              placeholder="+128895949965"
+            <PhoneInputWithCountry
               value={formData.phone || ""}
-              onChange={(e) => handleChange("phone", e.target.value)}
+              onChange={(value) => handleChange("phone", value)}
               required
             />
           </div>
