@@ -69,6 +69,10 @@ export default function CreateCommunityPage() {
   };
 
   const handleAddTag = () => {
+    if (formData.tags.length >= 3) {
+      alert("Maximum 3 tags allowed");
+      return;
+    }
     if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
       setFormData((prev) => ({
         ...prev,
@@ -411,23 +415,34 @@ export default function CreateCommunityPage() {
                     Tags / Topics (Optional)
                   </label>
                   <div className="flex gap-2 mb-3">
-                    <input
-                      type="text"
-                      placeholder="Add a tag and press enter"
-                      value={currentTag}
-                      onChange={(e) => setCurrentTag(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleAddTag();
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        placeholder={
+                          formData.tags.length >= 3
+                            ? "Maximum tags reached"
+                            : "Add a tag and press enter"
                         }
-                      }}
-                      className="flex-1 text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                    />
+                        value={currentTag}
+                        onChange={(e) => setCurrentTag(e.target.value)}
+                        disabled={formData.tags.length >= 3}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddTag();
+                          }
+                        }}
+                        className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+                        {formData.tags.length}/3
+                      </span>
+                    </div>
                     <button
                       type="button"
                       onClick={handleAddTag}
-                      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                      disabled={formData.tags.length >= 3}
+                      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <FiPlus className="w-5 h-5 text-gray-700" />
                     </button>
@@ -463,6 +478,10 @@ export default function CreateCommunityPage() {
                           key={tag}
                           type="button"
                           onClick={() => {
+                            if (formData.tags.length >= 3) {
+                              alert("Maximum 3 tags allowed");
+                              return;
+                            }
                             if (!formData.tags.includes(tag)) {
                               setFormData((prev) => ({
                                 ...prev,
@@ -470,7 +489,8 @@ export default function CreateCommunityPage() {
                               }));
                             }
                           }}
-                          className="px-3 py-1.5 bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-lg text-sm text-gray-700 transition-colors"
+                          disabled={formData.tags.length >= 3}
+                          className="px-3 py-1.5 bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-lg text-sm text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {tag}
                         </button>
@@ -488,10 +508,21 @@ export default function CreateCommunityPage() {
                     placeholder="Set clear expectation for community behavior and content..."
                     value={formData.rules}
                     onChange={(e) => handleInputChange("rules", e.target.value)}
+                    maxLength={1000}
                     rows={4}
                     className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none"
                     required
                   />
+                  <div className="mt-1 flex justify-between items-center whitespace-nowrap">
+                    <p className="text-sm text-gray-500">
+                      Minimum 10 characters required
+                    </p>
+                    <p
+                      className={`text-sm ${formData.rules.length >= 1000 ? "text-red-500 font-medium" : "text-gray-500"}`}
+                    >
+                      {formData.rules.length}/1000 characters
+                    </p>
+                  </div>
                 </div>
               </div>
 
