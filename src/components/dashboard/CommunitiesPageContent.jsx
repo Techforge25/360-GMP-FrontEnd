@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { FiUsers, FiGlobe, FiSearch } from "react-icons/fi";
 import { LuCrown } from "react-icons/lu";
 import { MdLockOutline } from "react-icons/md";
@@ -20,13 +20,73 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [industry, setIndustry] = useState("");
   const [region, setRegion] = useState("");
+  const sentinelRef = useRef(null);
 
   useEffect(() => {
     // Reset and fetch initial data when filters change
     setPage(1);
     setHasMore(true);
     fetchInitialCommunities();
-  }, [industry, region, sortBy]); // Removed searchQuery from dependencies for manual search trigger
+  }, [industry, region, sortBy]);
+
+  const loadMoreCommunities = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+      const queryParams = new URLSearchParams({
+        page: page,
+        limit: 6,
+        status: "active",
+        search: searchQuery,
+        industry: industry,
+        region: region,
+      });
+
+      if (sortBy && sortBy !== "all" && sortBy !== "recent") {
+        queryParams.append("type", sortBy);
+      }
+
+      const response = await api.get({
+        url: `/community?${queryParams.toString()}`,
+        enableErrorMessage: false,
+        enableSuccessMessage: false,
+      });
+
+      if (response.success && response.data?.docs) {
+        setCommunities((prev) => [...prev, ...response.data.docs]);
+        setHasMore(response.data.hasNextPage);
+        setPage((prevPage) => prevPage + 1);
+      }
+    } catch (error) {
+      console.error("Failed to load more communities:", error);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, page, searchQuery, industry, region, sortBy]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+          loadMoreCommunities();
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    const currentSentinel = sentinelRef.current;
+    if (currentSentinel) {
+      observer.observe(currentSentinel);
+    }
+
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+    };
+  }, [loadMoreCommunities, hasMore, loadingMore, loading]);
 
   const fetchInitialCommunities = async () => {
     try {
@@ -45,32 +105,18 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         queryParams.append("type", sortBy);
       }
 
-      console.log(
-        "🔍 Fetching communities with params:",
-        queryParams.toString(),
-      );
-
       const response = await api.get({
         url: `/community?${queryParams.toString()}`,
         enableErrorMessage: false,
         enableSuccessMessage: false,
       });
 
-      console.log("📦 Community API Full Response:", response);
-
       if (response.success && response.data?.docs) {
-        console.log("✅ Communities found:", response.data.docs.length);
-        console.log("📄 First community sample:", response.data.docs[0]);
-        console.log(
-          "⚠️ Check if fields like 'name', 'description', 'coverImage' exist in the sample above",
-        );
-
         setCommunities(response.data.docs);
         setHasMore(response.data.hasNextPage);
         // Next page to fetch will be 2
         setPage(2);
       } else {
-        console.warn("❌ No communities found or invalid response structure");
         setCommunities([]);
         setHasMore(false);
       }
@@ -79,85 +125,6 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
       setCommunities([]);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadMoreCommunities = async () => {
-    if (loadingMore || !hasMore) return;
-
-    try {
-      setLoadingMore(true);
-
-      // We want to load 8 more items.
-      // Since we started with limit=4 (Page 1), the next logical chunks are Page 2 and Page 3 (each limit=4).
-      // This gives us indices 4-7 and 8-11, total 8 items.
-
-      // Fetch Page A
-      const queryParamsA = new URLSearchParams({
-        page: page,
-        limit: 4,
-        status: "active",
-        search: searchQuery,
-        industry: industry,
-        region: region,
-      });
-
-      if (sortBy && sortBy !== "all" && sortBy !== "recent") {
-        queryParamsA.append("type", sortBy);
-      }
-
-      const resA = await api.get({
-        url: `/community?${queryParamsA.toString()}`,
-        enableErrorMessage: false,
-        enableSuccessMessage: false,
-      });
-
-      let newDocs = [];
-      let nextHasMore = false;
-      let nextPage = page + 1;
-
-      if (resA.success && resA.data?.docs) {
-        newDocs = [...resA.data.docs];
-        // If Page A has a next page, we fetch Page B to fulfill the "8 items" requirement
-        if (resA.data.hasNextPage) {
-          const queryParamsB = new URLSearchParams({
-            page: page + 1,
-            limit: 4,
-            status: "active",
-            search: searchQuery,
-            industry: industry,
-            region: region,
-          });
-
-          if (sortBy && sortBy !== "all" && sortBy !== "recent") {
-            queryParamsB.append("type", sortBy);
-          }
-
-          const resB = await api.get({
-            url: `/community?${queryParamsB.toString()}`,
-            enableErrorMessage: false,
-            enableSuccessMessage: false,
-          });
-
-          if (resB.success && resB.data?.docs) {
-            newDocs = [...newDocs, ...resB.data.docs];
-            nextHasMore = resB.data.hasNextPage;
-            nextPage = page + 2;
-          } else {
-            nextHasMore = false;
-          }
-        } else {
-          nextHasMore = false;
-        }
-
-        setCommunities((prev) => [...prev, ...newDocs]);
-        setHasMore(nextHasMore);
-        setPage(nextPage);
-      }
-    } catch (error) {
-      console.error("Failed to load more communities:", error);
-    } finally {
-      setLoadingMore(false);
     }
   };
 
@@ -427,25 +394,23 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
               ))}
             </div>
 
-            {/* Load More Button */}
-            {hasMore && (
-              <div className="flex justify-center mt-12">
-                <button
-                  onClick={loadMoreCommunities}
-                  disabled={loadingMore}
-                  className="px-8 py-3 bg-white border border-gray-300 rounded-full text-base font-medium text-gray-700 hover:bg-gray-50 hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {loadingMore ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
-                      Loading...
-                    </>
-                  ) : (
-                    "View all communities"
-                  )}
-                </button>
-              </div>
-            )}
+            {/* Load More Sentinel */}
+            <div
+              ref={sentinelRef}
+              className="w-full flex justify-center mt-12 mb-8 min-h-[40px]"
+            >
+              {(loadingMore || loading) && (
+                <div className="flex items-center gap-2 text-gray-500">
+                  <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                  <span>Loading more communities...</span>
+                </div>
+              )}
+              {!hasMore && communities.length > 0 && (
+                <p className="text-gray-400 text-sm">
+                  You've reached the end of the list
+                </p>
+              )}
+            </div>
           </>
         )}
       </div>
