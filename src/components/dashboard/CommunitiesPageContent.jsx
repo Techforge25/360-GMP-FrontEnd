@@ -344,7 +344,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                       <img
                         src={community.coverImage || community.profileImage}
                         alt={community.name}
-                        className="w-40 h-40 object-contain"
+                        className="w-100 h-100 object-contain"
                         onError={(e) => {
                           e.target.style.display = "none";
                           e.target.parentElement.innerHTML =

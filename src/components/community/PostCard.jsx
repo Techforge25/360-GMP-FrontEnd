@@ -498,9 +498,9 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
           <div className="flex -space-x-2">
             {/* Placeholder for attendees avatars if available */}
           </div>
-          <button className="px-6 py-2 bg-[#240457] text-white rounded-lg font-semibold text-sm hover:bg-[#1a0340] transition-colors shadow-sm w-full sm:w-auto">
+          {/* <button className="px-6 py-2 bg-[#240457] text-white rounded-lg font-semibold text-sm hover:bg-[#1a0340] transition-colors shadow-sm w-full sm:w-auto">
             View Details
-          </button>
+          </button> */}
         </div>
       </div>
     );
