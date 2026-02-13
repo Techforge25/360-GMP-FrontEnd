@@ -130,38 +130,36 @@ export default function CreateCommunityPage() {
         businessId: user?.businessId,
       };
 
-      // Add optional fields for public communities
-      if (formData.privacyType === "public") {
-        payload = {
-          ...payload,
-          category: formData.category || formData.industry,
-          purpose: formData.purpose,
-          tags: formData.tags,
-          rules: formData.rules,
-          industry: formData.industry,
-          region: formData.region,
-        };
+      // Add details for all community types
+      payload = {
+        ...payload,
+        category: formData.category || formData.industry,
+        purpose: formData.purpose,
+        tags: formData.tags,
+        rules: formData.rules,
+        industry: formData.industry,
+        region: formData.region,
+      };
 
-        // Upload images to Cloudinary
-        if (formData.coverImage instanceof File) {
-          console.log("📤 Uploading cover image to Cloudinary...");
-          const coverImageUrl = await uploadToCloudinary(
-            formData.coverImage,
-            "communities/covers",
-          );
-          payload.coverImage = coverImageUrl;
-          console.log("✅ Cover image uploaded:", coverImageUrl);
-        }
+      // Upload images to Cloudinary (Universal for all types)
+      if (formData.coverImage instanceof File) {
+        console.log("📤 Uploading cover image to Cloudinary...");
+        const coverImageUrl = await uploadToCloudinary(
+          formData.coverImage,
+          "communities/covers",
+        );
+        payload.coverImage = coverImageUrl;
+        console.log("✅ Cover image uploaded:", coverImageUrl);
+      }
 
-        if (formData.logo instanceof File) {
-          console.log("📤 Uploading profile image to Cloudinary...");
-          const profileImageUrl = await uploadToCloudinary(
-            formData.logo,
-            "communities/profiles",
-          );
-          payload.profileImage = profileImageUrl;
-          console.log("✅ Profile image uploaded:", profileImageUrl);
-        }
+      if (formData.logo instanceof File) {
+        console.log("📤 Uploading profile image to Cloudinary...");
+        const profileImageUrl = await uploadToCloudinary(
+          formData.logo,
+          "communities/profiles",
+        );
+        payload.profileImage = profileImageUrl;
+        console.log("✅ Profile image uploaded:", profileImageUrl);
       }
 
       console.log("📤 Creating community with payload:", payload);

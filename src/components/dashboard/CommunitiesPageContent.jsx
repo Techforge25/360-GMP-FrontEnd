@@ -344,11 +344,11 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                       <img
                         src={community.coverImage || community.profileImage}
                         alt={community.name}
-                        className="w-100 h-100 object-contain"
+                        className="w-full h-full object-cover"
                         onError={(e) => {
                           e.target.style.display = "none";
                           e.target.parentElement.innerHTML =
-                            '<div class="w-20 h-20 bg-gray-300 rounded-full"></div>';
+                            '<div class="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-gray-400" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>';
                         }}
                       />
                     ) : (
@@ -403,7 +403,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
                     <div className="border-t border-gray-100 pt-4 mb-4 flex items-center justify-between text-[14px] text-gray-500">
                       <div className="flex items-center gap-2">
-                        <span>Active 2h ago</span>
+                        <span>Active N/A</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <FiUsers className="w-4 h-4" />
