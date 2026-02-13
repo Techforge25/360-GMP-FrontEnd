@@ -90,8 +90,8 @@ const BusinessCard = ({ business, onContactClick }) => {
     name = "TechVision Solutions",
     logo = "/assets/images/logo_placeholder_1.png",
     verified = true,
-    rating = 4.8,
-    reviews = 124,
+    rating = "N/A",
+    reviews = "N/A",
     category = "Manufacturing",
     established = "2012",
     location = "Sydney, Australia",
@@ -165,7 +165,9 @@ const BusinessCard = ({ business, onContactClick }) => {
           </div>
 
           <p className="text-sm text-gray-600 leading-relaxed mb-4">
-            {description}
+            {description?.length > 150
+              ? `${description.substring(0, 150)}...`
+              : description}
           </p>
         </div>
       </div>
@@ -176,15 +178,15 @@ const BusinessCard = ({ business, onContactClick }) => {
           <p className="text-sm text-black font-semibold mb-1">
             On-time delivery
           </p>
-          <p className="text-sm font-sm text-gray-600">100%</p>
+          <p className="text-sm font-sm text-gray-600">N/A</p>
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Reorder rate</p>
-          <p className="text-sm font-sm text-gray-600">15%</p>
+          <p className="text-sm font-sm text-gray-600">N/A</p>
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Response time</p>
-          <p className="text-sm font-sm text-gray-600">6h</p>
+          <p className="text-sm font-sm text-gray-600">N/A</p>
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">

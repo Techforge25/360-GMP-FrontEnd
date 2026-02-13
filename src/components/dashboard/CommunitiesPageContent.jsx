@@ -33,7 +33,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
       setLoading(true);
       const queryParams = new URLSearchParams({
         page: 1,
-        limit: 4,
+        limit: 6,
         status: "active",
         search: searchQuery,
         industry: industry,

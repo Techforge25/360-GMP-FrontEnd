@@ -67,7 +67,16 @@ export default function ProfileGallery({ businessProfileId }) {
   }
 
   if (!albums || albums.length === 0) {
-    // ... existing empty state ...
+    return (
+      <div className="mb-12">
+        <h2 className="text-center text-3xl font-semibold text-black mb-8">
+          Gallery
+        </h2>
+        <div className="flex flex-col items-center justify-center py-12 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+          <p className="text-gray-500 font-medium">No Gallery Available</p>
+        </div>
+      </div>
+    );
   }
 
   return (
