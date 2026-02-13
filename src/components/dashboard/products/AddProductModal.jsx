@@ -167,6 +167,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         isSingleProductAvailable: formData.isSingleProductAvailable,
         tieredPricing: tieredPricingMap,
         shippingCost: 0,
+        status: "approved",
       };
 
       let response;
