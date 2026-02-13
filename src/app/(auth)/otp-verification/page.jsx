@@ -115,8 +115,15 @@ function OTPForm() {
         }
       } else {
         // Resend password reset OTP
+        // Using forgotPassword endpoint to trigger a fresh OTP email as requested
+        if (!email) {
+          setError("Email is missing. Please try requesting a reset again.");
+          setResending(false);
+          return;
+        }
+
         const res = await api.post({
-          url: `/auth/resendPasswordResetToken`,
+          url: `/auth/forgotPassword`,
           payload: { email },
           enableSuccessMessage: true,
           enableErrorMessage: false,

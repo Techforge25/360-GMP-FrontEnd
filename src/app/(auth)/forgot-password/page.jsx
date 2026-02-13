@@ -34,7 +34,9 @@ export default function ForgotPasswordPage() {
       });
 
       if (res.success) {
-        router.push(`/otp-verification?email=${encodeURIComponent(email)}`);
+        router.push(
+          `/otp-verification?email=${encodeURIComponent(email)}&type=password-reset`,
+        );
       } else {
         setError(res.message || "Request failed");
       }
