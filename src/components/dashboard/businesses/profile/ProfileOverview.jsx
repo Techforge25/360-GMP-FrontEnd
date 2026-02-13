@@ -15,8 +15,18 @@ import {
 } from "react-icons/hi";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { FiGlobe } from "react-icons/fi";
+import { useUserRole } from "@/context/UserContext";
+import { FaCrown } from "react-icons/fa";
 
 export default function ProfileOverview({ business, socialLinks = [] }) {
+  const { user } = useUserRole();
+  const role = user?.role;
+  // Robust check for free trial (role or subscription plan)
+  const isFreeTrial =
+    role === "free_trial" ||
+    user?.subscription?.planName?.toLowerCase()?.includes("trial") ||
+    user?.subscription?.plan?.name?.toLowerCase()?.includes("trial");
+
   if (!business) return null;
 
   const description = business.description || "No description provided.";
@@ -132,26 +142,47 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
         </div>
 
         {/* Contact Info Box */}
-        <div className="bg-gray-50/50 rounded-xl border border-gray-100">
-          <h3 className="text-2xl font-medium text-black mb-4">Contact Info</h3>
-          <ul className="space-y-4 mb-6 bg-[#F0F0F0] p-4 rounded-lg">
-            <li className="flex items-start gap-3 text-sm text-gray-600">
-              <HiOutlineMail className="text-lg mt-0.5 text-indigo-900" />
-              <span>{contact.email}</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-gray-600">
-              <HiOutlinePhone className="text-lg mt-0.5 text-indigo-900" />
-              <span>{contact.phone}</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-gray-600">
-              <HiOutlineGlobe className="text-lg mt-0.5 text-indigo-900" />
-              <span>{contact.website}</span>
-            </li>
-            <li className="flex items-start gap-3 text-sm text-gray-600">
-              <HiOutlineLocationMarker className="text-lg mt-0.5 text-indigo-900" />
-              <span>{contact.address}</span>
-            </li>
-          </ul>
+        <div className="bg-gray-50/50 rounded-xl border border-gray-100 relative overflow-hidden">
+          <h3 className="text-2xl font-medium text-black mb-4 px-4 pt-4">
+            Contact Info
+          </h3>
+
+          <div className="relative p-4">
+            <ul
+              className={`space-y-4 bg-[#F0F0F0] p-4 rounded-lg transition-all duration-300 ${isFreeTrial ? "blur-[6px] select-none pointer-events-none" : ""}`}
+            >
+              <li className="flex items-start gap-3 text-sm text-gray-600">
+                <HiOutlineMail className="text-lg mt-0.5 text-indigo-900" />
+                <span>{contact.email}</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm text-gray-600">
+                <HiOutlinePhone className="text-lg mt-0.5 text-indigo-900" />
+                <span>{contact.phone}</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm text-gray-600">
+                <HiOutlineGlobe className="text-lg mt-0.5 text-indigo-900" />
+                <span>{contact.website}</span>
+              </li>
+              <li className="flex items-start gap-3 text-sm text-gray-600">
+                <HiOutlineLocationMarker className="text-lg mt-0.5 text-indigo-900" />
+                <span>{contact.address}</span>
+              </li>
+            </ul>
+
+            {isFreeTrial && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4 text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-full shadow-lg mb-3 transform hover:scale-105 transition-transform cursor-pointer">
+                  <FaCrown className="text-sm" />
+                  <span className="text-sm font-bold uppercase tracking-wide">
+                    Upgrade
+                  </span>
+                </div>
+                <p className="text-sm font-medium text-gray-700 max-w-[200px] leading-snug">
+                  Upgrade your plan to view contact information.
+                </p>
+              </div>
+            )}
+          </div>
 
           {socialLinks.length > 0 && (
             <div className="mb-4">
@@ -176,36 +207,56 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
           )}
 
           {/* Map Display */}
-          {business.latitude && business.longitude ? (
-            <div className="rounded-lg overflow-hidden h-64 bg-gray-200 relative z-0">
-              <iframe
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                scrolling="no"
-                marginHeight="0"
-                marginWidth="0"
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${business.longitude - 0.01}%2C${business.latitude - 0.01}%2C${business.longitude + 0.01}%2C${business.latitude + 0.01}&layer=mapnik&marker=${business.latitude}%2C${business.longitude}`}
-                className="border-none"
-              />
-              <div className="absolute bottom-2 right-2 flex gap-2">
-                <a
-                  href={`https://www.openstreetmap.org/?mlat=${business.latitude}&mlon=${business.longitude}#map=15/${business.latitude}/${business.longitude}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white/80 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold text-indigo-900 border border-indigo-200 hover:bg-white transition-colors"
-                >
-                  View Larger Map
-                </a>
+          <div className="relative mt-4">
+            <div
+              className={`rounded-lg overflow-hidden h-64 bg-gray-200 relative z-0 transition-all duration-300 ${isFreeTrial ? "blur-[8px] select-none pointer-events-none" : ""}`}
+            >
+              {business.latitude && business.longitude ? (
+                <>
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    scrolling="no"
+                    marginHeight="0"
+                    marginWidth="0"
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${business.longitude - 0.01}%2C${business.latitude - 0.01}%2C${business.longitude + 0.01}%2C${business.latitude + 0.01}&layer=mapnik&marker=${business.latitude}%2C${business.longitude}`}
+                    className="border-none"
+                  />
+                  <div className="absolute bottom-2 right-2 flex gap-2">
+                    <a
+                      href={`https://www.openstreetmap.org/?mlat=${business.latitude}&mlon=${business.longitude}#map=15/${business.latitude}/${business.longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-white/80 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold text-indigo-900 border border-indigo-200 hover:bg-white transition-colors"
+                    >
+                      View Larger Map
+                    </a>
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center border border-dashed border-gray-300">
+                  <p className="text-sm text-gray-500">
+                    Location coordinates not available
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {isFreeTrial && (
+              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center">
+                <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-purple-600 text-white rounded-full shadow-xl mb-4 transform hover:scale-105 transition-transform cursor-pointer">
+                  <FaCrown className="text-base" />
+                  <span className="text-sm font-bold uppercase tracking-wide">
+                    Upgrade
+                  </span>
+                </div>
+                <p className="text-base font-semibold text-gray-800 max-w-[250px] leading-tight">
+                  Upgrade your plan to view location information
+                </p>
               </div>
-            </div>
-          ) : (
-            <div className="rounded-lg overflow-hidden h-24 bg-gray-100 flex items-center justify-center border border-dashed border-gray-300">
-              <p className="text-sm text-gray-500">
-                Location coordinates not available
-              </p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

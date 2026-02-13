@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
-import { FaCheckCircle, FaStar, FaRegClock } from "react-icons/fa";
+import { FaCheckCircle, FaStar, FaRegClock, FaCrown } from "react-icons/fa";
 import { MdVerified, MdReportGmailerrorred } from "react-icons/md";
 import { BsBuildings, BsCalendar3, BsGlobe } from "react-icons/bs";
 import { HiOutlineLocationMarker } from "react-icons/hi";
@@ -14,7 +14,15 @@ import { showError } from "@/utils/toasterMessage";
 
 export default function ProfileHeader({ business }) {
   const { user } = useUserRole();
-  const isUserRole = user?.role === "user";
+  const role = user?.role;
+  const isUserRole =
+    role === "user" || role === "free_trial" || role === "paid_user";
+
+  // Robust check for free trial (role or subscription plan)
+  const isFreeTrial =
+    role === "free_trial" ||
+    user?.subscription?.planName?.toLowerCase()?.includes("trial") ||
+    user?.subscription?.plan?.name?.toLowerCase()?.includes("trial");
 
   const {
     name = "TechVision Solutions.",
@@ -110,9 +118,14 @@ export default function ProfileHeader({ business }) {
         <div className="absolute bottom-4 right-4 flex gap-3">
           {isUserRole && (
             <button
-              // onClick={handlePostReview}
-              disabled={isLoadingInvite}
-              className="bg-[#f2994a] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-[#e08a3e] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              onClick={handlePostReview}
+              disabled={isLoadingInvite || isFreeTrial}
+              className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all duration-300 
+                ${
+                  isFreeTrial
+                    ? "bg-gray-400 text-gray-100 cursor-not-allowed opacity-80"
+                    : "bg-[#f2994a] text-white hover:bg-[#e08a3e] disabled:opacity-70 disabled:cursor-not-allowed"
+                }`}
             >
               {isLoadingInvite ? (
                 <>
@@ -121,6 +134,7 @@ export default function ProfileHeader({ business }) {
                 </>
               ) : (
                 <>
+                  {isFreeTrial && <FaCrown className="text-xs" />}
                   Post A Review <FiShare2 />
                 </>
               )}
