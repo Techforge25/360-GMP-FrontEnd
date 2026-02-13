@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   FiX,
@@ -13,6 +13,7 @@ import { FileUpload } from "@/components/ui/FileUpload";
 import { cn } from "@/lib/utils";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import jobAPI from "@/services/jobAPI";
+import userProfileAPI from "@/services/userProfileAPI";
 
 const STEP_FORM = 1;
 const STEP_REVIEW = 2;
@@ -28,6 +29,7 @@ export default function JobApplicationModal({
   const router = useRouter();
   const [step, setStep] = useState(STEP_FORM);
   const [loading, setLoading] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
   const [formData, setFormData] = useState({
     resumeUrl: "",
     resumeName: "",
@@ -37,17 +39,33 @@ export default function JobApplicationModal({
     salaryExpectation: "",
   });
 
-  // Placeholder user data for review step
-  const userData = {
-    fullName: "Alex Morgan",
-    email: "info@gmail.com",
-    about:
-      "Lorem ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-    city: "New York-USA",
-    phone: "+1 289 7959631",
-  };
+  useEffect(() => {
+    if (isOpen) {
+      const fetchUserProfile = async () => {
+        try {
+          const response = await userProfileAPI.getMyProfile();
+          if (response?.success && response?.data) {
+            setUserProfile(response.data);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user profile:", error);
+        }
+      };
+      fetchUserProfile();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
+
+  // Helper for user display data
+  const userData = {
+    fullName: userProfile?.fullName || "N/A",
+    email: userProfile?.email || "N/A",
+    about: userProfile?.bio || "No bio provided.",
+    city:
+      userProfile?.location || userProfile?.city || "Location not specified",
+    phone: userProfile?.phone || "N/A",
+  };
 
   const handleNext = () => {
     if (!formData.resumeUrl) {
@@ -99,7 +117,7 @@ export default function JobApplicationModal({
 
   const handleSuccessRedirect = () => {
     onClose();
-    router.push("/dashboard/business/jobs");
+    router.push("/dashboard/user/jobs");
   };
 
   const renderStep1 = () => (
@@ -346,6 +364,7 @@ export default function JobApplicationModal({
         </div>
       </div>
 
+      <h2 className="text-2xl font-bold text-text-primary mb-8 text-center" />
       <h2 className="text-2xl font-bold text-text-primary mb-8 text-center">
         Your Application Has Been
         <br />

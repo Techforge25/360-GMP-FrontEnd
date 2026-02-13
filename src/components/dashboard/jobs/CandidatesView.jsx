@@ -50,7 +50,7 @@ const CandidatesView = ({ job, onBack }) => {
               avatar:
                 app.userProfileId?.logo ||
                 "/assets/images/Portrait_Placeholder.png",
-              summary: app.userProfileId?.bio || "No summary provided",
+              // summary: app.userProfileId?.bio || "No summary provided",
               fullName:
                 app.userProfileId?.fullName ||
                 `${app.userProfileId?.firstName || ""} ${app.userProfileId?.lastName || ""}`.trim(),
@@ -224,14 +224,14 @@ const CandidatesView = ({ job, onBack }) => {
               </div>
 
               {/* Summary */}
-              {currentCandidate.summary && (
+              {/* {currentCandidate.summary && (
                 <div className="bg-gray-100 rounded-xl p-4 mb-6">
                   <h3 className="font-semibold text-gray-900 mb-2">Summary</h3>
                   <p className="text-sm text-amber-700">
                     {currentCandidate.summary}
                   </p>
                 </div>
-              )}
+              )} */}
 
               {/* General Information */}
               <div className="mb-6">
