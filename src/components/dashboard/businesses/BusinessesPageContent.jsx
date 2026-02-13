@@ -52,6 +52,7 @@ export default function BusinessesPageContent() {
         page: currentPage,
         limit: itemsPerPage,
         search: query,
+        sort: "-_id",
       };
 
       // Handle location prop vs filter
@@ -68,15 +69,23 @@ export default function BusinessesPageContent() {
       const response = await businessProfileAPI.getAll(params);
 
       if (response.success && response.data) {
-        const { docs, totalPages: total, page } = response.data;
+        const docs = response.data.docs || response.data || [];
 
-        const businessData = docs || [];
-        const transformed = businessData.map(transformBusinessProfile);
+        // Frontend sorting fallback to ensure chronological order on the current page
+        const sortedDocs = [...docs].sort((a, b) => {
+          const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          if (timeA && timeB) return timeB - timeA;
+          // Fallback to MongoDB ID comparison (lexicographical comparison of hex IDs is roughly chronological)
+          return (b._id || "").localeCompare(a._id || "");
+        });
+
+        const transformed = sortedDocs.map(transformBusinessProfile);
 
         setBusinesses(transformed);
         setFilteredBusinesses(transformed); // "filtered" is now just the current page data
-        setTotalPages(total || 1);
-        setCurrentPage(page || 1);
+        setTotalPages(response.data.totalPages || 1);
+        setCurrentPage(response.data.page || 1);
       } else {
         setBusinesses([]);
         setFilteredBusinesses([]);
@@ -225,7 +234,7 @@ export default function BusinessesPageContent() {
                       } `}
                 </h2>
 
-                <div className="flex items-center gap-2">
+                {/* <div className="flex items-center gap-2">
                   <Button
                     size="sm"
                     className="bg-[#240457] mx-auto lg:mx-0 text-white text-sm sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
@@ -235,7 +244,7 @@ export default function BusinessesPageContent() {
                     </span>{" "}
                     Open Map
                   </Button>
-                </div>
+                </div> */}
               </div>
 
               {/* Loading State */}
