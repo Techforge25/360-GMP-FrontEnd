@@ -66,14 +66,14 @@ export default function ProductInfo({ product }) {
 
       {/* Ratings */}
       <div className="flex items-center gap-2 text-sm mb-6">
-        <span className="font-bold text-gray-900">5.0</span>
-        <div className="flex text-orange-400 text-sm">
+        <span className="font-bold text-gray-900">N/A</span>
+        {/* <div className="flex text-orange-400 text-sm">
           <FaStar />
           <FaStar />
           <FaStar />
           <FaStar />
           <FaStar />
-        </div>
+        </div> */}
         <span className="text-gray-500 underline">
           ({product.viewsCount || 0} Views)
         </span>

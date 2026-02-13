@@ -33,7 +33,7 @@ export default function BusinessesPageContent() {
   useEffect(() => {
     fetchBusinessProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, query, filters]);
+  }, [currentPage, query, location, filters]);
 
   // Reset page when filters change (handled in handleFilterChange usually, but good to have safety)
   // However, handleFilterChange is cleaner.

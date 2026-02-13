@@ -80,71 +80,62 @@ export default function MarketplaceContent() {
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const productsParams = { limit: 20 };
-        if (selectedCategories.length > 0) {
-          productsParams.category = selectedCategories.join(",");
-        }
-        if (selectedCountry) {
-          productsParams.country = selectedCountry.toLowerCase();
-        }
-
-        const [featuredRes, topRankingRes, newRes, flashRes, allRes] =
-          await Promise.all([
-            productAPI.getFeatured(6),
-            productAPI.getTopRanking(3),
-            productAPI.getNewProducts(3),
-            productAPI.getFlashDeals(3),
-            productAPI.getAll(productsParams),
-          ]);
-
-        if (featuredRes.success)
-          setFeaturedProducts(featuredRes.data.docs || featuredRes.data || []);
-        if (topRankingRes.success)
-          setTopRankingProducts(topRankingRes.data || []);
-        if (newRes.success) setNewProducts(newRes.data || []);
-        if (flashRes.success) setFlashDeals(flashRes.data || []);
-
-        let productsList = [];
-        if (allRes.success) {
-          productsList = allRes.data.docs || allRes.data || [];
-          setAllProducts(productsList);
-        }
-        setFilteredProducts(productsList);
-      } catch (error) {
-        console.error("Failed to fetch marketplace data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [selectedCategories, selectedCountry]);
-
-  const handleSearch = async () => {
+  const fetchMarketplaceProducts = async () => {
     setLoading(true);
     try {
-      const params = { search: query };
+      const params = { limit: 20 };
+      if (query) {
+        params.search = query;
+      }
       if (selectedCategories.length > 0) {
         params.category = selectedCategories.join(",");
       }
       if (selectedCountry) {
         params.country = selectedCountry.toLowerCase();
       }
-      const response = await productAPI.getAll(params);
-      if (response.success) {
-        setFilteredProducts(response.data.docs || response.data || []);
+
+      // If it's a search/filter operation, we might want to prioritize getAll
+      const [featuredRes, topRankingRes, newRes, flashRes, allRes] =
+        await Promise.all([
+          productAPI.getFeatured(6),
+          productAPI.getTopRanking(3),
+          productAPI.getNewProducts(3),
+          productAPI.getFlashDeals(3),
+          productAPI.getAll(params),
+        ]);
+
+      if (featuredRes.success)
+        setFeaturedProducts(featuredRes.data?.docs || featuredRes.data || []);
+      if (topRankingRes.success)
+        setTopRankingProducts(
+          topRankingRes.data?.docs || topRankingRes.data || [],
+        );
+      if (newRes.success)
+        setNewProducts(newRes.data?.docs || newRes.data || []);
+      if (flashRes.success)
+        setFlashDeals(flashRes.data?.docs || flashRes.data || []);
+
+      if (allRes.success) {
+        const productsList = allRes.data?.docs || allRes.data || [];
+        setFilteredProducts(productsList);
+        setAllProducts(productsList);
       } else {
         setFilteredProducts([]);
       }
     } catch (error) {
-      console.error("Search failed", error);
+      console.error("Failed to fetch marketplace data", error);
       setFilteredProducts([]);
     } finally {
       setLoading(false);
     }
+  };
+
+  React.useEffect(() => {
+    fetchMarketplaceProducts();
+  }, [selectedCategories, selectedCountry, query]);
+
+  const handleSearch = () => {
+    fetchMarketplaceProducts();
   };
 
   const handleCategoryToggle = (categoryName) => {
@@ -186,19 +177,36 @@ export default function MarketplaceContent() {
   };
 
   const handleProductClick = async (product) => {
-    const productId = product._id || product.id;
-    const businessId =
-      typeof product.businessId === "object"
-        ? product.businessId?._id
-        : product.businessId;
+    if (!product) return;
+
+    // Try all possible product ID fields
+    const productId = product._id || product.id || product.productId;
+
+    // Try all possible business/supplier ID fields
+    let businessId = null;
+
+    const extractId = (val) => {
+      if (!val) return null;
+      if (typeof val === "string") return val;
+      if (typeof val === "object") return val._id || val.id || null;
+      return null;
+    };
+
+    businessId =
+      extractId(product.businessId) ||
+      extractId(product.supplierId) ||
+      extractId(product.business) ||
+      extractId(product.vendorId) ||
+      extractId(product.vendor);
 
     if (!productId || !businessId) {
-      console.error("Missing productId or businessId", { product });
+      console.error("Missing productId or businessId", {
+        extractedProductId: productId,
+        extractedBusinessId: businessId,
+        product,
+      });
       return;
     }
-
-    // Pre-fetch product data if needed (optional optimization)
-    // await productAPI.getById(productId);
 
     const basePath = isBusinessUser ? "/dashboard/business" : "/dashboard/user";
     router.push(`${basePath}/businesses/${businessId}/products/${productId}`);
@@ -586,92 +594,90 @@ export default function MarketplaceContent() {
 
             {/* Main Content */}
             <div className="flex-1 min-w-0">
-              {/* Featured Products */}
-              <div className="mb-6 sm:mb-8">
-                <h2 className="text-xl sm:text-2xl font-semibold text-black mb-3 sm:mb-4">
-                  Featured Products
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-                  {featuredProducts.length > 0 ? (
-                    featuredProducts.map((product, idx) => (
-                      <div
-                        key={idx}
-                        className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
-                      >
-                        <div className="relative bg-gray-100 h-40 sm:h-48 cursor-pointer group">
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            onClick={() => handleProductClick(product)}
-                          />
-                          <div className="absolute top-2 right-2 flex gap-1">
-                            <div className="w-6 h-6 rounded-full flex items-center justify-center shadow bg-white">
-                              <img
-                                className="w-3 h-3 object-contain"
-                                src="/assets/images/star.png"
-                                alt=""
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="p-3 sm:p-4">
-                          <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
-                            {product.title}
-                          </h3>
-                          <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
-                            {product.detail || product.description}
-                          </p>
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm sm:text-sm text-gray-500">
-                              Min: {product.minOrderQty} pc
-                            </span>
-                            <span className="text-sm sm:text-sm text-gray-600">
-                              USD ${product.pricePerUnit}
-                            </span>
-                          </div>
-                          {isBusinessUser ? (
-                            <button
-                              onClick={() => handleProductClick(product)}
-                              className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-base hover:bg-[#240457] hover:text-white transition-colors"
-                            >
-                              View Product
-                            </button>
-                          ) : (
-                            <div className="grid grid-cols-2 gap-2">
-                              <button
-                                onClick={() => {
-                                  addToCart(product, product.minOrderQty || 1);
-                                  router.push("/dashboard/user/cart");
-                                }}
-                                className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
-                              >
-                                Add To Cart
-                              </button>
-                              <button
-                                onClick={() =>
-                                  router.push(
-                                    isBusinessUser
-                                      ? "/dashboard/business/messages"
-                                      : "/dashboard/user/messages",
-                                  )
-                                }
-                                className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors"
-                              >
-                                Chat Now
-                              </button>
-                            </div>
-                          )}
-                        </div>
+              {/* Search Results Priority View */}
+              {(query || selectedCategories.length > 0 || selectedCountry) && (
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                      {query
+                        ? `Search Results for "${query}"`
+                        : "Filtered Products"}
+                    </h2>
+                    <span className="text-sm text-gray-500">
+                      {filteredProducts.length} products found
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {filteredProducts.length > 0 ? (
+                      filteredProducts.map((product, idx) => (
+                        <ProductCard
+                          key={idx}
+                          product={product}
+                          isBusinessUser={isBusinessUser}
+                          handleProductClick={handleProductClick}
+                          addToCart={addToCart}
+                          router={router}
+                        />
+                      ))
+                    ) : (
+                      <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-200">
+                        <Search className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-500 font-medium">
+                          No products match your search.
+                        </p>
+                        <button
+                          onClick={clearFilters}
+                          className="mt-3 text-brand-primary font-semibold hover:underline"
+                        >
+                          Clear all filters
+                        </button>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-sm sm:text-base text-gray-500 col-span-full text-center py-8">
-                      No featured products found
+                    )}
+                  </div>
+
+                  {filteredProducts.length > 0 && (
+                    <div className="mt-8 flex justify-center">
+                      <button className="bg-white border border-gray-200 text-gray-600 px-8 py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                        Load More Results
+                      </button>
                     </div>
                   )}
+
+                  <div className="my-12 border-t border-gray-100" />
                 </div>
-              </div>
+              )}
+
+              {/* Hide other sections if searching, or keep them below? 
+                  User request says "marketplace search is not working", 
+                  showing results at top is the fix. */}
+
+              {/* Featured Products - Only show if not searching or at the bottom */}
+              {!query && (
+                <div className="mb-6 sm:mb-8">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-black mb-3 sm:mb-4">
+                    Featured Products
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+                    {featuredProducts.length > 0 ? (
+                      featuredProducts.map((product, idx) => (
+                        <ProductCard
+                          key={idx}
+                          product={product}
+                          isBusinessUser={isBusinessUser}
+                          handleProductClick={handleProductClick}
+                          addToCart={addToCart}
+                          router={router}
+                        />
+                      ))
+                    ) : (
+                      <div className="text-sm sm:text-base text-gray-500 col-span-full text-center py-8">
+                        No featured products found
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Top Ranking */}
               <div className="mb-6 sm:mb-8 bg-[#9747FF] rounded-lg p-4 sm:p-6 text-white">
@@ -790,7 +796,8 @@ export default function MarketplaceContent() {
           </div>
         )}
 
-        {/* Top Deals Section */}
+        {/* Top Deals Section - Always show at the bottom or only if not searching? 
+            Design usually has it at the bottom. */}
         <TopDealsSection
           deals={flashDeals}
           isBusinessUser={isBusinessUser}
@@ -798,94 +805,88 @@ export default function MarketplaceContent() {
           addToCart={addToCart}
           onProductClick={handleProductClick}
         />
-
-        <section className="w-full bg-white py-8 sm:py-12 px-3 sm:px-6 lg:px-8">
-          <div className="max-w-[1400px] mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
-              {filteredProducts.map((product, index) => (
-                <div
-                  key={index}
-                  className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300"
-                >
-                  <div className="aspect-[4/3] bg-gray-100 overflow-hidden cursor-pointer group">
-                    <img
-                      src={product.image}
-                      alt={product.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      onClick={() => handleProductClick(product)}
-                    />
-                  </div>
-                  <div className="p-3 sm:p-4">
-                    <h3 className="text-sm sm:text-base font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {product.title}
-                    </h3>
-                    <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
-                      {product.detail || product.description}
-                    </p>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-sm sm:text-sm text-gray-500">
-                        Min: {product.minOrderQty} pc
-                      </span>
-                      <span className="text-sm sm:text-sm text-gray-600">
-                        USD ${product.pricePerUnit}
-                      </span>
-                    </div>
-                    {isBusinessUser ? (
-                      <button
-                        onClick={() => handleProductClick(product)}
-                        className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm lg:text-base hover:bg-[#240457] hover:text-white transition-colors"
-                      >
-                        View Product
-                      </button>
-                    ) : (
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => {
-                            addToCart(product, product.minOrderQty || 1);
-                            router.push("/dashboard/user/cart");
-                          }}
-                          className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
-                        >
-                          Add To Cart
-                        </button>
-                        <button
-                          onClick={() =>
-                            router.push(
-                              isBusinessUser
-                                ? "/dashboard/business/messages"
-                                : "/dashboard/user/messages",
-                            )
-                          }
-                          className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors"
-                        >
-                          Chat Now
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-12 sm:py-16 text-gray-500">
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-8 h-8 text-gray-400" />
-                </div>
-                <p className="text-lg font-medium mb-2">No products found</p>
-                <p className="text-sm">Try adjusting your search or filters</p>
-              </div>
-            )}
-          </div>
-        </section>
-        <div className="flex justify-center mt-6 sm:mt-8 px-3 sm:px-6 lg:px-8">
-          <button className="bg-brand-primary hover:bg-brand-primary/90 text-white px-6 sm:px-8 py-3 rounded-lg font-medium transition-colors w-full sm:w-auto text-sm sm:text-base">
-            Load More
-          </button>
-        </div>
       </div>
     </div>
   );
 }
+
+const ProductCard = ({
+  product,
+  isBusinessUser,
+  handleProductClick,
+  addToCart,
+  router,
+}) => {
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="relative bg-gray-100 h-40 sm:h-48 cursor-pointer group">
+        <img
+          src={product.image}
+          alt={product.title}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          onClick={() => handleProductClick(product)}
+        />
+        <div className="absolute top-2 right-2 flex gap-1">
+          <div className="w-6 h-6 rounded-full flex items-center justify-center shadow bg-white">
+            <img
+              className="w-3 h-3 object-contain"
+              src="/assets/images/star.png"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+      <div className="p-3 sm:p-4">
+        <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
+          {product.title}
+        </h3>
+        <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
+          {product.detail || product.description}
+        </p>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm sm:text-sm text-gray-500">
+            Min: {product.minOrderQty} pc
+          </span>
+          <span className="text-sm sm:text-sm text-gray-600">
+            USD ${product.pricePerUnit}
+          </span>
+        </div>
+        {isBusinessUser ? (
+          <button
+            onClick={() => handleProductClick(product)}
+            className="w-full py-2.5 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-base hover:bg-[#240457] hover:text-white transition-colors"
+          >
+            View Product
+          </button>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => {
+                addToCart(product, product.minOrderQty || 1);
+                router.push("/dashboard/user/cart");
+              }}
+              className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm sm:text-sm hover:bg-[#240457] hover:text-white transition-colors"
+            >
+              Add To Cart
+            </button>
+            <button
+              onClick={() =>
+                router.push(
+                  isBusinessUser
+                    ? "/dashboard/business/messages"
+                    : "/dashboard/user/messages",
+                )
+              }
+              className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm sm:text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors"
+            >
+              Chat Now
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 function TopDealsSection({
   deals = [],
