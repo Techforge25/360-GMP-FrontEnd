@@ -10,6 +10,8 @@ import {
   FiDownload,
   FiEye,
   FiBriefcase,
+  FiX,
+  FiChevronRight,
 } from "react-icons/fi";
 import {
   FaLinkedinIn,
@@ -123,6 +125,8 @@ const UserSidebar = () => {
     fetchJobMatches();
   }, []);
 
+  const [showChecklistModal, setShowChecklistModal] = useState(false);
+
   // Calculate profile strength based on available data
   const calculateProfileStrength = () => {
     if (!profileData) return 0;
@@ -177,6 +181,133 @@ const UserSidebar = () => {
   };
 
   const profileStrength = calculateProfileStrength();
+
+  // Get missing items for the checklist
+  const getMissingItems = () => {
+    if (!profileData) return [];
+
+    const missing = [];
+
+    if (!profileData.logo) {
+      missing.push({
+        id: "logo",
+        label: "Profile Photo",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+            <FiPlus className="w-4 h-4" />
+          </div>
+        ),
+        description: "Upload a professional photo to stand out.",
+      });
+    }
+
+    if (!profileData.banner) {
+      missing.push({
+        id: "banner",
+        label: "Profile Banner",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+            <FiPlus className="w-4 h-4" />
+          </div>
+        ),
+        description: "Add a banner image to personalize your profile.",
+      });
+    }
+
+    if (!profileData.fullName || !profileData.bio) {
+      missing.push({
+        id: "info",
+        label: "Summary & Bio",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+            <FiEdit2 className="w-4 h-4" />
+          </div>
+        ),
+        description: "Introduce yourself with a compelling bio.",
+      });
+    }
+
+    const contactFields = [
+      profileData.email,
+      profileData.phone,
+      profileData.location,
+    ].filter(Boolean);
+    if (contactFields.length < 3) {
+      missing.push({
+        id: "contact",
+        label: "Contact Details",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+            <FiPhone className="w-4 h-4" />
+          </div>
+        ),
+        description: "Add your email, phone, and location info.",
+      });
+    }
+
+    if (!workExperiences || workExperiences.length === 0) {
+      missing.push({
+        id: "experience",
+        label: "Work Experience",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+            <FiBriefcase className="w-4 h-4" />
+          </div>
+        ),
+        description: "Showcase your career history and roles.",
+      });
+    }
+
+    if (!profileData.resumeUrl) {
+      missing.push({
+        id: "resume",
+        label: "Resume/CV",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+            <FiPlus className="w-4 h-4" />
+          </div>
+        ),
+        description: "Upload your latest resume for applications.",
+      });
+    }
+
+    const hasEducation =
+      profileData.education &&
+      (profileData.education.institution || profileData.education.degree);
+    if (!hasEducation) {
+      missing.push({
+        id: "education",
+        label: "Education",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600">
+            <FiPlus className="w-4 h-4" />
+          </div>
+        ),
+        description: "Add your academic background and degrees.",
+      });
+    }
+
+    const hasJobPreferences =
+      profileData.targetJob ||
+      (profileData.employmentType && profileData.employmentType.length > 0) ||
+      (profileData.minSalary && profileData.maxSalary);
+    if (!hasJobPreferences) {
+      missing.push({
+        id: "preferences",
+        label: "Job Preferences",
+        icon: (
+          <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+            <FiEye className="w-4 h-4" />
+          </div>
+        ),
+        description: "Set your target job, salary, and work type.",
+      });
+    }
+
+    return missing;
+  };
+
+  const missingItems = getMissingItems();
 
   // Handle contact info editing
   const handleEditContact = () => {
@@ -464,7 +595,10 @@ const UserSidebar = () => {
             ></div>
           </div>
 
-          <button className="w-full bg-[#240457] text-white py-2 sm:py-2.5 rounded-lg text-sm sm:text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-1.5 sm:gap-2">
+          <button
+            onClick={() => setShowChecklistModal(true)}
+            className="w-full bg-[#240457] text-white py-2 sm:py-2.5 rounded-lg text-sm sm:text-sm font-medium hover:bg-[#240457] transition-colors flex items-center justify-center gap-1.5 sm:gap-2"
+          >
             <span className="hidden sm:inline">Complete Your Profile</span>
             <span className="sm:hidden">Complete Profile</span>
             <svg
@@ -1014,6 +1148,85 @@ const UserSidebar = () => {
           onSave={handleSaveSocialLink}
           editingLink={editingSocialLink}
         />
+      )}
+
+      {/* Profile Checklist Modal */}
+      {showChecklistModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[85vh] overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between p-5 border-b border-gray-100 bg-gray-50/50">
+              <div>
+                <h2 className="text-xl font-bold text-[#240457]">
+                  Profile Completion
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {100 - profileStrength}% left to reach full profile strength
+                </p>
+              </div>
+              <button
+                onClick={() => setShowChecklistModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5 scrollbar-hide">
+              {missingItems.length > 0 ? (
+                <div className="space-y-4">
+                  <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4 mb-2">
+                    <p className="text-sm text-indigo-700 leading-relaxed">
+                      Complete these sections to improve your visibility to
+                      employers and get better job matches.
+                    </p>
+                  </div>
+
+                  {missingItems.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-start gap-4 p-3 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50/30 transition-all group"
+                    >
+                      <div className="shrink-0 mt-0.5">{item.icon}</div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-semibold text-gray-900 mb-0.5">
+                          {item.label}
+                        </h4>
+                        <p className="text-sm text-gray-500 line-clamp-2">
+                          {item.description}
+                        </p>
+                      </div>
+                      <div className="self-center">
+                        <FiChevronRight className="w-5 h-5 text-gray-300 group-hover:text-indigo-500 transition-colors" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-10 px-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600">
+                    <FiCheck size={32} />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    Profile Complete!
+                  </h3>
+                  <p className="text-gray-500">
+                    Excellent work! Your profile is 100% complete and optimized
+                    for success.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="p-5 border-t border-gray-100">
+              <button
+                onClick={() => setShowChecklistModal(false)}
+                className="w-full bg-[#240457] text-white py-3 rounded-xl font-semibold hover:bg-[#1a0340] transition-colors"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
