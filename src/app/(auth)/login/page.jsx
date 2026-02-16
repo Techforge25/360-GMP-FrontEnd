@@ -36,10 +36,16 @@ function LoginPageContent() {
       // For new Google OAuth users, profile doesn't exist yet
       // If redirectPath exists, it means backend redirected us here after successful OAuth
       if (redirectPath) {
+        // Retrieve token from URL if present (fallback for cross-domain cookies)
+        const token =
+          searchParams.get("token") || searchParams.get("accessToken");
+
         // User is authenticated but profile doesn't exist - redirect to onboarding
         const userData = {
           isNewToPlatform: true,
           email: "", // Will be filled during onboarding
+          accessToken: token, // Save token for axios interceptor
+          token: token,
         };
         login(userData);
         router.push("/onboarding/role");
