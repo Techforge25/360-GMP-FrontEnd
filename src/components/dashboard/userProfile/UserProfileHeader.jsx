@@ -12,6 +12,14 @@ import userProfileAPI from "@/services/userProfileAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { FaRegUser } from "react-icons/fa";
 import { showSuccess, showError } from "@/utils/toasterMessage";
+import dynamic from "next/dynamic";
+
+const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[150px] bg-gray-50 animate-pulse rounded-md border" />
+  ),
+});
 
 const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
   const [profileData, setProfileData] = useState(null);
@@ -26,6 +34,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editFullName, setEditFullName] = useState("");
   const [editBio, setEditBio] = useState("");
+  const [bioLength, setBioLength] = useState(0);
   const [isBasicInfoUpdating, setIsBasicInfoUpdating] = useState(false);
 
   const bannerInputRef = useRef(null);
@@ -369,14 +378,20 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-black text-sm font-medium mb-1">
-                    Bio
-                  </label>
-                  <textarea
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-black text-sm font-medium">
+                      Bio
+                    </label>
+                    <span className="text-xs text-gray-400">
+                      {bioLength} / 1000
+                    </span>
+                  </div>
+                  <SlateEditor
                     value={editBio}
-                    onChange={(e) => setEditBio(e.target.value)}
-                    className="w-full text-black   border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
-                    rows={3}
+                    onChange={(val) => setEditBio(val)}
+                    onLengthChange={(len) => setBioLength(len)}
+                    placeholder="Tell us about yourself..."
+                    maxLength={1000}
                   />
                 </div>
                 <div className="flex justify-end gap-2">

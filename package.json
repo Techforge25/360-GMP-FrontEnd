@@ -23,6 +23,9 @@
     "react-leaflet": "^5.0.0",
     "react-toastify": "^11.0.5",
     "recharts": "^3.6.0",
+    "slate": "^0.123.0",
+    "slate-history": "^0.113.1",
+    "slate-react": "^0.123.0",
     "socket.io-client": "^4.8.3",
     "tailwind-merge": "^3.4.0"
   },

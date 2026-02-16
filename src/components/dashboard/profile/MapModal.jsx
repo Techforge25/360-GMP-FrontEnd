@@ -35,12 +35,19 @@ function ChangeView({ center }) {
   return null;
 }
 
-const MapModal = ({ isOpen, onClose, onSave, initialLocation }) => {
+const MapModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  initialLocation,
+  initialSearchQuery,
+}) => {
   const [position, setPosition] = useState(initialLocation || [51.505, -0.09]);
   const [isClient, setIsClient] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery || "");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [hasSearchedInitially, setHasSearchedInitially] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -57,24 +64,46 @@ const MapModal = ({ isOpen, onClose, onSave, initialLocation }) => {
     setPosition(validLocation);
   }, [initialLocation]);
 
+  useEffect(() => {
+    // If we have an initial search query and the position is default, search automatically
+    const isDefaultPosition =
+      !position || (position[0] === 51.505 && position[1] === -0.09);
+
+    if (
+      isOpen &&
+      initialSearchQuery &&
+      isDefaultPosition &&
+      !hasSearchedInitially
+    ) {
+      handleSearch(initialSearchQuery);
+      setHasSearchedInitially(true);
+    }
+  }, [isOpen, initialSearchQuery, position, hasSearchedInitially]);
+
   const handleSave = () => {
     const [lat, lng] = position;
     const mapURL = `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
     onSave(mapURL, position);
   };
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
+  const handleSearch = async (queryOverride) => {
+    const query = queryOverride || searchQuery;
+    if (!query || !query.trim()) return;
 
     setIsSearching(true);
     try {
       const response = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          searchQuery,
+          query,
         )}`,
       );
       const data = await response.json();
       setSearchResults(data);
+
+      // If it's an automatic search and we got results, select the first one
+      if (queryOverride && data.length > 0) {
+        handleSelectLocation(data[0].lat, data[0].lon);
+      }
     } catch (error) {
       console.error("Search failed:", error);
     } finally {
@@ -115,7 +144,7 @@ const MapModal = ({ isOpen, onClose, onSave, initialLocation }) => {
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
               <button
-                onClick={handleSearch}
+                onClick={() => handleSearch()}
                 disabled={isSearching}
                 className="px-4 py-2 bg-[#240457] text-white rounded-lg text-sm font-medium hover:bg-[#1a0340] disabled:opacity-50"
               >

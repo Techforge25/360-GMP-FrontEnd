@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FiEdit2, FiCheckCircle } from "react-icons/fi";
 import userProfileAPI from "@/services/userProfileAPI";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 const UserAbout = () => {
   const [profileData, setProfileData] = useState(null);
@@ -42,25 +43,27 @@ const UserAbout = () => {
       {isLoading ? (
         <div className="h-20 bg-gray-200 rounded animate-pulse mb-4 sm:mb-6"></div>
       ) : (
-        <p className="text-gray-600 text-sm sm:text-sm leading-relaxed mb-4 sm:mb-6">
-          {profileData?.bio || "No bio available. Please update your profile to add a bio."}
-        </p>
+        <SlateRenderer
+          content={profileData?.bio}
+          className="text-gray-600 text-sm sm:text-sm leading-relaxed mb-4 sm:mb-6"
+        />
       )}
 
       <div className="space-y-3 sm:space-y-4">
         <div>
-          <h3 className="text-sm sm:text-sm font-bold text-gray-900 mb-0.5 sm:mb-1">Member Since</h3>
+          <h3 className="text-sm sm:text-sm font-bold text-gray-900 mb-0.5 sm:mb-1">
+            Member Since
+          </h3>
           {isLoading ? (
             <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
           ) : (
             <p className="text-sm sm:text-sm text-gray-500">
-              {profileData?.createdAt 
-                ? new Date(profileData.createdAt).toLocaleDateString('en-US', { 
-                    year: 'numeric', 
-                    month: 'long' 
+              {profileData?.createdAt
+                ? new Date(profileData.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
                   })
-                : 'Not available'
-              }
+                : "Not available"}
             </p>
           )}
         </div>
@@ -72,13 +75,17 @@ const UserAbout = () => {
           {isLoading ? (
             <div className="h-4 bg-gray-200 rounded w-16 animate-pulse"></div>
           ) : (
-            <div className={`flex items-center gap-1.5 sm:gap-2 text-sm sm:text-sm font-medium ${
-              profileData?.isVerified ? 'text-[#185ADB]' : 'text-yellow-600'
-            }`}>
-              {profileData?.isVerified ? 'Verified' : 'Unverified'}
-              <FiCheckCircle className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
-                profileData?.isVerified ? 'text-[#185ADB]' : 'text-yellow-600'
-              }`} />
+            <div
+              className={`flex items-center gap-1.5 sm:gap-2 text-sm sm:text-sm font-medium ${
+                profileData?.isVerified ? "text-[#185ADB]" : "text-yellow-600"
+              }`}
+            >
+              {profileData?.isVerified ? "Verified" : "Unverified"}
+              <FiCheckCircle
+                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${
+                  profileData?.isVerified ? "text-[#185ADB]" : "text-yellow-600"
+                }`}
+              />
             </div>
           )}
         </div>

@@ -24,6 +24,14 @@ import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import userProfileAPI from "@/services/userProfileAPI";
 import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
+import dynamic from "next/dynamic";
+
+const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[150px] bg-gray-50 animate-pulse rounded-md border" />
+  ),
+});
 
 const IndustryOptions = [
   "Software Engineer",
@@ -59,6 +67,8 @@ const Step1 = ({
   setIsUploading,
   onUpdateLogo,
   phoneError,
+  bioLength,
+  onBioLengthChange,
 }) => (
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
     {/* Required Fields Notice */}
@@ -348,32 +358,20 @@ const Step1 = ({
         <span
           className={cn(
             "text-sm font-medium",
-            (formData.bio?.length || 0) >= 1000
-              ? "text-red-500"
-              : "text-text-secondary",
+            (bioLength || 0) >= 1000 ? "text-red-500" : "text-text-secondary",
           )}
         >
-          {formData.bio?.length || 0} / 1000
+          {bioLength || 0} / 1000
         </span>
       </div>
-      <textarea
-        className={cn(
-          "w-full min-h-[150px] rounded-md border bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary",
-          (formData.bio?.length || 0) >= 1000
-            ? "border-red-500 ring-1 ring-red-500"
-            : "border-border-light",
-        )}
-        placeholder="..."
+      <SlateEditor
         value={formData.bio || ""}
+        onChange={(jsonValue) => handleChange("bio", jsonValue)}
+        onLengthChange={onBioLengthChange}
+        placeholder="Tell us about yourself, your goals, and what you're looking for..."
         maxLength={1000}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (value.length <= 1000) {
-            handleChange("bio", value);
-          }
-        }}
-      ></textarea>
-      {(formData.bio?.length || 0) >= 1000 && (
+      />
+      {(bioLength || 0) >= 1000 && (
         <p className="text-sm text-red-500 font-medium">
           Description cannot exceed 1000 characters
         </p>
@@ -941,6 +939,8 @@ export default function UserProfilePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [bioLength, setBioLength] = useState(0);
+  const [isUploading, setIsUploading] = useState(false); // Move to top
   const { user } = useUserRole();
 
   const [formData, setFormData] = useState({
@@ -1165,7 +1165,7 @@ export default function UserProfilePage() {
         setError("Description (Bio) is required");
         return;
       }
-      if (formData.bio && formData.bio.length > 1000) {
+      if (bioLength > 1000) {
         setError("Description cannot exceed 1000 characters");
         return;
       }
@@ -1320,7 +1320,6 @@ export default function UserProfilePage() {
       window.location.href = "/dashboard/user";
     }
   };
-  const [isUploading, setIsUploading] = useState(false);
 
   // Function to update logo via API
   const handleUpdateLogo = async (newLogoUrl) => {
@@ -1371,6 +1370,8 @@ export default function UserProfilePage() {
                   : undefined
               }
               phoneError={phoneError}
+              bioLength={bioLength}
+              onBioLengthChange={setBioLength}
             />
           )}
           {currentStep === 2 && (

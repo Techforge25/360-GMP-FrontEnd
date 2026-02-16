@@ -73,21 +73,51 @@ const ActivitySidebar = () => {
 
   const handleSaveContact = async () => {
     try {
-      // Filter out empty fields to avoid validation errors
-      const filteredData = Object.fromEntries(
-        Object.entries(formData).filter(
-          ([key, value]) => value && value.trim() !== "",
+      const payload = {
+        b2bContact: {
+          supportEmail: formData.supportEmail,
+          phone: formData.phone,
+        },
+        location: {
+          addressLine: formData.addressLine,
+          city: formData.city,
+          country: formData.country,
+        },
+        website: formData.website,
+      };
+
+      // Filter out empty nested objects and empty top-level fields
+      const filteredPayload = {};
+      if (payload.website && payload.website.trim() !== "") {
+        filteredPayload.website = payload.website;
+      }
+
+      const b2bContact = Object.fromEntries(
+        Object.entries(payload.b2bContact).filter(
+          ([_, v]) => v && v.trim() !== "",
         ),
       );
+      if (Object.keys(b2bContact).length > 0) {
+        filteredPayload.b2bContact = b2bContact;
+      }
+
+      const location = Object.fromEntries(
+        Object.entries(payload.location).filter(
+          ([_, v]) => v && v.trim() !== "",
+        ),
+      );
+      if (Object.keys(location).length > 0) {
+        filteredPayload.location = location;
+      }
 
       // Only send data if we have at least one field to update
-      if (Object.keys(filteredData).length === 0) {
+      if (Object.keys(filteredPayload).length === 0) {
         console.warn("No data to update");
         setIsEditing(false);
         return;
       }
 
-      await businessProfileAPI.updateContactInfo(filteredData);
+      await businessProfileAPI.updateContactInfo(filteredPayload);
       setIsEditing(false);
 
       // Refresh the profile data
@@ -249,6 +279,36 @@ const ActivitySidebar = () => {
 
     fetchData();
   }, []);
+
+  // Geocode address if coordinates are missing
+  useEffect(() => {
+    const geocodeAddress = async () => {
+      const address = getFullAddress(profile?.location);
+      if (
+        address &&
+        address !== "No location provided" &&
+        (!profile?.latitude || !profile?.longitude)
+      ) {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+              address,
+            )}`,
+          );
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setMapLocation([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+          }
+        } catch (error) {
+          console.error("Geocoding failed:", error);
+        }
+      }
+    };
+
+    if (profile && (!profile.latitude || !profile.longitude)) {
+      geocodeAddress();
+    }
+  }, [profile?.location]);
 
   const formatTimeAgo = (dateString) => {
     if (!dateString) return "";
@@ -556,6 +616,7 @@ const ActivitySidebar = () => {
         onClose={() => setShowMapModal(false)}
         onSave={handleSaveMapLocation}
         initialLocation={mapLocation}
+        initialSearchQuery={getFullAddress(profile?.location)}
       />
     </div>
   );
