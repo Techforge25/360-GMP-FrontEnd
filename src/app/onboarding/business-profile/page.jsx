@@ -28,6 +28,15 @@ import { uploadToCloudinary } from "@/lib/cloudinary";
 import { useUserRole } from "@/context/UserContext";
 import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 import { CountrySelect } from "@/components/ui/CountrySelect";
+import dynamic from "next/dynamic";
+import SlateRenderer from "@/components/ui/SlateRenderer";
+
+const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[150px] bg-gray-50 animate-pulse rounded-md border" />
+  ),
+});
 
 const IndustryOptions = [
   "Manufacturing",
@@ -123,6 +132,8 @@ const Step1 = ({
   handleChange,
   setIsUploading,
   companyNameError,
+  bioLength,
+  onBioLengthChange,
 }) => {
   // Parse existing operating hours or set defaults
   const [schedule, setSchedule] = useState(() => {
@@ -377,26 +388,20 @@ const Step1 = ({
           <span
             className={cn(
               "text-sm font-medium",
-              (formData.bio?.length || 0) > 5000
-                ? "text-red-500"
-                : "text-text-secondary",
+              bioLength > 5000 ? "text-red-500" : "text-text-secondary",
             )}
           >
-            {formData.bio?.length || 0} / 5000
+            {bioLength} / 5000
           </span>
         </div>
-        <textarea
-          className={cn(
-            "w-full min-h-[120px] rounded-md border bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary",
-            (formData.bio?.length || 0) > 5000
-              ? "border-red-500 ring-1 ring-red-500"
-              : "border-border-light",
-          )}
-          placeholder="..."
-          value={formData.bio || ""}
-          onChange={(e) => handleChange("bio", e.target.value)}
-        ></textarea>
-        {(formData.bio?.length || 0) > 5000 && (
+        <SlateEditor
+          value={formData.bio}
+          onChange={(val) => handleChange("bio", val)}
+          onLengthChange={onBioLengthChange}
+          placeholder="Tell us about your company..."
+          maxLength={5000}
+        />
+        {bioLength > 5000 && (
           <p className="text-sm text-red-500 font-medium">
             Description cannot exceed 5000 characters
           </p>
@@ -750,9 +755,10 @@ const Step3 = ({ formData }) => (
 
     <div className="p-6 border border-border-light rounded-lg bg-white">
       <h3 className="font-bold mb-2">Overview</h3>
-      <p className="text-base text-text-secondary leading-relaxed">
-        {formData.bio || "Company overview placeholder..."}
-      </p>
+      <SlateRenderer
+        content={formData.bio}
+        className="text-base text-text-secondary leading-relaxed"
+      />
 
       <div className="grid grid-cols-3 gap-6 mt-6 pt-6 border-t border-border-light">
         <div>
@@ -886,6 +892,8 @@ export default function BusinessProfilePage() {
   const [error, setError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [companyNameError, setCompanyNameError] = useState("");
+  const [bioLength, setBioLength] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [formData, setFormData] = useState({
     companyName: "",
@@ -1071,12 +1079,12 @@ export default function BusinessProfilePage() {
         return;
       }
 
-      if (formData.bio.trim().length === 0) {
+      if (bioLength === 0) {
         setError("Company Mission And Bio is required.");
         return;
       }
 
-      if (formData.bio.length > 5000) {
+      if (bioLength > 5000) {
         setError("Company Mission And Bio cannot exceed 5000 characters.");
         return;
       }
@@ -1231,8 +1239,6 @@ export default function BusinessProfilePage() {
     }
   };
 
-  const [isUploading, setIsUploading] = useState(false);
-
   return (
     <div className="min-h-screen">
       <Card className="w-full sm:w-3xl lg:w-5xl max-w-5xl mx-auto mt-16 md:mt-10 flex-shrink-0 bg-white shadow-xl min-h-[800px]">
@@ -1256,6 +1262,8 @@ export default function BusinessProfilePage() {
               handleChange={handleChange}
               setIsUploading={setIsUploading}
               companyNameError={companyNameError}
+              bioLength={bioLength}
+              onBioLengthChange={setBioLength}
             />
           )}
           {currentStep === 2 && (

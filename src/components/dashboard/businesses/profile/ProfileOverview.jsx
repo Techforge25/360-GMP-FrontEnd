@@ -17,6 +17,7 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { FiGlobe } from "react-icons/fi";
 import { useUserRole } from "@/context/UserContext";
 import { FaCrown } from "react-icons/fa";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 export default function ProfileOverview({ business, socialLinks = [] }) {
   const { user } = useUserRole();
@@ -94,9 +95,10 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
       <div className="flex-1 rounded-xl p-6 border border-[#E6E6E6]">
         <div>
           <h2 className="text-3xl font-medium text-black mb-4">Overview</h2>
-          <p className="text-gray-600 leading-relaxed mb-6 text-sm">
-            {description}
-          </p>
+          <SlateRenderer
+            content={description}
+            className="text-gray-600 leading-relaxed mb-6 text-sm"
+          />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-[#E6E6E6] pt-6">

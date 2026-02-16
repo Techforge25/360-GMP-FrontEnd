@@ -21,6 +21,7 @@ import ViewAlbumModal from "./ViewAlbumModal";
 import galleryAPI from "@/services/galleryAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import { useUserRole } from "@/context/UserContext";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 const BusinessAboutTab = ({ businessId }) => {
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
@@ -190,7 +191,10 @@ const BusinessAboutTab = ({ businessId }) => {
                 Loading description...
               </span>
             ) : profileData?.description ? (
-              profileData.description
+              <SlateRenderer
+                content={profileData.description}
+                className="text-sm sm:text-sm text-gray-600 leading-relaxed"
+              />
             ) : (
               "No description available."
             )}

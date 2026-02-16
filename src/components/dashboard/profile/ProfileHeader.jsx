@@ -18,6 +18,14 @@ import {
 import businessProfileAPI from "@/services/businessProfileAPI";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { showSuccess, showError } from "@/utils/toasterMessage";
+import dynamic from "next/dynamic";
+
+const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[150px] bg-gray-50 animate-pulse rounded-md border" />
+  ),
+});
 
 const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   const [profileData, setProfileData] = useState(null);
@@ -32,6 +40,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editCompanyName, setEditCompanyName] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [bioLength, setBioLength] = useState(0);
   const [isBusinessInfoUpdating, setIsBusinessInfoUpdating] = useState(false);
 
   const logoInputRef = useRef(null);
@@ -348,14 +357,20 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-black text-sm font-medium mb-1">
-                    Description
-                  </label>
-                  <textarea
+                  <div className="flex justify-between items-center mb-1">
+                    <label className="block text-black text-sm font-medium">
+                      Description
+                    </label>
+                    <span className="text-xs text-gray-400">
+                      {bioLength} / 5000
+                    </span>
+                  </div>
+                  <SlateEditor
                     value={editDescription}
-                    onChange={(e) => setEditDescription(e.target.value)}
-                    className="w-full text-black border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-[#240457]"
-                    rows={4}
+                    onChange={(val) => setEditDescription(val)}
+                    onLengthChange={(len) => setBioLength(len)}
+                    placeholder="Tell us about your company..."
+                    maxLength={5000}
                   />
                 </div>
                 <div className="flex justify-end gap-2">
