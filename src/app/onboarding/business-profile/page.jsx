@@ -474,228 +474,281 @@ const Step1 = ({
   );
 };
 
-const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => (
-  <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-    <div>
-      <h3 className="text-lg font-semibold mb-4">Company Location</h3>
-      <div className="grid md:grid-cols-3 gap-6">
-        <div className="space-y-2">
-          <label className="text-base font-medium">
-            Country <span className="text-red-500">*</span>
-          </label>
-          <CountrySelect
-            value={formData.country || ""}
-            onChange={(value) => handleChange("country", value)}
-            required
-          />
-          {formData.country === "Other" && (
-            <Input
-              placeholder="Enter your country"
-              className="mt-2"
-              value={formData.customCountry || ""}
-              onChange={(e) => handleChange("customCountry", e.target.value)}
+const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
+  const [currentCertName, setCurrentCertName] = useState("");
+  const [isCustomCert, setIsCustomCert] = useState(false);
+  const [uploadingCert, setUploadingCert] = useState(false);
+
+  const predefinedCerts = [
+    "ISO 9001",
+    "CE Certified",
+    "TUV SUD",
+    "FDA Approved",
+    "Ethical Sourcing",
+  ];
+
+  const handleAddCert = (name, url) => {
+    const currentCerts = formData.certifications || [];
+    if (currentCerts.length >= 3) return;
+
+    handleChange("certifications", [...currentCerts, { name, url }]);
+    setCurrentCertName("");
+    setIsCustomCert(false);
+  };
+
+  return (
+    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Company Location</h3>
+        <div className="grid md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Country <span className="text-red-500">*</span>
+            </label>
+            <CountrySelect
+              value={formData.country || ""}
+              onChange={(value) => handleChange("country", value)}
               required
             />
-          )}
-        </div>
-        <div className="space-y-2">
-          <label className="text-base font-medium">
-            City <span className="text-red-500">*</span>
-          </label>
-          <Input
-            placeholder="Ottawa"
-            value={formData.city || ""}
-            onChange={(e) => handleChange("city", e.target.value)}
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-base font-medium">
-            Address Line <span className="text-red-500">*</span>
-          </label>
-          <Input
-            placeholder="street address"
-            value={formData.address || ""}
-            onChange={(e) => handleChange("address", e.target.value)}
-            required
-          />
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <h3 className="text-lg font-semibold mb-4">Compliance & Certification</h3>
-      <div className="grid md:grid-cols-3 gap-4">
-        {[
-          "ISO 9001",
-          "CE Certified",
-          "TUV SUD",
-          "FDA Approved",
-          "Ethical Sourcing",
-          "Other",
-        ].map((cert) => (
-          <label key={cert} className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={(formData.compliances || []).includes(cert)}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  handleChange("compliances", [...formData.compliances, cert]);
-                } else {
-                  handleChange(
-                    "compliances",
-                    formData.compliances.filter((c) => c !== cert),
-                  );
-                }
-              }}
-              className="rounded border-gray-300 text-brand-primary"
+            {formData.country === "Other" && (
+              <Input
+                placeholder="Enter your country"
+                className="mt-2"
+                value={formData.customCountry || ""}
+                onChange={(e) => handleChange("customCountry", e.target.value)}
+                required
+              />
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              City <span className="text-red-500">*</span>
+            </label>
+            <Input
+              placeholder="Ottawa"
+              value={formData.city || ""}
+              onChange={(e) => handleChange("city", e.target.value)}
+              required
             />
-            <span className="text-base text-text-secondary">{cert}</span>
-          </label>
-        ))}
-      </div>
-
-      {(formData.compliances || []).includes("Other") && (
-        <div className="mt-4 animate-in fade-in slide-in-from-top-2 duration-300">
-          <label className="text-sm font-medium mb-1.5 block">
-            Custom Certificate Name <span className="text-red-500">*</span>
-          </label>
-          <Input
-            placeholder="Enter certificate name (e.g. ISO 14001)"
-            value={formData.customCompliance || ""}
-            onChange={(e) => handleChange("customCompliance", e.target.value)}
-            required
-          />
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Address Line <span className="text-red-500">*</span>
+            </label>
+            <Input
+              placeholder="street address"
+              value={formData.address || ""}
+              onChange={(e) => handleChange("address", e.target.value)}
+              required
+            />
+          </div>
         </div>
-      )}
-    </div>
-
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <label className="text-base font-medium">
-          Upload Certification Documents (Max 3)
-        </label>
-        <span className="text-sm text-text-secondary">
-          {(formData.certificationDocs || []).length} / 3
-        </span>
       </div>
 
-      {(formData.certificationDocs || []).length < 3 ? (
-        <FileUpload
-          label="Upload Certification Document"
-          subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
-          onUploadingChange={setIsUploading}
-          onUpload={(file, onProgress) =>
-            uploadToCloudinary(
-              file,
-              "business/certifications",
-              onProgress,
-            ).then((url) => {
-              const currentDocs = formData.certificationDocs || [];
-              handleChange("certificationDocs", [...currentDocs, url]);
-              return url;
-            })
-          }
-        />
-      ) : (
-        <div className="p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50 text-center">
-          <p className="text-sm text-gray-500 font-medium">
-            Maximum of 3 certifications reached. Remove an existing one to
-            upload a new document.
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Compliance & Certification</h3>
+
+        <div className="bg-gray-50 border border-border-light rounded-xl p-6 space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-text-primary">
+                Select or Enter Certificate Name
+              </label>
+              {!isCustomCert ? (
+                <div className="relative">
+                  <select
+                    className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+                    value={currentCertName}
+                    onChange={(e) => {
+                      if (e.target.value === "Other") {
+                        setIsCustomCert(true);
+                        setCurrentCertName("");
+                      } else {
+                        setCurrentCertName(e.target.value);
+                      }
+                    }}
+                  >
+                    <option value="">Select Certificate</option>
+                    {predefinedCerts.map((cert) => (
+                      <option key={cert} value={cert}>
+                        {cert}
+                      </option>
+                    ))}
+                    <option value="Other">Other (Custom)</option>
+                  </select>
+                  <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter custom certificate name"
+                    value={currentCertName}
+                    onChange={(e) => setCurrentCertName(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsCustomCert(false);
+                      setCurrentCertName("");
+                    }}
+                    className="shrink-0"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-sm font-semibold text-text-primary">
+                {currentCertName
+                  ? `Upload for ${currentCertName}`
+                  : "Upload Document"}
+              </label>
+              <FileUpload
+                label="Upload Document"
+                subLabel="JPG, PNG, PDF (Max 10MB)"
+                disabled={
+                  !currentCertName ||
+                  (formData.certifications || []).length >= 3
+                }
+                onUploadingChange={setIsUploading}
+                onUpload={(file, onProgress) => {
+                  if (!currentCertName) {
+                    alert("Please select or enter a certificate name first");
+                    return Promise.reject("No name");
+                  }
+                  return uploadToCloudinary(
+                    file,
+                    "business/certifications",
+                    onProgress,
+                  ).then((url) => {
+                    handleAddCert(currentCertName, url);
+                    return url;
+                  });
+                }}
+              />
+            </div>
+          </div>
+
+          <p className="text-xs text-text-secondary italic">
+            * Select a certificate name first, then upload the corresponding
+            image. You can add up to 3 certifications.
           </p>
         </div>
-      )}
 
-      {(formData.certificationDocs || []).length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-          {formData.certificationDocs.map((url, index) => (
-            <div
-              key={index}
-              className="relative group p-3 border border-border-light rounded-lg bg-white hover:border-brand-primary/30 transition-all"
-            >
-              <div className="relative aspect-video w-full border border-gray-100 rounded-md overflow-hidden bg-gray-50">
-                <Image
-                  src={url}
-                  alt={`Certification ${index + 1}`}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <div className="flex justify-between items-center mt-2">
-                <span className="text-sm font-medium text-text-secondary truncate pr-2">
-                  Certification {index + 1}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const updatedDocs = formData.certificationDocs.filter(
-                      (_, i) => i !== index,
-                    );
-                    handleChange("certificationDocs", updatedDocs);
-                  }}
-                  className="p-1 px-2 text-sm font-medium text-red-500 hover:bg-red-50 rounded transition-colors"
-                >
-                  Remove
-                </button>
-              </div>
+        {/* List of Added Certificates */}
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <h4 className="text-base font-semibold">Added Certifications</h4>
+            <span className="text-sm text-text-secondary">
+              {(formData.certifications || []).length} / 3
+            </span>
+          </div>
+
+          {(formData.certifications || []).length === 0 ? (
+            <div className="text-center py-8 border border-dashed border-border-light rounded-xl bg-gray-50/50">
+              <p className="text-sm text-text-secondary">
+                No certifications added yet.
+              </p>
             </div>
-          ))}
-        </div>
-      )}
-    </div>
-
-    <div>
-      <h3 className="text-lg font-semibold mb-4">Primary B2B Contact</h3>
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <label className="text-base font-medium">
-            Contact Person Name <span className="text-red-500">*</span>
-          </label>
-          <Input
-            value={formData.contactName || ""}
-            onChange={(e) => handleChange("contactName", e.target.value)}
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-base font-medium">
-            Title <span className="text-red-500">*</span>
-          </label>
-          <Input
-            value={formData.contactTitle || ""}
-            onChange={(e) => handleChange("contactTitle", e.target.value)}
-            required
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-base font-medium">
-            Phone <span className="text-red-500">*</span>
-          </label>
-          <PhoneInputWithCountry
-            value={formData.contactPhone || ""}
-            onChange={(value) => handleChange("contactPhone", value)}
-            required
-          />
-          {phoneError && (
-            <p className="text-sm text-red-500 mt-1 font-medium animate-in fade-in slide-in-from-top-1 duration-200">
-              {phoneError}
-            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {formData.certifications.map((cert, index) => (
+                <div
+                  key={index}
+                  className="relative group p-4 border border-border-light rounded-xl bg-white hover:border-brand-primary/30 transition-all shadow-sm"
+                >
+                  <div className="relative aspect-video w-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50 mb-3">
+                    <Image
+                      src={cert.url}
+                      alt={cert.name}
+                      fill
+                      className="object-contain p-2"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <span
+                      className="text-sm font-bold text-text-primary truncate"
+                      title={cert.name}
+                    >
+                      {cert.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = formData.certifications.filter(
+                          (_, i) => i !== index,
+                        );
+                        handleChange("certifications", updated);
+                      }}
+                      className="text-xs font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors w-fit"
+                    >
+                      Remove Certificate
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-        <div className="space-y-2">
-          <label className="text-base font-medium">
-            Support Email <span className="text-red-500">*</span>
-          </label>
-          <Input
-            value={formData.contactEmail || ""}
-            onChange={(e) => handleChange("contactEmail", e.target.value)}
-            required
-          />
+      </div>
+
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Primary B2B Contact</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Contact Person Name <span className="text-red-500">*</span>
+            </label>
+            <Input
+              value={formData.contactName || ""}
+              onChange={(e) => handleChange("contactName", e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Title <span className="text-red-500">*</span>
+            </label>
+            <Input
+              value={formData.contactTitle || ""}
+              onChange={(e) => handleChange("contactTitle", e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Phone <span className="text-red-500">*</span>
+            </label>
+            <PhoneInputWithCountry
+              value={formData.contactPhone || ""}
+              onChange={(value) => handleChange("contactPhone", value)}
+              required
+            />
+            {phoneError && (
+              <p className="text-sm text-red-500 mt-1 font-medium animate-in fade-in slide-in-from-top-1 duration-200">
+                {phoneError}
+              </p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Support Email <span className="text-red-500">*</span>
+            </label>
+            <Input
+              value={formData.contactEmail || ""}
+              onChange={(e) => handleChange("contactEmail", e.target.value)}
+              required
+            />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Step3 = ({ formData }) => (
   <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -786,79 +839,26 @@ const Step3 = ({ formData }) => (
       </div>
     </div>
 
-    {((formData.compliances || []).length > 0 || formData.customCompliance) && (
+    {formData.certifications?.length > 0 && (
       <div className="p-6 border border-border-light rounded-lg bg-white mt-6">
         <h3 className="font-bold mb-3">Certifications & Compliance</h3>
-        <div className="flex flex-wrap gap-2">
-          {formData.compliances
-            ?.filter((c) => c !== "Other")
-            .map((cert) => (
-              <span
-                key={cert}
-                className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-medium"
-              >
-                {cert}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {formData.certifications.map((cert, index) => (
+            <div key={index} className="flex flex-col gap-2">
+              <div className="relative aspect-video w-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50">
+                <Image
+                  src={cert.url}
+                  alt={cert.name}
+                  fill
+                  className="object-contain p-2"
+                />
+              </div>
+              <span className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-bold w-fit">
+                {cert.name}
               </span>
-            ))}
-          {formData.compliances?.includes("Other") &&
-            formData.customCompliance && (
-              <span className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-medium border border-brand-primary/20">
-                {formData.customCompliance}
-              </span>
-            )}
-        </div>
-
-        {/* Certification Documents Preview in Step 3 */}
-        {(formData.certificationDocs || []).length > 0 && (
-          <div className="mt-6 pt-6 border-t border-border-light">
-            <h4 className="text-sm font-bold text-text-primary mb-3">
-              Uploaded Documents
-            </h4>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
-              {formData.certificationDocs.map((url, index) => (
-                <div
-                  key={index}
-                  className="relative aspect-square border border-border-light rounded-lg overflow-hidden bg-gray-50"
-                >
-                  <Image
-                    src={url}
-                    alt={`Certification ${index + 1}`}
-                    fill
-                    className="object-contain"
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:bg-black/20 hover:opacity-100 transition-opacity">
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-1 bg-white rounded-full shadow-sm text-brand-primary"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-              ))}
             </div>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
     )}
 
@@ -913,9 +913,7 @@ export default function BusinessProfilePage() {
     contactEmail: "",
     profileImageUrl: "",
     bannerImageUrl: "",
-    certificationDocs: [],
-    compliances: [],
-    customCompliance: "",
+    certifications: [], // Array of { name: string, url: string }
     customCountry: "",
   });
   const [createdProfile, setCreatedProfile] = useState(null);
@@ -1016,15 +1014,11 @@ export default function BusinessProfilePage() {
             : "",
           supportEmail: formData.contactEmail || "",
         },
-        // Backend expects `certifications` array, merge both names and document URLs
-        certifications: [
-          ...(formData.compliances || []).filter((c) => c !== "Other"),
-          ...(formData.compliances?.includes("Other") &&
-          formData.customCompliance
-            ? [formData.customCompliance]
-            : []),
-          ...(formData.certificationDocs || []),
-        ],
+        // Backend expects `certifications` as an array of strings
+        // Each entry is a single string: "Name|URL" to stay within the 3-item limit
+        certifications: (formData.certifications || []).map(
+          (c) => `${c.name}|${c.url}`,
+        ),
       };
 
       const response = await api.post({
@@ -1137,13 +1131,7 @@ export default function BusinessProfilePage() {
         return;
       }
 
-      if (
-        formData.compliances?.includes("Other") &&
-        !formData.customCompliance
-      ) {
-        setError("Please enter your custom certificate name.");
-        return;
-      }
+      // No extra validation needed for certifications here as Step2 handles it
     }
 
     if (isUploading) {

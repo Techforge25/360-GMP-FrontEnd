@@ -56,20 +56,31 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
   // Handle certifications (potential array of strings or objects)
   const rawCertifications = business.certifications || [];
   const certifications = rawCertifications
-    .filter((cert) => {
-      const name = typeof cert === "string" ? cert : cert.name || cert.title;
-      return name && !name.startsWith("http");
-    })
     .map((cert) => {
-      if (typeof cert === "string") {
-        return { name: cert, desc: "Certified Professional", icon: "iso" };
+      if (typeof cert !== "string") {
+        return {
+          name: cert.name || cert.title || "Certification",
+          desc: cert.desc || cert.description || "Verified Credential",
+          icon: cert.icon || "iso",
+          url: cert.url,
+        };
       }
+
+      const isPiped = cert.includes("|");
+      const name = isPiped ? cert.split("|")[0] : cert;
+      const url = isPiped ? cert.split("|")[1] : null;
+
+      // Filter out raw URLs (legacy format)
+      if (cert.startsWith("http") && !isPiped) return null;
+
       return {
-        name: cert.name || cert.title || "Certification",
-        desc: cert.desc || cert.description || "Verified Credential",
-        icon: cert.icon || "iso",
+        name,
+        desc: url ? "View Certificate" : "Verified Credential",
+        url,
+        icon: "iso",
       };
-    });
+    })
+    .filter(Boolean);
 
   const contact = {
     email:
@@ -129,22 +140,39 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
             Certifications
           </h3>
           <div className="space-y-3">
-            {certifications.map((cert, index) => (
-              <div
-                key={index}
-                className="bg-gray-50 rounded-lg p-3 flex items-start gap-3"
-              >
-                <div
-                  className={`mt-1 ${cert.icon === "iso" ? "text-orange-500" : "text-blue-500"}`}
-                >
-                  <IoShieldCheckmarkOutline className="text-xl" />
+            {certifications.map((cert, index) => {
+              const Content = (
+                <div className="bg-gray-50 rounded-lg p-3 flex items-start gap-3 h-full hover:bg-gray-100 transition-colors">
+                  <div
+                    className={`mt-1 ${cert.icon === "iso" ? "text-orange-500" : "text-blue-500"}`}
+                  >
+                    <IoShieldCheckmarkOutline className="text-xl" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 line-clamp-1">
+                      {cert.name}
+                    </p>
+                    <p className="text-sm text-gray-500">{cert.desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">{cert.name}</p>
-                  <p className="text-sm text-gray-500">{cert.desc}</p>
-                </div>
-              </div>
-            ))}
+              );
+
+              if (cert.url) {
+                return (
+                  <a
+                    key={index}
+                    href={cert.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block group"
+                  >
+                    {Content}
+                  </a>
+                );
+              }
+
+              return <div key={index}>{Content}</div>;
+            })}
           </div>
         </div>
 
