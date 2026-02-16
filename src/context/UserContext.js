@@ -10,13 +10,48 @@ export const UserProvider = ({ children }) => {
   const [user, setUserState] = useState(undefined);
 
   useEffect(() => {
-    // Load from localStorage on mount
+    // 1. Initial Load from localStorage
     const storedUser = localStorage.getItem("user");
+    let currentUser = null;
     if (storedUser) {
-      setUserState(JSON.parse(storedUser));
-    } else {
-      setUserState(null); // Explicitly null if nothing in localStorage
+      currentUser = JSON.parse(storedUser);
     }
+
+    // 2. URL/Hash Token Capture (Priority for Google OAuth/Production redirects)
+    if (typeof window !== "undefined") {
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+
+      const urlToken =
+        searchParams.get("token") ||
+        searchParams.get("accessToken") ||
+        hashParams.get("token") ||
+        hashParams.get("accessToken");
+
+      if (urlToken) {
+        console.log("🎟️ Found token in URL/Hash, initializing session...");
+
+        // Construct user object or merge with existing
+        const userData = {
+          ...(currentUser || {}),
+          accessToken: urlToken,
+          token: urlToken,
+          isNewToPlatform:
+            searchParams.get("isNew") === "true" ||
+            currentUser?.isNewToPlatform ||
+            true,
+        };
+
+        // Save and update state
+        login(userData);
+        currentUser = userData;
+
+        // Optional: Clean URL to remove token for security
+        // window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
+    setUserState(currentUser || null);
   }, []);
 
   const login = (userData) => {
