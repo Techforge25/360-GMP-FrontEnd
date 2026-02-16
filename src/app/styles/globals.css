@@ -91,6 +91,10 @@ body {
   font-family: var(--font-primary);
 }
 
+input {
+  color: black;
+}
+
 @layer utilities {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;

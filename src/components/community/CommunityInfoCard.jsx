@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 const CommunityInfoCard = ({ community }) => {
   if (!community) return null;
@@ -29,11 +30,15 @@ const CommunityInfoCard = ({ community }) => {
     <div className="bg-white rounded-xl border border-gray-200 p-5">
       <h3 className="text-base font-bold text-gray-900 mb-4">Community Info</h3>
 
-      <p className="text-gray-600 text-sm leading-relaxed mb-5">
-        {community.description ||
-          community.purpose ||
-          "No description available."}
-      </p>
+      <div className="text-gray-600 text-sm leading-relaxed mb-5">
+        {community.description ? (
+          <p className="whitespace-pre-wrap">{community.description}</p>
+        ) : community.purpose ? (
+          <SlateRenderer content={community.purpose} />
+        ) : (
+          <p>No description available.</p>
+        )}
+      </div>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between text-sm">

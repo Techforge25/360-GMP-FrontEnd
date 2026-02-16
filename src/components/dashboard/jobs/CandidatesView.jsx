@@ -8,6 +8,7 @@ import {
   FiMoreVertical,
   FiFile,
 } from "react-icons/fi";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 const CandidatesView = ({ job, onBack }) => {
   const router = useRouter();
@@ -263,9 +264,9 @@ const CandidatesView = ({ job, onBack }) => {
                       <label className="text-sm text-gray-500 block mb-1">
                         About
                       </label>
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        {currentCandidate.about}
-                      </p>
+                      <div className="text-sm text-gray-600 leading-relaxed">
+                        <SlateRenderer content={currentCandidate.about} />
+                      </div>
                     </div>
                   )}
 

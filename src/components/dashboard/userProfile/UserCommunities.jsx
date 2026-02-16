@@ -4,6 +4,7 @@ import { FiUsers, FiChevronRight } from "react-icons/fi";
 import Link from "next/link";
 import api from "@/lib/axios";
 import communityAPI from "@/services/communityAPI";
+import { cn, getSlateText } from "@/lib/utils";
 
 const UserCommunities = () => {
   const [joinedCommunities, setJoinedCommunities] = useState([]);
@@ -184,7 +185,7 @@ const CommunityCard = ({ community, onLeave, formatMemberCount }) => {
               </div>
               <p className="text-sm sm:text-sm text-gray-500 mt-1 line-clamp-2">
                 {community.description ||
-                  community.purpose ||
+                  getSlateText(community.purpose) ||
                   "A community for like-minded professionals."}
               </p>
             </div>

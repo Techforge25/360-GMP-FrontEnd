@@ -423,7 +423,7 @@ const BusinessAboutTab = ({ businessId }) => {
                           {name}
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-gray-500">
+                          <span className="text-sm text-gray-500">
                             Verified Certification
                           </span>
                           {url && (
@@ -431,7 +431,7 @@ const BusinessAboutTab = ({ businessId }) => {
                               href={url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs font-semibold text-[#240457] hover:underline flex items-center gap-1"
+                              className="text-sm font-semibold text-[#240457] hover:underline flex items-center gap-1"
                             >
                               <FiExternalLink className="w-3 h-3" />
                               View

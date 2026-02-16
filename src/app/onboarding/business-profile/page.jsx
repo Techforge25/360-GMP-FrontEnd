@@ -633,7 +633,7 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
             </div>
           </div>
 
-          <p className="text-xs text-text-secondary italic">
+          <p className="text-sm text-text-secondary italic">
             * Select a certificate name first, then upload the corresponding
             image. You can add up to 3 certifications.
           </p>
@@ -684,7 +684,7 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
                         );
                         handleChange("certifications", updated);
                       }}
-                      className="text-xs font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors w-fit"
+                      className="text-sm font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors w-fit"
                     >
                       Remove Certificate
                     </button>

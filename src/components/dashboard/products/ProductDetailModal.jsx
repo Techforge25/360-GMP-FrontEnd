@@ -1,6 +1,7 @@
 import React from "react";
 import { FiX, FiEdit2 } from "react-icons/fi";
 import Image from "next/image";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 const ProductDetailModal = ({ isOpen, onClose, product, onEdit }) => {
   if (!isOpen || !product) return null;
@@ -214,9 +215,13 @@ const ProductDetailModal = ({ isOpen, onClose, product, onEdit }) => {
                   Description
                 </label>
                 <div className="w-full text-base p-3 bg-white border border-gray-200 rounded-lg text-gray-500 min-h-[120px]">
-                  {product.detail ||
-                    product.description ||
-                    "No description provided."}
+                  {product.detail || product.description ? (
+                    <SlateRenderer
+                      content={product.detail || product.description}
+                    />
+                  ) : (
+                    "No description provided."
+                  )}
                 </div>
               </div>
             </div>

@@ -361,7 +361,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                     <label className="block text-black text-sm font-medium">
                       Description
                     </label>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-sm text-gray-400">
                       {bioLength} / 5000
                     </span>
                   </div>
@@ -371,6 +371,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                     onLengthChange={(len) => setBioLength(len)}
                     placeholder="Tell us about your company..."
                     maxLength={5000}
+                    className="text-black"
                   />
                 </div>
                 <div className="flex justify-end gap-2">

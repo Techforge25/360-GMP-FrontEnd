@@ -4,6 +4,14 @@ import { FiX, FiCheck } from "react-icons/fi";
 import { cn } from "@/lib/utils";
 import jobAPI from "@/services/jobAPI";
 import { CountrySelect } from "@/components/ui/CountrySelect";
+import dynamic from "next/dynamic";
+
+const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[150px] bg-gray-50 animate-pulse rounded-md border" />
+  ),
+});
 
 const JOB_CATEGORIES = [
   "Manufacturing",
@@ -43,6 +51,7 @@ export default function CreateJobModal({
   businessId,
 }) {
   const [loading, setLoading] = useState(false);
+  const [descLength, setDescLength] = useState(0);
   const [formData, setFormData] = useState({
     jobTitle: "",
     jobCategory: "",
@@ -59,7 +68,12 @@ export default function CreateJobModal({
       period: "Month",
     },
     postingDuration: "30 Days",
-    description: "",
+    description: JSON.stringify([
+      {
+        type: "paragraph",
+        children: [{ text: "" }],
+      },
+    ]),
   });
 
   if (!isOpen) return null;
@@ -104,7 +118,7 @@ export default function CreateJobModal({
       !formData.jobTitle ||
       !formData.jobCategory ||
       (formData.jobCategory === "Other" && !formData.customCategory) ||
-      !formData.description ||
+      descLength === 0 ||
       !formData.employmentType ||
       !formData.location.country ||
       !formData.location.city ||
@@ -112,6 +126,11 @@ export default function CreateJobModal({
       !formData.salary.max
     ) {
       alert("Please fill in all required fields.");
+      return;
+    }
+
+    if (descLength > 5000) {
+      alert("Job description cannot exceed 5000 characters.");
       return;
     }
 
@@ -468,39 +487,33 @@ export default function CreateJobModal({
             </div>
           </div>
 
-          {/* Job Description */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <label className="text-sm font-medium text-gray-700">
-                Job Description
+                Job Description <span className="text-red-500">*</span>
               </label>
               <span
                 className={cn(
                   "text-sm font-medium",
-                  formData.description.length >= 5000
-                    ? "text-red-500"
-                    : "text-gray-400",
+                  descLength >= 5000 ? "text-red-500" : "text-gray-400",
                 )}
               >
-                {formData.description.length}/5000
+                {descLength}/5000
               </span>
             </div>
-            <div className="relative">
-              <textarea
-                placeholder="*"
-                value={formData.description}
-                maxLength={5000}
-                onChange={(e) =>
-                  handleInputChange("description", e.target.value)
-                }
-                className="w-full text-black h-32 p-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none transition-all resize-none"
-              />
-              <div className="absolute top-4 left-4 pointer-events-none">
-                {!formData.description && (
-                  <span className="text-blue-500">*</span>
-                )}
-              </div>
-            </div>
+            <SlateEditor
+              value={formData.description}
+              onChange={(val) => handleInputChange("description", val)}
+              onLengthChange={(len) => setDescLength(len)}
+              placeholder="Detailed job description..."
+              maxLength={5000}
+              className="text-black"
+            />
+            {descLength > 5000 && (
+              <p className="text-xs text-red-500 mt-1">
+                Description cannot exceed 5000 characters
+              </p>
+            )}
           </div>
         </div>
 

@@ -7,6 +7,7 @@ import { PiGlobeBold } from "react-icons/pi";
 import { MdLockOutline } from "react-icons/md";
 import communityAPI from "@/services/communityAPI";
 import { useUserRole } from "@/context/UserContext";
+import { cn, getSlateText } from "@/lib/utils";
 
 const CommunitySection = () => {
   const scrollRef = React.useRef(null);
@@ -163,7 +164,9 @@ const CommunitySection = () => {
                   {comm.name}
                 </h3>
                 <p className="text-sm text-gray-500 mb-4 line-clamp-2">
-                  {comm.description || comm.purpose || "Join this community"}
+                  {comm.description ||
+                    getSlateText(comm.purpose) ||
+                    "Join this community"}
                 </p>
 
                 <div className="flex justify-between items-center">

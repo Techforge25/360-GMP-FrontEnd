@@ -18,6 +18,7 @@ import jobAPI from "@/services/jobAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import JobApplicationModal from "@/components/dashboard/jobs/JobApplicationModal";
 import { useUserRole } from "@/context/UserContext";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 export default function JobDetailsContent() {
   const params = useParams();
@@ -266,8 +267,8 @@ export default function JobDetailsContent() {
 
             <div className="space-y-8 text-text-secondary">
               <section>
-                <div className="leading-relaxed whitespace-pre-wrap">
-                  {job.description}
+                <div className="leading-relaxed text-black">
+                  <SlateRenderer className="text-black" content={job.description} />
                 </div>
               </section>
             </div>

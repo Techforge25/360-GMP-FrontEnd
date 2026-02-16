@@ -8,11 +8,21 @@ import { useRouter } from "next/navigation";
 import communityAPI from "@/services/communityAPI";
 import { useUser } from "@/context/UserContext";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import dynamic from "next/dynamic";
+
+const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[150px] bg-gray-50 animate-pulse rounded-md border" />
+  ),
+});
 
 export default function CreateCommunityPage() {
   const router = useRouter();
   const { user } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [purposeLength, setPurposeLength] = useState(0);
+  const [rulesLength, setRulesLength] = useState(0);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -20,9 +30,19 @@ export default function CreateCommunityPage() {
     industry: "",
     category: "",
     shortDescription: "",
-    purpose: "",
+    purpose: JSON.stringify([
+      {
+        type: "paragraph",
+        children: [{ text: "" }],
+      },
+    ]),
     tags: [],
-    rules: "",
+    rules: JSON.stringify([
+      {
+        type: "paragraph",
+        children: [{ text: "" }],
+      },
+    ]),
     privacyType: "public",
     postingPermissions: "all",
     coverImage: null,
@@ -393,21 +413,27 @@ export default function CreateCommunityPage() {
                 </h2>
 
                 {/* Community Purpose */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-900">
                     Community Purpose <span className="text-red-500">*</span>
                   </label>
-                  <textarea
-                    placeholder="Why does this community exists? Who is it for? What value does it provide?"
-                    value={formData.purpose}
-                    onChange={(e) =>
-                      handleInputChange("purpose", e.target.value)
-                    }
-                    rows={4}
-                    className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none"
-                    required
-                  />
+                  <span
+                    className={`text-sm ${purposeLength >= 5000 ? "text-red-500 font-medium" : "text-gray-500"}`}
+                  >
+                    {purposeLength}/5000 characters
+                  </span>
                 </div>
+                <SlateEditor
+                  value={formData.purpose}
+                  onChange={(val) => handleInputChange("purpose", val)}
+                  onLengthChange={(len) => setPurposeLength(len)}
+                  placeholder="Why does this community exists? Who is it for? What value does it provide?"
+                  maxLength={5000}
+                  className="text-black"
+                />
+                <p className="text-sm text-gray-500 mt-1">
+                  Minimum 10 characters required
+                </p>
 
                 {/* Tags/Topics */}
                 <div className="mb-6">
@@ -500,29 +526,28 @@ export default function CreateCommunityPage() {
                 </div>
 
                 {/* Rules & Guidelines */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-gray-900">
                     Rules & Guidelines <span className="text-red-500">*</span>
                   </label>
-                  <textarea
-                    placeholder="Set clear expectation for community behavior and content..."
-                    value={formData.rules}
-                    onChange={(e) => handleInputChange("rules", e.target.value)}
-                    maxLength={1000}
-                    rows={4}
-                    className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none"
-                    required
-                  />
-                  <div className="mt-1 flex justify-between items-center whitespace-nowrap">
-                    <p className="text-sm text-gray-500">
-                      Minimum 10 characters required
-                    </p>
-                    <p
-                      className={`text-sm ${formData.rules.length >= 1000 ? "text-red-500 font-medium" : "text-gray-500"}`}
-                    >
-                      {formData.rules.length}/1000 characters
-                    </p>
-                  </div>
+                  <span
+                    className={`text-sm ${rulesLength >= 5000 ? "text-red-500 font-medium" : "text-gray-500"}`}
+                  >
+                    {rulesLength}/5000 characters
+                  </span>
+                </div>
+                <SlateEditor
+                  value={formData.rules}
+                  onChange={(val) => handleInputChange("rules", val)}
+                  onLengthChange={(len) => setRulesLength(len)}
+                  placeholder="Set clear expectation for community behavior and content..."
+                  maxLength={5000}
+                  className="text-black"
+                />
+                <div className="mt-1">
+                  <p className="text-sm text-gray-500">
+                    Minimum 10 characters required
+                  </p>
                 </div>
               </div>
 

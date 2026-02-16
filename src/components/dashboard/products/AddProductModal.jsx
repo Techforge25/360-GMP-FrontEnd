@@ -1,13 +1,24 @@
-import React, { useState, useRef } from "react";
 import { FiX, FiUpload, FiTrash2, FiPlus } from "react-icons/fi";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+
+const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-40 bg-gray-50 border border-gray-200 rounded-lg animate-pulse flex items-center justify-center text-gray-400">
+      Loading Editor...
+    </div>
+  ),
+});
 import productAPI from "@/services/productAPI";
+import React, { useRef, useState } from "react";
 
 const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [descLength, setDescLength] = useState(0);
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -45,7 +56,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         minOrderQty: editProduct.minOrderQty || "",
         pricePerUnit: editProduct.pricePerUnit || "",
         tieredPricing: tieredString,
-        description: editProduct.detail || "",
+        description:
+          editProduct.detail ||
+          JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]),
         isSingleProductAvailable: editProduct.isSingleProductAvailable || false,
         shippingMethod: editProduct.shippingMethod || "FOB (Free On Board)",
         estimatedDeliveryDays: editProduct.estimatedDeliveryDays || "",
@@ -63,7 +76,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         minOrderQty: "",
         pricePerUnit: "",
         tieredPricing: "",
-        description: "",
+        description: JSON.stringify([
+          { type: "paragraph", children: [{ text: "" }] },
+        ]),
         isSingleProductAvailable: false,
         shippingMethod: "FOB (Free On Board)",
         estimatedDeliveryDays: "",
@@ -79,7 +94,14 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
   if (!isOpen) return null;
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleStandardInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -214,7 +236,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           <select
             name="category"
             value={formData.category}
-            onChange={handleInputChange}
+            onChange={handleStandardInputChange}
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
             <option value="">Select Category</option>
@@ -232,7 +254,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             type="text"
             name="title"
             value={formData.title}
-            onChange={handleInputChange}
+            onChange={handleStandardInputChange}
             placeholder="Product Title"
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
@@ -248,7 +270,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             type="number"
             name="minOrderQty"
             value={formData.minOrderQty}
-            onChange={handleInputChange}
+            onChange={handleStandardInputChange}
             placeholder="e.g 100 Units"
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
@@ -261,7 +283,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             type="number"
             name="pricePerUnit"
             value={formData.pricePerUnit}
-            onChange={handleInputChange}
+            onChange={handleStandardInputChange}
             placeholder="$50 USD"
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
@@ -276,7 +298,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           type="text"
           name="tieredPricing"
           value={formData.tieredPricing}
-          onChange={handleInputChange}
+          onChange={handleStandardInputChange}
           placeholder="e.g., 100:150.00, 500:120.00"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
@@ -310,34 +332,36 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           type="number"
           name="lowStockThreshold"
           value={formData.lowStockThreshold}
-          onChange={handleInputChange}
+          onChange={handleStandardInputChange}
           placeholder="10 units"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
       </div>
 
-        <div className="flex justify-between items-center mb-1">
-          <label className="block text-sm font-semibold text-gray-700">
-            Description
-          </label>
-          <span className={`text-[12px] ${formData.description?.length >= 2000 ? 'text-red-500 font-bold' : 'text-gray-400'}`}>
-            {formData.description?.length || 0} / 2000
-          </span>
-        </div>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          rows={4}
-          maxLength={2000}
-          className={`w-full text-black text-base p-2.5 bg-gray-50 border rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 resize-none ${
-            formData.description?.length >= 2000 ? 'border-red-500' : 'border-gray-200'
-          }`}
-        ></textarea>
-        {formData.description?.length >= 2000 && (
-          <p className="text-red-500 text-[12px] mt-1 italic">Maximum character limit reached.</p>
-        )}
+      <div className="flex justify-between items-center mb-1">
+        <label className="block text-sm font-semibold text-gray-700">
+          Description
+        </label>
+        <span
+          className={`text-[12px] ${descLength >= 5000 ? "text-red-500 font-bold" : "text-gray-400"}`}
+        >
+          {descLength} / 5000
+        </span>
       </div>
+      <SlateEditor
+        value={formData.description}
+        onChange={(val) => handleInputChange("description", val)}
+        onLengthChange={(len) => setDescLength(len)}
+        placeholder="Detailed job description..."
+        maxLength={5000}
+        className="text-black"
+      />
+      {descLength >= 5000 && (
+        <p className="text-red-500 text-[12px] mt-1 italic">
+          Maximum character limit reached.
+        </p>
+      )}
+    </div>
   );
 
   const renderStep2 = () => (
@@ -354,7 +378,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           type="text"
           name="estimatedDeliveryDays"
           value={formData.estimatedDeliveryDays}
-          onChange={handleInputChange}
+          onChange={handleStandardInputChange}
           placeholder="Estimated Production Days Based On Order Quantity (e.g., 'Ready To Ship In 7 Days')"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
@@ -367,7 +391,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         <select
           name="shippingMethod"
           value={formData.shippingMethod}
-          onChange={handleInputChange}
+          onChange={handleStandardInputChange}
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         >
           <option value="FOB (Free On Board)">FOB (Free On Board)</option>
@@ -389,7 +413,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           type="number"
           name="stockQty"
           value={formData.stockQty}
-          onChange={handleInputChange}
+          onChange={handleStandardInputChange}
           placeholder="e.g. 1000"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />

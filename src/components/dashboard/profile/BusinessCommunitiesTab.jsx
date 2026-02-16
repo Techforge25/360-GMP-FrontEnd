@@ -4,6 +4,7 @@ import { FiUsers, FiChevronRight, FiEdit2, FiPlus } from "react-icons/fi";
 import Link from "next/link";
 import communityAPI from "@/services/communityAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
+import { cn, getSlateText } from "@/lib/utils";
 
 const BusinessCommunitiesTab = () => {
   const [ownedCommunities, setOwnedCommunities] = useState([]);
@@ -204,7 +205,7 @@ const OwnedCommunityCard = ({ community, onDelete, formatMemberCount }) => {
               </div>
               <p className="text-sm text-gray-500 mt-1 line-clamp-2">
                 {community.description ||
-                  community.purpose ||
+                  getSlateText(community.purpose) ||
                   "A community for like-minded professionals."}
               </p>
             </div>

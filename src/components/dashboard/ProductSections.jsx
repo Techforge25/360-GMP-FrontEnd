@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import productAPI from "@/services/productAPI";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+import { getSlateText } from "@/lib/utils";
 
 const ProductSections = () => {
   const router = useRouter();
@@ -177,7 +178,7 @@ const ProductSections = () => {
       id: product._id || product.productId,
       name: product.title || "Unnamed Product",
       image: product.image || "/assets/images/Portrait_Placeholder.png",
-      desc: product.detail?.substring(0, 50) || "No description",
+      desc: getSlateText(product.detail)?.substring(0, 50) || "No description",
       price: `$${product.pricePerUnit?.toFixed(2) || "0.00"}`,
       category: product.category || "General",
       tag: product.isFeatured

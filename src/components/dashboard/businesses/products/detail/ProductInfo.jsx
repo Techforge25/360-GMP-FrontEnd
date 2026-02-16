@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import ActionRequiredModal from "./ProfileSwitchModal";
 import ProfileSwitchModal from "@/components/dashboard/ProfileSwitchModal";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 export default function ProductInfo({ product }) {
   const router = useRouter();
@@ -63,7 +64,9 @@ export default function ProductInfo({ product }) {
   return (
     <div className="w-full">
       <h1 className="text-xl font-medium text-black mb-2">{product.title}</h1>
-      <p className="text-gray-900 text-md mb-4">{product.detail}</p>
+      <div className="text-gray-900 text-md mb-4">
+        <SlateRenderer content={product.detail} />
+      </div>
 
       {/* Ratings */}
       <div className="flex items-center gap-2 text-sm mb-6">

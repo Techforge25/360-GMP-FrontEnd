@@ -7,6 +7,7 @@ import { BsBuilding, BsGlobe2 } from "react-icons/bs";
 import { FaChevronRight } from "react-icons/fa";
 import api from "@/lib/axios";
 import Link from "next/link";
+import { cn, getSlateText } from "@/lib/utils";
 
 export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   const [communities, setCommunities] = useState([]);
@@ -364,7 +365,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
                     <p className="text-base text-gray-600 mb-6 line-clamp-2 min-h-[40px]">
                       {community.description ||
-                        community.purpose ||
+                        getSlateText(community.purpose) ||
                         "Creating sustainable place for tech and it professional and corporates."}
                     </p>
 

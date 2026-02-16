@@ -382,7 +382,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                     <label className="block text-black text-sm font-medium">
                       Bio
                     </label>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-sm text-gray-400">
                       {bioLength} / 1000
                     </span>
                   </div>

@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import jobAPI from "@/services/jobAPI";
 import userProfileAPI from "@/services/userProfileAPI";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 const STEP_FORM = 1;
 const STEP_REVIEW = 2;
@@ -265,9 +266,9 @@ export default function JobApplicationModal({
 
           <div>
             <p className="text-sm text-text-secondary mb-1">About</p>
-            <p className="text-sm text-text-secondary leading-relaxed">
-              {userData.about}
-            </p>
+            <div className="text-sm text-text-secondary leading-relaxed">
+              <SlateRenderer content={userData.about} />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

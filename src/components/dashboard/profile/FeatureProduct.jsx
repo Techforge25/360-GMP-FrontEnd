@@ -5,6 +5,7 @@ import { FiEdit2, FiTrash2, FiSliders } from "react-icons/fi";
 import productAPI from "@/services/productAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import { useRouter, usePathname } from "next/navigation";
+import { getSlateText } from "@/lib/utils";
 
 const FeatureProduct = ({ onManageClick }) => {
   const router = useRouter();
@@ -59,7 +60,9 @@ const FeatureProduct = ({ onManageClick }) => {
     return {
       id: product._id || product.productId,
       name: product.title || "Unnamed Product",
-      desc: product.detail?.substring(0, 60) || "No description available",
+      desc:
+        getSlateText(product.detail)?.substring(0, 60) ||
+        "No description available",
       moq: `${product.minOrderQty || product.moq || 100} pc`,
       price: `$${product.pricePerUnit?.toFixed(2) || "0.00"}`,
       stock: product.stockQty || 0,
