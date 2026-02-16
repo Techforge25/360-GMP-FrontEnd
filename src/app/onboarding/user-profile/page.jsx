@@ -358,7 +358,7 @@ const Step1 = ({
         <span
           className={cn(
             "text-sm font-medium",
-            (bioLength || 0) >= 1000 ? "text-red-500" : "text-text-secondary",
+            (bioLength || 0) > 1000 ? "text-red-500" : "text-text-secondary",
           )}
         >
           {bioLength || 0} / 1000
@@ -371,7 +371,7 @@ const Step1 = ({
         placeholder="Tell us about yourself, your goals, and what you're looking for..."
         maxLength={1000}
       />
-      {(bioLength || 0) >= 1000 && (
+      {(bioLength || 0) > 1000 && (
         <p className="text-sm text-red-500 font-medium">
           Description cannot exceed 1000 characters
         </p>
@@ -410,7 +410,6 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
       alert("Description cannot exceed 1000 characters");
       return;
     }
-
     if (
       !institution ||
       !degree ||

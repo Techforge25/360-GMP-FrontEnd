@@ -14,13 +14,15 @@ export default function AuthGuard({ children }) {
     // UserContext loads from localStorage on mount, so we might need a small delay
     // or rely on the state being null initially.
 
-    const checkAuth = () => {
+    const checkAuth = async () => {
       if (user === undefined) return; // Wait for context to initialize
 
       if (!user) {
         // Not logged in, redirect to login
         router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       } else {
+        // Optional: Verify user session validity with backend if token exists
+        // This handles cases where a shared URL might have been used or token is expired
         setLoading(false);
       }
     };

@@ -46,13 +46,46 @@ export const UserProvider = ({ children }) => {
         login(userData);
         currentUser = userData;
 
-        // Optional: Clean URL to remove token for security
-        // window.history.replaceState({}, document.title, window.location.pathname);
+        // CRITICAL: Clean URL to remove token for security - prevents leaking auth via shared links
+        const cleanURL =
+          window.location.pathname + window.location.hash.split("?")[0];
+        window.history.replaceState({}, document.title, cleanURL);
+        console.log("🧹 URL cleaned: Token removed from search parameters.");
       }
     }
 
-    setUserState(currentUser || null);
+    // 3. Verify user validity with backend if token exists
+    const verifySession = async (userToVerify) => {
+      const userId = userToVerify?._id || userToVerify?.id;
+      if (userId && (userToVerify?.token || userToVerify?.accessToken)) {
+        console.log("🔍 Verifying session for user:", userId);
+        const exists = await checkUserExistence(userId);
+        if (!exists) {
+          console.error("❌ Session invalid or user not found. Logging out.");
+          logout();
+          return null;
+        }
+        console.log("✅ Session verified.");
+        return userToVerify;
+      }
+      return userToVerify;
+    };
+
+    const initialize = async () => {
+      const verifiedUser = await verifySession(currentUser);
+      setUserState(verifiedUser || null);
+    };
+
+    initialize();
   }, []);
+
+  const logout = () => {
+    setUserState(null);
+    localStorage.removeItem("user");
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
+  };
 
   const login = (userData) => {
     // Prevent passing just a string (like role) which would corrupt the state
@@ -177,6 +210,23 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const checkUserExistence = async (userId) => {
+    try {
+      if (!userId) return false;
+      const response = await api.post({
+        url: "/auth/user/existence",
+        payload: { userId },
+        activateLoader: false,
+        enableErrorMessage: false,
+        enableSuccessMessage: false,
+      });
+      return response.success;
+    } catch (error) {
+      console.error("Verification failed:", error);
+      return false;
+    }
+  };
+
   useSocket("notification", (data) => {
     console.log("Received notification:", data);
     // Here you can implement logic to show notifications in the UI
@@ -187,6 +237,7 @@ export const UserProvider = ({ children }) => {
       value={{
         user,
         login,
+        logout,
         setOnboardingRole,
         onboardingRole: user?.role,
         onboardingProfileData: user?.profileData,

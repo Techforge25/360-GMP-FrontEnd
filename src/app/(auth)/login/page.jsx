@@ -32,17 +32,17 @@ function LoginPageContent() {
 
   // Check for authenticated session after Google OAuth callback
   useEffect(() => {
-    const checkAuthSession = async () => {
-      // For new Google OAuth users, profile doesn't exist yet
-      // If redirectPath exists, it means backend redirected us here after successful OAuth
-      if (redirectPath) {
-        // Redirection handled - UserContext.js will pick up the token from URL
-        router.push("/onboarding/role");
-      }
-    };
+    const token =
+      searchParams.get("token") ||
+      searchParams.get("accessToken") ||
+      window.location.hash.includes("token=");
 
-    checkAuthSession();
-  }, [login, router, redirectPath]);
+    // Only redirect if there's actually a token in the URL (Google OAuth flow)
+    // or if the redirect path is present but NOT caused by an AuthGuard redirect
+    if (token && redirectPath === "/onboarding/role") {
+      router.push("/onboarding/role");
+    }
+  }, [router, redirectPath, searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
