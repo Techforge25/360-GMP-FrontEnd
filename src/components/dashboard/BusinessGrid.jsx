@@ -4,26 +4,20 @@ import { FiMapPin, FiPhone, FiGlobe, FiX } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import { useUserRole } from "@/context/UserContext";
 
-const BusinessMapView = dynamic(() => import("./profile/BusinessMapView"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-64 w-full bg-gray-100 animate-pulse rounded-lg" />
-  ),
-});
+// Map View removed in favor of direct Google Maps link
 
 const BusinessGrid = () => {
   const router = useRouter();
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showMapModal, setShowMapModal] = useState(false);
+  // const [showMapModal, setShowMapModal] = useState(false); // Removed
   const [showContactModal, setShowContactModal] = useState(false);
-  const [selectedBusiness, setSelectedBusiness] = useState(null);
+  // const [selectedBusiness, setSelectedBusiness] = useState(null); // Removed
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
-  const [mapLocation, setMapLocation] = useState(null);
+  // const [mapLocation, setMapLocation] = useState(null); // Removed
   const { user } = useUserRole();
   const role = user?.role;
 
@@ -93,8 +87,11 @@ const BusinessGrid = () => {
       website: profile.website || "#",
       email: profile.b2bContact?.email || profile.email || "N/A",
       phone: profile.b2bContact?.phone || "#",
+      email: profile.b2bContact?.email || profile.email || "N/A",
+      phone: profile.b2bContact?.phone || "#",
       latitude: profile.latitude,
       longitude: profile.longitude,
+      rawLocation: profile.location, // Added rawLocation
     };
   };
 
@@ -105,47 +102,42 @@ const BusinessGrid = () => {
     setShowContactModal(true);
   };
 
-  const handleGetDirection = async (businessId, businessName, event) => {
+  const handleGetDirection = (business, event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    const business = businesses.find((b) => b.id === businessId);
-    if (business) {
-      setSelectedBusiness(businessName);
+    const {
+      latitude,
+      longitude,
+      rawLocation,
+      location: displayLocation,
+    } = business || {};
+    let destination = "";
 
-      // Initial state with available data
-      setMapLocation({
-        address: business.location,
-        latitude: business.latitude,
-        longitude: business.longitude,
-      });
-      setShowMapModal(true);
-
-      // If coordinates are missing, fetch full profile details
-      if (!business.latitude || !business.longitude) {
-        try {
-          const response = await businessProfileAPI.getById(businessId);
-          if (response?.data?.latitude && response?.data?.longitude) {
-            setMapLocation({
-              address: business.location, // Keep original address string
-              latitude: response.data.latitude,
-              longitude: response.data.longitude,
-            });
-          }
-        } catch (error) {
-          console.error("Failed to fetch business details for map:", error);
-        }
-      }
+    if (latitude && longitude && (latitude !== 0 || longitude !== 0)) {
+      destination = `${latitude},${longitude}`;
+    } else if (rawLocation) {
+      const parts = [
+        rawLocation.addressLine,
+        rawLocation.city,
+        rawLocation.country,
+      ].filter(Boolean);
+      destination = parts.join(", ");
+    } else if (
+      displayLocation &&
+      displayLocation !== "Location not specified"
+    ) {
+      destination = displayLocation;
     }
-  };
 
-  const generateMapUrl = (location) => {
-    const address =
-      location.address ||
-      `${location.addressLine || ""}, ${location.city || ""}, ${location.country || ""}`
-        .trim()
-        .replace(/^,|,$/g, "");
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    if (destination) {
+      window.open(
+        `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`,
+        "_blank",
+      );
+    } else {
+      alert("Location details are not available.");
+    }
   };
 
   if (loading) {
@@ -235,7 +227,7 @@ const BusinessGrid = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleGetDirection(biz.id, biz.name, e);
+                          handleGetDirection(biz, e);
                         }}
                         className="flex items-center hover:text-[#240457] transition-colors cursor-pointer"
                       >
@@ -258,10 +250,10 @@ const BusinessGrid = () => {
                     )}
                     {biz.website !== "#" && (
                       <a
-                        href={biz.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleGetDirection(biz, e);
+                        }}
                         className="w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400"
                       >
                         <img src="/assets/images/twoArrows.png" alt="" />
@@ -291,66 +283,7 @@ const BusinessGrid = () => {
           </Link>
         </div>
 
-        {/* Map Modal */}
-        {showMapModal && mapLocation && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl max-w-2xl w-full max-h-[80vh] overflow-hidden">
-              <div className="flex items-center justify-between p-4 border-b">
-                <h3 className="text-lg font-semibold text-gray-900">
-                  Location of {selectedBusiness}
-                </h3>
-                <button
-                  onClick={() => setShowMapModal(false)}
-                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                  <FiX className="w-5 h-5 text-gray-500" />
-                </button>
-              </div>
-              <div className="p-4">
-                {mapLocation &&
-                (mapLocation.latitude || mapLocation.lat) &&
-                (mapLocation.longitude || mapLocation.lng) ? (
-                  <div className="h-96 w-full rounded-lg overflow-hidden mb-4 border border-gray-200">
-                    <BusinessMapView
-                      center={[
-                        mapLocation.latitude || mapLocation.lat,
-                        mapLocation.longitude || mapLocation.lng,
-                      ]}
-                      zoom={14}
-                    />
-                  </div>
-                ) : (
-                  <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Address:</p>
-                    <p className="text-base font-medium text-gray-900">
-                      {mapLocation.address ||
-                        `${mapLocation.addressLine || ""}, ${mapLocation.city || ""}, ${mapLocation.country || ""}`
-                          .trim()
-                          .replace(/^,|,$/g, "")}
-                    </p>
-                  </div>
-                )}
-
-                <div className="flex gap-3">
-                  <a
-                    href={generateMapUrl(mapLocation)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-[#240457] text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-[#1a0340] transition-colors flex items-center justify-center gap-2"
-                  >
-                    <FiMapPin className="w-4 h-4" /> Open in Google Maps
-                  </a>
-                  <button
-                    onClick={() => setShowMapModal(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Map Modal removed */}
 
         {/* Contact Info Modal */}
         {showContactModal && selectedBusinessContact && (
