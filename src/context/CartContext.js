@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
 import { showSuccess } from "@/utils/toasterMessage";
 
 const CartContext = createContext();
@@ -34,14 +40,17 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product, quantity = 1) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.productId === product._id || item.productId === product.id);
-      
+      const existingItem = prevItems.find(
+        (item) =>
+          item.productId === product._id || item.productId === product.id,
+      );
+
       if (existingItem) {
         showSuccess("Cart updated!");
         return prevItems.map((item) =>
           item.productId === (product._id || product.id)
             ? { ...item, quantity: item.quantity + quantity }
-            : item
+            : item,
         );
       }
 
@@ -59,7 +68,9 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = (productId) => {
     setCartItems((prevItems) => {
-      const filteredItems = prevItems.filter((item) => item.productId !== productId);
+      const filteredItems = prevItems.filter(
+        (item) => item.productId !== productId,
+      );
       // Only show success message if item was actually removed
       if (filteredItems.length < prevItems.length) {
         showSuccess("Removed from cart");
@@ -72,8 +83,8 @@ export const CartProvider = ({ children }) => {
     if (quantity < 1) return;
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.productId === productId ? { ...item, quantity } : item
-      )
+        item.productId === productId ? { ...item, quantity } : item,
+      ),
     );
   };
 
@@ -83,9 +94,9 @@ export const CartProvider = ({ children }) => {
     showSuccess("Cart cleared");
   };
 
-  const getCartCount = () => {
+  const cartCount = useMemo(() => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
-  };
+  }, [cartItems]);
 
   return (
     <CartContext.Provider
@@ -95,7 +106,7 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         updateQuantity,
         clearCart,
-        getCartCount,
+        cartCount,
       }}
     >
       {children}

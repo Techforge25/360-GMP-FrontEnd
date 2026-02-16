@@ -213,10 +213,10 @@ const AuthNavbar = () => {
                     <img
                       src="/assets/images/cartIcon.png"
                       alt="Cart"
-                      className="w-5 h-5"
+                      className="w-6 h-6"
                     />
                     {cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-3 h-3 bg-brand-primary text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
+                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
                         {cartCount}
                       </span>
                     )}
@@ -234,9 +234,9 @@ const AuthNavbar = () => {
                   <img
                     src="/assets/images/notificationIcon.png"
                     alt=""
-                    className="w-4 h-5"
+                    className="w-5 h-5"
                   />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#9747FF] text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
                     2
                   </span>
                 </Link>
@@ -254,7 +254,7 @@ const AuthNavbar = () => {
                     alt=""
                     className="w-5 h-5"
                   />
-                  <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#9747FF] text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
                     1
                   </span>
                 </Link>

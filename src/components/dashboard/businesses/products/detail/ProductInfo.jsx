@@ -19,6 +19,7 @@ import ProfileSwitchModal from "@/components/dashboard/ProfileSwitchModal";
 export default function ProductInfo({ product }) {
   const router = useRouter();
   const { user, setOnboardingRole } = useUserRole();
+  const { addToCart } = useCart();
   const role = user?.role;
   const isBusinessUser = role === "business";
 
