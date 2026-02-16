@@ -23,6 +23,7 @@ export default function RoleSelectionPage() {
 
   const handleContinue = async () => {
     try {
+      console.log(selectedRole);
       // Get the updated user object directly from the sync call to avoid stale closure issues
       const updatedUser = await setOnboardingRole(selectedRole);
 
