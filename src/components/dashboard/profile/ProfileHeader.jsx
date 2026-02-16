@@ -34,7 +34,6 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
   const [newBanner, setNewBanner] = useState(null);
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [isUploadingBanner, setIsUploadingBanner] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   // Business Info Edit Modal States
   const [showEditModal, setShowEditModal] = useState(false);
@@ -92,7 +91,6 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
       // Immediately update profile with new logo
       try {
         setIsUploadingLogo(true);
-        setIsUpdating(true);
         const logoUrl = await uploadToCloudinary(file, "business/profile");
         const response = await businessProfileAPI.updateMyProfile({
           logo: logoUrl,
@@ -107,7 +105,6 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         alert(`Failed to update logo: ${error?.message || "Unknown error"}`);
       } finally {
         setIsUploadingLogo(false);
-        setIsUpdating(false);
       }
     }
   };
@@ -124,7 +121,6 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
       // Immediately update profile with new banner
       try {
         setIsUploadingBanner(true);
-        setIsUpdating(true);
         const bannerUrl = await uploadToCloudinary(file, "business/banner");
         const response = await businessProfileAPI.updateMyProfile({
           banner: bannerUrl,
@@ -139,14 +135,12 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         alert(`Failed to update banner: ${error?.message || "Unknown error"}`);
       } finally {
         setIsUploadingBanner(false);
-        setIsUpdating(false);
       }
     }
   };
 
   const handleUpdateProfile = async () => {
     try {
-      setIsUpdating(true);
       const updates = {};
 
       if (newLogo) {
@@ -194,7 +188,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         `Failed to update profile: ${error?.message || "Unknown error"}`,
       );
     } finally {
-      setIsUpdating(false);
+      // Done
     }
   };
 
@@ -275,14 +269,6 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
           fill
           className="object-cover h-full w-full "
         />
-        {newBanner && (
-          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-sm sm:text-sm font-medium">
-            <span className="hidden sm:inline">
-              New banner selected - Click "Update Profile" to save
-            </span>
-            <span className="sm:hidden">New banner - Update to save</span>
-          </div>
-        )}
         <input
           ref={bannerInputRef}
           type="file"
@@ -329,14 +315,8 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
                 alt=""
                 className="w-3 h-3 sm:w-4 sm:h-4"
               />
-              {isUpdating ? (
-                <span className="hidden sm:inline">Updating...</span>
-              ) : (
-                <>
-                  <span className="hidden sm:inline">Update Profile</span>
-                  <span className="sm:hidden">Update</span>
-                </>
-              )}
+              <span className="hidden sm:inline">Update Profile</span>
+              <span className="sm:hidden">Update</span>
             </button>
           </div>
 
