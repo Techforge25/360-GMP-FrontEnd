@@ -28,7 +28,6 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
   const [newCover, setNewCover] = useState(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
 
   // Basic Info Edit Modal States
   const [showEditModal, setShowEditModal] = useState(false);
@@ -92,7 +91,6 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
       // Immediately update profile with new cover
       try {
         setIsUploadingCover(true);
-        setIsUpdating(true);
         const coverUrl = await uploadToCloudinary(file, "user/cover");
         // Use specific API method for banner
         const response = await userProfileAPI.updateBanner({
@@ -114,7 +112,6 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         );
       } finally {
         setIsUploadingCover(false);
-        setIsUpdating(false);
       }
     }
   };
@@ -137,7 +134,6 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
       // Immediately update profile with new avatar
       try {
         setIsUploadingAvatar(true);
-        setIsUpdating(true);
         const avatarUrl = await uploadToCloudinary(file, "user/profile");
         // Use specific API method for logo
         const response = await userProfileAPI.updateLogo({ logo: avatarUrl });
@@ -157,14 +153,12 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         );
       } finally {
         setIsUploadingAvatar(false);
-        setIsUpdating(false);
       }
     }
   };
 
   const handleUpdateProfile = async () => {
     try {
-      setIsUpdating(true);
       const updates = {};
 
       if (newAvatar) {
@@ -226,7 +220,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
         `Failed to update profile: ${error?.message || "Unknown error"}`,
       );
     } finally {
-      setIsUpdating(false);
+      // Done
     }
   };
 
@@ -302,15 +296,6 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           className="object-cover"
         />
         <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
-
-        {newCover && (
-          <div className="absolute top-2 sm:top-4 left-2 sm:left-4 bg-yellow-500 text-white px-2 sm:px-3 py-1 rounded-full text-sm sm:text-sm font-medium">
-            <span className="hidden sm:inline">
-              New cover selected - Click "Update Profile" to save
-            </span>
-            <span className="sm:hidden">New cover - Update to save</span>
-          </div>
-        )}
 
         <input
           ref={bannerInputRef}
@@ -392,6 +377,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                     onLengthChange={(len) => setBioLength(len)}
                     placeholder="Tell us about yourself..."
                     maxLength={1000}
+                    className="text-black"
                   />
                 </div>
                 <div className="flex justify-end gap-2">
@@ -431,13 +417,6 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                   alt={profileData.fullName || "User"}
                   className="w-full h-full object-cover"
                 />
-                {newAvatar && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-white text-sm sm:text-sm font-medium text-center px-2">
-                      New avatar
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
             <button
