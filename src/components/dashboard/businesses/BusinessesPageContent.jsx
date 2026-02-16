@@ -146,6 +146,10 @@ export default function BusinessesPageContent() {
       operationHour: profile.operationHour,
       certifications: profile.certifications,
       b2bContact: profile.b2bContact,
+      // Added for Map/Directions
+      rawLocation: profile.location,
+      latitude: profile.latitude,
+      longitude: profile.longitude,
     };
   };
 

@@ -246,7 +246,7 @@ export const PhoneInputWithCountry = ({
                     <span className="flex-1 text-sm font-medium">
                       {country.name}
                     </span>
-                    <span className="text-xs text-text-hint font-mono bg-gray-100 px-1.5 py-0.5 rounded">
+                    <span className="text-sm text-text-hint font-mono bg-gray-100 px-1.5 py-0.5 rounded">
                       {country.dialCode}
                     </span>
                   </button>

@@ -19,6 +19,12 @@ import { CartProvider } from "@/context/CartContext";
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/jodit@latest/build/jodit.min.css"
+        />
+      </head>
       <body
         className={`${openSans.variable} antialiased`}
         suppressHydrationWarning

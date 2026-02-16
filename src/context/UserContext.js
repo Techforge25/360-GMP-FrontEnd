@@ -42,6 +42,9 @@ export const UserProvider = ({ children }) => {
           ...(response.data || {}),
           role: role, // Ensure role is explicitly set locally
           profileData: role === "business" ? "business" : "user",
+          // Preserve isNewToPlatform flag - don't let backend override it
+          isNewToPlatform:
+            user?.isNewToPlatform ?? response.data?.isNewToPlatform ?? true,
         };
 
         // Capture any fresh access token returned by backend so subsequent
@@ -59,6 +62,7 @@ export const UserProvider = ({ children }) => {
         }
 
         login(updatedUser);
+        return updatedUser;
       } else {
         console.warn("setOnboardingRole failed:", response.message);
         throw new Error(response.message || "Failed to update role");
@@ -84,9 +88,12 @@ export const UserProvider = ({ children }) => {
           ...user,
           role: role,
           profileData: role === "business" ? "business" : "user",
+          // Preserve isNewToPlatform flag, default to true for new Google OAuth users
+          isNewToPlatform: user?.isNewToPlatform ?? true,
         };
+        console.log("Local fallback user state:", updatedUser);
         login(updatedUser);
-        return; // Treat as success so UI proceeds
+        return updatedUser; // Return the updated state so caller can use it
       }
       console.error(
         "Failed to sync role with backend",
@@ -99,17 +106,16 @@ export const UserProvider = ({ children }) => {
   useSocket("notification", (data) => {
     console.log("Received notification:", data);
     // Here you can implement logic to show notifications in the UI
-    
   });
 
   return (
     <UserContext.Provider
-      value={{ 
-        user, 
-        login, 
-        setOnboardingRole, 
+      value={{
+        user,
+        login,
+        setOnboardingRole,
         onboardingRole: user?.role,
-        onboardingProfileData: user?.profileData 
+        onboardingProfileData: user?.profileData,
       }}
     >
       {children}

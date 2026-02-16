@@ -237,6 +237,43 @@ const BusinessCard = ({ business, onContactClick }) => {
           variant="outline"
           className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
           disabled={isFreeTrial}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const {
+              latitude,
+              longitude,
+              rawLocation,
+              location: displayLocation,
+            } = business || {};
+            let destination = "";
+
+            if (latitude && longitude && (latitude !== 0 || longitude !== 0)) {
+              destination = `${latitude},${longitude}`;
+            } else if (rawLocation) {
+              const parts = [
+                rawLocation.addressLine,
+                rawLocation.city,
+                rawLocation.country,
+              ].filter(Boolean);
+              destination = parts.join(", ");
+            } else if (
+              displayLocation &&
+              displayLocation !== "Location not specified"
+            ) {
+              destination = displayLocation;
+            }
+
+            if (destination) {
+              window.open(
+                `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`,
+                "_blank",
+              );
+            } else {
+              alert("Location details are not available.");
+            }
+          }}
         >
           <FiMapPin className="mr-2" /> Get Directions
         </Button>

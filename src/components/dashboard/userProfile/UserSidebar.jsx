@@ -1243,7 +1243,7 @@ const UserSidebar = () => {
                         <h4 className="text-sm font-bold text-gray-900 mb-0.5 group-hover:text-indigo-600 transition-colors">
                           {item.label}
                         </h4>
-                        <p className="text-xs sm:text-sm text-gray-500 line-clamp-2">
+                        <p className="text-sm sm:text-sm text-gray-500 line-clamp-2">
                           {item.description}
                         </p>
                       </div>

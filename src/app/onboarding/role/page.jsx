@@ -18,20 +18,18 @@ export default function RoleSelectionPage() {
   const [selectedRole, setSelectedRole] = useState("business");
   const { setOnboardingRole, user } = useUserRole();
 
-  useEffect(() => {
-    // Only redirect if user exists, is NOT new to platform, AND has a role
-    if (user && !user.isNewToPlatform) {
-      if (user.role === "business") router.push("/dashboard/business");
-      else router.push("/dashboard/user");
-    }
-  }, [user, router]);
+  // Note: Removed auto-redirect useEffect to prevent conflicts with manual navigation
+  // The handleContinue function below handles all redirects based on isNewToPlatform flag
 
   const handleContinue = async () => {
     try {
-      await setOnboardingRole(selectedRole);
+      // Get the updated user object directly from the sync call to avoid stale closure issues
+      const updatedUser = await setOnboardingRole(selectedRole);
+
+      console.log("Navigation check - updatedUser:", updatedUser);
 
       // If user is new, send to plans. Otherwise, send to dashboard.
-      if (user?.isNewToPlatform) {
+      if (updatedUser?.isNewToPlatform) {
         router.push(`/onboarding/plans`);
       } else {
         const dashboardUrl =

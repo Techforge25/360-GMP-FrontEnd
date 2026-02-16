@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
@@ -17,7 +17,7 @@ import api from "@/lib/axios";
 import { useUserRole } from "@/context/UserContext";
 import { backendURL } from "@/constants";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -27,6 +27,27 @@ export default function LoginPage() {
 
   const { login } = useUserRole();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
+
+  // Check for authenticated session after Google OAuth callback
+  useEffect(() => {
+    const checkAuthSession = async () => {
+      // For new Google OAuth users, profile doesn't exist yet
+      // If redirectPath exists, it means backend redirected us here after successful OAuth
+      if (redirectPath) {
+        // User is authenticated but profile doesn't exist - redirect to onboarding
+        const userData = {
+          isNewToPlatform: true,
+          email: "", // Will be filled during onboarding
+        };
+        login(userData);
+        router.push("/onboarding/role");
+      }
+    };
+
+    checkAuthSession();
+  }, [login, router, redirectPath]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -241,5 +262,13 @@ export default function LoginPage() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="text-center">Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }
