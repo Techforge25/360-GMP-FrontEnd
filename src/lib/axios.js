@@ -24,9 +24,28 @@ client.interceptors.request.use(
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
           const user = JSON.parse(storedUser);
-          const token = user.token || user.accessToken;
+          const token = user?.token || user?.accessToken;
+          const userKeys = Object.keys(user || {});
           if (token) {
             request.headers.Authorization = `Bearer ${token}`;
+            console.log(
+              `📡 Axios Request: ${request.method?.toUpperCase()} ${request.url} [Auth Attached: Yes]`,
+            );
+          } else {
+            console.warn(
+              `📡 Axios Request: ${request.method?.toUpperCase()} ${request.url} [Auth Attached: No]`,
+              {
+                hasUser: !!user,
+                userKeys,
+                tokenType: typeof token,
+                tokenValue:
+                  token === null
+                    ? "null"
+                    : token === ""
+                      ? "empty string"
+                      : "undefined",
+              },
+            );
           }
         }
       }

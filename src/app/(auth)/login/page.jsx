@@ -36,9 +36,32 @@ function LoginPageContent() {
       // For new Google OAuth users, profile doesn't exist yet
       // If redirectPath exists, it means backend redirected us here after successful OAuth
       if (redirectPath) {
-        // Retrieve token from URL if present (fallback for cross-domain cookies)
+        // Retrieve token from URL query or hash (fallback for cross-domain)
         const token =
-          searchParams.get("token") || searchParams.get("accessToken");
+          searchParams.get("token") ||
+          searchParams.get("accessToken") ||
+          new URLSearchParams(window.location.hash.substring(1)).get("token") ||
+          new URLSearchParams(window.location.hash.substring(1)).get(
+            "accessToken",
+          );
+
+        if (!token) {
+          console.error("🚫 AUTH ERROR: No token found in URL or Hash!", {
+            url: window.location.href,
+            hash: window.location.hash,
+            params: Object.fromEntries(searchParams.entries()),
+          });
+          // Show a helpful alert in production to confirm what the frontend is seeing
+          alert(
+            "Debug: Authentication token missing from URL. Please ensure the backend is passing it.",
+          );
+        }
+
+        console.log("🔑 Google OAuth Callback detected:", {
+          redirectPath,
+          hasToken: !!token,
+          tokenSnippet: token ? `${token.substring(0, 10)}...` : "null",
+        });
 
         // User is authenticated but profile doesn't exist - redirect to onboarding
         const userData = {
