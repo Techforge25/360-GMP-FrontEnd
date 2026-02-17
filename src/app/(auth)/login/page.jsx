@@ -59,8 +59,8 @@ function LoginPageContent() {
       });
 
       if (res.success) {
+        // ...Existing success logic...
         console.log("Logged in:", res.data);
-        // Check if token is at the root level and merge it
         const finalUserData = {
           ...res.data,
           accessToken:
@@ -72,23 +72,86 @@ function LoginPageContent() {
 
         login(finalUserData);
 
-        // Check isNew field to decide navigation
         if (finalUserData.isNewToPlatform) {
           router.push("/onboarding/role");
         } else {
-          // If not new, send to dashboard based on role (or default dashboard)
-          // If role is missing, default to role selection anyway as a fallback
           const role = res.data.role;
           if (role === "business") router.push("/dashboard/business");
           else if (role === "user") router.push("/dashboard/user");
           else router.push("/dashboard");
         }
       } else {
-        setError(res.message || "Login failed");
+        const resMessage = res.message || "Login failed";
+        // Handle activation error in the 'else' block
+        if (
+          resMessage.includes("Your account is not activated yet") ||
+          resMessage.includes("verify your identity via OTP")
+        ) {
+          setError(resMessage);
+
+          // Call resend OTP API and then redirect
+          setTimeout(async () => {
+            try {
+              const otpRes = await api.post({
+                url: `/auth/user/resend-otp`,
+                payload: { email },
+                enableSuccessMessage: true,
+                enableErrorMessage: false,
+                activateLoader: false,
+              });
+
+              // Get userId from response and redirect to OTP verification
+              if (otpRes.success && otpRes.data) {
+                const userId = otpRes.data;
+                router.push(
+                  `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
+                );
+              }
+            } catch (resendErr) {
+              console.error("Resend OTP error:", resendErr);
+            }
+          }, 2000);
+          return;
+        }
+        setError(resMessage);
       }
     } catch (err) {
       console.error("Login Error:", err);
-      setError("Invalid credentials");
+      const errorMessage = err.message || "Login failed";
+
+      // Handle activation error in the 'catch' block
+      if (
+        errorMessage.includes("Your account is not activated yet") ||
+        errorMessage.includes("verify your identity via OTP")
+      ) {
+        setError(errorMessage);
+
+        // Call resend OTP API and then redirect
+        setTimeout(async () => {
+          try {
+            const otpRes = await api.post({
+              url: `/auth/user/resend-otp`,
+              payload: { email },
+              enableSuccessMessage: true,
+              enableErrorMessage: false,
+              activateLoader: false,
+            });
+
+            // Get userId from response and redirect to OTP verification
+            if (otpRes.success && otpRes.data) {
+              const userId = otpRes.data;
+              router.push(
+                `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
+              );
+            }
+          } catch (resendErr) {
+            console.error("Resend OTP error:", resendErr);
+          }
+        }, 2000);
+        return;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

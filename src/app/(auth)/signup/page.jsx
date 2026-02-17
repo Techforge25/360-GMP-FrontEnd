@@ -60,6 +60,41 @@ export default function SignupPage() {
       }
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
+      const errorMessage = err.message || "Signup failed";
+
+      // Handle "account not activated" error and redirect to OTP verification
+      if (
+        errorMessage.includes("Your account is not activated yet") ||
+        errorMessage.includes("verify your identity via OTP")
+      ) {
+        setError(errorMessage);
+
+        // Call resend OTP API and then redirect
+        setTimeout(async () => {
+          try {
+            const res = await api.post({
+              url: `/auth/user/resend-otp`,
+              payload: { email },
+              enableSuccessMessage: true,
+              enableErrorMessage: false,
+              activateLoader: false,
+            });
+
+            // Get userId from response and redirect to OTP verification
+            if (res.success && res.data) {
+              const userId = res.data;
+              router.push(
+                `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
+              );
+            }
+          } catch (resendErr) {
+            console.error("Resend OTP error:", resendErr);
+          }
+        }, 2000);
+        return;
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

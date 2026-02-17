@@ -28,8 +28,10 @@ import { uploadToCloudinary } from "@/lib/cloudinary";
 import { useUserRole } from "@/context/UserContext";
 import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 import { CountrySelect } from "@/components/ui/CountrySelect";
+import { LocationSearch } from "@/components/ui/LocationSearch";
 import dynamic from "next/dynamic";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import { PDFViewer } from "@/components/ui/PDFViewer";
 
 const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ssr: false,
@@ -374,7 +376,11 @@ const Step1 = ({
         </label>
         <Input
           placeholder="https://www.example.com"
-          value={formData.website || ""}
+          value={
+            formData.website.startsWith("https://")
+              ? formData.website
+              : "https://" + formData.website || ""
+          }
           onChange={(e) => handleChange("website", e.target.value)}
           required
         />
@@ -410,63 +416,132 @@ const Step1 = ({
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-base font-medium">Profile Image</label>
-          <FileUpload
-            label="Upload Profile Image"
-            subLabel="JPG, PNG (Max 10MB)"
-            onUploadingChange={setIsUploading}
-            onUpload={(file, onProgress) =>
-              uploadToCloudinary(file, "business/profile", onProgress).then(
-                (url) => {
-                  handleChange("profileImageUrl", url);
-                  return url;
-                },
-              )
-            }
-          />
-          {formData.profileImageUrl && (
-            <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
-              <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
-              <div className="w-28 h-full mx-auto border border-gray-200 rounded-lg overflow-hidden">
-                <Image
-                  src={formData.profileImageUrl}
-                  alt="Profile Preview"
-                  width={80}
-                  height={80}
-                  className="object-cover w-full h-full"
+          <label className="text-base font-medium">
+            Profile Image <span className="text-red-500">*</span>
+          </label>
+
+          {formData.profileImageUrl ? (
+            <div className="relative group">
+              <label className="border-2 border-border-light rounded-lg p-4 bg-surface hover:bg-surface-muted cursor-pointer block transition-all">
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png"
+                  onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (file.size > 10 * 1024 * 1024) {
+                      alert("File must be under 10MB");
+                      return;
+                    }
+                    setIsUploading(true);
+                    try {
+                      const url = await uploadToCloudinary(
+                        file,
+                        "business/profile",
+                        () => {},
+                      );
+                      handleChange("profileImageUrl", url);
+                    } catch (err) {
+                      alert("Upload failed");
+                      console.error(err);
+                    } finally {
+                      setIsUploading(false);
+                    }
+                  }}
                 />
-              </div>
+                <div className="w-28 h-28 mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3">
+                  <Image
+                    src={formData.profileImageUrl}
+                    alt="Profile Preview"
+                    width={112}
+                    height={112}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+                <p className="text-sm font-medium text-center text-text-secondary">
+                  Click to change image
+                </p>
+              </label>
             </div>
+          ) : (
+            <FileUpload
+              label="Upload Profile Image"
+              subLabel="JPG, PNG (Max 10MB)"
+              onUploadingChange={setIsUploading}
+              onUpload={(file, onProgress) =>
+                uploadToCloudinary(file, "business/profile", onProgress).then(
+                  (url) => {
+                    handleChange("profileImageUrl", url);
+                    return url;
+                  },
+                )
+              }
+            />
           )}
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">Banner Image</label>
-          <FileUpload
-            label="Upload Banner Image"
-            subLabel="Dimension 1440×300 (Max 10MB)"
-            onUploadingChange={setIsUploading}
-            onUpload={(file, onProgress) =>
-              uploadToCloudinary(file, "business/banner", onProgress).then(
-                (url) => {
-                  handleChange("bannerImageUrl", url);
-                  return url;
-                },
-              )
-            }
-          />
-          {formData.bannerImageUrl && (
-            <div className="mt-3 p-3 border border-border-light rounded-lg bg-gray-50">
-              <p className="text-sm font-medium text-gray-600 mb-2">Preview:</p>
-              <div className="relative w-full h-32 mx-auto border border-gray-200 rounded-lg overflow-hidden">
-                <Image
-                  src={formData.bannerImageUrl}
-                  alt="Banner Preview"
-                  fill
-                  className="object-cover w-full h-full"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          <label className="text-base font-medium">
+            Banner Image <span className="text-red-500">*</span>
+          </label>
+          {formData.bannerImageUrl ? (
+            <div className="relative group">
+              <label className="border-2 border-border-light rounded-lg p-4 bg-surface hover:bg-surface-muted cursor-pointer block transition-all">
+                <input
+                  type="file"
+                  className="hidden"
+                  accept=".jpg,.jpeg,.png"
+                  onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (file.size > 10 * 1024 * 1024) {
+                      alert("File must be under 10MB");
+                      return;
+                    }
+                    setIsUploading(true);
+                    try {
+                      const url = await uploadToCloudinary(
+                        file,
+                        "business/banner",
+                        () => {},
+                      );
+                      handleChange("bannerImageUrl", url);
+                    } catch (err) {
+                      alert("Upload failed");
+                      console.error(err);
+                    } finally {
+                      setIsUploading(false);
+                    }
+                  }}
                 />
-              </div>
+                <div className="relative w-full h-32 mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3">
+                  <Image
+                    src={formData.bannerImageUrl}
+                    alt="Banner Preview"
+                    fill
+                    className="object-cover w-full h-full"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
+                <p className="text-sm font-medium text-center text-text-secondary">
+                  Click to change image
+                </p>
+              </label>
             </div>
+          ) : (
+            <FileUpload
+              label="Upload Banner Image"
+              subLabel="Dimension 1440×300 (Max 10MB)"
+              onUploadingChange={setIsUploading}
+              onUpload={(file, onProgress) =>
+                uploadToCloudinary(file, "business/banner", onProgress).then(
+                  (url) => {
+                    handleChange("bannerImageUrl", url);
+                    return url;
+                  },
+                )
+              }
+            />
           )}
         </div>
       </div>
@@ -478,6 +553,7 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
   const [currentCertName, setCurrentCertName] = useState("");
   const [isCustomCert, setIsCustomCert] = useState(false);
   const [uploadingCert, setUploadingCert] = useState(false);
+  const [previewCert, setPreviewCert] = useState(null);
 
   const predefinedCerts = [
     "ISO 9001",
@@ -500,25 +576,38 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
       <div>
         <h3 className="text-lg font-semibold mb-4">Company Location</h3>
+
+        {/* Location Search */}
+        <div className="space-y-2 mb-6">
+          <label className="text-base font-medium">
+            Search Location <span className="text-red-500">*</span>
+          </label>
+          <LocationSearch
+            placeholder="Search for your business location..."
+            onLocationSelect={(locationData) => {
+              handleChange("country", locationData.country);
+              handleChange("city", locationData.city);
+              handleChange("address", locationData.address);
+            }}
+          />
+          <p className="text-sm text-text-secondary">
+            Search and select your location, then edit the fields below if
+            needed
+          </p>
+        </div>
+
+        {/* Manual Input Fields */}
         <div className="grid md:grid-cols-3 gap-6">
           <div className="space-y-2">
             <label className="text-base font-medium">
               Country <span className="text-red-500">*</span>
             </label>
-            <CountrySelect
+            <Input
+              placeholder="Country"
               value={formData.country || ""}
-              onChange={(value) => handleChange("country", value)}
+              onChange={(e) => handleChange("country", e.target.value)}
               required
             />
-            {formData.country === "Other" && (
-              <Input
-                placeholder="Enter your country"
-                className="mt-2"
-                value={formData.customCountry || ""}
-                onChange={(e) => handleChange("customCountry", e.target.value)}
-                required
-              />
-            )}
           </div>
           <div className="space-y-2">
             <label className="text-base font-medium">
@@ -656,41 +745,66 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {formData.certifications.map((cert, index) => (
-                <div
-                  key={index}
-                  className="relative group p-4 border border-border-light rounded-xl bg-white hover:border-brand-primary/30 transition-all shadow-sm"
-                >
-                  <div className="relative aspect-video w-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50 mb-3">
-                    <Image
-                      src={cert.url}
-                      alt={cert.name}
-                      fill
-                      className="object-contain p-2"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <span
-                      className="text-sm font-bold text-text-primary truncate"
-                      title={cert.name}
+              {formData.certifications.map((cert, index) => {
+                const isPDF = cert.url?.toLowerCase().endsWith(".pdf");
+
+                return (
+                  <div
+                    key={index}
+                    className="relative group p-4 border border-border-light rounded-xl bg-white hover:border-brand-primary/30 transition-all shadow-sm"
+                  >
+                    <div
+                      className="relative aspect-video w-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50 mb-3 cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
+                      onClick={() => setPreviewCert(cert)}
                     >
-                      {cert.name}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const updated = formData.certifications.filter(
-                          (_, i) => i !== index,
-                        );
-                        handleChange("certifications", updated);
-                      }}
-                      className="text-sm font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors w-fit"
-                    >
-                      Remove Certificate
-                    </button>
+                      {isPDF ? (
+                        <div className="text-center p-4">
+                          <div className="text-5xl mb-2">📄</div>
+                          <p className="text-xs text-text-secondary truncate px-2">
+                            {cert.name}.pdf
+                          </p>
+                        </div>
+                      ) : (
+                        <Image
+                          src={cert.url}
+                          alt={cert.name}
+                          fill
+                          className="object-contain p-2"
+                        />
+                      )}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <span
+                        className="text-sm font-medium text-text-primary truncate"
+                        title={cert.name}
+                      >
+                        {cert.name}
+                      </span>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setPreviewCert(cert)}
+                          className="text-sm font-semibold text-brand-primary hover:text-brand-primary/80 flex items-center gap-1 transition-colors flex-1"
+                        >
+                          View Certificate
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = formData.certifications.filter(
+                              (_, i) => i !== index,
+                            );
+                            handleChange("certifications", updated);
+                          }}
+                          className="text-sm font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -746,6 +860,55 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
           </div>
         </div>
       </div>
+
+      {/* Certificate Preview Modal */}
+      {previewCert && (
+        <div
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+          onClick={() => setPreviewCert(null)}
+        >
+          <div
+            className="relative bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="sticky top-0 bg-white border-b border-border-light p-4 flex justify-between items-center z-10">
+              <h3 className="text-lg font-semibold">{previewCert.name}</h3>
+              <div className="flex items-center gap-3">
+                {/* <a
+                  href={previewCert.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-medium text-brand-primary hover:text-brand-primary/80 transition-colors"
+                >
+                  Open in New Tab
+                </a> */}
+                <button
+                  type="button"
+                  onClick={() => setPreviewCert(null)}
+                  className="text-2xl text-text-secondary hover:text-text-primary transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            <div className="p-6">
+              {previewCert.url?.toLowerCase().endsWith(".pdf") ? (
+                <PDFViewer url={previewCert.url} fileName={previewCert.name} />
+              ) : (
+                <div className="relative w-full min-h-[400px]">
+                  <Image
+                    src={previewCert.url}
+                    alt={previewCert.name}
+                    width={800}
+                    height={600}
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -810,6 +973,7 @@ const Step3 = ({ formData }) => (
       <h3 className="font-bold mb-2">Overview</h3>
       <SlateRenderer
         content={formData.bio}
+        maxLength={500}
         className="text-base text-text-secondary leading-relaxed"
       />
 
@@ -837,30 +1001,150 @@ const Step3 = ({ formData }) => (
           </p>
         </div>
       </div>
+      <div className="grid grid-cols-3 gap-6 mt-6">
+        <div>
+          <p className="text-sm font-bold text-text-primary mb-1">
+            Official Company Website
+          </p>
+          <p className="text-base text-text-secondary">
+            {formData.website || "N/A"}
+          </p>
+        </div>
+        <div>
+          <p className="text-sm font-bold text-text-primary mb-1">
+            Location
+          </p>
+          <span className="flex text-text-secondary items-center gap-1">
+            {formData.address || "Canada"},{" "}
+            {formData.city || "Ottawa"},{" "}
+            {formData.country || "Canada"}
+          </span>
+        </div>
+      </div>
     </div>
 
     {formData.certifications?.length > 0 && (
       <div className="p-6 border border-border-light rounded-lg bg-white mt-6">
         <h3 className="font-bold mb-3">Certifications & Compliance</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {formData.certifications.map((cert, index) => (
-            <div key={index} className="flex flex-col gap-2">
-              <div className="relative aspect-video w-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50">
-                <Image
-                  src={cert.url}
-                  alt={cert.name}
-                  fill
-                  className="object-contain p-2"
-                />
+          {formData.certifications.map((cert, index) => {
+            const isPDF = cert.url?.toLowerCase().endsWith(".pdf");
+
+            return (
+              <div key={index} className="flex flex-col gap-2">
+                <div className="relative aspect-video w-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
+                  {isPDF ? (
+                    <div className="text-center p-4">
+                      <div className="text-5xl mb-2">📄</div>
+                      <p className="text-xs text-text-secondary truncate px-2">
+                        {cert.name}.pdf
+                      </p>
+                    </div>
+                  ) : (
+                    <Image
+                      src={cert.url}
+                      alt={cert.name}
+                      fill
+                      className="object-contain p-2"
+                    />
+                  )}
+                </div>
+                <span className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-bold w-fit">
+                  {cert.name}
+                </span>
               </div>
-              <span className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-sm font-bold w-fit">
-                {cert.name}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     )}
+
+    <div className="p-6 border border-border-light rounded-lg bg-white">
+     
+
+      {/* <div className="grid grid-cols-3 gap-6 mt-6">
+        <div>
+          <p className="text-sm font-bold text-text-primary mb-1">
+            Business Type
+          </p>
+          <p className="text-base text-text-secondary">
+            {formData.businessType || "Private Corporation"}
+          </p>
+        </div>
+        <div>
+          <p className="text-sm font-bold text-text-primary mb-1">Founded</p>
+          <p className="text-base text-text-secondary">
+            {formData.foundedDate || "2021"}
+          </p>
+        </div>
+        <div>
+          <p className="text-sm font-bold text-text-primary mb-1">
+            Operating Hours
+          </p>
+          <p className="text-base text-text-secondary">
+            {formData.operatingHours || "09:00 - 18:00"}
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-3 gap-6 mt-6">
+        <div>
+          <p className="text-sm font-bold text-text-primary mb-1">
+            Official Company Website
+          </p>
+          <p className="text-base text-text-secondary">
+            {formData.website || "N/A"}
+          </p>
+        </div>
+        <div>
+          <p className="text-sm font-bold text-text-primary mb-1">
+            Location
+          </p>
+          <span className="flex text-text-secondary items-center gap-1">
+            {formData.address || "Canada"},{" "}
+            {formData.city || "Ottawa"},{" "}
+            {formData.country || "Canada"}
+          </span>
+        </div>
+      </div> */}
+
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Primary B2B Contact</h3>
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Contact Person Name 
+            </label>
+            <p className="text-base text-text-secondary">
+            {formData.contactName}
+          </p>
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Title 
+            </label>
+            <p className="text-base text-text-secondary">
+            {formData.contactTitle}
+          </p>
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Phone 
+            </label>
+            <p className="text-base text-text-secondary">
+            {formData.contactPhone}
+          </p>
+          </div>
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Support Email 
+            </label>
+            <p className="text-base text-text-secondary">
+            {formData.contactEmail}
+          </p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 flex gap-3 text-base text-orange-800">
       <div className="pt-0.5">
@@ -1294,7 +1578,7 @@ export default function BusinessProfilePage() {
       <SuccessModal
         isOpen={isSuccessModalOpen}
         title="Profile Complete!"
-        description="Your Business Profile Has Been Successfully Saved. You Would Now Be Redirected To The Dashboard."
+        description="Your Business Profile Has Been Successfully Saved. Waiting for admin approval (to be done in next phase) till then you can explore the login the account without approval."
         onNext={handleSuccessNext}
       />
     </div>

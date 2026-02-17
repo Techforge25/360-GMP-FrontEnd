@@ -1,0 +1,3 @@
+[2026-02-17 14:03] IMPLEMENTATION: Added account activation redirect in src/app/(auth)/login/page.jsx with a 2-second delay.
+If the login API returns "Your account is not activated yet. Please verify your identity via OTP.", the message is shown, and after 2 seconds, the user is redirected to /otp-verification.
+Params: email, userId, and type=signup.
