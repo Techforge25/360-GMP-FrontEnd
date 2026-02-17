@@ -14,6 +14,7 @@ import {
 import productAPI from "@/services/productAPI";
 import { useUserRole } from "@/context/UserContext";
 import { useCart } from "@/context/CartContext";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 export default function MarketplaceContent() {
   const router = useRouter();
@@ -730,9 +731,12 @@ export default function MarketplaceContent() {
                           <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-sm sm:text-sm text-gray-600 line-clamp-2 mb-2">
-                            {product.detail || product.description}
-                          </p>
+                          <div className="text-sm sm:text-sm text-gray-600 mb-2 h-[40px] overflow-hidden">
+                            <SlateRenderer
+                              content={product.detail || product.description}
+                              maxLength={60}
+                            />
+                          </div>
                           <div className="flex items-center justify-between">
                             <span className="text-sm sm:text-sm text-gray-500">
                               Min: {product.moq} pc
@@ -789,9 +793,12 @@ export default function MarketplaceContent() {
                           <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
                             {product.title}
                           </h3>
-                          <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
-                            {product.detail || product.description}
-                          </p>
+                          <div className="text-sm sm:text-sm text-gray-600 mb-3 h-[40px] overflow-hidden">
+                            <SlateRenderer
+                              content={product.detail || product.description}
+                              maxLength={60}
+                            />
+                          </div>
                           <div className="flex items-center justify-between">
                             <span className="text-sm sm:text-sm text-gray-500">
                               Min: {product.minOrderQty} pc
@@ -858,9 +865,12 @@ const ProductCard = ({
         <h3 className="font-semibold text-gray-900 mb-2 text-sm sm:text-base line-clamp-1">
           {product.title}
         </h3>
-        <p className="text-sm sm:text-sm text-gray-600 mb-3 line-clamp-2">
-          {product.detail || product.description}
-        </p>
+        <div className="text-sm sm:text-sm text-gray-600 mb-3 h-[40px] overflow-hidden">
+          <SlateRenderer
+            content={product.detail || product.description}
+            maxLength={60}
+          />
+        </div>
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm sm:text-sm text-gray-500">
             Min: {product.minOrderQty} pc
@@ -951,9 +961,12 @@ function TopDealsSection({
                 <h3 className="font-semibold text-gray-900 mb-2 text-base line-clamp-1">
                   {deal.title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                  {deal.detail || deal.description}
-                </p>
+                <div className="text-sm text-gray-600 mb-3 h-[40px] overflow-hidden">
+                  <SlateRenderer
+                    content={deal.detail || deal.description}
+                    maxLength={60}
+                  />
+                </div>
 
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-purple-600 font-bold text-xl">
