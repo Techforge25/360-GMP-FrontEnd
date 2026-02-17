@@ -73,12 +73,18 @@ const ProfileSwitchModal = ({
         sourceLabel: "PERSONAL",
         targetLabel: "BUSINESS",
         title: "Switch To Business Profile?",
-        description: (
+        description: businessName ? (
           <span>
             Ready to get back to work? Switch to{" "}
-            <strong>{businessName || "Global Manufacturing Co."}</strong> to
-            fulfill pending orders, update your product inventory, or review job
+            <strong className="text-gray-900">{businessName}</strong> to fulfill
+            pending orders, update your product inventory, or review job
             applicants. Your personal browsing history will be saved
+          </span>
+        ) : (
+          <span>
+            Ready to grow your business? Switch to Business Profile to create
+            your company page, list your products, and start reaching new
+            customers and job applicants today.
           </span>
         ),
         stayBtnText: "Stay On User Profile",

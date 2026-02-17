@@ -182,9 +182,7 @@ export default function MarketplaceContent() {
     // Try all possible product ID fields
     const productId = product._id || product.id || product.productId;
 
-    // Try all possible business/supplier ID fields
-    let businessId = null;
-
+    // Helper to extract business ID
     const extractId = (val) => {
       if (!val) return null;
       if (typeof val === "string") return val;
@@ -192,12 +190,32 @@ export default function MarketplaceContent() {
       return null;
     };
 
-    businessId =
+    // Try all possible business/supplier ID fields
+    let businessId =
       extractId(product.businessId) ||
       extractId(product.supplierId) ||
       extractId(product.business) ||
       extractId(product.vendorId) ||
       extractId(product.vendor);
+
+    // If businessId is missing but we have a productId, fetch full details
+    if (!businessId && productId) {
+      try {
+        console.log("Fetching full product details to find businessId...");
+        const res = await productAPI.getById(productId);
+        if (res.success && res.data) {
+          const fullProduct = res.data;
+          businessId =
+            extractId(fullProduct.businessId) ||
+            extractId(fullProduct.supplierId) ||
+            extractId(fullProduct.business) ||
+            extractId(fullProduct.vendorId) ||
+            extractId(fullProduct.vendor);
+        }
+      } catch (error) {
+        console.error("Failed to fetch product details", error);
+      }
+    }
 
     if (!productId || !businessId) {
       console.error("Missing productId or businessId", {
