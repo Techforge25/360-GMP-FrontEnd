@@ -71,18 +71,6 @@ export default function ChatProfileSidebar({ user, products }) {
         <h3 className="font-bold text-gray-900 text-sm mb-4">Quick Actions</h3>
         <div className="grid grid-cols-2 gap-3">
           <button className="flex flex-col items-center justify-center gap-2 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-            <FiFileText className="w-5 h-5 text-gray-700" />
-            <span className="text-sm font-medium text-gray-700">
-              Request RFQ
-            </span>
-          </button>
-          <button className="flex flex-col items-center justify-center gap-2 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-            <FiBox className="w-5 h-5 text-gray-700" />
-            <span className="text-sm font-medium text-gray-700">
-              Order Sample
-            </span>
-          </button>
-          <button className="flex flex-col items-center justify-center gap-2 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
             <FiBookmark className="w-5 h-5 text-gray-700" />
             <span className="text-sm font-medium text-gray-700">Favorite</span>
           </button>

@@ -1,3 +1,7 @@
+// Enable Static Site Generation (SSG) for optimal performance
+export const dynamic = "force-static";
+export const revalidate = false; // Never revalidate, fully static
+
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import Hero from "@/components/landing/Hero";
