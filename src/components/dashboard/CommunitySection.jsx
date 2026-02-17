@@ -139,8 +139,9 @@ const CommunitySection = () => {
           {communities.map((comm) => {
             const typeConfig = communityType[comm.type] || communityType.public;
             return (
-              <div
+              <Link
                 key={comm._id}
+                href={`/community/${comm._id}`}
                 className="min-w-[280px] md:min-w-[300px] lg:min-w-[calc(25%-18px)] max-w-[calc(25%-18px)] snap-start bg-white rounded-xl border border-gray-100 p-4 hover:shadow-md transition-all group flex-shrink-0"
               >
                 <div className="h-32 rounded-lg bg-gray-50 mb-4 overflow-hidden relative">
@@ -176,17 +177,14 @@ const CommunitySection = () => {
                       {comm.memberCount || 0} Members
                     </p>
                   </div>
-                  <Link
-                    href={`/community/${comm._id}`}
-                    className="p-2 bg-brand-primary/10 rounded-card align-right"
-                  >
+                  <div className="p-2 bg-brand-primary/10 rounded-card align-right">
                     <FaArrowRightLong
                       size={16}
                       className="text-brand-primary"
                     />
-                  </Link>
+                  </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

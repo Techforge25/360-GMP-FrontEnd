@@ -43,14 +43,15 @@ export default function ProfileTestimonials() {
   return (
     <div className="mb-20">
       <h2 className="text-center text-3xl font-semibold text-black mb-10">Testimonials</h2>
+
+      <p className="text-center text-gray-500">No Testimonials Available</p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {testimonials.map((t, i) => (
              <div key={i} className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
                  <div className="flex justify-between items-start mb-4">
                      <div className="flex items-center gap-3">
                          <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
-                             {/* Avatar */}
                          </div>
                          <div>
                              <h4 className="font-bold text-gray-900">{t.name}</h4>
@@ -81,10 +82,10 @@ export default function ProfileTestimonials() {
                  </div>
              </div>
           ))}
-      </div>
+      </div> */}
 
       {/* Pagination */}
-      <div className="flex justify-center items-center mt-10 gap-2">
+      {/* <div className="flex justify-center items-center mt-10 gap-2">
            <button className="px-4 py-2 bg-gray-100 text-gray-500 rounded hover:bg-gray-200 text-sm"> &lt; Back </button>
            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded text-gray-600 hover:bg-gray-50 text-sm">1</button>
            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded text-gray-600 hover:bg-gray-50 text-sm">2</button>
@@ -94,7 +95,7 @@ export default function ProfileTestimonials() {
            <span className="mx-1 text-gray-400">...</span>
            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded text-gray-600 hover:bg-gray-50 text-sm">30</button>
            <button className="px-4 py-2 bg-[#110026] text-white rounded hover:bg-[#2a0b4d] text-sm"> Next &gt; </button>
-      </div>
+      </div> */}
     </div>
   );
 }

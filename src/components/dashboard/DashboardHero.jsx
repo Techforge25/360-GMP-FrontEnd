@@ -8,6 +8,7 @@ const DashboardHero = () => {
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
+  const [type, setType] = useState("");
 
   const handleSearch = () => {
     // Allow search if at least one field has input
@@ -16,6 +17,7 @@ const DashboardHero = () => {
     const params = new URLSearchParams();
     if (query.trim()) params.append("q", query.trim());
     if (location.trim()) params.append("location", location.trim());
+    if (type.trim()) params.append("type", type.trim());
 
     router.push(`/dashboard/search?${params.toString()}`);
   };
@@ -24,6 +26,15 @@ const DashboardHero = () => {
     if (e.key === "Enter") {
       handleSearch();
     }
+  };
+
+  const handlePopularTagClick = (tag) => {
+    setQuery(tag);
+    // Trigger search with the new tag
+    const params = new URLSearchParams();
+    params.append("q", tag);
+    if (location.trim()) params.append("location", location.trim());
+    router.push(`/dashboard/search?${params.toString()}`);
   };
   return (
     <div className="relative w-full min-h-[650px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-200 to-slate-300">
@@ -100,16 +111,28 @@ const DashboardHero = () => {
             <span className="text-gray-500 text-base font-medium">
               Popular:
             </span>
-            <button className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium">
+            <button
+              onClick={() => handlePopularTagClick("Manufacturing")}
+              className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium"
+            >
               Manufacturing
             </button>
-            <button className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium">
+            <button
+              onClick={() => handlePopularTagClick("Healthcare")}
+              className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium"
+            >
               Healthcare
             </button>
-            <button className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium">
-              Healthcare
+            <button
+              onClick={() => handlePopularTagClick("Technology")}
+              className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium"
+            >
+              Technology
             </button>
-            <button className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium">
+            <button
+              onClick={() => handlePopularTagClick("Consulting")}
+              className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-base rounded-full transition-colors font-medium"
+            >
               Consulting
             </button>
           </div>

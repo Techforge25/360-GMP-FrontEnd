@@ -111,7 +111,7 @@ export default function MarketplaceContent() {
           topRankingRes.data?.docs || topRankingRes.data || [],
         );
       if (newRes.success)
-        setNewProducts(newRes.data?.docs || newRes.data || []);
+        setNewProducts((newRes.data?.docs || newRes.data || []).slice(0, 3));
       if (flashRes.success)
         setFlashDeals(flashRes.data?.docs || flashRes.data || []);
 

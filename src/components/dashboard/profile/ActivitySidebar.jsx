@@ -602,12 +602,12 @@ const ActivitySidebar = () => {
             {isClient && <BusinessMapView center={mapLocation} zoom={13} />}
           </div>
         </div>
-        <button
+        {/* <button
           onClick={() => setShowMapModal(true)}
           className="w-full py-3 bg-[#240457] text-white text-sm font-semibold hover:bg-[#240457]/90 transition-colors flex items-center justify-center gap-2 mt-4 rounded-lg"
         >
           Update Location <FiMapPin className="w-3 h-3" />
-        </button>
+        </button> */}
       </div>
 
       {/* Map Modal */}

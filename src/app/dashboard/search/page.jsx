@@ -81,7 +81,10 @@ function SearchResults() {
               (b.companyName &&
                 b.companyName.toLowerCase().includes(lowerQuery)) ||
               (b.description &&
-                b.description.toLowerCase().includes(lowerQuery)),
+                b.description.toLowerCase().includes(lowerQuery)) ||
+              (b.businessType &&
+                b.businessType.toLowerCase().includes(lowerQuery)) ||
+              (b.industry && b.industry.toLowerCase().includes(lowerQuery)),
           );
         }
 

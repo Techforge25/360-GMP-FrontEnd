@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import React from "react";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -15,17 +15,10 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-function ChangeView({ center }) {
-  const map = useMapEvents({});
-  useEffect(() => {
-    map.setView(center, map.getZoom());
-  }, [center, map]);
-  return null;
-}
-
 const BusinessMapView = ({ center, zoom = 13 }) => {
   return (
     <MapContainer
+      key={`${center[0]}-${center[1]}`}
       center={center}
       zoom={zoom}
       style={{ height: "100%", width: "100%" }}
@@ -33,7 +26,6 @@ const BusinessMapView = ({ center, zoom = 13 }) => {
       dragging={false}
       zoomControl={false}
     >
-      <ChangeView center={center} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

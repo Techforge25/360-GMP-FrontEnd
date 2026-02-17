@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   FaLinkedinIn,
   FaTwitter,
@@ -18,8 +18,21 @@ import { FiGlobe } from "react-icons/fi";
 import { useUserRole } from "@/context/UserContext";
 import { FaCrown } from "react-icons/fa";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import dynamic from "next/dynamic";
+
+// Dynamically import Leaflet map to avoid SSR issues
+const BusinessMapView = dynamic(
+  () => import("@/components/dashboard/profile/BusinessMapView"),
+  {
+    ssr: false,
+    loading: () => <div className="h-full w-full bg-gray-100 animate-pulse" />,
+  },
+);
 
 export default function ProfileOverview({ business, socialLinks = [] }) {
+  const [isClient, setIsClient] = useState(false);
+  const [mapLocation, setMapLocation] = useState([51.505, -0.09]); // Default location
+
   const { user } = useUserRole();
   const role = user?.role;
   // Robust check for free trial (role or subscription plan)
@@ -27,6 +40,57 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
     role === "free_trial" ||
     user?.subscription?.planName?.toLowerCase()?.includes("trial") ||
     user?.subscription?.plan?.name?.toLowerCase()?.includes("trial");
+
+  const getFullAddress = (location) => {
+    if (!location) return "No location provided";
+    const parts = [
+      location.addressLine,
+      location.city,
+      location.country,
+    ].filter(Boolean);
+    return parts.join(", ");
+  };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Update map location from business data
+  useEffect(() => {
+    if (business?.latitude && business?.longitude) {
+      setMapLocation([business.latitude, business.longitude]);
+    }
+  }, [business]);
+
+  // Geocode address if coordinates are missing
+  useEffect(() => {
+    const geocodeAddress = async () => {
+      const address = getFullAddress(business?.location);
+      if (
+        address &&
+        address !== "No location provided" &&
+        (!business?.latitude || !business?.longitude)
+      ) {
+        try {
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+              address,
+            )}`,
+          );
+          const data = await response.json();
+          if (data && data.length > 0) {
+            setMapLocation([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
+          }
+        } catch (error) {
+          console.error("Geocoding failed:", error);
+        }
+      }
+    };
+
+    if (business && (!business.latitude || !business.longitude)) {
+      geocodeAddress();
+    }
+  }, [business?.location]);
 
   if (!business) return null;
 
@@ -242,55 +306,10 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
           )}
 
           {/* Map Display */}
-          <div className="relative mt-4">
-            <div
-              className={`rounded-lg overflow-hidden h-64 bg-gray-200 relative z-0 transition-all duration-300 ${isFreeTrial ? "blur-[8px] select-none pointer-events-none" : ""}`}
-            >
-              {business.latitude && business.longitude ? (
-                <>
-                  <iframe
-                    width="100%"
-                    height="100%"
-                    frameBorder="0"
-                    scrolling="no"
-                    marginHeight="0"
-                    marginWidth="0"
-                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${business.longitude - 0.01}%2C${business.latitude - 0.01}%2C${business.longitude + 0.01}%2C${business.latitude + 0.01}&layer=mapnik&marker=${business.latitude}%2C${business.longitude}`}
-                    className="border-none"
-                  />
-                  <div className="absolute bottom-2 right-2 flex gap-2">
-                    <a
-                      href={`https://www.openstreetmap.org/?mlat=${business.latitude}&mlon=${business.longitude}#map=15/${business.latitude}/${business.longitude}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-white/80 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold text-indigo-900 border border-indigo-200 hover:bg-white transition-colors"
-                    >
-                      View Larger Map
-                    </a>
-                  </div>
-                </>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center border border-dashed border-gray-300">
-                  <p className="text-sm text-gray-500">
-                    Location coordinates not available
-                  </p>
-                </div>
-              )}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden py-3 px-5 mt-4">
+            <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden">
+              {isClient && <BusinessMapView center={mapLocation} zoom={13} />}
             </div>
-
-            {isFreeTrial && (
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center">
-                <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-purple-600 text-white rounded-full shadow-xl mb-4 transform hover:scale-105 transition-transform cursor-pointer">
-                  <FaCrown className="text-base" />
-                  <span className="text-sm font-bold uppercase tracking-wide">
-                    Upgrade
-                  </span>
-                </div>
-                <p className="text-base font-semibold text-gray-800 max-w-[250px] leading-tight">
-                  Upgrade your plan to view location information
-                </p>
-              </div>
-            )}
           </div>
         </div>
       </div>
