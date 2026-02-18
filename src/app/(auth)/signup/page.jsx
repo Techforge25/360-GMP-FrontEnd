@@ -21,7 +21,9 @@ export default function SignupPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -34,6 +36,14 @@ export default function SignupPage() {
     if (password.length < 8) {
       setError("Password must be at least 8 characters");
       setLoading(false);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setTimeout(() => {
+        setError("Passwords does not match");
+        setLoading(false);
+      }, 1000);
       return;
     }
 
@@ -168,6 +178,37 @@ export default function SignupPage() {
                 className="absolute right-2 xs:right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary p-1"
               >
                 {showPassword ? (
+                  <FiEyeOff className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+                ) : (
+                  <FiEye className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
+            <label
+              htmlFor="confirmPassword"
+              className="text-sm xs:text-sm sm:text-base font-medium text-text-primary"
+            >
+              Confirm Password
+            </label>
+            <div className="relative">
+              <Input
+                id="confirmPassword"
+                placeholder="••••••••••"
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 pr-8 xs:pr-10 text-sm xs:text-sm sm:text-base"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-2 xs:right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary p-1"
+              >
+                {showConfirmPassword ? (
                   <FiEyeOff className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
                 ) : (
                   <FiEye className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
