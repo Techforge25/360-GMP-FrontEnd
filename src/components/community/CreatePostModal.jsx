@@ -246,7 +246,7 @@ const CreatePostModal = ({ isOpen, onClose, onSubmit, communityId }) => {
           </div>
 
           {/* Share To Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="text-lg font-semibold text-gray-900">
                 Share To
@@ -289,7 +289,7 @@ const CreatePostModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                 </span>
               </label>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Action Buttons */}

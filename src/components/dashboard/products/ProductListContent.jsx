@@ -26,6 +26,7 @@ const ProductListContent = ({ isProfileView = false }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
 
   // Filters
   const [inventoryFilter, setInventoryFilter] = useState("");
@@ -134,6 +135,23 @@ const ProductListContent = ({ isProfileView = false }) => {
     { id: "pending", label: "Pending/Review" },
     { id: "draft", label: "Draft" },
   ];
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedProductIds(products.map((p) => p._id));
+    } else {
+      setSelectedProductIds([]);
+    }
+  };
+
+  const handleSelectProduct = (productId, e) => {
+    if (e) e.stopPropagation();
+    setSelectedProductIds((prev) =>
+      prev.includes(productId)
+        ? prev.filter((id) => id !== productId)
+        : [...prev, productId],
+    );
+  };
 
   return (
     <div className={isProfileView ? "bg-gray-50" : "bg-gray-50"}>
@@ -304,6 +322,11 @@ const ProductListContent = ({ isProfileView = false }) => {
               <input
                 type="checkbox"
                 className="rounded border-gray-300 text-indigo-600 focus:ring-0"
+                onChange={handleSelectAll}
+                checked={
+                  products.length > 0 &&
+                  selectedProductIds.length === products.length
+                }
               />
             </div>
             <div className="col-span-3 text-black">Products</div>
@@ -332,6 +355,15 @@ const ProductListContent = ({ isProfileView = false }) => {
                 {/* Mobile Card Layout */}
                 <div className="lg:hidden p-4">
                   <div className="flex items-start gap-3 mb-3">
+                    <div className="pt-1">
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-0"
+                        checked={selectedProductIds.includes(product._id)}
+                        onChange={(e) => handleSelectProduct(product._id, e)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                    </div>
                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200 relative">
                       {product.image ? (
                         <Image
@@ -443,6 +475,8 @@ const ProductListContent = ({ isProfileView = false }) => {
                     <input
                       type="checkbox"
                       className="rounded border-gray-300 text-indigo-600 focus:ring-0"
+                      checked={selectedProductIds.includes(product._id)}
+                      onChange={(e) => handleSelectProduct(product._id, e)}
                       onClick={(e) => e.stopPropagation()}
                     />
                   </div>
@@ -537,6 +571,10 @@ const ProductListContent = ({ isProfileView = false }) => {
                       onClick={(e) => e.stopPropagation()}
                     >
                       <img
+                        onClick={() => {
+                          setSelectedProduct(product);
+                          setIsDetailModalOpen(true);
+                        }}
                         src="/assets/images/chartIcon.png"
                         alt="Analytics"
                         className="w-4 h-4"

@@ -400,11 +400,6 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
               </p>
             </div>
           </div>
-          {isOwner && (
-            <button className="ml-auto px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center gap-2">
-              <span>✏️</span> Edit
-            </button>
-          )}
         </div>
 
         {/* Search Bar */}

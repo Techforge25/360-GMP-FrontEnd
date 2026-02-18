@@ -59,7 +59,13 @@ export default function ProductDetailContent({ productId, businessId }) {
         {/* Breadcrumb */}
         <div className="text-sm text-gray-700 mb-6 font-medium">
           Business List <span className="mx-1">&gt;</span>{" "}
-          {product.businessId?.companyName || "Business"}{" "}
+          {product.businessId?.companyName ||
+            product.businessId?.name ||
+            product.business?.companyName ||
+            product.business?.name ||
+            product.businessName ||
+            product.supplierName ||
+            "Business"}{" "}
           <span className="mx-1">&gt;</span> Product List{" "}
           <span className="mx-1 font-bold text-[#240457]">
             &gt; Product Detail

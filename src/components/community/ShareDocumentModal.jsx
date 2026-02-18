@@ -256,7 +256,7 @@ const ShareDocumentModal = ({ isOpen, onClose, onSubmit, communityId }) => {
             >
               <FiUpload className="text-[#6366f1] w-5 h-5" />
               <span className="text-[#6366f1] font-medium text-base">
-                Documet
+                Document
               </span>
             </button>
             <input
@@ -270,7 +270,7 @@ const ShareDocumentModal = ({ isOpen, onClose, onSubmit, communityId }) => {
           </div>
 
           {/* Share To Section */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="text-lg font-semibold text-gray-900">
                 Share To
@@ -313,7 +313,7 @@ const ShareDocumentModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                 </span>
               </label>
             </div>
-          </div>
+          </div> */}
         </div>
 
         {/* Action Buttons */}

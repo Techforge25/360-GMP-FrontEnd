@@ -92,22 +92,21 @@ const ActivitySidebar = () => {
         filteredPayload.website = payload.website;
       }
 
-      const b2bContact = Object.fromEntries(
-        Object.entries(payload.b2bContact).filter(
-          ([_, v]) => v && v.trim() !== "",
-        ),
-      );
-      if (Object.keys(b2bContact).length > 0) {
-        filteredPayload.b2bContact = b2bContact;
+      if (formData.supportEmail && formData.supportEmail.trim() !== "") {
+        filteredPayload.supportEmail = formData.supportEmail;
+      }
+      if (formData.phone && formData.phone.trim() !== "") {
+        filteredPayload.phone = formData.phone;
       }
 
-      const location = Object.fromEntries(
-        Object.entries(payload.location).filter(
-          ([_, v]) => v && v.trim() !== "",
-        ),
-      );
-      if (Object.keys(location).length > 0) {
-        filteredPayload.location = location;
+      if (formData.addressLine && formData.addressLine.trim() !== "") {
+        filteredPayload.addressLine = formData.addressLine;
+      }
+      if (formData.city && formData.city.trim() !== "") {
+        filteredPayload.city = formData.city;
+      }
+      if (formData.country && formData.country.trim() !== "") {
+        filteredPayload.country = formData.country;
       }
 
       // Only send data if we have at least one field to update

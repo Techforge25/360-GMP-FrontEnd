@@ -12,7 +12,6 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
     time: "",
     location: "",
     tags: "",
-    shareTo: "public",
   });
   const [bannerImage, setBannerImage] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
@@ -104,7 +103,6 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
         },
         images: imageUrl ? [imageUrl] : [],
         tags: formData.tags,
-        shareTo: formData.shareTo,
       };
 
       const response = await postsAPI.createPost(payload);
@@ -120,7 +118,6 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
           time: "",
           location: "",
           tags: "",
-          shareTo: "public",
         });
         handleRemoveImage();
       }
@@ -231,7 +228,7 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
             </div> */}
 
             {/* Share To Section */}
-            <div className="space-y-3">
+            {/* <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-700">
                   Share To
@@ -280,7 +277,7 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                   </span>
                 </label>
               </div>
-            </div>
+            </div> */}
 
             {/* Footer Buttons */}
             <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">

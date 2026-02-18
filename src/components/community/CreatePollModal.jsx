@@ -9,7 +9,6 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
   const [options, setOptions] = useState(["", ""]);
   const [duration, setDuration] = useState("1week");
   const [tags, setTags] = useState("");
-  const [shareTo, setShareTo] = useState("public");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const durationOptions = [
@@ -75,7 +74,6 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
           options: validOptions.map((opt) => ({ option: opt.trim() })),
           duration: calculateDurationDate(duration),
         },
-        shareTo,
         tags: tags.trim() || "",
       };
 
@@ -98,7 +96,6 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
     setOptions(["", ""]);
     setDuration("1week");
     setTags("");
-    setShareTo("public");
     onClose();
   };
 
@@ -207,7 +204,7 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                 />
               </div> */}
 
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3 flex items-center gap-2">
                   Share To <MdPublic className="w-4 h-4" />
                 </label>
@@ -235,7 +232,7 @@ const CreatePollModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                     <span className="text-sm text-gray-700">Private</span>
                   </label>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

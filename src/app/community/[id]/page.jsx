@@ -64,13 +64,14 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
         // Temporary fix: Check if current user liked posts client-side
         const processedPosts = postsData.map((post) => {
           if (!post.likedByUser && user && post.likes) {
-            const currentUserId = user.profilePayload?._id;
+            const currentUserId =
+              user.profilePayload?._id || user.id || user._id;
+
             if (currentUserId) {
-              post.likedByUser = post.likes.some(
-                (like) =>
-                  like.userId === currentUserId ||
-                  like.userId?._id === currentUserId,
-              );
+              post.likedByUser = post.likes.some((like) => {
+                const likeUserId = like.userId?._id || like.userId || like;
+                return String(likeUserId) === String(currentUserId);
+              });
             }
           }
           return post;
@@ -90,6 +91,35 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
       setPostsLoading(false);
     }
   };
+
+  // Fix: Re-calculate likedByUser when user context becomes available
+  // This handles the race condition where posts are fetched before the user profile is loaded
+  useEffect(() => {
+    if (!user || posts.length === 0) return;
+
+    const currentUserId = user.profilePayload?._id || user.id || user._id;
+    if (!currentUserId) return;
+
+    setPosts((currentPosts) => {
+      let hasChanges = false;
+      const updatedPosts = currentPosts.map((post) => {
+        if (!post.likes) return post;
+
+        const isLiked = post.likes.some((like) => {
+          const likeUserId = like.userId?._id || like.userId || like;
+          return String(likeUserId) === String(currentUserId);
+        });
+
+        if (post.likedByUser !== isLiked) {
+          hasChanges = true;
+          return { ...post, likedByUser: isLiked };
+        }
+        return post;
+      });
+
+      return hasChanges ? updatedPosts : currentPosts;
+    });
+  }, [user, posts.length]);
 
   // Handle tab change
   const handleTabChange = (newTab) => {

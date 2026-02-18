@@ -56,6 +56,9 @@ export default function JobsPageContent() {
         queryParams.append("country", locationQuery);
       }
 
+      // Add sort parameter
+      queryParams.append("sortedType", sortBy);
+
       // Add filter parameters
       if (filters.pay.length > 0) {
         queryParams.append("payRange", filters.pay[filters.pay.length - 1]);

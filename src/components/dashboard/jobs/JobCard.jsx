@@ -69,6 +69,8 @@ export const JobCard = ({ job = dummyJob }) => {
     <div className="bg-white border border-border-light rounded-lg p-5 hover:shadow-md transition-shadow flex flex-col md:flex-row gap-4 items-start relative">
       <div className="w-24 h-24 rounded-lg bg-gray-50 border border-border-light flex-shrink-0 relative overflow-hidden">
         {jobData.logo ? (
+              <Link href={`/dashboard/${dashboardType}/jobs/${jobData.id}`}>
+
           <img
             src={jobData.logo}
             alt={jobData.company}
@@ -78,12 +80,16 @@ export const JobCard = ({ job = dummyJob }) => {
               e.target.src = "/assets/images/Logo.png";
             }}
           />
+          </Link>
         ) : (
+              <Link href={`/dashboard/${dashboardType}/jobs/${jobData.id}`}>
+
           <img
             src="/assets/images/Logo.png"
             alt={jobData.company}
             className="w-full h-full object-contain p-2"
           />
+          </Link>
         )}
       </div>
 
@@ -91,7 +97,9 @@ export const JobCard = ({ job = dummyJob }) => {
         <div className="flex items-start justify-between gap-4 mb-1">
           <div>
             <h3 className="font-semibold text-text-primary text-xl truncate pr-2">
-              {jobData.title}
+              <Link href={`/dashboard/${dashboardType}/jobs/${jobData.id}`}>
+                {jobData.title}
+              </Link>
             </h3>
             <div className="flex items-center gap-2 mt-2 text-base">
               <span className="font-medium text-brand-primary">
