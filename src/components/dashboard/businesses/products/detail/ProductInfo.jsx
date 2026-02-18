@@ -108,7 +108,7 @@ export default function ProductInfo({ product }) {
             <div className="text-cyan-500 text-lg">🌐</div>
           </div>
           <span className="font-semibold text-gray-900 text-sm">
-            {product.businessId?.name || "Business"}
+            {product.businessId?.companyName || "Business"}
           </span>
         </div>
         <div className="border-l border-gray-300 h-6 mx-2"></div>

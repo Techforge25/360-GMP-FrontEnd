@@ -930,8 +930,6 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
                       </div>
                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
                         <span>{formatTimeAgo(comment.commentedAt)}</span>
-                        <button className="hover:text-gray-700">Like</button>
-                        <button className="hover:text-gray-700">Reply</button>
                       </div>
                     </div>
                   </div>
@@ -1262,8 +1260,6 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
                     </div>
                     <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
                       <span>{formatTimeAgo(comment.commentedAt)}</span>
-                      <button className="hover:text-gray-700">Like</button>
-                      <button className="hover:text-gray-700">Reply</button>
                     </div>
                   </div>
                 </div>

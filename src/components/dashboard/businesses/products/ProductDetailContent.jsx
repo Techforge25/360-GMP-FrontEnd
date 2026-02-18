@@ -42,8 +42,12 @@ export default function ProductDetailContent({ productId, businessId }) {
     return (
       <div className="bg-white min-h-screen pb-24 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Product not found</h2>
-          <p className="text-gray-500">The product you're looking for doesn't exist.</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Product not found
+          </h2>
+          <p className="text-gray-500">
+            The product you're looking for doesn't exist.
+          </p>
         </div>
       </div>
     );
@@ -51,28 +55,36 @@ export default function ProductDetailContent({ productId, businessId }) {
 
   return (
     <div className="bg-white min-h-screen pb-24">
-       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {/* Breadcrumb */}
-            <div className="text-sm text-gray-700 mb-6 font-medium">
-                Business List <span className="mx-1">&gt;</span> {product.businessId?.name || 'Business'} <span className="mx-1">&gt;</span> Product List <span className="mx-1 font-bold text-[#240457]">&gt; Product Detail</span>
-            </div>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Breadcrumb */}
+        <div className="text-sm text-gray-700 mb-6 font-medium">
+          Business List <span className="mx-1">&gt;</span>{" "}
+          {product.businessId?.companyName || "Business"}{" "}
+          <span className="mx-1">&gt;</span> Product List{" "}
+          <span className="mx-1 font-bold text-[#240457]">
+            &gt; Product Detail
+          </span>
+        </div>
 
-            <div className="flex flex-col lg:flex-row gap-12 mb-16">
-                 {/* Left Column: Gallery */}
-                 <div className="w-full lg:w-1/2">
-                    <ProductGallery images={product.image ? [product.image] : []} />
-                 </div>
+        <div className="flex flex-col lg:flex-row gap-12 mb-16">
+          {/* Left Column: Gallery */}
+          <div className="w-full lg:w-1/2">
+            <ProductGallery images={product.image ? [product.image] : []} />
+          </div>
 
-                 {/* Right Column: Info */}
-                 <div className="w-full lg:w-1/2">
-                    <ProductInfo product={product} />
-                 </div>
-            </div>
+          {/* Right Column: Info */}
+          <div className="w-full lg:w-1/2">
+            <ProductInfo product={product} />
+          </div>
+        </div>
 
-            <ProductSpecs product={product} />
-            
-            <RelatedProducts businessId={product.businessId?._id || businessId} currentProductId={productId} />
-       </div>
+        <ProductSpecs product={product} />
+
+        <RelatedProducts
+          businessId={product.businessId?._id || businessId}
+          currentProductId={productId}
+        />
+      </div>
     </div>
   );
 }

@@ -107,14 +107,29 @@ export default function MarketplaceContent() {
 
       if (featuredRes.success)
         setFeaturedProducts(featuredRes.data?.docs || featuredRes.data || []);
-      if (topRankingRes.success)
-        setTopRankingProducts(
-          topRankingRes.data?.docs || topRankingRes.data || [],
-        );
+
+      // Merge flash deals into top ranking products
+      const rawTopRanking = topRankingRes.success
+        ? topRankingRes.data?.docs || topRankingRes.data || []
+        : [];
+      const rawFlashDeals = flashRes.success
+        ? flashRes.data?.docs || flashRes.data || []
+        : [];
+
+      const mergedTopRanking = [...rawFlashDeals, ...rawTopRanking];
+      const uniqueTopRanking = Array.from(
+        new Map(
+          mergedTopRanking.map((product) => [
+            product._id || product.id,
+            product,
+          ]),
+        ).values(),
+      );
+      setTopRankingProducts(uniqueTopRanking.slice(0, 3));
+      setFlashDeals(rawFlashDeals);
+
       if (newRes.success)
         setNewProducts((newRes.data?.docs || newRes.data || []).slice(0, 3));
-      if (flashRes.success)
-        setFlashDeals(flashRes.data?.docs || flashRes.data || []);
 
       if (allRes.success) {
         const productsList = allRes.data?.docs || allRes.data || [];
@@ -338,7 +353,7 @@ export default function MarketplaceContent() {
             </button>
 
             {/* Desktop Sidebar Filters */}
-            <aside className="hidden lg:block w-64 flex-shrink-0">
+            <aside className="hidden lg:block w-80 flex-shrink-0">
               <div className="bg-white rounded-lg border border-gray-200 overflow-hidden top-4">
                 <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h3 className="font-semibold text-gray-900">Filter</h3>
@@ -386,9 +401,6 @@ export default function MarketplaceContent() {
                           <ChevronRight className="w-3 h-3 text-gray-400" />
                         </label>
                       ))}
-                      <button className="text-purple-600 text-sm sm:text-base mt-2 hover:text-purple-700 transition-colors">
-                        More
-                      </button>
                     </div>
                   )}
                 </div>
@@ -447,7 +459,7 @@ export default function MarketplaceContent() {
                                   : "hover:bg-gray-50"
                               }`}
                             >
-                              <span className="text-lg sm:text-xl flex-shrink-0 grayscale-0 group-hover:grayscale-0 transition-all">
+                              <span className="text-lg text-black sm:text-xl flex-shrink-0 grayscale-0 group-hover:grayscale-0 transition-all">
                                 {country.flag}
                               </span>
                               <span
@@ -590,6 +602,59 @@ export default function MarketplaceContent() {
                                 </span>
                               </label>
                             ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Country - Mobile */}
+                      <div className="border-b border-gray-200 pb-4">
+                        <button
+                          onClick={() => toggleCategory("country")}
+                          className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors rounded-lg px-2"
+                        >
+                          <span className="font-medium text-gray-900 text-base">
+                            Country
+                          </span>
+                          {expandedCategories.country ? (
+                            <ChevronUp className="w-5 h-5" />
+                          ) : (
+                            <ChevronRight className="w-5 h-5" />
+                          )}
+                        </button>
+                        {expandedCategories.country && (
+                          <div className="mt-3 space-y-1 max-h-64 overflow-y-auto pr-1">
+                            {countries
+                              .filter((c) =>
+                                c.name
+                                  .toLowerCase()
+                                  .includes(countrySearchQuery.toLowerCase()),
+                              )
+                              .map((country, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() =>
+                                    handleCountrySelect(country.name)
+                                  }
+                                  className={`w-full  flex items-center gap-3 py-3 px-3 rounded-lg transition-all duration-200 ${
+                                    selectedCountry === country.name
+                                      ? "bg-gray-100"
+                                      : "hover:bg-gray-50"
+                                  }`}
+                                >
+                                  <span className="text-xl flex-shrink-0">
+                                    {country.flag}
+                                  </span>
+                                  <span
+                                    className={`text-base flex-1 text-left ${
+                                      selectedCountry === country.name
+                                        ? "text-gray-900 font-medium"
+                                        : "text-gray-600"
+                                    }`}
+                                  >
+                                    {country.name}
+                                  </span>
+                                </button>
+                              ))}
                           </div>
                         )}
                       </div>

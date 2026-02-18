@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useUserRole } from "@/context/UserContext";
 import communityAPI from "@/services/communityAPI";
 import postsAPI from "@/services/postsAPI";
+import businessProfileAPI from "@/services/businessProfileAPI";
 import AuthNavbar from "@/components/dashboard/AuthNavbar";
 import CommunityHeader from "@/components/community/CommunityHeader";
 import CommunityInfoCard from "@/components/community/CommunityInfoCard";
@@ -26,6 +27,8 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const [showMembersView, setShowMembersView] = useState(false);
   const [isMember, setIsMember] = useState(false);
   const [membershipStatus, setMembershipStatus] = useState(null);
+  const [isOwnerState, setIsOwnerState] = useState(false);
+  const [myBusinessProfileId, setMyBusinessProfileId] = useState(null);
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
   const [pagination, setPagination] = useState(null);
@@ -173,12 +176,29 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
 
         if (response.success) {
           setCommunity(response.data.community);
-          setIsMember(response.data.isMember || false);
-          setMembershipStatus(response.data.membershipStatus || null);
 
-          console.log("State values set:", {
-            isMember: response.data.isMember || false,
-            membershipStatus: response.data.membershipStatus || null,
+          // Determine if the current user is the owner by checking the
+          // membership role field from the backend schema (role: "owner")
+          const memberRole =
+            response.data.memberRole || response.data.membership?.role || null;
+          const backendIsOwner =
+            response.data.isOwner === true || memberRole === "owner";
+
+          setIsOwnerState(backendIsOwner);
+
+          // Owner always counts as an approved member for posting purposes
+          setIsMember(backendIsOwner || response.data.isMember || false);
+          setMembershipStatus(
+            backendIsOwner
+              ? "approved"
+              : response.data.membershipStatus || null,
+          );
+
+          console.log("Community ownership debug:", {
+            backendIsOwner,
+            memberRole,
+            isMember: response.data.isMember,
+            membershipStatus: response.data.membershipStatus,
           });
 
           // Fetch posts after community is loaded
@@ -199,6 +219,25 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
       fetchCommunity();
     }
   }, [params.id]);
+
+  // Fetch the current user's own business profile ID so we can reliably
+  // determine ownership without depending on localStorage profilePayload.
+  useEffect(() => {
+    if (user?.role !== "business") return;
+
+    const fetchMyBusinessProfile = async () => {
+      try {
+        const response = await businessProfileAPI.getMyProfile();
+        if (response.success && response.data?._id) {
+          setMyBusinessProfileId(String(response.data._id));
+        }
+      } catch {
+        // Non-critical — fall back to client-side ID comparison
+      }
+    };
+
+    fetchMyBusinessProfile();
+  }, [user?.role]);
 
   if (loading) {
     return (
@@ -235,11 +274,11 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
     );
   }
 
-  // Owner check: community is owned by business profile (businessId)
+  // Owner check: prefer backend-provided flag, then fetched profile ID, then localStorage fallback
   const communityBusinessId = community.businessId?._id || community.businessId;
 
-  // Get all possible user business IDs to check against
   const userBusinessIds = [
+    myBusinessProfileId,
     user?.businessId,
     user?.profiles?.businessProfileId,
     user?.profilePayload?._id,
@@ -249,10 +288,12 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
     .filter(Boolean)
     .map(String);
 
-  const isOwner =
+  const clientSideIsOwner =
     user?.role === "business" &&
     !!communityBusinessId &&
     userBusinessIds.includes(String(communityBusinessId));
+
+  const isOwner = isOwnerState || clientSideIsOwner;
 
   console.log("DEBUG: FIX APPLIED - isOwner V2", {
     isOwner,

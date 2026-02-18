@@ -54,6 +54,15 @@ const CommunityHeader = ({
 
   // Determine button state based on membership status
   const getJoinButtonContent = () => {
+    // Owner of the community — show a badge, not a join button
+    if (isOwner) {
+      return (
+        <span className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-purple-100 text-purple-800 rounded-lg font-semibold text-sm whitespace-nowrap text-center">
+          Owner
+        </span>
+      );
+    }
+
     if (isMember) {
       return (
         <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-[#240457] text-white rounded-lg hover:bg-[#1a0340] font-semibold transition-colors text-sm whitespace-nowrap">
@@ -149,7 +158,8 @@ const CommunityHeader = ({
           </div>
 
           {/* Action Buttons */}
-          {(user?.role === "user" || (isOwner && !isMember)) && (
+          {/* Show Owner badge for owners, Join button for regular users */}
+          {(isOwner || user?.role === "user") && (
             <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
               {getJoinButtonContent()}
             </div>
