@@ -37,9 +37,9 @@ export default function ProfileHeader({ business }) {
     displayLocation = "New York USA",
     location: rawLocation,
     stats = {
-      delivery: "100%",
-      reorder: "<15%",
-      response: "≤6h",
+      delivery: "N/A",
+      reorder: "N/A",
+      response: "N/A",
       revenue: "N/A",
       products: "0",
     },

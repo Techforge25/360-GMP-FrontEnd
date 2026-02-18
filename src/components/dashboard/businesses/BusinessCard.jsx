@@ -215,7 +215,7 @@ const BusinessCard = ({ business, onContactClick }) => {
             href={actions.website}
             target="_blank"
             rel="noopener noreferrer"
-            className={`h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center rounded-md border ${
+            className={`h-9 text-[14px] font-semibold border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center rounded-md border ${
               isFreeTrial
                 ? "opacity-50 cursor-not-allowed pointer-events-none"
                 : ""
@@ -226,7 +226,7 @@ const BusinessCard = ({ business, onContactClick }) => {
         ) : (
           <Button
             variant="outline"
-            className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
+            className="h-9 text-[14px] font-semibold border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
             disabled={true}
           >
             <FiGlobe className="mr-2" /> Website
@@ -234,7 +234,7 @@ const BusinessCard = ({ business, onContactClick }) => {
         )}
         <Button
           variant="outline"
-          className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
+          className="h-9 text-[14px] font-semibold border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
           disabled={isFreeTrial}
           onClick={(e) => {
             e.preventDefault();
@@ -279,7 +279,7 @@ const BusinessCard = ({ business, onContactClick }) => {
         <Button
           onClick={handleContactClick}
           variant="outline"
-          className="h-9 text-sm font-medium border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
+          className="h-9 text-[14px] font-semibold border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
           disabled={isFreeTrial && role !== "business"}
         >
           <FiPhone className="mr-2" /> Contact
@@ -287,7 +287,7 @@ const BusinessCard = ({ business, onContactClick }) => {
         <Button
           onClick={handleViewProfile}
           variant="outline"
-          className="h-9 text-sm font-medium border border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
+          className="h-9 text-[14px] font-semibold border border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100"
         >
           <FiFolder className="mr-2" /> View Profile
         </Button>

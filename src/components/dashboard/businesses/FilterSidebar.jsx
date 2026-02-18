@@ -77,8 +77,8 @@ const FilterSidebar = ({ filters = {}, onFilterChange }) => {
       <FilterGroup
         title="Industry Category"
         options={[
-          "Tech & Manufacturing",
-          "Industrial Machinery & Equipment",
+          "Privately held",
+          "Manufacturing",
           "Chemicals & Petrochemicals",
           "Fashion & Accessories",
           "Service Project & Equipment",
@@ -94,7 +94,7 @@ const FilterSidebar = ({ filters = {}, onFilterChange }) => {
         title="Country"
         options={[
           "United States of America",
-          "Canada",
+          "Pakistan",
           "Germany",
           "China",
           "Belgium",

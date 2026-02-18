@@ -58,8 +58,10 @@ export default function BusinessesPageContent() {
       // Handle location prop vs filter
       if (location) {
         params.country = location;
+        // params.city = location
       } else if (filters.countries.length > 0) {
         params.country = filters.countries.join("|");
+        // params.city = filters.cities.join("|");
       }
 
       if (filters.industries.length > 0) {
