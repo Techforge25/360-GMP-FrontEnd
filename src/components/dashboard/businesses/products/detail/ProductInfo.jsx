@@ -65,7 +65,7 @@ export default function ProductInfo({ product }) {
     <div className="w-full">
       <h1 className="text-xl font-medium text-black mb-2">{product.title}</h1>
       <div className="text-gray-900 text-md mb-4">
-        <SlateRenderer content={product.detail} />
+        <SlateRenderer content={product.detail} maxLength={250} />
       </div>
 
       {/* Ratings */}
@@ -101,11 +101,26 @@ export default function ProductInfo({ product }) {
       </div>
 
       {/* Supplier Card */}
-      <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-6 flex items-center justify-between">
+      {/* <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded bg-white flex items-center justify-center border border-[#D1D7E3]">
-            {/* Logo Placeholder */}
-            <div className="text-cyan-500 text-lg">🌐</div>
+          <div className="w-8 h-8 rounded bg-white flex items-center justify-center border border-[#D1D7E3] overflow-hidden">
+            {product.businessId?.logo ? (
+              <img
+                src={product.businessId.logo}
+                alt={product.businessId?.companyName || "Business"}
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                  e.target.nextSibling.style.display = "flex";
+                }}
+              />
+            ) : null}
+            <div
+              className="text-cyan-500 text-lg"
+              style={{ display: product.businessId?.logo ? "none" : "flex" }}
+            >
+              🌐
+            </div>
           </div>
           <span className="font-semibold text-gray-900 text-sm">
             {product.businessId?.companyName ||
@@ -122,7 +137,7 @@ export default function ProductInfo({ product }) {
           <MdVerified />{" "}
           <span className="text-gray-800">Verified Supplier</span>
         </span>
-      </div>
+      </div> */}
 
       {/* Quantity & Subtotal */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-8 gap-4">

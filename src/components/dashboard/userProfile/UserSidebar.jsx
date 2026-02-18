@@ -854,17 +854,17 @@ const UserSidebar = () => {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 capitalize">
+                          {/* <p className="text-sm font-medium text-gray-900 capitalize">
                             {link.platformName}
-                          </p>
-                          <a
+                          </p> */}
+                          {/* <a
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-sm text-blue-600 hover:text-blue-800 truncate block"
                           >
                             {link.url}
-                          </a>
+                          </a> */}
                         </div>
                       </div>
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

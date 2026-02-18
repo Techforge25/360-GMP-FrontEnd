@@ -26,6 +26,14 @@ const BusinessMapView = dynamic(() => import("./BusinessMapView"), {
   loading: () => <div className="h-full w-full bg-gray-100 animate-pulse" />,
 });
 
+const SOCIAL_PATTERNS = {
+  linkedin: /^https:\/\/(www\.)?linkedin\.com\/in\//i,
+  twitter: /^https:\/\/(www\.)?(twitter\.com|x\.com)\//i,
+  facebook: /^https:\/\/(www\.)?facebook\.com\//i,
+  instagram: /^https:\/\/(www\.)?instagram\.com\//i,
+  website: /^https?:\/\//i,
+};
+
 const getSocialIcon = (platform) => {
   const p = platform?.toLowerCase() || "";
   if (p.includes("linkedin")) return FaLinkedinIn;
@@ -46,6 +54,7 @@ const ActivitySidebar = () => {
   const [showMapModal, setShowMapModal] = useState(false);
   const [mapLocation, setMapLocation] = useState([51.505, -0.09]); // Default location
   const [isClient, setIsClient] = useState(false);
+  const [socialError, setSocialError] = useState("");
   const [newSocialLink, setNewSocialLink] = useState({
     platformName: "linkedin",
     url: "",
@@ -133,7 +142,21 @@ const ActivitySidebar = () => {
   };
 
   const handleAddSocialLink = async () => {
-    if (!newSocialLink.url) return;
+    setSocialError("");
+    const pattern = SOCIAL_PATTERNS[newSocialLink.platformName];
+
+    if (!newSocialLink.url) {
+      setSocialError("Please enter a URL");
+      return;
+    }
+
+    if (pattern && !pattern.test(newSocialLink.url)) {
+      setSocialError(
+        `Invalid ${newSocialLink.platformName} URL. Please include the correct prefix.`,
+      );
+      return;
+    }
+
     try {
       await socialLinkAPI.create(newSocialLink);
       // Refresh links
@@ -554,16 +577,19 @@ const ActivitySidebar = () => {
 
         {isEditing2 ? (
           <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-sm font-semibold mb-2">Add Social Link</p>
+            <p className="text-sm text-black font-semibold mb-2">
+              Add Social Link
+            </p>
             <select
               className="w-full text-black text-sm p-1 mb-2 rounded border border-gray-300"
               value={newSocialLink.platformName}
-              onChange={(e) =>
+              onChange={(e) => {
+                setSocialError("");
                 setNewSocialLink({
                   ...newSocialLink,
                   platformName: e.target.value,
-                })
-              }
+                });
+              }}
             >
               <option value="linkedin">LinkedIn</option>
               <option value="twitter">Twitter</option>
@@ -574,12 +600,16 @@ const ActivitySidebar = () => {
             <input
               type="text"
               placeholder="URL"
-              className="w-full text-sm p-1 text-black mb-2 rounded border border-gray-300"
+              className={`w-full text-sm p-1 text-black mb-1 rounded border ${socialError ? "border-red-500" : "border-gray-300"}`}
               value={newSocialLink.url}
-              onChange={(e) =>
-                setNewSocialLink({ ...newSocialLink, url: e.target.value })
-              }
+              onChange={(e) => {
+                setSocialError("");
+                setNewSocialLink({ ...newSocialLink, url: e.target.value });
+              }}
             />
+            {socialError && (
+              <p className="text-[13px] text-red-500 mb-2">{socialError}</p>
+            )}
             <button
               onClick={handleAddSocialLink}
               className="w-full bg-[#240457] text-white py-1 rounded text-sm"
@@ -590,7 +620,7 @@ const ActivitySidebar = () => {
         ) : (
           <button
             onClick={() => setIsEditing2(true)}
-            className="w-full mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-2"
+            className="w-full text-black mt-4 bg-[#240457] text-white py-2 rounded-lg text-sm font-semibold hover:bg-[#240457] transition-colors flex items-center justify-center gap-2"
           >
             Add Social Link <span>+</span>
           </button>

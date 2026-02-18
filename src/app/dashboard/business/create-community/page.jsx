@@ -220,31 +220,30 @@ export default function CreateCommunityPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
+          {/* Breadcrumb */}
+          <div className="flex max-w-[1400px] mx-auto items-center gap-2 text-sm text-black px-6 pt-6 mb-6">
+            <Link
+              href="/dashboard/business/communities"
+              className="hover:text-black flex items-center gap-1"
+            >
+              <IoChevronBack className="w-4 h-4" />
+              Back
+            </Link>
+            <p
+              
+              className="text-gray-600 "
+            >
+              Home
+            </p>
+            <span className="text-[#240457]">›</span>
+            <span className="text-[#240457] font-medium">Create Community</span>
+          </div>
       <div className="relative bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0 bg-[url('/assets/images/community-hero.png')] bg-cover bg-center"></div>
         </div>
 
         <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-gray-700 mb-6">
-            <Link
-              href="/dashboard"
-              className="hover:text-gray-900 flex items-center gap-1"
-            >
-              <IoChevronBack className="w-4 h-4" />
-              Back
-            </Link>
-            <span className="text-gray-400">›</span>
-            <Link
-              href="/dashboard/business/communities"
-              className="hover:text-gray-900"
-            >
-              Home
-            </Link>
-            <span className="text-gray-400">›</span>
-            <span className="text-gray-900 font-medium">Create Community</span>
-          </div>
 
           {/* Title */}
           <div>
@@ -839,13 +838,13 @@ export default function CreateCommunityPage() {
                     key={index}
                     className="pb-4 border-b border-gray-200 last:border-0 last:pb-0"
                   >
-                    <h4 className="font-semibold text-gray-900 mb-1">
+                    <h4 className="font-semibold text-gray-700 mb-1">
                       {community.name}
                     </h4>
-                    <p className="text-sm text-blue-600 italic mb-2">
+                    <p className="text-sm text-gray-600 italic mb-2">
                       {community.industry}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-[13px] text-gray-600">
                       {community.description}
                     </p>
                   </div>

@@ -2,50 +2,96 @@
 import React, { useState, useEffect } from "react";
 import { FiX, FiPlus } from "react-icons/fi";
 
+const SOCIAL_PATTERNS = {
+  linkedin: /^https:\/\/(www\.)?linkedin\.com\/in\//i,
+  twitter: /^https:\/\/(www\.)?(twitter\.com|x\.com)\//i,
+  facebook: /^https:\/\/(www\.)?facebook\.com\//i,
+  instagram: /^https:\/\/(www\.)?instagram\.com\//i,
+  github: /^https:\/\/(www\.)?github\.com\//i,
+  website: /^https?:\/\//i,
+};
+
 const SocialLinkModal = ({ isOpen, onClose, onSave, editingLink = null }) => {
   const [formData, setFormData] = useState({
     platformName: "",
-    url: ""
+    url: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const platformOptions = [
-    { value: "linkedin", label: "LinkedIn", placeholder: "https://linkedin.com/in/yourprofile" },
-    { value: "twitter", label: "Twitter", placeholder: "https://twitter.com/yourhandle" },
-    { value: "facebook", label: "Facebook", placeholder: "https://facebook.com/yourprofile" },
-    { value: "instagram", label: "Instagram", placeholder: "https://instagram.com/yourhandle" },
-    { value: "github", label: "GitHub", placeholder: "https://github.com/yourusername" },
-    { value: "website", label: "Personal Website", placeholder: "https://yourwebsite.com" },
-    { value: "other", label: "Other", placeholder: "https://yourlink.com" }
+    {
+      value: "linkedin",
+      label: "LinkedIn",
+      placeholder: "https://linkedin.com/in/yourprofile",
+    },
+    {
+      value: "twitter",
+      label: "Twitter",
+      placeholder: "https://twitter.com/yourhandle",
+    },
+    {
+      value: "facebook",
+      label: "Facebook",
+      placeholder: "https://facebook.com/yourprofile",
+    },
+    {
+      value: "instagram",
+      label: "Instagram",
+      placeholder: "https://instagram.com/yourhandle",
+    },
+    {
+      value: "github",
+      label: "GitHub",
+      placeholder: "https://github.com/yourusername",
+    },
+    {
+      value: "website",
+      label: "Personal Website",
+      placeholder: "https://yourwebsite.com",
+    },
+    { value: "other", label: "Other", placeholder: "https://yourlink.com" },
   ];
 
   useEffect(() => {
     if (editingLink) {
       setFormData({
         platformName: editingLink.platformName || "",
-        url: editingLink.url || ""
+        url: editingLink.url || "",
       });
     } else {
       setFormData({
         platformName: "",
-        url: ""
+        url: "",
       });
     }
+    setError("");
   }, [editingLink, isOpen]);
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
+    setError("");
   };
 
   const getSelectedPlatform = () => {
-    return platformOptions.find(p => p.value === formData.platformName);
+    return platformOptions.find((p) => p.value === formData.platformName);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    const pattern = SOCIAL_PATTERNS[formData.platformName];
+    if (pattern && !pattern.test(formData.url)) {
+      setError(
+        `Invalid ${formData.platformName} URL. Please include the correct prefix.`,
+      );
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -53,6 +99,9 @@ const SocialLinkModal = ({ isOpen, onClose, onSave, editingLink = null }) => {
       onClose();
     } catch (error) {
       console.error("Failed to save social link:", error);
+      setError(
+        error?.message || "Failed to save social link. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +134,9 @@ const SocialLinkModal = ({ isOpen, onClose, onSave, editingLink = null }) => {
             </label>
             <select
               value={formData.platformName}
-              onChange={(e) => handleInputChange("platformName", e.target.value)}
+              onChange={(e) =>
+                handleInputChange("platformName", e.target.value)
+              }
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#240457] text-gray-600"
               required
             >
@@ -107,10 +158,13 @@ const SocialLinkModal = ({ isOpen, onClose, onSave, editingLink = null }) => {
               type="url"
               value={formData.url}
               onChange={(e) => handleInputChange("url", e.target.value)}
-              placeholder={getSelectedPlatform()?.placeholder || "https://example.com"}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#240457] text-gray-600"
+              placeholder={
+                getSelectedPlatform()?.placeholder || "https://example.com"
+              }
+              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-[#240457] text-gray-600 ${error ? "border-red-500" : "border-gray-300"}`}
               required
             />
+            {error && <p className="mt-1.5 text-[13px] text-red-500">{error}</p>}
           </div>
 
           {/* Action Buttons */}
