@@ -65,7 +65,7 @@ export default function ProductInfo({ product }) {
     <div className="w-full">
       <h1 className="text-xl font-medium text-black mb-2">{product.title}</h1>
       <div className="text-gray-900 text-md mb-4">
-        <SlateRenderer content={product.detail} maxLength={250} />
+        <SlateRenderer content={product.detail} maxLength={50} />
       </div>
 
       {/* Ratings */}

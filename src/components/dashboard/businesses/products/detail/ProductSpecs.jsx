@@ -54,7 +54,7 @@ export default function ProductSpecs({ product }) {
             Product Details
           </h3>
           <div className="text-sm text-gray-600 leading-relaxed">
-            <SlateRenderer content={product.detail} />
+            <SlateRenderer content={product.detail} maxLength={100} />
           </div>
           {product.extras && (
             <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
