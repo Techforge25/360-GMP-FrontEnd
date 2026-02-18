@@ -219,7 +219,7 @@ export default function ChatWindow({ conversation, onBack }) {
         <div className="relative flex items-end gap-2 bg-white border border-gray-200 rounded-xl p-2 shadow-sm focus-within:ring-1 focus-within:ring-brand-primary/50 focus-within:border-brand-primary">
           <textarea
             placeholder="Type your message here..."
-            className="w-full max-h-32 min-h-[44px] py-2.5 px-3 bg-transparent text-sm resize-none focus:outline-none custom-scrollbar"
+            className="w-full text-black max-h-32 min-h-[44px] py-2.5 px-3 bg-transparent text-sm resize-none focus:outline-none custom-scrollbar"
             rows={1}
           />
 
@@ -245,13 +245,10 @@ export default function ChatWindow({ conversation, onBack }) {
 
         {/* Quick Actions */}
         <div className="flex gap-4 mt-3 px-1">
-          <button className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-primary transition-colors">
+          <button className="flex items-center gap-2 text-sm font-medium text-brand-primary transition-colors">
             <span className="text-lg">+</span> Documents
           </button>
-          <button className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-primary transition-colors">
-            <span className="text-lg">📦</span> Products
-          </button>
-          <button className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-primary transition-colors">
+          <button className="flex items-center gap-2 text-sm font-medium text-brand-primary transition-colors">
             <span className="text-lg">💲</span> Offer Price
           </button>
         </div>
