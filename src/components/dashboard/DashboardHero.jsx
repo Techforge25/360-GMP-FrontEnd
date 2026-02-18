@@ -17,7 +17,7 @@ const DashboardHero = () => {
     const params = new URLSearchParams();
     if (query.trim()) params.append("q", query.trim());
     if (location.trim()) params.append("location", location.trim());
-    if (type.trim()) params.append("type", type.trim());
+    if (type.trim()) params.append("businessType", type.trim());
 
     router.push(`/dashboard/search?${params.toString()}`);
   };
@@ -29,11 +29,12 @@ const DashboardHero = () => {
   };
 
   const handlePopularTagClick = (tag) => {
-    setQuery(tag);
+    setType(tag);
     // Trigger search with the new tag
     const params = new URLSearchParams();
-    params.append("q", tag);
+    if (query.trim()) params.append("q", query.trim());
     if (location.trim()) params.append("location", location.trim());
+    params.append("businessType", tag);
     router.push(`/dashboard/search?${params.toString()}`);
   };
   return (

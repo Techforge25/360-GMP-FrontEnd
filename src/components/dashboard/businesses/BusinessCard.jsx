@@ -6,6 +6,7 @@ import { FaCheckCircle, FaStar, FaCrown } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
 import businessProfileAPI from "@/services/businessProfileAPI";
+import SlateRenderer from "@/components/ui/SlateRenderer";
 
 const BusinessCard = ({ business, onContactClick }) => {
   const { user } = useUserRole();
@@ -164,11 +165,9 @@ const BusinessCard = ({ business, onContactClick }) => {
             </span>
           </div>
 
-          <p className="text-sm text-gray-600 leading-relaxed mb-4">
-            {description?.length > 150
-              ? `${description.substring(0, 150)}...`
-              : description}
-          </p>
+          <div className="text-sm text-gray-600 leading-relaxed mb-4">
+            <SlateRenderer content={description} maxLength={74} />
+          </div>
         </div>
       </div>
 

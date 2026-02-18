@@ -32,6 +32,7 @@ function SearchResults() {
   const router = useRouter();
   const query = searchParams.get("q") || "";
   const location = searchParams.get("location") || "";
+  const businessType = searchParams.get("businessType") || "";
   const initialTab = searchParams.get("type") || "all";
 
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -55,13 +56,24 @@ function SearchResults() {
       try {
         const commonParams = { search: query, limit: 10 };
         const locationParams = location ? { location } : {};
+        const businessParams = businessType ? { businessType } : {};
 
         // Parallel data fetching
         const [bizRes, prodRes, commRes, jobRes] = await Promise.allSettled([
-          businessProfileAPI.getAll({ ...commonParams, ...locationParams }),
-          productAPI.getAll({ ...commonParams }),
-          communityAPI.getAll({ ...commonParams }),
-          jobAPI.getAll({ ...commonParams, ...locationParams }),
+          businessProfileAPI.getAll({
+            ...commonParams,
+            ...locationParams,
+            ...businessParams,
+          }),
+          !businessType
+            ? productAPI.getAll({ ...commonParams })
+            : Promise.resolve({}),
+          !businessType
+            ? communityAPI.getAll({ ...commonParams })
+            : Promise.resolve({}),
+          !businessType
+            ? jobAPI.getAll({ ...commonParams, ...locationParams })
+            : Promise.resolve({}),
         ]);
 
         const getDocs = (res) => {
@@ -88,6 +100,16 @@ function SearchResults() {
           );
         }
 
+        // Filter by Business Type if present
+        if (businessType && businesses.length > 0) {
+          const lowerType = businessType.toLowerCase();
+          businesses = businesses.filter(
+            (b) =>
+              b.businessType &&
+              b.businessType.toLowerCase().includes(lowerType),
+          );
+        }
+
         setResults({
           businesses: businesses,
           products: getDocs(prodRes),
@@ -101,10 +123,10 @@ function SearchResults() {
       }
     };
 
-    if (query || location) {
+    if (query || location || businessType) {
       fetchResults();
     }
-  }, [query, location]);
+  }, [query, location, businessType]);
 
   const tabs = [
     { id: "all", label: "All Results", icon: FiSearch },
@@ -157,9 +179,17 @@ function SearchResults() {
               <CardContent className="p-4 flex gap-4">
                 {/* Image/Icon Placeholder */}
                 <div className="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden relative">
-                  {item.image || item.coverImage || item.logo ? (
+                  {item.image ||
+                  item.coverImage ||
+                  item.logo ||
+                  item.company?.logo ? (
                     <img
-                      src={item.image || item.coverImage || item.logo}
+                      src={
+                        item.image ||
+                        item.coverImage ||
+                        item.logo ||
+                        item.company?.logo
+                      }
                       alt={item.name || item.title}
                       className="w-full h-full object-cover"
                       onError={(e) => (e.target.style.display = "none")}
@@ -177,22 +207,34 @@ function SearchResults() {
                   </h3>
 
                   {/* Subtitle / Meta */}
-                  <p className="text-base text-gray-500 mb-2 truncate">
+                  <div className="text-base text-gray-500 mb-2 truncate">
                     {type === "businesses" && (item.industry || item.email)}
                     {type === "products" &&
-                      `$${item.price} • ${item.category || "General"}`}
+                      `$${item.pricePerUnit} • ${item.category || "General"}`}
                     {type === "communities" &&
                       `${item.memberCount || 0} members • ${item.privacy || "Public"}`}
-                    {type === "jobs" &&
-                      (item.company?.companyName ||
-                        (typeof item.location === "object"
-                          ? `${item.location.city || ""}, ${item.location.country || ""}`
-                          : item.location) ||
-                        item.type)}
-                  </p>
+                    {type === "jobs" && (
+                      <div className="flex flex-col gap-0.5 leading-snug">
+                        <span className="font-medium text-gray-900 truncate">
+                          {item.jobTitle} ({item.employmentType})
+                        </span>
+                        <span className="text-sm text-gray-500 truncate">
+                          {typeof item.location === "object"
+                            ? `${item.location.city || ""}, ${item.location.country || ""}`
+                            : item.location}
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
                   <div className="flex items-center gap-2">
-                    <Link href={`${linkPrefix}/${item._id}`}>
+                    <Link
+                      href={
+                        typeof linkPrefix === "function"
+                          ? linkPrefix(item)
+                          : `${linkPrefix}/${item._id}`
+                      }
+                    >
                       <span className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
                         View Details
                       </span>
@@ -216,7 +258,19 @@ function SearchResults() {
         No results found
       </h3>
       <p className="text-gray-500">
-        We couldn't find anything matching "<strong>{query}</strong>"
+        We couldn't find anything matching
+        {query && (
+          <>
+            {" "}
+            <strong>"{query}"</strong>
+          </>
+        )}
+        {businessType && (
+          <>
+            {" "}
+            in category <strong>"{businessType}"</strong>
+          </>
+        )}
         {location && (
           <span>
             {" "}
@@ -241,8 +295,23 @@ function SearchResults() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Search Results</h1>
           <p className="text-gray-500 mt-2">
-            Found results for{" "}
-            <span className="font-semibold text-gray-900">"{query}"</span>
+            Found results
+            {query && (
+              <>
+                {" "}
+                for{" "}
+                <span className="font-semibold text-gray-900">"{query}"</span>
+              </>
+            )}
+            {businessType && (
+              <>
+                {" "}
+                in category{" "}
+                <span className="font-semibold text-gray-900">
+                  "{businessType}"
+                </span>
+              </>
+            )}
             {location && (
               <span className="ml-1">
                 near{" "}
@@ -302,7 +371,14 @@ function SearchResults() {
                   items={results.products}
                   icon={FiBox}
                   type="products"
-                  linkPrefix="/dashboard/business/marketplace" // Adjust based on role? Or generic link.
+                  linkPrefix={(item) => {
+                    const bizId =
+                      item.ownerBusiness?._id ||
+                      item.ownerBusiness ||
+                      item.owner ||
+                      "unknown";
+                    return `/dashboard/business/businesses/${bizId}/products/${item._id}`;
+                  }}
                 />
               )}
 

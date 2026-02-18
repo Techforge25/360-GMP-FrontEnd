@@ -111,19 +111,21 @@ const ProductSections = () => {
 
       console.log("Fetching products from API...");
 
-      // Fetch all three categories in parallel - remove limits to get more products
-      const [featuredRes, topRankingRes, newProductsRes] = await Promise.all([
-        productAPI.getFeatured(10),
-        productAPI.getTopRanking(8),
-        productAPI.getNewProducts(8),
-      ]);
+      // Fetch all four categories in parallel
+      const [featuredRes, topRankingRes, newProductsRes, flashDealsRes] =
+        await Promise.all([
+          productAPI.getFeatured(10),
+          productAPI.getTopRanking(8),
+          productAPI.getNewProducts(8),
+          productAPI.getFlashDeals(4),
+        ]);
 
       console.log("Featured products response:", featuredRes);
       console.log("Top ranking products response:", topRankingRes);
       console.log("New products response:", newProductsRes);
+      console.log("Flash deals response:", flashDealsRes);
 
       // Transform and set featured products
-      // Featured endpoint returns paginated response with docs array
       if (
         featuredRes.success &&
         featuredRes.data?.docs &&
@@ -135,18 +137,35 @@ const ProductSections = () => {
         setFeatured([]);
       }
 
-      // Transform and set top ranking products
-      // Top-ranking endpoint returns direct array
+      // Transform and set top ranking products (merged with flash deals)
+      let combinedTopRanking = [];
+
+      // Process Flash Deals
+      if (
+        flashDealsRes.success &&
+        Array.isArray(flashDealsRes.data) &&
+        flashDealsRes.data.length > 0
+      ) {
+        const transformedFlashDeals = flashDealsRes.data.map(transformProduct);
+        combinedTopRanking = [...combinedTopRanking, ...transformedFlashDeals];
+      }
+
+      // Process Top Ranking
       if (
         topRankingRes.success &&
         Array.isArray(topRankingRes.data) &&
         topRankingRes.data.length > 0
       ) {
         const transformedTopRanking = topRankingRes.data.map(transformProduct);
-        setTopRanking(transformedTopRanking);
-      } else {
-        setTopRanking([]);
+        combinedTopRanking = [...combinedTopRanking, ...transformedTopRanking];
       }
+
+      // Remove duplicates based on ID just in case
+      const uniqueTopRanking = Array.from(
+        new Map(combinedTopRanking.map((item) => [item.id, item])).values(),
+      );
+
+      setTopRanking(uniqueTopRanking);
 
       // Transform and set new products
       // New products endpoint returns direct array
@@ -310,10 +329,11 @@ const ProductSections = () => {
                   {featured.map((prod) => (
                     <div
                       key={prod.id}
-                      className="flex-shrink-0 w-[280px] sm:w-[300px] bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                      onClick={() => handleViewProduct(prod.id)}
+                      className="flex-shrink-0 cursor-pointer w-[280px] sm:w-[300px] bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                     >
                       {/* Product Image */}
-                      <div className="h-48 bg-gray-100 relative">
+                      <div  className="h-48 bg-gray-100 relative">
                         <img
                           src={prod.image}
                           alt={prod.name}

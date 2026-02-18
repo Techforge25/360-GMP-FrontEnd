@@ -142,7 +142,7 @@ const JobSection = () => {
               <div
                 className={`w-35 h-full rounded-2xl bg-[#ECEFF6] border border-[#E3E7EE] flex-shrink-0 flex items-center justify-center`}
               >
-                <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center overflow-hidden">
+                <div className="w-26 h-26 bg-white rounded-xl flex items-center justify-center overflow-hidden">
                   {job.logo ? (
                     <img
                       src={job.logo}
