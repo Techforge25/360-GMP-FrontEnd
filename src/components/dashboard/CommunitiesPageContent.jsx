@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FiUsers, FiGlobe, FiSearch } from "react-icons/fi";
 import { LuCrown } from "react-icons/lu";
 import { MdLockOutline } from "react-icons/md";
@@ -8,6 +9,7 @@ import { FaChevronRight } from "react-icons/fa";
 import api from "@/lib/axios";
 import Link from "next/link";
 import { cn, getSlateText } from "@/lib/utils";
+import userSearchAPI from "@/services/userSearchAPI";
 
 export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   const [communities, setCommunities] = useState([]);
@@ -19,9 +21,34 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   // Filters
   const [sortBy, setSortBy] = useState("recent");
   const [searchQuery, setSearchQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState([]);
   const [industry, setIndustry] = useState("");
   const [region, setRegion] = useState("");
   const sentinelRef = useRef(null);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchRecentSearches();
+
+    // Check for search query in URL
+    const searchFromUrl = searchParams.get("search");
+    if (searchFromUrl) {
+      setSearchQuery(searchFromUrl);
+    }
+  }, [searchParams]);
+
+  const fetchRecentSearches = async () => {
+    try {
+      const response = await userSearchAPI.fetchMySearches({ limit: 5 });
+      if (response.success && response.data?.docs) {
+        setRecentSearches(response.data.docs);
+      }
+    } catch (error) {
+      console.error("Failed to fetch recent searches:", error);
+    }
+  };
 
   useEffect(() => {
     // Reset and fetch initial data when filters change
@@ -129,10 +156,20 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     setPage(1);
     setHasMore(true);
     fetchInitialCommunities();
+
+    // Save search history
+    if (searchQuery.trim()) {
+      try {
+        await userSearchAPI.createUserSearch(searchQuery.trim());
+        fetchRecentSearches(); // Refresh recent searches
+      } catch (error) {
+        console.error("Failed to save search history:", error);
+      }
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -195,7 +232,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
             <div className="bg-white/10 border border-white/30 backdrop-blur-sm rounded-2xl p-3 max-w-5xl mx-auto">
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search Input */}
-                <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white rounded-xl">
+                <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white rounded-xl relative group">
                   <FiSearch className="w-5 h-5 text-gray-400 flex-shrink-0" />
                   <input
                     type="text"
@@ -205,6 +242,63 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                     onKeyDown={handleKeyDown}
                     className="flex-1 bg-transparent border-none focus:outline-none text-base text-gray-700 placeholder:text-gray-400"
                   />
+
+                  {/* Recent Searches Suggestions */}
+                  {recentSearches.length > 0 && !searchQuery && (
+                    <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[100] hidden group-focus-within:block">
+                      <div className="px-4 py-2 border-b border-gray-50 flex items-center justify-between">
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                          Recent Searches
+                        </span>
+                      </div>
+                      <div className="py-1">
+                        {recentSearches.map((search) => (
+                          <button
+                            key={search._id}
+                            onClick={() => {
+                              setSearchQuery(search.searchedContent);
+                              // Trigger search immediately with the clicked value
+                              setPage(1);
+                              setHasMore(true);
+                              // We use the direct value here because searchQuery state update is async
+                              const queryParams = new URLSearchParams({
+                                page: 1,
+                                limit: 6,
+                                status: "active",
+                                search: search.searchedContent,
+                                industry: industry,
+                                region: region,
+                              });
+                              if (
+                                sortBy &&
+                                sortBy !== "all" &&
+                                sortBy !== "recent"
+                              ) {
+                                queryParams.append("type", sortBy);
+                              }
+                              api
+                                .get({
+                                  url: `/community?${queryParams.toString()}`,
+                                  enableErrorMessage: false,
+                                  enableSuccessMessage: false,
+                                })
+                                .then((response) => {
+                                  if (response.success && response.data?.docs) {
+                                    setCommunities(response.data.docs);
+                                    setHasMore(response.data.hasNextPage);
+                                    setPage(2);
+                                  }
+                                });
+                            }}
+                            className="w-full px-4 py-2.5 text-left text-sm text-gray-600 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                          >
+                            <FiSearch className="w-3.5 h-3.5 text-gray-400" />
+                            {search.searchedContent}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Industry Dropdown */}

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getImageDimensions } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -24,6 +24,7 @@ import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import userProfileAPI from "@/services/userProfileAPI";
 import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
+import { LocationSearch } from "@/components/ui/LocationSearch";
 import dynamic from "next/dynamic";
 
 const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
@@ -208,18 +209,46 @@ const Step1 = ({
           {!formData.banner && (
             <FileUpload
               label="Upload Banner Image"
-              subLabel="JPG, PNG (Max 5MB, Recommended: 1920x400px)"
+              subLabel="JPG, PNG (Max 5MB, Recommended: 1440x300px)"
               onUploadingChange={setIsUploading}
               onUpload={async (file, onProgress) => {
-                const url = await uploadToCloudinary(
-                  file,
-                  "user/banner",
-                  onProgress,
-                );
-                handleChange("banner", url);
-                return url;
+                try {
+                  const dims = await getImageDimensions(file);
+                  if (dims.width < 1440 || dims.height < 300) {
+                    handleChange(
+                      "bannerWarning",
+                      `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
+                    );
+                  } else {
+                    handleChange("bannerWarning", "");
+                  }
+
+                  const url = await uploadToCloudinary(
+                    file,
+                    "user/banner",
+                    onProgress,
+                  );
+                  handleChange("banner", url);
+                  return url;
+                } catch (err) {
+                  handleChange(
+                    "bannerWarning",
+                    "Upload failed or invalid image file",
+                  );
+                  console.error(err);
+                  throw err;
+                }
               }}
             />
+          )}
+
+          {formData.bannerWarning && (
+            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
+              <span className="text-amber-600 font-bold">⚠️</span>
+              <p className="text-sm text-amber-900 font-medium">
+                {formData.bannerWarning}
+              </p>
+            </div>
           )}
         </div>
 
@@ -297,53 +326,61 @@ const Step1 = ({
         </div>
 
         {/* Location Fields */}
-        <div className="space-y-2">
-          <div>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <label className="text-base font-medium">
-                  Country <span className="text-red-500">*</span>
-                </label>
-                <CountrySelect
-                  value={formData.country || ""}
-                  onChange={(value) => handleChange("country", value)}
-                  required
-                />
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Location Information</h3>
 
-                {/* Show custom input when "Other" is selected */}
-                {formData.country === "Other" && (
-                  <Input
-                    placeholder="Enter your country"
-                    value={formData.customCountry || ""}
-                    onChange={(e) =>
-                      handleChange("customCountry", e.target.value)
-                    }
-                    required
-                  />
-                )}
-              </div>
-              <div className="space-y-2">
-                <label className="text-base font-medium">
-                  City <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  placeholder="Ottawa"
-                  value={formData.city || ""}
-                  onChange={(e) => handleChange("city", e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-base font-medium">
-                  Address Line <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  placeholder="street address"
-                  value={formData.address || ""}
-                  onChange={(e) => handleChange("address", e.target.value)}
-                  required
-                />
-              </div>
+          {/* Location Search Field */}
+          <div className="space-y-2">
+            <label className="text-base font-medium">
+              Search Location <span className="text-red-500">*</span>
+            </label>
+            <LocationSearch
+              placeholder="Search for your location..."
+              onLocationSelect={(locationData) => {
+                handleChange("country", locationData.country);
+                handleChange("city", locationData.city);
+                handleChange("address", locationData.address);
+              }}
+            />
+            <p className="text-sm text-text-secondary">
+              Search and select your location, then edit the fields below if
+              needed
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <label className="text-base font-medium">
+                Country <span className="text-red-500">*</span>
+              </label>
+              <Input
+                placeholder="Country"
+                value={formData.country || ""}
+                onChange={(e) => handleChange("country", e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-base font-medium">
+                City <span className="text-red-500">*</span>
+              </label>
+              <Input
+                placeholder="Ottawa"
+                value={formData.city || ""}
+                onChange={(e) => handleChange("city", e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-base font-medium">
+                Address Line <span className="text-red-500">*</span>
+              </label>
+              <Input
+                placeholder="street address"
+                value={formData.address || ""}
+                onChange={(e) => handleChange("address", e.target.value)}
+                required
+              />
             </div>
           </div>
         </div>
@@ -1002,17 +1039,36 @@ export default function UserProfilePage() {
 
     // ... inside component
     try {
-      // Format payload to match backend schema
+      // Map frontend fields to backend UserProfile schema explicitly
+      // This prevents "field not allowed" errors from internal state like bannerWarning
       const payload = {
-        ...formData,
-        phone: formData.phone.replace(/\s+/g, ""), // Sanitize phone number (remove spaces)
-        email: formData.email.trim().toLowerCase(), // Ensure email is trimmed and lowercase
+        fullName: formData.fullName,
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.replace(/\s+/g, ""),
+        bio: formData.bio || "",
+        resumeUrl: formData.resumeUrl || "",
         skills: Array.isArray(formData.skills) ? formData.skills : [],
         employmentType: formData.employeeType,
-
-        // Convert salary fields to numbers as expected by backend
         minSalary: formData.minSalary ? Number(formData.minSalary) : 0,
         maxSalary: formData.maxSalary ? Number(formData.maxSalary) : 0,
+
+        // Backend expects 'title' field to be required
+        title:
+          formData.currentTitle === "Other"
+            ? formData.customTitle
+            : formData.currentTitle,
+
+        // Optional targetJob field - join as string for backend
+        targetJob: Array.isArray(formData.jobTitle)
+          ? formData.jobTitle.join(", ")
+          : formData.jobTitle,
+
+        // Location mapping - use customCountry if "Other" is selected
+        location: `${formData.city || ""}, ${
+          formData.country === "Other"
+            ? formData.customCountry
+            : formData.country
+        }`,
 
         // Convert education array to object format for backend
         education:
@@ -1036,29 +1092,7 @@ export default function UserProfilePage() {
                 grade: "",
               },
 
-        // Backend expects 'title' field to be required
-        // Use customTitle if "Other" is selected, otherwise use currentTitle
-        title:
-          formData.currentTitle === "Other"
-            ? formData.customTitle
-            : formData.currentTitle,
-
-        // Optional targetJob field - join as string for backend
-        targetJob: Array.isArray(formData.jobTitle)
-          ? formData.jobTitle.join(", ")
-          : formData.jobTitle,
-
-        // Location mapping - use customCountry if "Other" is selected
-        location: `${formData.city || ""}, ${
-          formData.country === "Other"
-            ? formData.customCountry
-            : formData.country
-        }`,
-
-        // Ensure logo is included (required by backend)
         logo: formData.logo,
-
-        // Include banner image if uploaded
         banner: formData.banner || undefined,
       };
 

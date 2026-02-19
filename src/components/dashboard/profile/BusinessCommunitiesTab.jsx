@@ -1,14 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { FiUsers, FiChevronRight, FiEdit2, FiPlus } from "react-icons/fi";
+import {
+  FiUsers,
+  FiChevronRight,
+  FiEdit2,
+  FiPlus,
+  FiSearch,
+} from "react-icons/fi";
 import Link from "next/link";
 import communityAPI from "@/services/communityAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
+import userSearchAPI from "@/services/userSearchAPI";
 import { cn, getSlateText } from "@/lib/utils";
 
 const BusinessCommunitiesTab = () => {
   const [ownedCommunities, setOwnedCommunities] = useState([]);
   const [suggestedCommunities, setSuggestedCommunities] = useState([]);
+  const [recentSearches, setRecentSearches] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +48,12 @@ const BusinessCommunitiesTab = () => {
           ? suggestedResponse.data
           : [];
         setSuggestedCommunities(suggestions);
+      }
+
+      // Fetch recent searches
+      const searchResponse = await userSearchAPI.fetchMySearches({ limit: 5 });
+      if (searchResponse?.success && searchResponse?.data?.docs) {
+        setRecentSearches(searchResponse.data.docs);
       }
     } catch (error) {
       console.error("Failed to fetch communities:", error);
@@ -135,6 +149,26 @@ const BusinessCommunitiesTab = () => {
           </Link>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
+          {/* {recentSearches.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">
+                Recent Searches
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {recentSearches.map((search) => (
+                  <Link
+                    key={search._id}
+                    href={`/dashboard/business/communities?search=${encodeURIComponent(search.searchedContent)}`}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-full text-xs sm:text-sm text-gray-600 transition-colors border border-gray-100"
+                  >
+                    <FiSearch className="text-gray-400" />
+                    {search.searchedContent}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )} */}
+
           <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">
             Suggested Communities
           </h3>
