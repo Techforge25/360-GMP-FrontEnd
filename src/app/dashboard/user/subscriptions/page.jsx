@@ -15,12 +15,44 @@ import {
 import { RiVisaLine } from "react-icons/ri";
 import { SiStripe } from "react-icons/si";
 import subscriptionAPI from "@/services/subscriptionAPI";
+import api from "@/lib/axios";
+import { useRouter } from "next/navigation";
+import { FiCheck } from "react-icons/fi";
+import { Button } from "@/components/ui/Button";
+import {
+  Card as UICard,
+  CardContent as UICardContent,
+} from "@/components/ui/Card";
+import { cn } from "@/lib/utils";
+
+// Custom IoMdInformationCircleOutline component as fallback if not in react-icons
+const InformationIcon = ({ className, size }) => (
+  <svg
+    stroke="currentColor"
+    fill="currentColor"
+    strokeWidth="0"
+    viewBox="0 0 512 512"
+    className={className}
+    height={size}
+    width={size}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm0 400c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z"></path>
+    <path d="M272 240H240a16 16 0 0 0-16 16v112a16 16 0 0 0 16 16h32a16 16 0 0 0 16-16V256a16 16 0 0 0-16-16zM256 160a24 24 0 1 0 24 24 24 24 0 0 0-24-24z"></path>
+  </svg>
+);
 
 const UserSubscriptionsPage = () => {
   const [subscription, setSubscription] = useState(null);
   const [totalSpent, setTotalSpent] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [showPlans, setShowPlans] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const [loadingPlans, setLoadingPlans] = useState(false);
+  const [paymentPlan, setPaymentPlan] = useState(null);
+  const [checkStatusDetail, setCheckStatusDetail] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     let isMounted = true;
@@ -66,6 +98,104 @@ const UserSubscriptionsPage = () => {
     };
   }, []);
 
+  const fetchPlans = async () => {
+    setLoadingPlans(true);
+    try {
+      const response = await api.get({ url: "/plan" });
+      if (response?.data) {
+        setPlans(response.data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch plans", err);
+    } finally {
+      setLoadingPlans(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showPlans && plans.length === 0) {
+      fetchPlans();
+    }
+  }, [showPlans]);
+
+  const handleSelectPlan = async (plan) => {
+    try {
+      const response = await subscriptionAPI.checkSubscriptionStatus(plan._id);
+
+      if (response?.success) {
+        const data = response.data;
+        if (data.isSamePlan) {
+          setCheckStatusDetail({
+            type: "same",
+            message:
+              response.message || "You are already subscribed to this plan.",
+            planId: plan._id,
+          });
+        } else if (data.canUpgrade) {
+          setCheckStatusDetail({
+            type: "upgrade",
+            message:
+              response.message ||
+              "You already have an active subscription. If you choose a new plan, your current subscription access will end immediately, and access to the new plan will begin.",
+            planId: plan._id,
+            planName: plan.name,
+            price: plan.price,
+          });
+        } else {
+          // New subscription or trial
+          setPaymentPlan({ id: plan._id, name: plan.name, price: plan.price });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to check subscription status", err);
+    }
+  };
+
+  const handlePaymentConfirm = async (selectedPlan) => {
+    const plan = selectedPlan || paymentPlan;
+    setPaymentPlan(null);
+    setCheckStatusDetail(null);
+    setIsProcessing(true);
+
+    try {
+      const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = `${window.location.origin}/dashboard/user/subscriptions`;
+
+      const response = await subscriptionAPI.createStripeCheckout(
+        plan.id || plan.planId,
+        "user", // profile="user" here
+        successUrl,
+        cancelUrl,
+      );
+
+      const isUrl = (str) =>
+        typeof str === "string" &&
+        (str.startsWith("http://") || str.startsWith("https://"));
+      const checkoutUrl = isUrl(response.data)
+        ? response.data
+        : isUrl(response.data?.url)
+          ? response.data.url
+          : null;
+
+      if (response.success && checkoutUrl) {
+        // Store plan info before redirecting
+        const subscriptionData = {
+          planId: plan.id || plan.planId,
+          planName: plan.name || plan.planName,
+          role: "user",
+          status: "pending",
+          createdAt: new Date().toISOString(),
+        };
+        subscriptionAPI.storeSubscription(subscriptionData);
+        window.location.href = checkoutUrl;
+      }
+    } catch (error) {
+      console.error("Failed to create Stripe checkout:", error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const planName =
     subscription?.plan?.name || subscription?.planName || "Current Plan";
   const planPriceRaw = subscription?.plan?.price ?? subscription?.price ?? 0;
@@ -104,61 +234,110 @@ const UserSubscriptionsPage = () => {
       <div className="bg-emerald-50/50 py-6 sm:py-8 lg:py-12 border-b border-gray-200 mb-4 sm:mb-6 lg:mb-8">
         <div className="max-w-4xl mx-auto text-center space-y-2 px-4 sm:px-6">
           <h1 className="text-2xl sm:text-3xl lg:text-3xl font-bold text-gray-900">
-            {showComingSoon ? "Management Hub" : "Current Plan Overview"}
+            {showPlans
+              ? "Available Subscription Plans"
+              : "Current Plan Overview"}
           </h1>
           <p className="text-sm sm:text-base text-gray-800">
-            {showComingSoon
-              ? "Advanced plan management features are on the way."
+            {showPlans
+              ? "Upgrade or Change Your Membership Plan Below."
               : "Manage Your Subscription, Billing Details, And Usage Limits."}
           </p>
         </div>
       </div>
 
-      {showComingSoon ? (
+      {showPlans ? (
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            {/* Header Section */}
-            <div className="bg-gradient-to-r from-[#240457] to-[#9747FF] px-8 py-12 text-center">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <FiCalendar className="w-10 h-10 text-white" />
+          <div className="flex justify-between items-center mb-8">
+            <button
+              onClick={() => setShowPlans(false)}
+              className="inline-flex items-center gap-2 text-[#240457] font-semibold hover:underline"
+            >
+              <ChevronLeft className="w-5 h-5" />
+              <span>Back to Overview</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
+            {loadingPlans ? (
+              <div className="col-span-full py-20 text-center text-gray-500">
+                Loading plans...
               </div>
-              <h2 className="text-3xl font-bold text-white mb-4">
-                Subscription Management
-              </h2>
-              <p className="text-white/90 text-lg max-w-[800px] mx-auto">
-                We're building a powerful suite of tools to help you manage your
-                subscription, upgrade tiers, and handle cancellations with ease.
-              </p>
-            </div>
+            ) : (
+              plans.map((plan) => {
+                const planKey = plan.name?.toLowerCase() || "";
+                const isPremium =
+                  planKey.includes("premium") || planKey.includes("gold");
+                const isSilver = planKey.includes("silver");
 
-            {/* Content Section */}
-            <div className="px-8 py-12 text-center">
-              <div className="max-w-2xl mx-auto">
-                <div className="w-16 h-16 bg-[#240457]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FiInfo className="w-8 h-8 text-[#240457]" />
-                </div>
+                return (
+                  <UICard
+                    key={plan._id}
+                    className={cn(
+                      "flex flex-col transition-all duration-300 bg-white shadow-md hover:shadow-lg border",
+                      isPremium
+                        ? "scale-105 shadow-xl ring-1 ring-purple-100 border-purple-200"
+                        : "border-gray-200",
+                    )}
+                  >
+                    <UICardContent className="p-8 flex-1 flex flex-col">
+                      <div className="text-center mb-6">
+                        <span
+                          className={cn(
+                            "px-4 py-1.5 rounded-full text-sm font-medium",
+                            isPremium
+                              ? "bg-purple-100 text-purple-700"
+                              : isSilver
+                                ? "bg-orange-100 text-orange-700"
+                                : "bg-green-100 text-green-700",
+                          )}
+                        >
+                          {plan.name}
+                        </span>
+                      </div>
 
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  Coming Soon in Phase 5
-                </h3>
+                      <div className="text-center mb-2">
+                        <span className="text-5xl font-semibold text-gray-900">
+                          ${plan.price}
+                        </span>
+                        <span className="text-gray-500 ml-1">/month</span>
+                      </div>
 
-                <p className="text-gray-600 text-lg mb-8 leading-relaxed">
-                  Our team is working on providing a seamless experience for
-                  plan changes, usage tracking, and automated billing
-                  adjustments. Stay tuned for real-time updates and granular
-                  control over your account.
-                </p>
+                      <p className="text-center text-gray-600 mb-8 text-sm">
+                        {plan.description}
+                      </p>
 
-                {/* Back Button */}
-                <button
-                  onClick={() => setShowComingSoon(false)}
-                  className="inline-flex items-center gap-2 bg-[#240457] text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-900 transition-colors shadow-lg shadow-purple-900/10"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                  <span>Back to Overview</span>
-                </button>
-              </div>
-            </div>
+                      <Button
+                        onClick={() => handleSelectPlan(plan)}
+                        className={cn(
+                          "w-full mb-8 font-medium",
+                          isPremium
+                            ? "bg-[#240457] text-white hover:bg-indigo-800"
+                            : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50",
+                        )}
+                      >
+                        {String(
+                          subscription?.planId || subscription?.plan?._id,
+                        ) === String(plan._id)
+                          ? "Current Plan"
+                          : "Choose Plan"}
+                      </Button>
+
+                      <div className="space-y-4 mb-4">
+                        {plan.features?.map((feature, i) => (
+                          <div key={i} className="flex items-start gap-3">
+                            <FiCheck className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-gray-700">
+                              {feature}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </UICardContent>
+                  </UICard>
+                );
+              })
+            )}
           </div>
         </div>
       ) : (
@@ -198,14 +377,14 @@ const UserSubscriptionsPage = () => {
 
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
-                  onClick={() => setShowComingSoon(true)}
+                  onClick={() => setShowPlans(true)}
                   className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#240457] text-white rounded-lg text-sm sm:text-base font-medium hover:bg-gray-900 transition-colors"
                 >
                   <span>Manage Plan</span>
                   <FiArrowRight />
                 </button>
                 <button
-                  onClick={() => setShowComingSoon(true)}
+                  onClick={() => setShowPlans(true)}
                   className="px-4 sm:px-6 py-2.5 sm:py-3 bg-white border border-red-500 text-red-500 rounded-lg text-sm sm:text-base font-medium hover:bg-red-50 transition-colors"
                 >
                   Cancel Recent Plan
@@ -554,6 +733,101 @@ const UserSubscriptionsPage = () => {
       <div className="pt-4 sm:pt-6 lg:pt-8">
         <DashboardFooter />
       </div>
+
+      {/* Payment and Status Modals */}
+      {paymentPlan && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <UICard className="w-full max-w-lg bg-white shadow-2xl">
+            <UICardContent className="p-8 text-center pt-10">
+              <h2 className="text-xl font-medium mb-1">
+                Get Ready To{" "}
+                <span className="text-brand-primary">
+                  Unlock {paymentPlan.name}
+                </span>
+              </h2>
+              <p className="text-base text-text-secondary mb-8">
+                Select Payment Method
+              </p>
+
+              <div className="flex gap-4 justify-center mb-8">
+                <button className="flex-1 h-14 border rounded-md flex items-center justify-center gap-2 border-brand-primary ring-1 ring-brand-primary bg-brand-primary/5">
+                  <span className="font-bold text-indigo-600 flex items-center gap-1">
+                    <div className="w-4 h-4 rounded-full border-4 border-indigo-600 mr-1"></div>{" "}
+                    stripe
+                  </span>
+                </button>
+              </div>
+
+              <div className="flex gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setPaymentPlan(null)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => handlePaymentConfirm()}
+                  isLoading={isProcessing}
+                  className="flex-1 bg-[#240457] text-white"
+                >
+                  Confirm
+                </Button>
+              </div>
+            </UICardContent>
+          </UICard>
+        </div>
+      )}
+
+      {checkStatusDetail && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <UICard className="w-full max-w-md bg-white shadow-2xl">
+            <UICardContent className="p-8 text-center pt-10">
+              <div
+                className={cn(
+                  "mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4",
+                  checkStatusDetail.type === "same"
+                    ? "bg-blue-50"
+                    : "bg-amber-50",
+                )}
+              >
+                {checkStatusDetail.type === "same" ? (
+                  <FiInfo className="w-8 h-8 text-blue-500" />
+                ) : (
+                  <InformationIcon className="w-8 h-8 text-amber-500" />
+                )}
+              </div>
+              <h2 className="text-xl font-bold mb-2">
+                {checkStatusDetail.type === "same"
+                  ? "Already Subscribed"
+                  : "Change Subscription"}
+              </h2>
+              <p className="text-sm text-text-secondary mb-6 leading-relaxed">
+                {checkStatusDetail.message}
+              </p>
+
+              <div className="flex gap-4">
+                <Button
+                  variant="outline"
+                  onClick={() => setCheckStatusDetail(null)}
+                  className="flex-1"
+                >
+                  {checkStatusDetail.type === "same" ? "Close" : "Cancel"}
+                </Button>
+                {checkStatusDetail.type !== "same" && (
+                  <Button
+                    onClick={() => handlePaymentConfirm(checkStatusDetail)}
+                    isLoading={isProcessing}
+                    className="flex-1 bg-[#240457] text-white"
+                  >
+                    Confirm & Proceed
+                  </Button>
+                )}
+              </div>
+            </UICardContent>
+          </UICard>
+        </div>
+      )}
     </div>
   );
 };
