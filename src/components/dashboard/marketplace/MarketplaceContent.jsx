@@ -83,7 +83,9 @@ export default function MarketplaceContent() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [viewMode, setViewMode] = useState("all"); // 'all' or 'top-ranking'
   const sentinelRef = useRef(null);
+  const bottomSectionRef = useRef(null);
 
   const fetchMarketplaceProducts = async () => {
     setLoading(true);
@@ -103,8 +105,8 @@ export default function MarketplaceContent() {
       const [featuredRes, topRankingRes, newRes, flashRes, allRes] =
         await Promise.all([
           productAPI.getFeatured(6),
-          productAPI.getTopRanking(3),
-          productAPI.getNewProducts(3),
+          productAPI.getTopRanking(20),
+          productAPI.getNewProducts(20),
           productAPI.getFlashDeals(3),
           productAPI.getAll(params),
         ]);
@@ -129,11 +131,11 @@ export default function MarketplaceContent() {
           ]),
         ).values(),
       );
-      setTopRankingProducts(uniqueTopRanking.slice(0, 3));
+      setTopRankingProducts(uniqueTopRanking);
       setFlashDeals(rawFlashDeals.slice(0, 3));
 
       if (newRes.success)
-        setNewProducts((newRes.data?.docs || newRes.data || []).slice(0, 3));
+        setNewProducts(newRes.data?.docs || newRes.data || []);
 
       if (allRes.success) {
         const productsList = allRes.data?.docs || allRes.data || [];
@@ -229,19 +231,19 @@ export default function MarketplaceContent() {
   };
 
   const handleViewTopRanking = () => {
-    if (pathname.includes("/dashboard/business")) {
-      router.push("/dashboard/business/products/top-ranking");
-    } else if (pathname.includes("/dashboard/user")) {
-      router.push("/dashboard/user/products/top-ranking");
-    }
+    setViewMode("top-ranking");
+    // Scroll to bottom section after a short delay to allow for state change
+    setTimeout(() => {
+      bottomSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const handleViewNewProducts = () => {
-    if (pathname.includes("/dashboard/business")) {
-      router.push("/dashboard/business/products/new");
-    } else if (pathname.includes("/dashboard/user")) {
-      router.push("/dashboard/user/products/new");
-    }
+    setViewMode("new");
+    // Scroll to bottom section after a short delay to allow for state change
+    setTimeout(() => {
+      bottomSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   const handleCountrySelect = (countryName) => {
@@ -313,6 +315,13 @@ export default function MarketplaceContent() {
       handleSearch();
     }
   };
+
+  const displayProducts =
+    viewMode === "all"
+      ? allProducts
+      : viewMode === "top-ranking"
+        ? topRankingProducts
+        : newProducts;
 
   return (
     <div className="w-full bg-gray-50">
@@ -834,7 +843,7 @@ export default function MarketplaceContent() {
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {topRankingProducts.length > 0 ? (
-                    topRankingProducts.map((product, idx) => (
+                    topRankingProducts.slice(0, 3).map((product, idx) => (
                       <div
                         key={idx}
                         className="bg-white rounded-lg overflow-hidden"
@@ -896,7 +905,7 @@ export default function MarketplaceContent() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   {newProducts.length > 0 ? (
-                    newProducts.map((product, idx) => (
+                    newProducts.slice(0, 3).map((product, idx) => (
                       <div
                         key={idx}
                         className="bg-white rounded-lg overflow-hidden"
@@ -951,22 +960,41 @@ export default function MarketplaceContent() {
           onProductClick={handleProductClick}
         />
 
-        {/* All Products Section */}
+        {/* Bottom Section: All Products or Top Ranking */}
         {!query && selectedCategories.length === 0 && !selectedCountry && (
-          <div className="py-8 lg:py-12">
+          <div ref={bottomSectionRef} className="py-8 lg:py-12">
             <div className="max-w-[1400px] mx-auto">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                  All Products
-                </h2>
-                <p className="text-gray-600 text-base">
-                  Explore our complete collection of verified products
-                </p>
+              <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    {viewMode === "all"
+                      ? "All Products"
+                      : viewMode === "top-ranking"
+                        ? "Top Ranking Products"
+                        : "New Products"}
+                  </h2>
+                  <p className="text-gray-600 text-base">
+                    {viewMode === "all"
+                      ? "Explore our complete collection of verified products"
+                      : viewMode === "top-ranking"
+                        ? "Browse through our highest-rated and most popular items"
+                        : "Discover our latest additions to the marketplace"}
+                  </p>
+                </div>
+                {viewMode !== "all" && (
+                  <button
+                    onClick={() => setViewMode("all")}
+                    className="flex items-center gap-2 text-brand-primary font-semibold hover:underline self-start sm:self-center bg-white px-4 py-2 rounded-lg border border-purple-100 shadow-sm"
+                  >
+                    {/* <ChevronRight className="w-4 h-4 rotate-180" /> */}
+                    All Products
+                  </button>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                {allProducts.length > 0 ? (
-                  allProducts.map((product, idx) => (
+                {displayProducts.length > 0 ? (
+                  displayProducts.map((product, idx) => (
                     <ProductCard
                       key={idx}
                       product={product}
@@ -979,29 +1007,35 @@ export default function MarketplaceContent() {
                 ) : (
                   <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-200">
                     <p className="text-gray-500 font-medium">
-                      No products available at the moment.
+                      {viewMode === "all"
+                        ? "No products available at the moment."
+                        : viewMode === "top-ranking"
+                          ? "No top ranking products found."
+                          : "No new products found."}
                     </p>
                   </div>
                 )}
               </div>
 
               {/* Load More Sentinel */}
-              <div
-                ref={sentinelRef}
-                className="w-full flex justify-center mt-12 mb-8 min-h-[40px]"
-              >
-                {loadingMore && (
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
-                    <span>Loading more products...</span>
-                  </div>
-                )}
-                {!hasMore && allProducts.length > 0 && (
-                  <p className="text-gray-400 text-sm">
-                    You've reached the end of the list
-                  </p>
-                )}
-              </div>
+              {viewMode === "all" && (
+                <div
+                  ref={sentinelRef}
+                  className="w-full flex justify-center mt-12 mb-8 min-h-[40px]"
+                >
+                  {loadingMore && (
+                    <div className="flex items-center gap-2 text-gray-500">
+                      <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                      <span>Loading more products...</span>
+                    </div>
+                  )}
+                  {!hasMore && allProducts.length > 0 && (
+                    <p className="text-gray-400 text-sm">
+                      You've reached the end of the list
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
