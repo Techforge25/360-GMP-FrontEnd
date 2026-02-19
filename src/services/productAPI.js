@@ -37,8 +37,8 @@ class ProductAPI {
   ) {
     const queryParams = new URLSearchParams(params).toString();
     const url = queryParams
-      ? `/products/business/${businessId}?${queryParams}`
-      : `/products/business/${businessId}`;
+      ? `/products/business/${businessId}/featured?${queryParams}`
+      : `/products/business/${businessId}/featured`;
 
     return await api.get({
       url,

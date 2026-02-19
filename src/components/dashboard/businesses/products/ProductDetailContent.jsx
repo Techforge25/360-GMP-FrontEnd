@@ -75,7 +75,11 @@ export default function ProductDetailContent({ productId, businessId }) {
         <div className="flex flex-col lg:flex-row gap-12 mb-16">
           {/* Left Column: Gallery */}
           <div className="w-full lg:w-1/2">
-            <ProductGallery images={product.image ? [product.image] : []} />
+            <ProductGallery
+              images={[product.image, ...(product.groupImages || [])].filter(
+                Boolean,
+              )}
+            />
           </div>
 
           {/* Right Column: Info */}

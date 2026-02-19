@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Search,
@@ -80,11 +80,15 @@ export default function MarketplaceContent() {
   const [countrySearchQuery, setCountrySearchQuery] = useState("");
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const sentinelRef = useRef(null);
 
   const fetchMarketplaceProducts = async () => {
     setLoading(true);
     try {
-      const params = { limit: 20 };
+      const params = { page: 1, limit: 8 };
       if (query) {
         params.search = query;
       }
@@ -126,7 +130,7 @@ export default function MarketplaceContent() {
         ).values(),
       );
       setTopRankingProducts(uniqueTopRanking.slice(0, 3));
-      setFlashDeals(rawFlashDeals);
+      setFlashDeals(rawFlashDeals.slice(0, 3));
 
       if (newRes.success)
         setNewProducts((newRes.data?.docs || newRes.data || []).slice(0, 3));
@@ -135,8 +139,11 @@ export default function MarketplaceContent() {
         const productsList = allRes.data?.docs || allRes.data || [];
         setFilteredProducts(productsList);
         setAllProducts(productsList);
+        setHasMore(allRes.data?.hasNextPage || false);
+        setPage(2);
       } else {
         setFilteredProducts([]);
+        setHasMore(false);
       }
     } catch (error) {
       console.error("Failed to fetch marketplace data", error);
@@ -146,7 +153,63 @@ export default function MarketplaceContent() {
     }
   };
 
-  React.useEffect(() => {
+  const loadMoreProducts = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+      const params = { page: page, limit: 8 };
+      if (query) {
+        params.search = query;
+      }
+      if (selectedCategories.length > 0) {
+        params.category = selectedCategories.join(",");
+      }
+      if (selectedCountry) {
+        params.country = selectedCountry.toLowerCase();
+      }
+
+      const res = await productAPI.getAll(params);
+
+      if (res.success && res.data) {
+        const newProductsList =
+          res.data.docs || (Array.isArray(res.data) ? res.data : []);
+        setAllProducts((prev) => [...prev, ...newProductsList]);
+        setFilteredProducts((prev) => [...prev, ...newProductsList]);
+        setHasMore(res.data.hasNextPage || false);
+        setPage((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error("Failed to load more products", error);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, page, query, selectedCategories, selectedCountry]);
+
+  // Infinite scroll observer
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+          loadMoreProducts();
+        }
+      },
+      { threshold: 0.1 },
+    );
+
+    const currentSentinel = sentinelRef.current;
+    if (currentSentinel) {
+      observer.observe(currentSentinel);
+    }
+
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+    };
+  }, [loadMoreProducts, hasMore, loadingMore, loading]);
+
+  useEffect(() => {
     fetchMarketplaceProducts();
   }, [selectedCategories, selectedCountry, query]);
 
@@ -720,14 +783,6 @@ export default function MarketplaceContent() {
                     )}
                   </div>
 
-                  {filteredProducts.length > 0 && (
-                    <div className="mt-8 flex justify-center">
-                      <button className="bg-white border border-gray-200 text-gray-600 px-8 py-2.5 rounded-lg font-medium hover:bg-gray-50 transition-colors">
-                        Load More Results
-                      </button>
-                    </div>
-                  )}
-
                   <div className="my-12 border-t border-gray-100" />
                 </div>
               )}
@@ -895,6 +950,61 @@ export default function MarketplaceContent() {
           addToCart={addToCart}
           onProductClick={handleProductClick}
         />
+
+        {/* All Products Section */}
+        {!query && selectedCategories.length === 0 && !selectedCountry && (
+          <div className="py-8 lg:py-12">
+            <div className="max-w-[1400px] mx-auto">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  All Products
+                </h2>
+                <p className="text-gray-600 text-base">
+                  Explore our complete collection of verified products
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                {allProducts.length > 0 ? (
+                  allProducts.map((product, idx) => (
+                    <ProductCard
+                      key={idx}
+                      product={product}
+                      isBusinessUser={isBusinessUser}
+                      handleProductClick={handleProductClick}
+                      addToCart={addToCart}
+                      router={router}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-200">
+                    <p className="text-gray-500 font-medium">
+                      No products available at the moment.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Load More Sentinel */}
+              <div
+                ref={sentinelRef}
+                className="w-full flex justify-center mt-12 mb-8 min-h-[40px]"
+              >
+                {loadingMore && (
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                    <span>Loading more products...</span>
+                  </div>
+                )}
+                {!hasMore && allProducts.length > 0 && (
+                  <p className="text-gray-400 text-sm">
+                    You've reached the end of the list
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -991,7 +1101,13 @@ function TopDealsSection({
   if (!deals || deals.length === 0) return null;
 
   return (
-    <div className="py-8 lg:py-12 mt-16">
+    <div
+      className="py-8 lg:py-12 mt-16 rounded-xl"
+      style={{
+        background:
+          "radial-gradient(circle at 4% 50%, rgba(151, 71, 255, 0.08) 9%, rgba(242, 64, 255, 0.08) 38%, rgba(255, 176, 22, 0.08) 100%)",
+      }}
+    >
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Top Deals</h2>

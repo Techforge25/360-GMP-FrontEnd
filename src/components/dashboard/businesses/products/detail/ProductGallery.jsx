@@ -86,16 +86,16 @@ export default function ProductGallery({ images }) {
       )}
 
       {/* Thumbnails */}
-      <div className="grid grid-cols-3 gap-4">
-        {imgList.map((img, idx) => (
+      <div className="grid grid-cols-3 gap-4 mt-2">
+        {imgList.slice(1).map((img, idx) => (
           <div
-            key={idx}
-            onClick={() => setCurrentImage(idx)}
-            className={`cursor-pointer bg-gray-100 rounded-xl h-50 overflow-hidden p-2 flex items-center justify-center border-2 ${currentImage === idx ? "border-indigo-900" : "border-transparent"}`}
+            key={idx + 1}
+            onClick={() => setCurrentImage(idx + 1)}
+            className={`cursor-pointer bg-gray-100 rounded-xl h-50 overflow-hidden p-2 flex items-center justify-center border-2 ${currentImage === idx + 1 ? "border-indigo-900" : "border-transparent"}`}
           >
             <img
               src={img}
-              alt={`Thumbnail ${idx}`}
+              alt={`Thumbnail ${idx + 1}`}
               className="w-full h-full object-contain mix-blend-multiply"
             />
           </div>

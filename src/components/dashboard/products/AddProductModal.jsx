@@ -66,7 +66,10 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         lowStockThreshold: editProduct.lowStockThreshold || 5,
         mainImage: null, // New file not selected yet
         previewImage: editProduct.image || null, // Existing image URL
-        galleryImages: [], // Handle existing gallery if needed later
+        galleryImages: (editProduct.groupImages || []).map((url) => ({
+          file: null,
+          previewUrl: url,
+        })),
       });
     } else if (isOpen && !editProduct) {
       // Reset if opening in Add mode
@@ -134,14 +137,28 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   const handleGalleryChange = (e) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
-      const newImages = files.map((file) => ({
+      const remainingSlots = 3 - formData.galleryImages.length;
+      if (remainingSlots <= 0) {
+        alert("You can only upload up to 3 gallery images.");
+        return;
+      }
+
+      const filesToAdd = files.slice(0, remainingSlots);
+      const newImages = filesToAdd.map((file) => ({
         file,
         previewUrl: URL.createObjectURL(file),
       }));
+
       setFormData((prev) => ({
         ...prev,
         galleryImages: [...prev.galleryImages, ...newImages],
       }));
+
+      if (files.length > remainingSlots) {
+        alert(
+          `Only the first ${remainingSlots} images were added (max 3 total).`,
+        );
+      }
     }
   };
 
@@ -163,14 +180,28 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         imageUrl = await uploadToCloudinary(formData.mainImage, "products");
       }
 
+      // Upload Gallery Images
+      const galleryUrls = await Promise.all(
+        formData.galleryImages.map(async (img) => {
+          if (img.file) {
+            // New file to upload
+            return await uploadToCloudinary(img.file, "products");
+          }
+          // Existing URL
+          return img.previewUrl;
+        }),
+      );
+
       // Parse Tiered Pricing
       let tieredPricingMap = {};
       if (formData.tieredPricing) {
         const parts = formData.tieredPricing.split(",");
         parts.forEach((part) => {
-          const [qty, price] = part.split(":").map((s) => s.trim());
-          if (qty && price) {
-            tieredPricingMap[qty] = Number(price);
+          if (part.includes(":")) {
+            const [qty, price] = part.split(":").map((s) => s.trim());
+            if (qty && price) {
+              tieredPricingMap[qty] = Number(price);
+            }
           }
         });
       }
@@ -184,6 +215,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         shippingMethod: formData.shippingMethod,
         estimatedDeliveryDays: formData.estimatedDeliveryDays,
         image: imageUrl,
+        groupImages: galleryUrls.slice(0, 3), // Backend allows max 3
         stockQty: Number(formData.stockQty) || 0,
         lowStockThreshold: Number(formData.lowStockThreshold),
         isSingleProductAvailable: formData.isSingleProductAvailable,
