@@ -103,7 +103,7 @@ export default function ProfileHeader({ business }) {
       </div>
 
       {/* Banner - full width */}
-      <div className="h-48 md:h-64 relative bg-gray-900 overflow-hidden">
+      <div className="h-48 sm:h-64 lg:h-[300px] xl:h-[300px] relative bg-gray-900 overflow-hidden">
         <div className="absolute inset-0 z-10  mix-blend-multiply"></div>
 
         {/* Dynamic banner image */}

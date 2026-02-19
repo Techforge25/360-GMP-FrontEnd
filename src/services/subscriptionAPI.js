@@ -11,7 +11,7 @@ const getBusinessProfileId = async () => {
     });
     return response?.data?._id || null;
   } catch (error) {
-    console.error('Failed to fetch business profile ID:', error);
+    console.error("Failed to fetch business profile ID:", error);
     return null;
   }
 };
@@ -22,7 +22,12 @@ class SubscriptionAPI {
    * @param {string} planId - The plan ID from backend
    * @param {string} profile - User profile (business or user)
    */
-  async createStripeCheckout(planId, profile = "business", successUrl, cancelUrl) {
+  async createStripeCheckout(
+    planId,
+    profile = "business",
+    successUrl,
+    cancelUrl,
+  ) {
     // Sending params in both URL and Body to ensure backend finds them
     // Also sending success/cancel URLs in query param as a fallback
     const queryParams = new URLSearchParams({
@@ -87,6 +92,19 @@ class SubscriptionAPI {
   }
 
   /**
+   * Check subscription status for a specific plan
+   * @param {string} planId - The plan ID from backend
+   */
+  async checkSubscriptionStatus(planId) {
+    return await api.get({
+      url: `/subscription/status/${planId}`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
+  /**
    * Get total spent on subscriptions
    */
   async getTotalSpent() {
@@ -105,35 +123,36 @@ class SubscriptionAPI {
   async getBusinessUsage(businessId = null) {
     try {
       // Auto-fetch businessId if not provided
-      const finalBusinessId = businessId || await getBusinessProfileId();
-      
+      const finalBusinessId = businessId || (await getBusinessProfileId());
+
       if (!finalBusinessId) {
-        console.log('No business profile found for user');
+        console.log("No business profile found for user");
         return { communities: 0, jobs: 0, products: 0 };
       }
 
-      console.log('Fetching business usage for businessId:', finalBusinessId);
+      console.log("Fetching business usage for businessId:", finalBusinessId);
 
-      const [communitiesResponse, jobsResponse, productsResponse] = await Promise.all([
-        api.get({
-          url: `/community?businessId=${finalBusinessId}`,
-          activateLoader: false,
-          enableSuccessMessage: false,
-          enableErrorMessage: false,
-        }),
-        api.get({
-          url: `/jobs?businessId=${finalBusinessId}`,
-          activateLoader: false,
-          enableSuccessMessage: false,
-          enableErrorMessage: false,
-        }),
-        api.get({
-          url: `/products/business/${finalBusinessId}`,
-          activateLoader: false,
-          enableSuccessMessage: false,
-          enableErrorMessage: false,
-        }),
-      ]);
+      const [communitiesResponse, jobsResponse, productsResponse] =
+        await Promise.all([
+          api.get({
+            url: `/community?businessId=${finalBusinessId}`,
+            activateLoader: false,
+            enableSuccessMessage: false,
+            enableErrorMessage: false,
+          }),
+          api.get({
+            url: `/jobs?businessId=${finalBusinessId}`,
+            activateLoader: false,
+            enableSuccessMessage: false,
+            enableErrorMessage: false,
+          }),
+          api.get({
+            url: `/products/business/${finalBusinessId}`,
+            activateLoader: false,
+            enableSuccessMessage: false,
+            enableErrorMessage: false,
+          }),
+        ]);
 
       const usage = {
         communities: communitiesResponse?.data?.totalDocs || 0,
@@ -141,10 +160,10 @@ class SubscriptionAPI {
         products: productsResponse?.data?.totalDocs || 0,
       };
 
-      console.log('Business usage fetched:', usage);
+      console.log("Business usage fetched:", usage);
       return usage;
     } catch (error) {
-      console.error('Failed to fetch business usage:', error);
+      console.error("Failed to fetch business usage:", error);
       return {
         communities: 0,
         jobs: 0,

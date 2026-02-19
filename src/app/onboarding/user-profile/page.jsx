@@ -530,7 +530,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
         {!formData.resumeUrl && (
           <FileUpload
             label="Upload Document"
-            subLabel="PDF, DOC, DOCX, JPG, PNG (Max 10MB)"
+            subLabel="PDF, DOC, DOCX, JPG, PNG (Max 5MB)"
             onUploadingChange={setIsUploading}
             onUpload={(file, onProgress) =>
               uploadToCloudinary(file, "user/resume", onProgress).then(

@@ -5,6 +5,7 @@ import subscriptionAPI from "@/services/subscriptionAPI";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
+import { useUser } from "@/context/UserContext";
 
 function SubscriptionSuccessContent() {
   const searchParams = useSearchParams();
@@ -12,6 +13,7 @@ function SubscriptionSuccessContent() {
   const [status, setStatus] = useState("pending"); // verifying, success, error
   const [message, setMessage] = useState("Verifying your subscription...");
   const [subscriptionData, setSubscriptionData] = useState(null);
+  const { user } = useUser();
 
   useEffect(() => {
     const verifySubscription = async () => {
@@ -64,14 +66,20 @@ function SubscriptionSuccessContent() {
 
   const handleContinue = () => {
     const storedSub = subscriptionAPI.getStoredSubscription();
-    const role = storedSub?.role || "user";
+    const role = storedSub?.role || user?.role || "user";
+    const isNew = user?.isNewToPlatform ?? true;
 
-    // Flow: Plans → Stripe → Profile Creation
-    // - User role → User Profile creation
-    // - Business role → Business Profile creation
-    role === "user"
-      ? router.push("/onboarding/user-profile")
-      : router.push("/onboarding/business-profile");
+    if (isNew) {
+      // Flow for new users: Plans → Stripe → Profile Creation
+      role === "user"
+        ? router.push("/onboarding/user-profile")
+        : router.push("/onboarding/business-profile");
+    } else {
+      // Flow for existing users (Upgrades/Downgrades): Back to Dashboard
+      role === "user"
+        ? router.push("/dashboard/user")
+        : router.push("/dashboard/business");
+    }
   };
 
   return (

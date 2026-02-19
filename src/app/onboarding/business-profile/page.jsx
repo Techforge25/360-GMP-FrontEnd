@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, getImageDimensions } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -498,8 +498,19 @@ const Step1 = ({
                       alert("File must be under 10MB");
                       return;
                     }
-                    setIsUploading(true);
+
                     try {
+                      const dims = await getImageDimensions(file);
+                      if (dims.width < 1440 || dims.height < 300) {
+                        handleChange(
+                          "bannerWarning",
+                          `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
+                        );
+                      } else {
+                        handleChange("bannerWarning", "");
+                      }
+
+                      setIsUploading(true);
                       const url = await uploadToCloudinary(
                         file,
                         "business/banner",
@@ -507,14 +518,17 @@ const Step1 = ({
                       );
                       handleChange("bannerImageUrl", url);
                     } catch (err) {
-                      alert("Upload failed");
+                      handleChange(
+                        "bannerWarning",
+                        "Upload failed or invalid image file",
+                      );
                       console.error(err);
                     } finally {
                       setIsUploading(false);
                     }
                   }}
                 />
-                <div className="relative w-full h-32 mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3">
+                <div className="relative w-full aspect-[1440/300] mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3">
                   <Image
                     src={formData.bannerImageUrl}
                     alt="Banner Preview"
@@ -531,17 +545,47 @@ const Step1 = ({
           ) : (
             <FileUpload
               label="Upload Banner Image"
-              subLabel="Dimension 1440×300 (Max 10MB)"
+              subLabel="Dimension 1440*300 (Max 10MB)"
               onUploadingChange={setIsUploading}
-              onUpload={(file, onProgress) =>
-                uploadToCloudinary(file, "business/banner", onProgress).then(
-                  (url) => {
+              onUpload={async (file, onProgress) => {
+                try {
+                  const dims = await getImageDimensions(file);
+                  if (dims.width < 1440 || dims.height < 300) {
+                    handleChange(
+                      "bannerWarning",
+                      `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
+                    );
+                  } else {
+                    handleChange("bannerWarning", "");
+                  }
+
+                  return uploadToCloudinary(
+                    file,
+                    "business/banner",
+                    onProgress,
+                  ).then((url) => {
                     handleChange("bannerImageUrl", url);
                     return url;
-                  },
-                )
-              }
+                  });
+                } catch (err) {
+                  handleChange(
+                    "bannerWarning",
+                    "Upload failed or invalid image file",
+                  );
+                  console.error(err);
+                  throw err;
+                }
+              }}
             />
+          )}
+
+          {formData.bannerWarning && (
+            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
+              <span className="text-amber-600 font-bold">⚠️</span>
+              <p className="text-sm text-amber-900 font-medium">
+                {formData.bannerWarning}
+              </p>
+            </div>
           )}
         </div>
       </div>
@@ -698,7 +742,7 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
               </label>
               <FileUpload
                 label="Upload Document"
-                subLabel="JPG, PNG, PDF (Max 10MB)"
+                subLabel="JPG, PNG, PDF (Max 5MB)"
                 disabled={
                   !currentCertName ||
                   (formData.certifications || []).length >= 3
@@ -1011,12 +1055,9 @@ const Step3 = ({ formData }) => (
           </p>
         </div>
         <div>
-          <p className="text-sm font-bold text-text-primary mb-1">
-            Location
-          </p>
+          <p className="text-sm font-bold text-text-primary mb-1">Location</p>
           <span className="flex text-text-secondary items-center gap-1">
-            {formData.address || "Canada"},{" "}
-            {formData.city || "Ottawa"},{" "}
+            {formData.address || "Canada"}, {formData.city || "Ottawa"},{" "}
             {formData.country || "Canada"}
           </span>
         </div>
@@ -1060,8 +1101,6 @@ const Step3 = ({ formData }) => (
     )}
 
     <div className="p-6 border border-border-light rounded-lg bg-white">
-     
-
       {/* <div className="grid grid-cols-3 gap-6 mt-6">
         <div>
           <p className="text-sm font-bold text-text-primary mb-1">
@@ -1111,36 +1150,28 @@ const Step3 = ({ formData }) => (
         <h3 className="text-lg font-semibold mb-4">Primary B2B Contact</h3>
         <div className="grid md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-base font-medium">
-              Contact Person Name 
-            </label>
+            <label className="text-base font-medium">Contact Person Name</label>
             <p className="text-base text-text-secondary">
-            {formData.contactName}
-          </p>
+              {formData.contactName}
+            </p>
           </div>
           <div className="space-y-2">
-            <label className="text-base font-medium">
-              Title 
-            </label>
+            <label className="text-base font-medium">Title</label>
             <p className="text-base text-text-secondary">
-            {formData.contactTitle}
-          </p>
+              {formData.contactTitle}
+            </p>
           </div>
           <div className="space-y-2">
-            <label className="text-base font-medium">
-              Phone 
-            </label>
+            <label className="text-base font-medium">Phone</label>
             <p className="text-base text-text-secondary">
-            {formData.contactPhone}
-          </p>
+              {formData.contactPhone}
+            </p>
           </div>
           <div className="space-y-2">
-            <label className="text-base font-medium">
-              Support Email 
-            </label>
+            <label className="text-base font-medium">Support Email</label>
             <p className="text-base text-text-secondary">
-            {formData.contactEmail}
-          </p>
+              {formData.contactEmail}
+            </p>
           </div>
         </div>
       </div>
@@ -1197,6 +1228,7 @@ export default function BusinessProfilePage() {
     contactEmail: "",
     profileImageUrl: "",
     bannerImageUrl: "",
+    bannerWarning: "",
     certifications: [], // Array of { name: string, url: string }
     customCountry: "",
   });
