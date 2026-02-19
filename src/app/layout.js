@@ -7,7 +7,7 @@ const openSans = Open_Sans({
 });
 
 export const metadata = {
-  title: "3Sixty GMP",
+  title: "360-GMP",
   description: "360gmp is an all-in-one digital platform to discover businesses, communities, jobs, and e-commerce in one place. Connect, explore, and grow with a complete 360° online experience."
 };
 
