@@ -166,7 +166,7 @@ const FeatureProduct = ({ onManageClick }) => {
               <img
                 src={product.image}
                 alt={product.name}
-                className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-lg"
                 onError={(e) => {
                   e.target.src = "/assets/images/Portrait_Placeholder.png";
                 }}

@@ -34,6 +34,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     mainImage: null,
     previewImage: null,
     galleryImages: [],
+    isFeatured: false,
   });
 
   const mainImageInputRef = useRef(null);
@@ -70,6 +71,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           file: null,
           previewUrl: url,
         })),
+        isFeatured: editProduct.isFeatured || false,
       });
     } else if (isOpen && !editProduct) {
       // Reset if opening in Add mode
@@ -90,6 +92,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         mainImage: null,
         previewImage: null,
         galleryImages: [],
+        isFeatured: false,
       });
       setCurrentStep(1);
     }
@@ -232,6 +235,16 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       }
 
       if (response?.data) {
+        const productId = response.data._id || response.data.id;
+
+        // If featured is checked, set it via the separate PATCH API
+        // For new products, we call it if isFeatured is true.
+        // For edits, we check if it changed.
+        const originalFeatured = editProduct?.isFeatured || false;
+        if (formData.isFeatured !== originalFeatured) {
+          await productAPI.toggleFeatured(productId, formData.isFeatured);
+        }
+
         onSuccess?.();
         onClose();
       }
@@ -547,6 +560,24 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             className="hidden"
           />
         </div>
+      </div>
+
+      <div>
+        <label className="flex items-center gap-3 cursor-pointer group mt-4 p-3 bg-gray-50 rounded-xl border border-gray-100 hover:border-indigo-100 transition-colors">
+          <div className="relative flex items-center justify-center">
+            <input
+              type="checkbox"
+              name="isFeatured"
+              checked={formData.isFeatured}
+              onChange={handleStandardInputChange}
+              className="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded-full checked:border-indigo-600 checked:bg-indigo-50 transition-all cursor-pointer"
+            />
+            <div className="absolute w-3 h-3 rounded-full bg-indigo-600 scale-0 peer-checked:scale-100 transition-transform pointer-events-none" />
+          </div>
+          <span className="text-base font-semibold text-gray-700">
+            Set as featured
+          </span>
+        </label>
       </div>
     </div>
   );
