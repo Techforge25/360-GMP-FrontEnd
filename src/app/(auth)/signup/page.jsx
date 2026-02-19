@@ -32,18 +32,27 @@ export default function SignupPage() {
     setLoading(true);
     setError("");
 
-    // Backend validation requires exactly 8 characters (based on user request)
+    // Password regex from backend
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()[\]{}|\\<>+=._-])[A-Za-z\d@$!%*?&^#()[\]{}|\\<>+=._-]+$/;
+
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError("Password must be at least 8 characters long.");
+      setLoading(false);
+      return;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setError(
+        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+      );
       setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
-      setTimeout(() => {
-        setError("Passwords does not match");
-        setLoading(false);
-      }, 1000);
+      setError("Passwords do not match");
+      setLoading(false);
       return;
     }
 
@@ -51,7 +60,7 @@ export default function SignupPage() {
       // Create the account - backend will send OTP automatically
       const res = await api.post({
         url: `/auth/user/signup`,
-        payload: { email, passwordHash: password },
+        payload: { email, passwordHash: password, confirmPassword },
         enableSuccessMessage: false,
         enableErrorMessage: false,
         activateLoader: false,
