@@ -190,11 +190,10 @@ const AuthNavbar = () => {
                     <Link
                       key={link.label}
                       href={link.href}
-                      className={`text-base font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:transition-all ${
-                        isActive
+                      className={`text-base font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:transition-all ${isActive
                           ? "text-[#240457] after:w-full"
                           : "text-gray-700 hover:text-[#240457] after:w-0"
-                      }`}
+                        }`}
                     >
                       {link.label}
                     </Link>
@@ -280,8 +279,8 @@ const AuthNavbar = () => {
                       {user?.role === "business"
                         ? user?.companyName?.[0]?.toUpperCase() || "B"
                         : user?.firstName?.[0]?.toUpperCase() ||
-                          user?.fullName?.[0]?.toUpperCase() ||
-                          "U"}
+                        user?.fullName?.[0]?.toUpperCase() ||
+                        "U"}
                     </div>
                   )}
                   <FiChevronDown
@@ -431,10 +430,10 @@ const AuthNavbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="sm:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 z-40">
-            <div className="px-6 py-6">
+          <div className="sm:hidden bg-white border-t border-gray-100 shadow-xl fixed top-16 w-full left-0 z-40 h-[calc(100vh-64px)] overflow-y-auto">
+            <div className="px-6 py-6 space-y-8">
               {/* Navigation Links Section */}
-              <div className="mb-6">
+              <div>
                 <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                   Navigation
                 </h3>
@@ -445,11 +444,10 @@ const AuthNavbar = () => {
                       <Link
                         key={link.label}
                         href={link.href}
-                        className={`block text-base font-medium px-4 py-3 rounded-xl transition-all duration-200 ${
-                          isActive
+                        className={`block text-base font-medium px-4 py-3 rounded-xl transition-all duration-200 ${isActive
                             ? "text-white bg-gradient-to-r from-[#240457] to-[#3B1A78] shadow-lg transform scale-[0.98]"
                             : "text-gray-700 hover:text-[#240457] hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md"
-                        }`}
+                          }`}
                         onClick={toggleMenu}
                       >
                         {link.label}
@@ -570,7 +568,10 @@ const AuthNavbar = () => {
                 </div>
 
                 {/* Bottom Actions */}
-                <div className="mt-6 pt-4 border-t border-gray-100 space-y-2">
+                <div className="mt-6 pt-6 border-t border-gray-100 space-y-2 pb-8">
+                  <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                    System
+                  </h3>
                   <button
                     className="w-full flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200 text-left"
                     onClick={() => {
