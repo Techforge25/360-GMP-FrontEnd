@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import BusinessHero from "@/components/dashboard/businesses/BusinessHero";
 import BusinessCard from "@/components/dashboard/businesses/BusinessCard";
 import FilterSidebar from "@/components/dashboard/businesses/FilterSidebar";
@@ -11,18 +11,19 @@ import businessProfileAPI from "@/services/businessProfileAPI";
 export default function BusinessesPageContent() {
   const [businesses, setBusinesses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
-  const [filteredBusinesses, setFilteredBusinesses] = useState([]); // Keep for compatibility with render
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
 
-  // Pagination State
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  // Auto-loader State
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [itemsPerPage] = useState(10);
+  const sentinelRef = useRef(null);
 
   const [filters, setFilters] = useState({
     industries: [],
@@ -31,85 +32,139 @@ export default function BusinessesPageContent() {
   });
 
   useEffect(() => {
-    fetchBusinessProfiles();
+    setPage(1);
+    setHasMore(true);
+    fetchInitialBusinessProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, query, location, filters]);
-
-  // Reset page when filters change (handled in handleFilterChange usually, but good to have safety)
-  // However, handleFilterChange is cleaner.
+  }, [query, location, filters]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
-    setCurrentPage(1);
   };
 
-  const fetchBusinessProfiles = async () => {
+  const getQueryParams = (targetPage) => {
+    const params = {
+      page: targetPage,
+      limit: itemsPerPage,
+      search: query,
+      sort: "-_id",
+    };
+
+    if (location) {
+      params.country = location;
+    } else if (filters.countries.length > 0) {
+      params.country = filters.countries.join("|");
+    }
+
+    if (filters.industries.length > 0) {
+      params.industry = filters.industries.join("|");
+    }
+
+    return params;
+  };
+
+  const loadMoreBusinesses = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+
+    try {
+      setLoadingMore(true);
+      const params = getQueryParams(page);
+      const response = await businessProfileAPI.getAll(params);
+
+      if (response.success && response.data) {
+        const docs = response.data.docs || response.data || [];
+        const sortedDocs = [...docs].sort((a, b) => {
+          const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          if (timeA && timeB) return timeB - timeA;
+          return (b._id || "").localeCompare(a._id || "");
+        });
+
+        const transformed = sortedDocs.map(transformBusinessProfile);
+
+        setBusinesses((prev) => [...prev, ...transformed]);
+
+        const hasNextPage = response.data.hasNextPage !== undefined
+          ? response.data.hasNextPage
+          : response.data.page < response.data.totalPages;
+
+        setHasMore(hasNextPage);
+        setPage((prevPage) => prevPage + 1);
+      }
+    } catch (err) {
+      console.error("Failed to load more businesses:", err);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, page, query, location, filters, itemsPerPage]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore && !loading) {
+          loadMoreBusinesses();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    const currentSentinel = sentinelRef.current;
+    if (currentSentinel) {
+      observer.observe(currentSentinel);
+    }
+
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+    };
+  }, [loadMoreBusinesses, hasMore, loadingMore, loading]);
+
+  const fetchInitialBusinessProfiles = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const params = {
-        page: currentPage,
-        limit: itemsPerPage,
-        search: query,
-        sort: "-_id",
-      };
-
-      // Handle location prop vs filter
-      if (location) {
-        params.country = location;
-        // params.city = location
-      } else if (filters.countries.length > 0) {
-        params.country = filters.countries.join("|");
-        // params.city = filters.cities.join("|");
-      }
-
-      if (filters.industries.length > 0) {
-        params.industry = filters.industries.join("|");
-      }
-
+      const params = getQueryParams(1);
       const response = await businessProfileAPI.getAll(params);
 
       if (response.success && response.data) {
         const docs = response.data.docs || response.data || [];
 
-        // Frontend sorting fallback to ensure chronological order on the current page
         const sortedDocs = [...docs].sort((a, b) => {
           const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
           const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
           if (timeA && timeB) return timeB - timeA;
-          // Fallback to MongoDB ID comparison (lexicographical comparison of hex IDs is roughly chronological)
           return (b._id || "").localeCompare(a._id || "");
         });
 
         const transformed = sortedDocs.map(transformBusinessProfile);
 
         setBusinesses(transformed);
-        setFilteredBusinesses(transformed); // "filtered" is now just the current page data
-        setTotalPages(response.data.totalPages || 1);
-        setCurrentPage(response.data.page || 1);
+
+        const hasNextPage = response.data.hasNextPage !== undefined
+          ? response.data.hasNextPage
+          : response.data.page < response.data.totalPages;
+
+        setHasMore(hasNextPage);
+        setPage(2);
       } else {
         setBusinesses([]);
-        setFilteredBusinesses([]);
-        setTotalPages(1);
+        setHasMore(false);
       }
     } catch (err) {
       console.error("Failed to fetch business profiles:", err);
       setError(err.message || "Failed to load business profiles");
+      setBusinesses([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
   const handleSearch = () => {
-    setCurrentPage(1); // Trigger fetch via useEffect dependency
+    setPage(1);
+    setHasMore(true);
+    fetchInitialBusinessProfiles();
   };
 
   // Transform backend schema to component schema
@@ -233,11 +288,10 @@ export default function BusinessesPageContent() {
                 <h2 className="text-lg sm:text-xl text-center lg:text-left font-medium text-black">
                   {loading
                     ? "Loading..."
-                    : `${businesses.length} ${
-                        businesses.length === 1
-                          ? "Registered Company"
-                          : "Registered Companies"
-                      } `}
+                    : `${businesses.length} ${businesses.length === 1
+                      ? "Registered Company"
+                      : "Registered Companies"
+                    } `}
                 </h2>
 
                 {/* <div className="flex items-center gap-2">
@@ -308,55 +362,23 @@ export default function BusinessesPageContent() {
                 </div>
               )}
 
-              {/* Pagination */}
-              {!loading && businesses.length > 0 && totalPages > 1 && (
-                <div className="flex justify-center items-center mt-8 sm:mt-12 gap-1 sm:gap-2 px-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Prev
-                  </button>
-
-                  {/* Dynamic Page Numbers */}
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-
-                    return (
-                      <button
-                        key={pageNum}
-                        onClick={() => handlePageChange(pageNum)}
-                        className={`px-3 py-1.5 rounded text-sm lg:text-base transition-colors ${
-                          currentPage === pageNum
-                            ? "bg-[#240457] text-white"
-                            : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-100 rounded text-gray-500 text-sm sm:text-sm lg:text-base hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <span className="hidden sm:inline">Next &gt;</span>
-                    <span className="sm:hidden">&gt;</span>
-                  </button>
-                </div>
-              )}
+              {/* Load More Sentinel */}
+              <div
+                ref={sentinelRef}
+                className="w-full flex justify-center mt-12 mb-8 min-h-[40px]"
+              >
+                {(loadingMore || loading) && (
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                    <span>Loading more businesses...</span>
+                  </div>
+                )}
+                {!hasMore && businesses.length > 0 && (
+                  <p className="text-gray-400 text-sm">
+                    You've reached the end of the list
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         </div>
