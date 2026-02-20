@@ -375,7 +375,7 @@ export default function BusinessesPageContent() {
                 )}
                 {!hasMore && businesses.length > 0 && (
                   <p className="text-gray-400 text-sm">
-                    You've reached the end of the list
+                    You&apos;ve reached the end of the list
                   </p>
                 )}
               </div>
