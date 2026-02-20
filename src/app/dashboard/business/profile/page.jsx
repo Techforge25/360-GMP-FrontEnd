@@ -37,7 +37,7 @@ export default function BusinessProfilePage() {
             </div>
           </div>
         ) : activeTab === "Product" ? (
-          <div className="bg-white overflow-hidden p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl shadow-sm">
+          <div className="overflow-hidden p-3 sm:p-4 lg:p-6 rounded-lg sm:rounded-xl">
             <ProductListContent isProfileView={true} />
           </div>
         ) : activeTab === "Jobs" ? (

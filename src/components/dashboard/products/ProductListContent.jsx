@@ -208,27 +208,29 @@ const ProductListContent = ({ isProfileView = false }) => {
         className={`${isProfileView ? "w-full p-4 sm:p-6" : "max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 lg:mt-20"} relative z-10`}
       >
         {/* Inventory Alert - Hide in profile view if desired, or keep. User said 'without header and footer' so maybe keep body intact */}
-        {!isProfileView && (
-          <div className="bg-red-50 border border-red-100 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 shadow-sm gap-3 sm:gap-4">
+        {/* {!isProfileView && ( */}
+          <div className="bg-red-50 border border-red-600 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 shadow-sm gap-3 sm:gap-4">
             <div className="flex items-start gap-2 sm:gap-3 flex-1">
-              <FiAlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mt-0.5 flex-shrink-0" />
               <div className="flex-1">
-                <h3 className="text-red-600 font-semibold text-sm sm:text-base mb-1">
+              <div className="flex gap-3">
+                <FiAlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                <h3 className="text-red-500 font-semibold text-sm sm:text-base mb-1">
                   Inventory Alert
                 </h3>
+              </div>
                 <p className="text-gray-600 text-sm sm:text-sm lg:text-base">
                   Check for products below minimum safety stock levels.
                 </p>
               </div>
             </div>
-            <button className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 bg-red-100 text-red-600 text-sm sm:text-sm font-semibold rounded hover:bg-red-200 transition-colors border border-red-600 whitespace-nowrap">
+            <button className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 bg-red-100 text-red-500 text-sm sm:text-sm font-medium rounded-xl hover:bg-red-200 transition-colors border border-red-400 whitespace-nowrap">
               Update Inventory
             </button>
           </div>
-        )}
+        {/* )} */}
 
         {/* Controls & Title Header */}
-        <div className="flex flex-col gap-4 mb-6">
+        <div className="flex justify-between gap-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">

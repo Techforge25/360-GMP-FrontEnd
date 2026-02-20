@@ -159,7 +159,7 @@ const BusinessCommunitiesTab = () => {
                   <Link
                     key={search._id}
                     href={`/dashboard/business/communities?search=${encodeURIComponent(search.searchedContent)}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-full text-xs sm:text-sm text-gray-600 transition-colors border border-gray-100"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-full text-sm sm:text-sm text-gray-600 transition-colors border border-gray-100"
                   >
                     <FiSearch className="text-gray-400" />
                     {search.searchedContent}

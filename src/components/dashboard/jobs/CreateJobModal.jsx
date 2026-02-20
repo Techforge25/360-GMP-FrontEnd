@@ -510,7 +510,7 @@ export default function CreateJobModal({
               className="text-black"
             />
             {descLength > 5000 && (
-              <p className="text-xs text-red-500 mt-1">
+              <p className="text-sm text-red-500 mt-1">
                 Description cannot exceed 5000 characters
               </p>
             )}

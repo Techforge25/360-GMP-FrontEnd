@@ -247,7 +247,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   {recentSearches.length > 0 && !searchQuery && (
                     <div className="absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-[100] hidden group-focus-within:block">
                       <div className="px-4 py-2 border-b border-gray-50 flex items-center justify-between">
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                        <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">
                           Recent Searches
                         </span>
                       </div>

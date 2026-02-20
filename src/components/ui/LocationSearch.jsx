@@ -113,7 +113,7 @@ export const LocationSearch = ({
                   <p className="text-sm font-medium text-text-primary truncate">
                     {location.display_name}
                   </p>
-                  <p className="text-xs text-text-secondary mt-1">
+                  <p className="text-sm text-text-secondary mt-1">
                     {location.type}
                   </p>
                 </div>

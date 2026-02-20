@@ -804,7 +804,7 @@ const Step2 = ({ formData, handleChange, setIsUploading, phoneError }) => {
                       {isPDF ? (
                         <div className="text-center p-4">
                           <div className="text-5xl mb-2">📄</div>
-                          <p className="text-xs text-text-secondary truncate px-2">
+                          <p className="text-sm text-text-secondary truncate px-2">
                             {cert.name}.pdf
                           </p>
                         </div>
@@ -1077,7 +1077,7 @@ const Step3 = ({ formData }) => (
                   {isPDF ? (
                     <div className="text-center p-4">
                       <div className="text-5xl mb-2">📄</div>
-                      <p className="text-xs text-text-secondary truncate px-2">
+                      <p className="text-sm text-text-secondary truncate px-2">
                         {cert.name}.pdf
                       </p>
                     </div>
