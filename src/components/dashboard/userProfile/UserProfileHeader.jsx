@@ -305,15 +305,15 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           className="hidden"
         />
 
-        <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <button className="bg-transparent px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black hover:bg-white transition-colors flex items-center gap-1.5 sm:gap-2">
+        <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 flex flex-col sm:flex-row gap-2 sm:gap-3 z-20">
+          <button className="bg-transparent px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl sm:rounded-3xl text-sm sm:text-sm font-medium text-black transition-colors flex items-center gap-1.5 sm:gap-2">
             <img
               src="/assets/images/eyeIcon.png"
               alt=""
               className="w-3 hidden h-3 sm:w-4 sm:h-4"
             />
             {/* <span className="hidden sm:inline">View as a user</span> */}
-            <span className="sm:hidden">View</span>
+            {/* <span className="sm:hidden">View</span> */}
           </button>
           <button
             onClick={handleBannerClick}
@@ -322,16 +322,15 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           >
             <FiCamera className="w-3 h-3 sm:w-4 sm:h-4" />
             {isUploadingCover ? (
-              <span className="hidden sm:inline">Uploading...</span>
+              <span className="">Uploading...</span>
             ) : (
               <>
-                <span className="hidden sm:inline">Update Cover</span>
-                <span className="sm:hidden">Cover</span>
+                <span className="">Update Cover</span>
               </>
             )}
           </button>
           {/* Update button removed as update is now automatic */}
-          <div className="absolute -bottom-16 sm:-bottom-18 right-1 sm:right-2">
+          <div className="absolute -bottom-16 sm:-bottom-18 right-1 sm:right-2 z-20">
             <button
               onClick={() => setShowEditModal(true)}
               className="bg-[#240457] text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-[#240457] transition-colors shadow-sm flex items-center gap-1 sm:gap-2 mx-auto sm:mx-0 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -341,8 +340,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
                 alt=""
                 className="w-3 h-3 sm:w-4 sm:h-4"
               />
-              <span className="hidden sm:inline">Edit Basic Info</span>
-              <span className="sm:hidden">Edit</span>
+              <span className="">Edit Basic Info</span>
             </button>
           </div>
 
@@ -350,7 +348,7 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
           {showEditModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
               <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md mx-auto">
-                <h2 className="text-lg font-bold mb-4">Edit Basic Info</h2>
+                <h2 className="text-lg font-bold mb-4 text-black">Edit Basic Info</h2>
                 <div className="mb-4">
                   <label className="block text-black text-sm font-medium mb-1">
                     Full Name
@@ -510,11 +508,10 @@ const UserProfileHeader = ({ activeTab = "Profile", onTabChange }) => {
 const TabButton = ({ label, src, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`flex items-center gap-1.5 sm:gap-2 pb-3 sm:pb-4 text-sm sm:text-base font-medium border-b-2 transition-colors whitespace-nowrap px-1 sm:px-2 ${
-      active
+    className={`flex items-center gap-1.5 sm:gap-2 pb-3 sm:pb-4 text-sm sm:text-base font-medium border-b-2 transition-colors whitespace-nowrap px-1 sm:px-2 ${active
         ? "border-[#240457] text-[#240457]"
         : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-200"
-    }`}
+      }`}
   >
     <img
       src={src}
