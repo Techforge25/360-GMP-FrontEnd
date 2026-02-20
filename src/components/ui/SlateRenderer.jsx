@@ -50,7 +50,17 @@ export default function SlateRenderer({ content, className, maxLength }) {
   if (isSlateJson) {
     plainText = extractPlainText(nodes);
   } else {
-    plainText = String(content);
+    // Strip HTML tags and decode common entities if the content is raw HTML
+    const strippedHtml = String(content)
+      .replace(/<[^>]*>?/gm, "")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, "\"")
+      .replace(/&#39;/g, "'");
+
+    plainText = strippedHtml;
   }
 
   const totalLength = plainText.length;
