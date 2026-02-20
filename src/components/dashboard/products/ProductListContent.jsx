@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   FiSearch,
@@ -16,22 +17,41 @@ import AddProductModal from "@/components/dashboard/products/AddProductModal";
 import ProductDetailModal from "@/components/dashboard/products/ProductDetailModal";
 import productAPI from "@/services/productAPI";
 
-const ProductListContent = ({ isProfileView = false }) => {
+const ProductListContent = ({
+  isProfileView = false,
+  initialFilter = "",
+  onFilterApplied = () => { },
+}) => {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
+  const [stockLevelFilter, setStockLevelFilter] = useState("All Stock");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [lowStockCount, setLowStockCount] = useState(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editingProduct, setEditingProduct] = useState(null);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
 
-  // Filters
-  const [inventoryFilter, setInventoryFilter] = useState("");
-  const [stockLevelFilter, setStockLevelFilter] = useState("all");
-  const [categoryFilter, setCategoryFilter] = useState("");
+  // Auto-scrolling to table when inventory update is clicked
+  const productTableRef = useRef(null);
+
+  // Apply initial filter if passed from parent
+  useEffect(() => {
+    if (initialFilter) {
+      setStockLevelFilter(initialFilter);
+      // Small delay to ensure scrolling happens after filter is applied and content potentially shifts
+      setTimeout(() => {
+        productTableRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+      onFilterApplied();
+    }
+  }, [initialFilter]);
 
   const fetchProducts = async (
     currentPage,
@@ -78,10 +98,61 @@ const ProductListContent = ({ isProfileView = false }) => {
       }
 
       if (response?.data) {
+        const rawDocs = response.data.docs || [];
+        const normalizedDocs = rawDocs.map((item) => {
+          // Identify the product data source - it could be 'item.productId', 'item.product', 'item'
+          const p =
+            item.productId && typeof item.productId === "object"
+              ? item.productId
+              : item.product && typeof item.product === "object"
+                ? item.product
+                : item;
+
+          // Helper to safely get nested category name if it's an object
+          const getCategory = (val) => {
+            if (!val) return null;
+            if (typeof val === 'string') return val;
+            if (typeof val === 'object') return val.name || val.title || val.label;
+            return null;
+          }
+
+          // Robust normalization for each field
+          const title = p.title || p.name || item.title || item.name || item.productName || "Unnamed Product";
+          const image = p.image || p.img || item.image || item.img || p.mainImage || item.mainImage || "";
+          const pricePerUnit = p.pricePerUnit || p.price || item.pricePerUnit || item.price || 0;
+          const category = getCategory(p.category) || getCategory(item.category) || p.categoryName || item.categoryName || "Uncategorized";
+          const minOrderQty = p.minOrderQty || p.moq || item.minOrderQty || item.moq || 1;
+          const stockQty = typeof item.stockQty === "number" ? item.stockQty : (typeof p.stockQty === "number" ? p.stockQty : 0);
+          const groupImages = p.groupImages || item.groupImages || [];
+
+          return {
+            ...p,
+            // Prioritize IDs - check multiple possible locations
+            _id: p._id || item._id || item.id || p.id,
+            title,
+            image,
+            pricePerUnit,
+            minOrderQty,
+            stockQty,
+            category,
+            groupImages,
+            // Fix status and stockFlag display
+            status: p.status || item.status || "approved",
+            stockFlag:
+              p.stockFlag ||
+              item.stockFlag ||
+              (stockQty === 0
+                ? "out-of-stock"
+                : stockQty <= (p.lowStockThreshold || item.lowStockThreshold || 10)
+                  ? "critical-threshold"
+                  : "in-stock"),
+          };
+        });
+
         if (currentPage === 1) {
-          setProducts(response.data.docs || []);
+          setProducts(normalizedDocs);
         } else {
-          setProducts((prev) => [...prev, ...response.data.docs]);
+          setProducts((prev) => [...prev, ...normalizedDocs]);
         }
         setTotalPages(response.data.totalPages || 1);
       }
@@ -92,10 +163,34 @@ const ProductListContent = ({ isProfileView = false }) => {
     }
   };
 
+  const fetchLowStockCount = async () => {
+    try {
+      const response = await productAPI.getLowStockProducts({ page: 1, limit: 1 });
+      if (response?.data) {
+        setLowStockCount(response.data.totalDocs || response.data.docs?.length || 0);
+      }
+    } catch (error) {
+      console.error("Failed to fetch low stock count:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLowStockCount();
+  }, []);
+
   useEffect(() => {
     fetchProducts(1, activeTab, stockLevelFilter, categoryFilter);
     setPage(1);
   }, [activeTab, stockLevelFilter, categoryFilter]);
+
+  const handleUpdateInventoryClick = () => {
+    setStockLevelFilter("Low Stock");
+    setActiveTab("all");
+
+    setTimeout(() => {
+      productTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
 
   const handleLoadMore = () => {
     if (page < totalPages) {
@@ -107,6 +202,7 @@ const ProductListContent = ({ isProfileView = false }) => {
 
   const handleProductCreated = () => {
     fetchProducts(1, activeTab, stockLevelFilter, categoryFilter);
+    fetchLowStockCount();
     setPage(1);
   };
 
@@ -207,30 +303,33 @@ const ProductListContent = ({ isProfileView = false }) => {
       <div
         className={`${isProfileView ? "w-full p-4 sm:p-6" : "max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mt-12 sm:mt-16 lg:mt-20"} relative z-10`}
       >
-        {/* Inventory Alert - Hide in profile view if desired, or keep. User said 'without header and footer' so maybe keep body intact */}
-        {/* {!isProfileView && ( */}
+        {/* Inventory Alert - shows only when there are low-stock products */}
+        {lowStockCount > 0 && (
           <div className="bg-red-50 border border-red-600 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 shadow-sm gap-3 sm:gap-4">
             <div className="flex items-start gap-2 sm:gap-3 flex-1">
               <div className="flex-1">
-              <div className="flex gap-3">
-                <FiAlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mt-0.5 flex-shrink-0" />
-                <h3 className="text-red-500 font-semibold text-sm sm:text-base mb-1">
-                  Inventory Alert
-                </h3>
-              </div>
+                <div className="flex gap-3">
+                  <FiAlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                  <h3 className="text-red-500 font-semibold text-sm sm:text-base mb-1">
+                    Inventory Alert
+                  </h3>
+                </div>
                 <p className="text-gray-600 text-sm sm:text-sm lg:text-base">
-                  Check for products below minimum safety stock levels.
+                  {lowStockCount} {lowStockCount === 1 ? "listing is" : "listings are"} below minimum safety stock levels.
                 </p>
               </div>
             </div>
-            <button className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 bg-red-100 text-red-500 text-sm sm:text-sm font-medium rounded-xl hover:bg-red-200 transition-colors border border-red-400 whitespace-nowrap">
+            <button
+              onClick={handleUpdateInventoryClick}
+              className="w-full sm:w-auto px-3 sm:px-4 py-2 sm:py-3 bg-red-100 text-red-500 text-sm sm:text-sm font-medium rounded-xl hover:bg-red-200 transition-colors border border-red-400 whitespace-nowrap"
+            >
               Update Inventory
             </button>
           </div>
-        {/* )} */}
+        )}
 
         {/* Controls & Title Header */}
-        <div className="flex justify-between gap-4 mb-6">
+        <div ref={productTableRef} className="flex justify-between gap-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
@@ -291,11 +390,10 @@ const ProductListContent = ({ isProfileView = false }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
-                    activeTab === tab.id
-                      ? "bg-[#2e1065] text-white"
-                      : "bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100"
-                  }`}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-sm sm:text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${activeTab === tab.id
+                    ? "bg-[#2e1065] text-white"
+                    : "bg-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100"
+                    }`}
                 >
                   {tab.label}
                 </button>
@@ -371,7 +469,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                         <Image
                           src={
                             product.image.startsWith("http") ||
-                            product.image.startsWith("/")
+                              product.image.startsWith("/")
                               ? product.image
                               : `/${product.image}`
                           }
@@ -413,7 +511,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                            ${!product.stockFlag ? "bg-green-100 text-green-800" : ""}
                         `}
                         >
-                          {product.stockFlag?.replace("-", " ") || "In Stock"}
+                          {product.stockFlag === "critical-threshold" ? "Low Stock" : (product.stockFlag?.replace("-", " ") || "In Stock")}
                         </span>
                       </div>
                     </div>
@@ -472,7 +570,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                 </div>
 
                 {/* Desktop Table Row */}
-                <div className="hidden lg:grid grid-cols-12 gap-4 px-4 sm:px-6 py-3 sm:py-4 items-center">
+                < div className="hidden lg:grid grid-cols-12 gap-4 px-4 sm:px-6 py-3 sm:py-4 items-center" >
                   <div className="col-span-1 flex items-center">
                     <input
                       type="checkbox"
@@ -483,13 +581,13 @@ const ProductListContent = ({ isProfileView = false }) => {
                     />
                   </div>
                   {/* Product Info */}
-                  <div className="col-span-3 flex items-start gap-3">
+                  < div className="col-span-3 flex items-start gap-3" >
                     <div className="w-10 h-10 xl:w-12 xl:h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200 relative">
                       {product.image ? (
                         <Image
                           src={
                             product.image.startsWith("http") ||
-                            product.image.startsWith("/")
+                              product.image.startsWith("/")
                               ? product.image
                               : `/${product.image}`
                           }
@@ -547,7 +645,7 @@ const ProductListContent = ({ isProfileView = false }) => {
                        ${!product.stockFlag ? "bg-green-100 text-green-800" : ""}
                     `}
                     >
-                      {product.stockFlag?.replace("-", " ") || "In Stock"}
+                      {product.stockFlag === "critical-threshold" ? "Low Stock" : (product.stockFlag?.replace("-", " ") || "In Stock")}
                     </span>
                   </div>
 
@@ -594,14 +692,14 @@ const ProductListContent = ({ isProfileView = false }) => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div >
             ))
           ) : (
             <div className="p-6 sm:p-8 text-center text-gray-500">
               No products found.
             </div>
           )}
-        </div>
+        </div >
 
         {page < totalPages && (
           <div className="flex justify-center items-center mt-6 sm:mt-8 mb-6 sm:mb-8 px-4">
@@ -614,7 +712,7 @@ const ProductListContent = ({ isProfileView = false }) => {
             </button>
           </div>
         )}
-      </div>
+      </div >
 
       {!isProfileView && (
         <div className="mt-8 sm:mt-10 lg:mt-12">
@@ -642,7 +740,7 @@ const ProductListContent = ({ isProfileView = false }) => {
           setIsAddModalOpen(true);
         }}
       />
-    </div>
+    </div >
   );
 };
 

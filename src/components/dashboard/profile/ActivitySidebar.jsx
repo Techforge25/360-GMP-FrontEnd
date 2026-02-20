@@ -43,7 +43,7 @@ const getSocialIcon = (platform) => {
   return FiGlobe;
 };
 
-const ActivitySidebar = () => {
+const ActivitySidebar = ({ onUpdateInventory }) => {
   const [lowStockItems, setLowStockItems] = useState([]);
   const [applicants, setApplicants] = useState([]);
   const [profile, setProfile] = useState(null);
@@ -295,7 +295,8 @@ const ActivitySidebar = () => {
       } catch (error) {
         console.error("Failed to fetch sidebar data:", error);
       } finally {
-        setLoading(false);
+        setLoading(true);
+        setTimeout(() => setLoading(false), 500); // Small delay to prevent layout shift
       }
     };
 
@@ -386,6 +387,7 @@ const ActivitySidebar = () => {
                 severity="high"
                 stockQty={item.stockQty}
                 threshold={item.lowStockThreshold}
+                onClick={onUpdateInventory}
               />
             ))
           ) : (
@@ -651,7 +653,7 @@ const ActivitySidebar = () => {
   );
 };
 
-const ActivityItem = ({ title, time, action, severity }) => (
+const ActivityItem = ({ title, time, action, severity, onClick }) => (
   <div
     className={`p-3 rounded-lg border ${severity === "high" ? "bg-red-50 border-red-100" : "bg-gray-50 border-gray-100"}`}
   >
@@ -665,6 +667,7 @@ const ActivityItem = ({ title, time, action, severity }) => (
           <span className="text-[14px] text-gray-500">({time})</span>
           <span className="text-[30px] text-gray-500">•</span>
           <button
+            onClick={onClick}
             className={`text-[14px] font-medium flex items-center hover:underline ${severity === "high" ? "text-[#185ADB]" : "text-gray-600"}`}
           >
             {action} <FiArrowRight className="w-2 h-2 ml-0.5" />

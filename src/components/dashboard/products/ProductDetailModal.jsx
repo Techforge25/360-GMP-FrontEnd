@@ -53,21 +53,29 @@ const ProductDetailModal = ({ isOpen, onClose, product, onEdit }) => {
                 {/* Gallery Grid - Placeholder if no gallery in schema yet, but UI required */}
                 {/* Assuming product.galleryImages or just placeholders for design match */}
                 <div className="grid grid-cols-3 gap-4">
-                  {[1, 2, 3].map((_, idx) => (
-                    <div
-                      key={idx}
-                      className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden border border-gray-100"
-                    >
-                      {product.image && (
+                  {product.groupImages && product.groupImages.length > 0 ? (
+                    product.groupImages.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="relative aspect-square bg-gray-50 rounded-xl overflow-hidden border border-gray-100"
+                      >
                         <Image
-                          src={getImageUrl(product.image)}
+                          src={getImageUrl(img)}
                           alt={`Gallery ${idx}`}
                           fill
-                          className="object-cover opacity-50 hover:opacity-100 transition-opacity"
+                          className="object-cover opacity-70 hover:opacity-100 transition-opacity"
                         />
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    ))
+                  ) : (
+                    // Fallback placeholders if no gallery images
+                    [1, 2, 3].map((_, idx) => (
+                      <div
+                        key={idx}
+                        className="relative aspect-square bg-gray-100/50 rounded-xl border border-dashed border-gray-200"
+                      />
+                    ))
+                  )}
                 </div>
               </div>
 
