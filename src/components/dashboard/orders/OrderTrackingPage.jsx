@@ -171,27 +171,13 @@ const OrderTrackingPage = ({ orderId }) => {
 
                         {activeStep === 1 && (
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+                                <h2 className="px-6 py-4 font-semibold text-gray-900 text-xl">
                                     Seller is preparing your order
                                 </h2>
-                                <div className="p-8 flex items-center justify-center">
-                                    <div className="w-full max-w-sm h-48 bg-[#F0FBFF] rounded-2xl flex items-center justify-center relative overflow-hidden border border-[#D5F3FE]">
+                                <div className="flex items-center justify-center">
+                                    <div className="w-full max-w-[430px] rounded-2xl flex items-center justify-center relative overflow-hidden">
                                         {/* Using an inline SVG illustration mockup to match the feel */}
-                                        <svg viewBox="0 0 400 200" className="w-full h-full object-cover">
-                                            <rect width="400" height="200" fill="#ffffff" />
-                                            <path d="M120 200 L180 140 L220 140 L280 200 Z" fill="#000000" />
-                                            <path d="M0 200 L150 140 L250 140 L400 200 Z" fill="#00BFFF" opacity="0.9" />
-                                            {/* Person Silhouette */}
-                                            <circle cx="200" cy="100" r="30" fill="#ffffff" stroke="#000000" strokeWidth="6" />
-                                            {/* Hair */}
-                                            <path d="M170 100 C 170 50, 230 50, 230 100 C 240 120, 240 140, 230 150 C 190 140, 170 140, 160 120 C 150 110, 160 100, 170 100" fill="#000000" />
-                                            {/* Shoulders */}
-                                            <path d="M180 130 Q 200 150 220 130 Q 240 160 260 200 L140 200 Q 160 160 180 130" fill="#ffffff" stroke="#000000" strokeWidth="4" />
-                                            {/* Face features */}
-                                            <circle cx="190" cy="95" r="3" fill="#000000" />
-                                            <circle cx="210" cy="95" r="3" fill="#000000" />
-                                            <path d="M195 110 Q 200 115 205 110" stroke="#000000" strokeWidth="3" fill="none" strokeLinecap="round" />
-                                        </svg>
+                                        <img src="/assets/images/orderPreparing.png" alt="orderPreparing" className="w-full h-full object-cover" />
                                     </div>
                                 </div>
                             </div>

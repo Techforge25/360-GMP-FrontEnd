@@ -139,13 +139,13 @@ const BusinessOrdersPage = () => {
       {/* Seller Dashboard Banner */}
       <div className="mx-auto mb-4 sm:mb-6 lg:mb-8 bg-[#110026] relative overflow-hidden">
         <div className="flex flex-col lg:flex-row justify-between items-center lg:items-end p-4 sm:p-6 lg:p-8 xl:p-12 relative z-10 max-w-[1400px] mx-auto">
-          <div className="w-full lg:w-1/2 space-y-3 sm:space-y-4 text-center lg:text-left">
+          <div className="w-full lg:w-1/2 space-y-3 text-center lg:text-left">
             <h1 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-bold text-white">Seller Dashboard</h1>
             <p className="text-sm sm:text-base lg:text-base text-gray-200">
               360GMP Escrow Protection: Seller is paid only after you confirm
               delivery.
             </p>
-            <div className="relative max-w-full sm:max-w-sm lg:max-w-xs mt-4 sm:mt-6 bg-white rounded-lg mx-auto lg:mx-0">
+            <div className="relative max-w-full sm:max-w-sm lg:max-w-xs mt-3 sm:mt-6 bg-white rounded-lg mx-auto lg:mx-0">
               <input
                 type="text"
                 placeholder="Order Number, Buyer..."
@@ -170,7 +170,7 @@ const BusinessOrdersPage = () => {
           {/* Right Illustrations matched with CSS/SVG */}
           <div className="hidden lg:block absolute right-0 bottom-0 top-12 h-full pointer-events-none">
             {/* Simple representation of the illustration using absolute div blocks/SVGs to match the vibe */}
-            <div className="relative h-full w-[300px] xl:w-[400px]">
+            <div className="relative h-[152px] w-[400px]">
               <img src="/assets/images/sellerImg.png" alt="" className="w-full h-full object-cover" />
             </div>
           </div>
