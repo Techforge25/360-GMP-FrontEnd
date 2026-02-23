@@ -15,6 +15,9 @@ export default function BusinessDashboardLayout({ children }) {
     "/dashboard/business/orders",
     "/dashboard/business/support",
     "/dashboard/business/subscriptions",
+    "/dashboard/business/orders/[id]",
+    "/dashboard/business/orders/39201",
+    "/dashboard/orders/BusinessOrderDetailsPage"
   ];
 
   const shouldHideFooter = hideFooterRoutes.includes(pathname);
