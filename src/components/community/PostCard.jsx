@@ -16,6 +16,7 @@ import {
 } from "react-icons/fi";
 import { AiFillLike } from "react-icons/ai";
 import postsAPI from "@/services/postsAPI";
+import Swal from 'sweetalert2'
 
 const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
   // Debug logging to check if post has proper _id
@@ -172,7 +173,18 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
 
   // Handle delete post
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    if (!Swal.fire({
+      title: "Are you sure you want to delete this post?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#5C24D2",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        postsAPI.deletePost(post._id);
+      }
+    })) return;
 
     try {
       const response = await postsAPI.deletePost(post._id);

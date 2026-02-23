@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiArrowLeft, FiMessageSquare, FiAlertCircle, FiCheck, FiArrowRight } from "react-icons/fi";
+import { FiArrowLeft, FiMessageSquare, FiAlertCircle, FiCheck, FiArrowRight, FiStar, FiLock, FiUser, FiCreditCard } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { BiCube } from "react-icons/bi";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -20,6 +20,7 @@ const steps = [
 const OrderTrackingPage = ({ orderId }) => {
     const router = useRouter();
     const [activeStep, setActiveStep] = useState(0);
+    const [isFinalCompleted, setIsFinalCompleted] = useState(false);
 
     return (
         <div className="min-h-screen bg-[#F8F9FA]">
@@ -91,7 +92,7 @@ const OrderTrackingPage = ({ orderId }) => {
                                         {/* Inner Content of Node */}
                                         {isPast ? (
                                             <div className="w-full h-full rounded-full bg-[#139D4C] flex items-center justify-center">
-                                                <FiCheck className="w-5 h-5 text-white stroke-[3]" />
+                                                <FiCheck className="w-5 h-5 text-white stroke-3" />
                                             </div>
                                         ) : isActive ? (
                                             <div className="w-full h-full rounded-full bg-[#5C24D2] flex items-center justify-center">
@@ -243,7 +244,10 @@ const OrderTrackingPage = ({ orderId }) => {
 
                         {activeStep === 3 && (
                             <div className="space-y-4">
-                                <button className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]">
+                                <button
+                                    onClick={() => setActiveStep(4)}
+                                    className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
+                                >
                                     <FiCheck className="w-5 h-5" strokeWidth={2.5} /> Mark as Received
                                 </button>
                                 <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 py-4 px-4 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm text-[16px]">
@@ -264,7 +268,7 @@ const OrderTrackingPage = ({ orderId }) => {
                             </div>
                         )}
 
-                        {activeStep === 4 && (
+                        {activeStep === 4 && !isFinalCompleted && (
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                                 <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
                                     <div className="bg-[#F8F6FF] text-[#5C24D2] p-1.5 rounded-md flex items-center justify-center shrink-0">
@@ -275,7 +279,7 @@ const OrderTrackingPage = ({ orderId }) => {
                                 <div className="p-6">
                                     <div className="relative pl-6 space-y-6">
                                         {/* Timeline Line */}
-                                        <div className="absolute left-2.5 top-2 bottom-2 w-0.5 bg-gradient-to-b from-[#5C24D2] via-[#5C24D2] to-transparent"></div>
+                                        <div className="absolute left-2.5 top-2 bottom-2 w-0.5 bg-linear-to-b from-[#5C24D2] via-[#5C24D2] to-transparent"></div>
 
                                         {/* Timeline Items */}
                                         {[
@@ -306,7 +310,7 @@ const OrderTrackingPage = ({ orderId }) => {
                                             }
                                         ].map((item, idx) => (
                                             <div key={idx} className="relative">
-                                                <div className="absolute -left-[27px] mt-1 w-[14px] h-[14px] bg-[#5C24D2] rounded-full ring-[4px] ring-white"></div>
+                                                <div className="absolute -left-[27px] mt-1 w-[14px] h-[14px] bg-[#5C24D2] rounded-full ring-4 ring-white"></div>
                                                 <div className="flex items-center gap-2 text-xs text-[#8c9ca8] font-medium mb-1 tracking-wide">
                                                     <span>{item.date}</span>
                                                     <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
@@ -319,10 +323,91 @@ const OrderTrackingPage = ({ orderId }) => {
                                     </div>
 
                                     <div className="mt-8">
-                                        <button className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]">
+                                        <button
+                                            onClick={() => setIsFinalCompleted(true)}
+                                            className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
+                                        >
                                             <FiCheck className="w-5 h-5" strokeWidth={2.5} /> Completed
                                         </button>
                                     </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeStep === 4 && isFinalCompleted && (
+                            <div className="space-y-6">
+                                {/* Shipping Details Card */}
+                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                    <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-[17px]">
+                                        Shipping Details
+                                    </h2>
+                                    <div className="p-6">
+                                        <div className="space-y-2">
+                                            <p className="text-[#8c9ca8] font-medium text-sm">
+                                                Name: <span className="text-[#8c9ca8]">Alex Morgan</span>
+                                            </p>
+                                            <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                                                Location: <span className="text-[#8c9ca8]">124 Tec Parkway,Suite 100 San Francisco,CA 94105 United State</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {/* Seller Information Card */}
+                                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                        <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                                            <div className="bg-gray-50 p-2 rounded-lg">
+                                                <FiUser className="w-5 h-5 text-gray-500" />
+                                            </div>
+                                            <h2 className="font-bold text-gray-900 text-[17px]">Seller Information</h2>
+                                        </div>
+                                        <div className="p-6 space-y-5">
+                                            <div>
+                                                <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">SELLER NAME</p>
+                                                <p className="font-bold text-gray-900 text-[16px]">VintageTime LLC</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">EMAIL</p>
+                                                <p className="font-bold text-gray-900 text-[16px]">VintageTime @gmail.com</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Pay Method Card */}
+                                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                        <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                                            <div className="bg-purple-50 p-2 rounded-lg">
+                                                <FiCreditCard className="w-5 h-5 text-[#5C24D2]" />
+                                            </div>
+                                            <h2 className="font-bold text-gray-900 text-[17px]">Pay Method</h2>
+                                        </div>
+                                        <div className="p-6 space-y-6">
+                                            <p className="text-gray-600 font-bold text-[16px] flex items-center tracking-wide">
+                                                Visa <span className="text-gray-400 font-black mx-2 text-xs">••••</span> 4321
+                                            </p>
+                                            <div className="flex justify-between items-center">
+                                                <span className="font-bold text-gray-900 text-[15px]">Escro Fee</span>
+                                                <span className="font-bold text-[#1DAF61] text-[15px]">Free</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Funds Released Alert Card */}
+                                <div className="bg-[#EBFBF2] rounded-xl border border-[#D5F3D1] p-6 sm:p-8">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
+                                            <FiCheck className="w-4 h-4 text-white stroke-[3]" />
+                                        </div>
+                                        <h2 className="font-bold text-[#139D4C] text-[17px]">Funds Successfully Released</h2>
+                                    </div>
+                                    <p className="text-[#139D4C] font-medium leading-[1.6] text-[15px] mb-8">
+                                        The transaction is complete. Funds have been securely released to <span className="font-bold">Camera Pro Outlet</span>. Thank you for using our escrow service for a secure purchase.
+                                    </p>
+                                    <button className="w-full bg-[#1E0B4B] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#140733] transition-colors text-[16px]">
+                                        Leave Feedback <FiStar className="w-4 h-4 fill-white" />
+                                    </button>
                                 </div>
                             </div>
                         )}
@@ -337,30 +422,50 @@ const OrderTrackingPage = ({ orderId }) => {
                             <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
                                 Summary
                             </h2>
-                            <div className="p-6 space-y-4">
-                                <div className="flex justify-between text-[15px]">
-                                    <span className="text-gray-500 font-medium">Item Total</span>
-                                    <span className="text-gray-700 font-semibold">$55,000</span>
-                                </div>
-                                <div className="flex justify-between text-[15px]">
-                                    <span className="text-gray-500 font-medium">Shipping</span>
-                                    <span className="text-gray-700 font-semibold">$2,500</span>
-                                </div>
-                                <div className="flex justify-between text-[15px]">
-                                    <span className="text-[#139D4C] font-medium">Escrow Fee Deduction</span>
-                                    <span className="text-[#139D4C] font-semibold">-$0</span>
+                            <div className="p-6">
+                                <div className="space-y-4 mb-6">
+                                    <div className="flex justify-between text-[15px]">
+                                        <span className="text-gray-400 font-medium">Item Total</span>
+                                        <span className="text-gray-500 font-bold">$55,000</span>
+                                    </div>
+                                    <div className="flex justify-between text-[15px]">
+                                        <span className="text-gray-400 font-medium">Shipping</span>
+                                        <span className="text-gray-500 font-bold">$2,500</span>
+                                    </div>
+                                    <div className="flex justify-between text-[15px]">
+                                        <span className="text-[#139D4C] font-medium">Escrow Fee Deduction</span>
+                                        <span className="text-[#139D4C] font-bold">-$0</span>
+                                    </div>
                                 </div>
 
-                                <div className="border-t border-gray-100 pt-4 mt-2">
+                                <div className="border-t border-gray-100 pt-4">
                                     <div className="flex justify-between text-[15px] mb-3">
-                                        <span className="text-gray-600 font-semibold">Grand Total</span>
+                                        <span className="text-gray-400 font-bold">Grand Total</span>
                                         <span className="text-gray-900 font-bold">$57,500</span>
                                     </div>
-                                    <div className="flex justify-between items-center text-lg">
+                                    <div className="flex justify-between items-center text-xl mt-1">
                                         <span className="font-bold text-gray-900">Est. Net Payout</span>
                                         <span className="font-bold text-gray-900">$57,500</span>
                                     </div>
                                 </div>
+
+                                {isFinalCompleted && (
+                                    <div className="mt-8 bg-[#F8F9FA] rounded-xl border border-gray-100 p-5">
+                                        <div className="flex items-center gap-2.5 mb-4">
+                                            <div className="bg-white p-1 rounded border border-gray-200">
+                                                <FiLock className="w-3.5 h-3.5 text-gray-500" />
+                                            </div>
+                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">RELEASED FROM ESCROW</span>
+                                        </div>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="text-[15px] font-bold text-gray-900">Final Amount</span>
+                                            <span className="text-[15px] font-bold text-gray-900">$57,500.00</span>
+                                        </div>
+                                        <p className="text-[11px] font-bold text-gray-400 mt-2">
+                                            Paid To Seller On Oct 28, 2025, At 14:32 PM UTC
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
@@ -373,69 +478,28 @@ const OrderTrackingPage = ({ orderId }) => {
                                 </div>
 
                                 {/* Mini Progress Bar */}
-                                <div className="w-full h-2 bg-[#B7EFCD] rounded-full mb-2 overflow-hidden flex">
+                                <div className="w-full h-2.5 bg-[#B7EFCD] rounded-full mb-3 overflow-hidden flex">
                                     <div className="h-full bg-[#1DAF61] rounded-full transition-all duration-500" style={{ width: activeStep === 4 ? "100%" : "35%" }}></div>
                                 </div>
 
-                                <div className="flex justify-between text-xs font-semibold mb-6">
-                                    <span className={activeStep === 4 ? "text-[#1DAF61]" : "text-[#1DAF61]"}>Funds Locked</span>
-                                    <span className={activeStep === 4 ? "text-[#1DAF61]" : "text-[#96C7A9]"}>Funds Released</span>
+                                <div className="flex justify-between text-[11px] font-bold mb-6">
+                                    <span className="text-[#1DAF61] uppercase tracking-wider">Funds Locked</span>
+                                    <span className={`uppercase tracking-wider ${isFinalCompleted ? "text-[#1DAF61]" : "text-[#96C7A9]"}`}>Funds Released</span>
                                 </div>
 
-                                <p className="text-[#8c9ca8] font-medium text-[13px] leading-relaxed">
-                                    {activeStep === 4
+                                <p className="text-[#8c9ca8] font-bold text-[13px] leading-relaxed">
+                                    {isFinalCompleted
                                         ? "Funds have been released to the seller. Thank you for your business."
                                         : "Funds are securely held. Seller has not been paid yet."}
                                 </p>
                             </div>
                         </div>
 
-                        {/* Seller Information (Only activeStep === 4) */}
-                        {activeStep === 4 && (
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                                    <div className="bg-gray-100 text-gray-600 p-2 rounded-lg flex items-center justify-center">
-                                        {/* Replace with User icon if needed, using a generic user icon */}
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                    </div>
-                                    <h2 className="font-bold text-gray-900 text-lg">Seller Information</h2>
-                                </div>
-                                <div className="p-6 space-y-4">
-                                    <div>
-                                        <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-0.5">SELLER NAME</p>
-                                        <p className="font-semibold text-gray-900 text-[15px]">VintageTime LLC</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-0.5">EMAIL</p>
-                                        <p className="font-semibold text-gray-900 text-[15px]">VintageTime @gmail.com</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Pay Method (Only activeStep === 4) */}
-                        {activeStep === 4 && (
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                                    <div className="bg-[#FAFBFD] text-[#5C24D2] p-2 rounded-lg flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#5C24D2]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                        </svg>
-                                    </div>
-                                    <h2 className="font-bold text-gray-900 text-lg">Pay Method</h2>
-                                </div>
-                                <div className="p-6 space-y-6">
-                                    <p className="text-gray-600 font-medium text-[15px] flex items-center">
-                                        Visa <span className="text-gray-400 font-bold mx-2">••••</span> 4321
-                                    </p>
-                                    <div className="flex justify-between items-center">
-                                        <span className="font-bold text-gray-900 text-[15px]">Escro Fee</span>
-                                        <span className="font-semibold text-[#1DAF61] text-[15px]">Free</span>
-                                    </div>
-                                </div>
-                            </div>
+                        {/* Seller Information & Pay Method were removed from here as they are moved to the left column in completed state */}
+                        {activeStep !== 4 && activeStep === 4 && (
+                            <>
+                                {/* This is just to satisfy the previous structure if needed, but they are gone in activeStep 4 */}
+                            </>
                         )}
 
                     </div>
