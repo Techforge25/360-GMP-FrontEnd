@@ -363,7 +363,7 @@ const PaymentPage = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-bold text-gray-900">
-                  Order Summary ({products.length} Variation
+                  Order Summaryajksdfjldhk ({products.length} Variation
                   {products.length !== 1 ? "s" : ""})
                 </h2>
               </div>

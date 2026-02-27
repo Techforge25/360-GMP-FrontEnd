@@ -8,6 +8,7 @@ import { RiMoneyDollarCircleLine, RiCustomerService2Line } from "react-icons/ri"
 import { useCart } from "@/context/CartContext";
 import productAPI from "@/services/productAPI";
 import DashboardFooter from "../DashboardFooter";
+import axios from "axios"
 
 const CheckoutPage = () => {
   const { cartItems } = useCart();
@@ -26,6 +27,69 @@ const CheckoutPage = () => {
     zipCode: "",
     isDefault: true,
   });
+
+  const [submitting, setSubmitting] = useState(false);
+
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  // Simple validation (add more if needed)
+  // if (!formData.fullName || !formData.phone1 || !formData.streetAddress || !formData.state || !formData.zipCode) {
+  //   alert("Please fill all required shipping fields");
+  //   return;
+  // }
+
+
+  const handleSubmit = async () => {
+    if (submitting) return;
+
+
+    setSubmitting(true);
+
+ try {
+  const res = await axios.post(`${API_URL}/orders/stripe`, {
+    shippingAddress: {
+      name: formData.fullName,
+      phone: formData.phone1,
+      lineAddress: [formData.lineAddress1, formData.lineAddress2 || ''],
+      province: formData.state,
+      postalCode: formData.zipCode,
+    },
+    items: cartItems, // [{ productId, quantity }]
+  });
+
+      const data = await res.json();
+
+      if (data.url) {
+        window.location.href = data.url; // redirect to Stripe Checkout
+      } else {
+        alert("Error creating session");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Payment setup failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('success')) {
+      setIsPaid(true);
+      // Optional: clear cart, save order to DB via another API call
+    }
+  }, []);
+
+
 
   // Memoized products from cache and cart items
   const products = useMemo(() => {
@@ -257,6 +321,9 @@ const CheckoutPage = () => {
                       </label>
                       <input
                         type="text"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
                         placeholder="Full Name *"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                       />
@@ -271,7 +338,10 @@ const CheckoutPage = () => {
                         </div>
                         <input
                           type="text"
+                          name="phone1"
                           placeholder="Phone Number *"
+                          value={formData.phone1}
+                          onChange={handleChange}
                           className="flex-1 text-black px-4 py-3 text-sm focus:outline-none placeholder-gray-400"
                         />
                       </div>
@@ -287,7 +357,10 @@ const CheckoutPage = () => {
                       </label>
                       <input
                         type="text"
+                        name="lineAddress1"
                         placeholder="Line Address 1 *"
+                        value={formData.lineAddress1}
+                        onChange={handleChange}
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                       />
                     </div>
@@ -297,7 +370,10 @@ const CheckoutPage = () => {
                       </label>
                       <input
                         type="text"
+                        name="lineAddress2"
                         placeholder="Line Address 2 *"
+                        value={formData.lineAddress2}
+                        onChange={handleChange}
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                       />
                     </div>
@@ -312,6 +388,9 @@ const CheckoutPage = () => {
                       <input
                         type="text"
                         placeholder="State/Province *"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                       />
                     </div>
@@ -321,7 +400,10 @@ const CheckoutPage = () => {
                       </label>
                       <input
                         type="text"
+                        name="zipCode"
                         placeholder="e.g 2000*"
+                        value={formData.zipCode}
+                        onChange={handleChange}
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                       />
                     </div>
@@ -333,8 +415,8 @@ const CheckoutPage = () => {
                       <input
                         type="checkbox"
                         id="default-address"
-                        checked={formData.isDefault}
-                        onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
+                        // checked={formData.isDefault}
+                        // onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
                         className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white checked:bg-[#004D99] checked:border-[#004D99] transition-all"
                       />
                       <FiCheck className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3.5 h-3.5" />
@@ -348,12 +430,13 @@ const CheckoutPage = () => {
 
               </div>
             </div>
-                <button
-                  onClick={() => setIsPaid(true)}
-                  className="block mt-6 w-full text-center bg-[#240457] text-white py-2 rounded-lg font-medium text-base hover:bg-[#2a0b4d] transition-colors"
-                >
-                  Continue To Payment
-                </button>
+           <button
+            onClick={handleSubmit}
+            disabled={submitting || loading}
+            className="block mt-6 w-full text-center bg-[#240457] text-white py-3 rounded-lg font-medium text-base hover:bg-[#2a0b4d] transition-colors disabled:opacity-50"
+          >
+            {submitting ? "Processing..." : "Continue To Payment"}
+          </button>
           </div>
 
           {/* Right Column - Order Summary */}
@@ -390,56 +473,56 @@ const CheckoutPage = () => {
                     <span className="font-semibold text-gray-900">${shipping.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-semibold text-gray-700">Shipping Discount <span className="text-gray-500 font-normal">(Estimated)</span></span>
+                    <span className="font-semibold text-gray-700">Shipping Discount <span className="text-gray-500 font-normal">(Estimagted)</span></span>
                     <span className="font-semibold text-gray-900">${shippingDiscount.toFixed(2)}</span>
                   </div>
-                <div className="border-t border-gray-400 pt-4">
-                  <div className="flex justify-between items-center bg-blue-100 p-3 rounded-lg border border-[#185ADB]">
-                    <span className="font-medium text-sm text-blue-800">Total Estimated</span>
-                    <span className="font-semibold text-sm text-blue-800">${total.toFixed(2)}</span>
+                  <div className="border-t border-gray-400 pt-4">
+                    <div className="flex justify-between items-center bg-blue-100 p-3 rounded-lg border border-[#185ADB]">
+                      <span className="font-medium text-sm text-blue-800">Total Estimated</span>
+                      <span className="font-semibold text-sm text-blue-800">${total.toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
-                </div>
 
               </div>
-            {/* Trust Signals */}
-            <div className="space-y-6 px-6">
-              <div className="flex gap-3">
-                <div className="shrink-0 mt-1">
-                  <HiShieldCheck className="w-6 h-6 text-purple-600" />
+              {/* Trust Signals */}
+              <div className="space-y-6 px-6">
+                <div className="flex gap-3">
+                  <div className="shrink-0 mt-1">
+                    <HiShieldCheck className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm mb-1">Secure payments</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      Escrow Protection Assurance: Full B2B protection benefits are exclusively provided for orders successfully placed and paid through the secure 360GMP Escrow Service.
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-sm mb-1">Secure payments</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    Escrow Protection Assurance: Full B2B protection benefits are exclusively provided for orders successfully placed and paid through the secure 360GMP Escrow Service.
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex gap-3">
-                <div className="shrink-0 mt-1">
-                  <RiMoneyDollarCircleLine className="w-6 h-6 text-purple-600" />
+                <div className="flex gap-3">
+                  <div className="shrink-0 mt-1">
+                    <RiMoneyDollarCircleLine className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm mb-1">Money-back protection</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      360GMP Order Protection: Claim a full refund if your goods were not shipped, are missing, or arrive with verified quality or product defects
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-sm mb-1">Money-back protection</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    360GMP Order Protection: Claim a full refund if your goods were not shipped, are missing, or arrive with verified quality or product defects
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex gap-3 pb-4">
-                <div className="shrink-0 mt-1">
-                  <RiCustomerService2Line className="w-6 h-6 text-purple-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-gray-900 text-sm mb-1">24/7 support</h3>
-                  <p className="text-sm text-gray-500 leading-relaxed">
-                    Dedicated Global Support: Access our comprehensive virtual help center 24/7 or connect with a live B2B support agent for immediate assistance.
-                  </p>
+                <div className="flex gap-3 pb-4">
+                  <div className="shrink-0 mt-1">
+                    <RiCustomerService2Line className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm mb-1">24/7 support</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed">
+                      Dedicated Global Support: Access our comprehensive virtual help center 24/7 or connect with a live B2B support agent for immediate assistance.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
             </div>
 
           </div>

@@ -67,7 +67,7 @@ const Welcome = () => {
           </div> */}
           <div className="relative z-10 text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-black mb-6">
-              In A Nutshell
+              in a nutshell
             </h2>
             <p className="text-base md:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed px-4">
               360 Global Marketplace revolutionizes the supply chain by giving

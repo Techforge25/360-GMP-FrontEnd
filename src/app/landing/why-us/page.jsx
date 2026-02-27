@@ -63,7 +63,7 @@ const WhyUsPage = () => {
         <div className="relative bg-gradient-to-br from-indigo-50 to-white rounded-3xl p-8 md:p-16 shadow-lg border border-indigo-50 mb-20 overflow-hidden">
           <div className="relative z-10 text-center">
             <h2 className="text-3xl font-bold text-indigo-950 mb-6">
-              In A Nutshell
+              In A Nutshelljhuyg
             </h2>
             <p className="text-text-secondary max-w-3xl mx-auto mb-16 leading-relaxed">
               360 Global Marketplace revolutionizes the supply chain by giving
