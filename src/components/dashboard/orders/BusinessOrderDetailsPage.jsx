@@ -1,14 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation"; // ← Yeh add karo
+import axios from "axios"; // ← Yeh add karo agar pehle nahi tha
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
-import { useRouter } from "next/navigation";
-import { FiArrowLeft, FiCalendar, FiCheck, FiDownload, FiStar, FiUser, FiCreditCard, FiClock } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiMessageSquare,
+  FiAlertCircle,
+  FiCheck,
+  FiArrowRight,
+  FiStar,
+  FiLock,
+  FiUser,
+  FiCreditCard,
+  FiCalendar,
+  FiDownload,
+  FiClock,
+} from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { TbTruckDelivery } from "react-icons/tb";
 import { BiCube } from "react-icons/bi";
 import { BsBoxSeam } from "react-icons/bs";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
 const steps = [
     { label: "Order Placed", date: "Oct 24, 2025", icon: HiOutlineDocumentText },
@@ -17,17 +33,100 @@ const steps = [
     { label: "Delivered", date: "Oct 27, 2025", icon: BsBoxSeam },
     { label: "Completed", date: "Oct 28, 2025", icon: FiCheck },
 ];
+const BusinessOrderDetailsPage = () => {
+  const { id: orderId } = useParams(); // ← Yeh line add karo
+  const router = useRouter();
 
-const BusinessOrderDetailsPage = ({ orderId }) => {
-    const router = useRouter();
-    const [activeStep, setActiveStep] = useState(0);
-    const [isShippingFormOpen, setIsShippingFormOpen] = useState(false);
-    const [isShipped, setIsShipped] = useState(false);
-    const [isDelivered, setIsDelivered] = useState(false);
-    const [isCompleted, setIsCompleted] = useState(false);
-    const [showFinalCompletedUI, setShowFinalCompletedUI] = useState(false);
-    const [isRemainderSent, setIsRemainderSent] = useState(false);
-    const [isTracking, setIsTracking] = useState(false);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Aapke original states (shipping/tracking ke liye)
+  const [isShippingFormOpen, setIsShippingFormOpen] = useState(false);
+  const [isShipped, setIsShipped] = useState(false);
+  const [isDelivered, setIsDelivered] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [showFinalCompletedUI, setShowFinalCompletedUI] = useState(false);
+  const [isRemainderSent, setIsRemainderSent] = useState(false);
+  const [isTracking, setIsTracking] = useState(false);
+
+  // Stepper steps (real date ke saath update honge)
+  const [steps, setSteps] = useState([
+    { label: "Order Placed", date: "Loading...", icon: HiOutlineDocumentText },
+    { label: "Prepare Shipment", date: "Loading...", icon: IoShieldCheckmarkOutline },
+    { label: "Shipped", date: "Loading...", icon: TbTruckDelivery },
+    { label: "Delivered", date: "Loading...", icon: BsBoxSeam },
+    { label: "Completed", date: "Loading...", icon: FiCheck },
+  ]);
+
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    if (!orderId) {
+      setError("Order ID not found in URL");
+      setLoading(false);
+      return;
+    }
+
+    const fetchOrder = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const res = await axios.get(`${BASE_URL}/orders/${orderId}/view`, {
+          withCredentials: true,
+        });
+
+        console.log("API Response:", res);
+
+        if (!res.data.success) {
+          throw new Error(res.data.message || "Failed to fetch order");
+        }
+
+        const orderData = res.data.data;
+        console.log("Order Data:", orderData);
+        setOrder(orderData);
+
+        // Real createdAt se first step update
+        const createdDate = new Date(orderData.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        setSteps((prev) => [
+          { ...prev[0], date: createdDate },
+          ...prev.slice(1),
+        ]);
+
+        // Status ke hisaab se active step set karo
+        const status = orderData.status?.toLowerCase() || "pending";
+
+        if (status === "pending" || status === "paid") {
+          setActiveStep(0);
+        } else if (status.includes("prepar") || status === "processing") {
+          setActiveStep(1);
+        } else if (status.includes("ship")) {
+          setActiveStep(2);
+          setIsShipped(true);
+        } else if (status.includes("deliv")) {
+          setActiveStep(3);
+          setIsDelivered(true);
+        } else if (status === "completed") {
+          setActiveStep(4);
+          setIsCompleted(true);
+          setShowFinalCompletedUI(true);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        setError(err.response?.data?.message || err.message || "Failed to load order");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [orderId]);
 
     const handleTracking = () => {
         setIsTracking(true);
@@ -70,19 +169,29 @@ const BusinessOrderDetailsPage = ({ orderId }) => {
                     Back
                 </button>
 
-                {/* Header */}
+               {/* Header */}
                 <div className="mb-8">
-                    <div className="flex items-center flex-wrap gap-4 mb-2">
-                        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
-                            Order# {orderId || "39201"}
-                        </h1>
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${showFinalCompletedUI ? "bg-[#EBF1FF] text-[#2962FF]" : (isDelivered || isCompleted) ? "bg-[#EBF1FF] text-[#2962FF]" : isShipped ? "bg-[#EBF1FF] text-[#2962FF]" : "bg-[#EBF1FF] text-[#2962FF]"}`}>
-                            {showFinalCompletedUI || isDelivered || isCompleted ? "Delivered" : isShipped ? "Shipped" : "Escrow Secured"}
-                        </span>
-                    </div>
-                    <p className="text-gray-500 text-sm font-medium">
-                        Placed by John Doe, Oct 24, 2025
-                    </p>
+                <div className="flex items-center flex-wrap gap-4 mb-2">
+                    <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+                    Order# {order?._id || orderId || "N/A"}
+                    </h1>
+                    <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        showFinalCompletedUI || order?.status === "completed"
+                        ? "bg-green-100 text-green-700"
+                        : order?.status === "delivered"
+                        ? "bg-green-100 text-green-700"
+                        : order?.status === "shipped"
+                        ? "bg-purple-100 text-purple-700"
+                        : "bg-amber-100 text-amber-700"
+                    }`}
+                    >
+                    {order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1) || "Pending"}
+                    </span>
+                </div>
+                <p className="text-gray-500 text-sm font-medium">
+                    Placed by {order?.userProfile?.fullName || "Unknown Buyer"}, {steps[0].date}
+                </p>
                 </div>
 
                 {/* Custom Stepper */}
@@ -282,6 +391,7 @@ const BusinessOrderDetailsPage = ({ orderId }) => {
                                     </div>
                                 )}
 
+                                    
                                 {/* Order Summary Card */}
                                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                                     <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-[17px]">Order Summary</h2>
@@ -499,3 +609,6 @@ const BusinessOrderDetailsPage = ({ orderId }) => {
 };
 
 export default BusinessOrderDetailsPage;
+
+
+

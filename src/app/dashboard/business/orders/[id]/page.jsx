@@ -1,5 +1,13 @@
-import BusinessOrderDetailsPage from "@/components/dashboard/orders/BusinessOrderDetailsPage";
+"use client";  // ← Yeh line add karo
 
-export default function OrderDetailsRoute({ params }) {
-    return <BusinessOrderDetailsPage orderId={params.id} />;
+import BusinessOrderDetailsPage from "@/components/dashboard/orders/BusinessOrderDetailsPage";
+import { useParams, useSearchParams } from "next/navigation";
+
+export default function OrderDetailsRoute() {
+  const params = useParams();
+  const searchParams = useSearchParams();
+  
+  const orderId = searchParams.get("orderId") || params.id;
+
+  return <BusinessOrderDetailsPage orderId={orderId} />;
 }

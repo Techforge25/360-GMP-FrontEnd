@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiMessageSquare, FiAlertCircle, FiCheck, FiArrowRight, FiStar, FiLock, FiUser, FiCreditCard } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
@@ -8,7 +8,23 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { BsBoxSeam } from "react-icons/bs";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import DashboardFooter from "../DashboardFooter";
+import axios from "axios"
 
+// const steps = [
+//       {
+//     label: "Order Placed",
+//     date: new Date(order?.createdAt).toLocaleDateString("en-US", {
+//       month: "short",
+//       day: "numeric",
+//       year: "numeric",
+//     }),
+//     icon: HiOutlineDocumentText,
+//   },
+//     { label: "Seller Preparing", date: "Oct 24, 2025", icon: BiCube },
+//     { label: "Shipped", date: "Oct 25, 2025", icon: TbTruckDelivery },
+//     { label: "Delivered", date: "Oct 26, 2025", icon: BsBoxSeam },
+//     { label: "Completed", date: "Oct 27, 2025", icon: FiCheck },
+// ];
 const steps = [
     { label: "Order Placed", date: "Oct 24, 2025", icon: HiOutlineDocumentText },
     { label: "Seller Preparing", date: "Oct 24, 2025", icon: BiCube },
@@ -16,11 +32,85 @@ const steps = [
     { label: "Delivered", date: "Oct 26, 2025", icon: BsBoxSeam },
     { label: "Completed", date: "Oct 27, 2025", icon: FiCheck },
 ];
-
 const OrderTrackingPage = ({ orderId }) => {
     const router = useRouter();
     const [activeStep, setActiveStep] = useState(0);
     const [isFinalCompleted, setIsFinalCompleted] = useState(false);
+    const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
+     const [error, setError] = useState(null);
+  
+  
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+    
+    useEffect(() => {
+        if (!orderId) {
+        setError("Order ID not found in URL");
+        setLoading(false);
+        return;
+        }
+
+        const fetchOrder = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const res = await axios.get(`${API_URL}/orders/${orderId}/view`, {
+            withCredentials: true, 
+            });
+
+            console.log("Order Response" , res)
+
+            if (!res.data.success) {
+            throw new Error(res.data.message || "Failed to fetch order");
+            }
+
+            const orderData = res.data.data;
+            console.log("order data",orderData)
+            setOrder(orderData);
+
+            // Status ke hisaab se stepper update karo
+            const status = orderData.status?.toLowerCase() || "pending";
+
+            if (status === "pending" || status.includes("placed")) {
+            setActiveStep(0);
+            } else if (status.includes("prepar") || status === "processing") {
+            setActiveStep(1);
+            } else if (status.includes("ship")) {
+            setActiveStep(2);
+            } else if (status.includes("deliv") || status === "out for delivery") {
+            setActiveStep(3);
+            } else if (status === "completed" || status === "delivered") {
+            setActiveStep(4);
+            setIsFinalCompleted(true);
+            }
+
+        } catch (err) {
+            console.error("Order fetch failed:", err);
+            setError(err.response?.data?.message || err.message || "Could not load order details");
+        } finally {
+            setLoading(false);
+        }
+        };
+
+        fetchOrder();
+    }, [orderId]);
+
+  const steps = [
+      {
+    label: "Order Placed",
+    date: new Date(order?.createdAt).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
+    icon: HiOutlineDocumentText,
+  },
+    { label: "Seller Preparing", date: "Oct 24, 2025", icon: BiCube },
+    { label: "Shipped", date: "Oct 25, 2025", icon: TbTruckDelivery },
+    { label: "Delivered", date: "Oct 26, 2025", icon: BsBoxSeam },
+    { label: "Completed", date: "Oct 27, 2025", icon: FiCheck },
+];
 
     return (
         <div className="min-h-screen bg-[#F8F9FA]">
@@ -34,27 +124,28 @@ const OrderTrackingPage = ({ orderId }) => {
                 </button>
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-3 mb-1">
-                            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                                Order# {orderId || "39201"}
-                            </h1>
-                            <span className="bg-[#EBF3FE] text-[#2F73F5] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
-                                Escrow Secured
-                            </span>
-                        </div>
-                        <p className="text-gray-500 text-sm">Place on October 24, 2025</p>
-                    </div>
+  <div>
+    <div className="flex items-center gap-3 mb-1">
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+Order# {order?._id || orderId || "N/A"}      </h1>
+      <span className="bg-[#EBF3FE] text-[#2F73F5] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+        Escrow Secured
+      </span>
+    </div>
+    <p className="text-gray-500 text-sm">
+      Placed on {new Date(order?.createdAt).toLocaleDateString()}
+    </p>
+  </div>
 
-                    <div className="flex items-center gap-3">
-                        <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
-                            <FiMessageSquare className="w-4 h-4" /> Contact Seller
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
-                            <FiAlertCircle className="w-4 h-4" /> Report Issue
-                        </button>
-                    </div>
-                </div>
+  <div className="flex items-center gap-3">
+    <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
+      <FiMessageSquare className="w-4 h-4" /> Contact Seller
+    </button>
+    <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
+      <FiAlertCircle className="w-4 h-4" /> Report Issue
+    </button>
+  </div>
+</div>
             </div>
 
             <div className=" max-w-[1440px] mx-auto pb-12 px-4 sm:px-8 mt-6 sm:mt-8 space-y-6">
@@ -129,45 +220,65 @@ const OrderTrackingPage = ({ orderId }) => {
                                 Items Ordered
                             </h2>
                             <div className="p-6">
-                                <div className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
-                                            <img src="/assets/images/earbuds.png" alt="Item" className="w-12 h-12 object-contain"
-                                                onError={(e) => { e.target.src = "https://placehold.co/100x100?text=Part" }} />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-semibold text-gray-900">Precision Disc Brake System</h3>
-                                            <p className="text-gray-500 text-sm mt-0.5">Quantity: 610</p>
-                                        </div>
-                                    </div>
-                                    <div className="font-bold text-gray-900 text-lg">
-                                        $57,500
-                                    </div>
+                        {order?.items.map((item) => {
+                            const product = order?.products.find(p => p._id === item.productId);
+
+                            return (
+                            <div
+                                key={item.productId}
+                                className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm"
+                            >
+                                <div className="flex items-center gap-4">
+                                <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                                    <img
+                                    src={product?.image || "https://placehold.co/100x100?text=No+Image"}
+                                    alt={product?.title || "Item"}
+                                    className="w-12 h-12 object-contain"
+                                    onError={(e) => { e.target.src = "https://placehold.co/100x100?text=No+Image"; }}
+                                    />
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold text-gray-900">{product?.title || "Unknown Product"}</h3>
+                                    <p className="text-gray-500 text-sm mt-0.5">Quantity: {item.quantity}</p>
+                                </div>
+                                </div>
+                                <div className="font-bold text-gray-900 text-lg">
+                                ${item.priceAtPurchase * item.quantity}
                                 </div>
                             </div>
+                            );
+                        })}
+                        </div>
                         </div>
 
                         {/* Dynamic Card (Order Placed vs Seller Preparing) */}
-                        {activeStep === 0 && (
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
-                                    Seller information
-                                </h2>
-                                <div className="p-6">
-                                    <div className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 bg-[#7A40F2] rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0">
-                                                V
-                                            </div>
-                                            <div>
-                                                <h3 className="font-bold text-gray-900 text-lg">VintageTime LLC</h3>
-                                                <p className="text-gray-500 text-sm mt-0.5">4.9/5 Rating (1.2k+ sales)</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
+                      {activeStep === 0 && order?.businessProfile && (
+  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+      Seller Information
+    </h2>
+    <div className="p-6">
+      <div className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 bg-[#7A40F2] rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0">
+            {order?.businessProfile.companyName?.charAt(0) || "S"}
+          </div>
+          <div>
+            <h3 className="font-bold text-gray-900 text-lg">
+              {order?.businessProfile.companyName || "Unknown Seller"}
+            </h3>
+            <p className="text-gray-500 text-sm mt-0.5">
+              {/* Optional: You can dynamically fetch rating or sales if you have it */}
+              {order?.businessProfile.rating
+                ? `${order?.businessProfile.rating}/5 Rating (${order?.businessProfile.sales} sales)`
+                : "No rating available"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
                         {activeStep === 1 && (
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -210,21 +321,27 @@ const OrderTrackingPage = ({ orderId }) => {
                                 </div>
 
                                 {/* Shipping Details Card */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                    <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-lg">
-                                        Shipping Details
-                                    </h2>
-                                    <div className="p-6">
-                                        <div className="space-y-2">
-                                            <p className="text-[#8c9ca8] font-medium text-sm">
-                                                Name: <span className="text-[#8c9ca8]">Alex Morgan</span>
-                                            </p>
-                                            <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-                                                Location: <span className="text-[#8c9ca8]">124 Tec Parkway,Suite 100 San Francisco,CA 94105 United State</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+  <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-lg">
+    Shipping Details
+  </h2>
+  <div className="p-6">
+    <div className="space-y-2">
+      <p className="text-[#8c9ca8] font-medium text-sm">
+        Name: <span className="text-[#8c9ca8]">{order?.shippingAddress?.name}</span>
+      </p>
+      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+        Location:{" "}
+        <span className="text-[#8c9ca8]">
+          {order?.shippingAddress?.lineAddress?.join(", ")}, {order?.shippingAddress?.province}, {order?.shippingAddress?.postalCode}
+        </span>
+      </p>
+      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+        Phone: <span className="text-[#8c9ca8]">{order?.shippingAddress?.phone}</span>
+      </p>
+    </div>
+  </div>
+</div>
                             </div>
                         )}
 
@@ -404,56 +521,64 @@ const OrderTrackingPage = ({ orderId }) => {
                     <div className="w-full lg:w-[350px] space-y-6">
 
                         {/* Summary Card */}
-                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                            <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
-                                Summary
-                            </h2>
-                            <div className="p-6">
-                                <div className="space-y-4 mb-6">
-                                    <div className="flex justify-between text-[15px]">
-                                        <span className="text-gray-400 font-medium">Item Total</span>
-                                        <span className="text-gray-500 font-bold">$55,000</span>
-                                    </div>
-                                    <div className="flex justify-between text-[15px]">
-                                        <span className="text-gray-400 font-medium">Shipping</span>
-                                        <span className="text-gray-500 font-bold">$2,500</span>
-                                    </div>
-                                    <div className="flex justify-between text-[15px]">
-                                        <span className="text-[#139D4C] font-medium">Escrow Fee Deduction</span>
-                                        <span className="text-[#139D4C] font-bold">-$0</span>
-                                    </div>
-                                </div>
+                       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+  <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+    Summary
+  </h2>
+  <div className="p-6">
+    <div className="space-y-4 mb-6">
+      <div className="flex justify-between text-[15px]">
+        <span className="text-gray-400 font-medium">Item Total</span>
+        <span className="text-gray-500 font-bold">
+          ${order?.totalAmount - (order?.shippingCost || 0)}
+        </span>
+      </div>
+      <div className="flex justify-between text-[15px]">
+        <span className="text-gray-400 font-medium">Shipping</span>
+        <span className="text-gray-500 font-bold">
+          ${order?.shippingCost || 0}
+        </span>
+      </div>
+      <div className="flex justify-between text-[15px]">
+        <span className="text-[#139D4C] font-medium">Escrow Fee Deduction</span>
+        <span className="text-[#139D4C] font-bold">
+          -${order?.escrowFee || 0}
+        </span>
+      </div>
+    </div>
 
-                                <div className="border-t border-gray-100 pt-4">
-                                    <div className="flex justify-between text-[15px] mb-3">
-                                        <span className="text-gray-400 font-bold">Grand Total</span>
-                                        <span className="text-gray-900 font-bold">$57,500</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-xl mt-1">
-                                        <span className="font-bold text-gray-900">Est. Net Payout</span>
-                                        <span className="font-bold text-gray-900">$57,500</span>
-                                    </div>
-                                </div>
+    <div className="border-t border-gray-100 pt-4">
+      <div className="flex justify-between text-[15px] mb-3">
+        <span className="text-gray-400 font-bold">Grand Total</span>
+        <span className="text-gray-900 font-bold">${order?.totalAmount}</span>
+      </div>
+      <div className="flex justify-between items-center text-xl mt-1">
+        <span className="font-bold text-gray-900">Est. Net Payout</span>
+        <span className="font-bold text-gray-900">${order?.totalAmount}</span>
+      </div>
+    </div>
 
-                                {isFinalCompleted && (
-                                    <div className="mt-8 bg-[#F8F9FA] rounded-xl border border-gray-100 p-5">
-                                        <div className="flex items-center gap-2.5 mb-4">
-                                            <div className="bg-white p-1 rounded border border-gray-200">
-                                                <FiLock className="w-3.5 h-3.5 text-gray-500" />
-                                            </div>
-                                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">RELEASED FROM ESCROW</span>
-                                        </div>
-                                        <div className="flex justify-between items-center mb-1">
-                                            <span className="text-[15px] font-bold text-gray-900">Final Amount</span>
-                                            <span className="text-[15px] font-bold text-gray-900">$57,500.00</span>
-                                        </div>
-                                        <p className="text-[11px] font-bold text-gray-400 mt-2">
-                                            Paid To Seller On Oct 28, 2025, At 14:32 PM UTC
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+    {isFinalCompleted && (
+      <div className="mt-8 bg-[#F8F9FA] rounded-xl border border-gray-100 p-5">
+        <div className="flex items-center gap-2.5 mb-4">
+          <div className="bg-white p-1 rounded border border-gray-200">
+            <FiLock className="w-3.5 h-3.5 text-gray-500" />
+          </div>
+          <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+            RELEASED FROM ESCROW
+          </span>
+        </div>
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-[15px] font-bold text-gray-900">Final Amount</span>
+          <span className="text-[15px] font-bold text-gray-900">${order?.totalAmount.toFixed(2)}</span>
+        </div>
+        <p className="text-[11px] font-bold text-gray-400 mt-2">
+          Paid To Seller On {new Date(order?.updatedAt).toLocaleDateString()}, At {new Date(order?.updatedAt).toLocaleTimeString()}
+        </p>
+      </div>
+    )}
+  </div>
+</div>
 
                         {/* Escrow Status Card */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
