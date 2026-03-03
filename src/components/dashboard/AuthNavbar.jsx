@@ -5,25 +5,31 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   FiShoppingCart,
-  FiMessageSquare,
   FiBell,
   FiUser,
   FiMenu,
   FiX,
   FiChevronDown,
-  FiBox,
-  FiCreditCard,
-  FiShoppingBag,
-  FiLayers,
-  FiHelpCircle,
-  FiRepeat,
-  FiLogOut,
 } from "react-icons/fi";
 import { useUserRole } from "@/context/UserContext";
 import { useCart } from "@/context/CartContext";
-import { MdOutlineMessage } from "react-icons/md";
 import api from "@/lib/axios";
 import userProfileAPI from "@/services/userProfileAPI";
+import {
+  getDashboardPathForRole,
+  getProfileDataForRole,
+  getProfileSetupPathForRole,
+  logoutToLogin,
+  persistUser,
+  refreshRoleSession,
+} from "@/lib/auth/session";
+import {
+  getHeaderIconLinks,
+  getMobileAccountLinks,
+  getPrimaryNavLinks,
+  getProfileMenuLinks,
+  SYSTEM_ACTIONS,
+} from "@/components/dashboard/config/navigation";
 
 import ProfileSwitchModal from "./ProfileSwitchModal";
 import SignOutModal from "./SignOutModal";
@@ -90,30 +96,19 @@ const AuthNavbar = () => {
     const targetRole = user?.role === "business" ? "user" : "business";
 
     try {
-      // Call the API to check and switch role
-      const response = await api.get({
-        url: `/auth/refreshToken/updateRole?role=${targetRole}`,
-        enableSuccessMessage: false,
-        enableErrorMessage: false,
-      });
+      const response = await refreshRoleSession(targetRole, user);
 
       if (response.success) {
         // Update user context and redirect
         const updatedUser = {
-          ...user,
+          ...(response.user || user),
           role: targetRole,
+          profileData: getProfileDataForRole(targetRole),
           isNewToPlatform: false, // User switching roles from dashboard is not new
         };
 
-        if (typeof window !== "undefined") {
-          localStorage.setItem("user", JSON.stringify(updatedUser));
-          // Redirect to the appropriate dashboard based on the new role
-          const dashboardUrl =
-            targetRole === "business"
-              ? "/dashboard/business"
-              : "/dashboard/user";
-          window.location.href = dashboardUrl;
-        }
+        persistUser(updatedUser);
+        window.location.href = getDashboardPathForRole(targetRole);
       }
     } catch (error) {
       // Check if it's a profile not found error
@@ -125,37 +120,17 @@ const AuthNavbar = () => {
 
       if (isProfileMissing) {
         // Redirect to profile creation page
-        const profileCreationUrl =
-          targetRole === "business"
-            ? "/onboarding/business-profile"
-            : "/onboarding/user-profile";
-
-        if (typeof window !== "undefined") {
-          window.location.href = profileCreationUrl;
-        }
+        window.location.href = getProfileSetupPathForRole(targetRole);
       } else {
         console.error("Failed to switch role:", error);
       }
     }
   };
 
-  const userLinks = [
-    { label: "Explore", href: "/dashboard/user" },
-    { label: "Businesses", href: "/dashboard/user/businesses" },
-    { label: "Marketplace", href: "/dashboard/user/marketplace" },
-    { label: "Jobs", href: "/dashboard/user/jobs" },
-    { label: "Communities", href: "/dashboard/user/communities" },
-  ];
-
-  const businessLinks = [
-    { label: "Explore", href: "/dashboard/business" },
-    { label: "Businesses", href: "/dashboard/business/businesses" },
-    { label: "Marketplace", href: "/dashboard/business/marketplace" },
-    { label: "Jobs", href: "/dashboard/business/jobs" },
-    { label: "Communities", href: "/dashboard/business/communities" },
-  ];
-
-  const navLinks = user?.role === "business" ? businessLinks : userLinks;
+  const navLinks = getPrimaryNavLinks(user?.role);
+  const headerIconLinks = getHeaderIconLinks(user?.role);
+  const profileMenuLinks = getProfileMenuLinks(user?.role);
+  const mobileAccountLinks = getMobileAccountLinks(user?.role);
 
   return (
     <>
@@ -207,8 +182,8 @@ const AuthNavbar = () => {
               {/* Icon Group */}
               <div className="flex items-center gap-4 border border-gray-200 rounded-full py-2 px-4">
                 {/* Cart Icon */}
-                {user?.role === "user" && (
-                  <Link href="/dashboard/user/cart" className="block relative">
+                {headerIconLinks.cart && (
+                  <Link href={headerIconLinks.cart} className="block relative">
                     <img
                       src="/assets/images/cartIcon.png"
                       alt="Cart"
@@ -221,15 +196,7 @@ const AuthNavbar = () => {
                     )}
                   </Link>
                 )}
-
-                <Link
-                  href={
-                    user?.role === "business"
-                      ? "/dashboard/business/notifications"
-                      : "/dashboard/user/notifications"
-                  }
-                  className="relative"
-                >
+                <Link href={headerIconLinks.notifications} className="relative">
                   <img
                     src="/assets/images/notificationIcon.png"
                     alt=""
@@ -239,13 +206,8 @@ const AuthNavbar = () => {
                     2
                   </span>
                 </Link>
-
                 <Link
-                  href={
-                    user?.role === "business"
-                      ? "/dashboard/business/messages"
-                      : "/dashboard/user/messages"
-                  }
+                  href={headerIconLinks.messages}
                   className="text-gray-600 hover:text-indigo-600 transition-colors relative mt-1 flex items-center justify-center p-0 bg-transparent border-none appearance-none cursor-pointer"
                 >
                   <img
@@ -297,105 +259,45 @@ const AuthNavbar = () => {
                     />
                     <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-20 animate-in fade-in zoom-in-95 duration-100">
                       <div className="flex flex-col">
-                        <Link
-                          href={
-                            user?.role === "business"
-                              ? "/dashboard/business/profile"
-                              : "/dashboard/user/profile"
-                          }
-                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <FiUser className="w-5 h-5 text-gray-900" />
-                          <span>My Profile</span>
-                        </Link>
-
-                        {user?.role === "business" && (
-                          <Link
-                            href="/dashboard/business/products"
-                            className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                            onClick={() => setIsProfileOpen(false)}
-                          >
-                            <FiBox className="w-5 h-5 text-gray-900" />
-                            <span>My Products</span>
-                          </Link>
-                        )}
-
-                        <Link
-                          href={
-                            user?.role === "business"
-                              ? "/dashboard/business/wallet"
-                              : "/dashboard/user/wallet"
-                          }
-                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <FiCreditCard className="w-5 h-5 text-gray-900" />
-                          <span>Wallet</span>
-                        </Link>
-
-                        <Link
-                          href={
-                            user?.role === "business"
-                              ? "/dashboard/business/orders"
-                              : "/dashboard/user/orders"
-                          }
-                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <FiShoppingBag className="w-5 h-5 text-gray-900" />
-                          <span>Orders</span>
-                        </Link>
-
-                        <Link
-                          href={
-                            user?.role === "business"
-                              ? "/dashboard/business/subscriptions"
-                              : "/dashboard/user/subscriptions"
-                          }
-                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <FiLayers className="w-5 h-5 text-gray-900" />
-                          <span>Subscriptions</span>
-                        </Link>
-
-                        <Link
-                          href={
-                            user?.role === "business"
-                              ? "/dashboard/business/support"
-                              : "/dashboard/user/support"
-                          }
-                          className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <FiHelpCircle className="w-5 h-5 text-gray-900" />
-                          <span>Support</span>
-                        </Link>
+                        {profileMenuLinks.map((link) => {
+                          const Icon = link.icon;
+                          return (
+                            <Link
+                              key={link.label}
+                              href={link.href}
+                              className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                              onClick={() => setIsProfileOpen(false)}
+                            >
+                              <Icon className="w-5 h-5 text-gray-900" />
+                              <span>{link.label}</span>
+                            </Link>
+                          );
+                        })}
 
                         <div className="h-px bg-gray-100 my-1 mx-4" />
 
-                        <button
-                          className="w-full flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
-                          onClick={() => {
+                        {SYSTEM_ACTIONS.map((action) => {
+                          const Icon = action.icon;
+                          const onClick = () => {
                             setIsProfileOpen(false);
-                            setIsSwitchModalOpen(true);
-                          }}
-                        >
-                          <FiRepeat className="w-5 h-5 text-gray-900" />
-                          <span>Switch</span>
-                        </button>
-
-                        <button
-                          className="w-full flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
-                          onClick={() => {
-                            setIsProfileOpen(false);
+                            if (action.key === "switch") {
+                              setIsSwitchModalOpen(true);
+                              return;
+                            }
                             setIsSignOutModalOpen(true);
-                          }}
-                        >
-                          <FiLogOut className="w-5 h-5 text-gray-900" />
-                          <span>Sign Out</span>
-                        </button>
+                          };
+
+                          return (
+                            <button
+                              key={action.key}
+                              className="w-full flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors text-left"
+                              onClick={onClick}
+                            >
+                              <Icon className={`w-5 h-5 ${action.desktopIconClassName}`} />
+                              <span>{action.label}</span>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   </>
@@ -405,14 +307,7 @@ const AuthNavbar = () => {
 
             {/* Mobile Menu Toggle */}
             <div className="sm:hidden flex items-center gap-4">
-              <Link
-                href={
-                  user?.role === "business"
-                    ? "/dashboard/business/notifications"
-                    : "/dashboard/user/notifications"
-                }
-                className="text-gray-600 hover:text-indigo-600 relative"
-              >
+              <Link href={headerIconLinks.notifications} className="text-gray-600 hover:text-indigo-600 relative">
                 <FiBell className="w-5 h-5 text-[#240457]" />
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[14px] flex items-center justify-center rounded-full font-semibold">
                   2
@@ -463,108 +358,22 @@ const AuthNavbar = () => {
                   Account
                 </h3>
                 <div className="space-y-1">
-                  <Link
-                    href={
-                      user?.role === "business"
-                        ? "/dashboard/business/messages"
-                        : "/dashboard/user/messages"
-                    }
-                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
-                    onClick={toggleMenu}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
-                      <MdOutlineMessage className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Messages</span>
-                  </Link>
-
-                  <Link
-                    href={
-                      user?.role === "business"
-                        ? "/dashboard/business/profile"
-                        : "/dashboard/user/profile"
-                    }
-                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
-                    onClick={toggleMenu}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
-                      <FiUser className="w-4 h-4 text-white" />
-                    </div>
-                    <span>My Profile</span>
-                  </Link>
-
-                  {user?.role === "business" && (
-                    <Link
-                      href="/dashboard/business/products"
-                      className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
-                      onClick={toggleMenu}
-                    >
-                      <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg flex items-center justify-center">
-                        <FiBox className="w-4 h-4 text-white" />
-                      </div>
-                      <span>My Products</span>
-                    </Link>
-                  )}
-
-                  <Link
-                    href={
-                      user?.role === "business"
-                        ? "/dashboard/business/wallet"
-                        : "/dashboard/user/wallet"
-                    }
-                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
-                    onClick={toggleMenu}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                      <FiCreditCard className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Wallet</span>
-                  </Link>
-
-                  <Link
-                    href={
-                      user?.role === "business"
-                        ? "/dashboard/business/orders"
-                        : "/dashboard/user/orders"
-                    }
-                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
-                    onClick={toggleMenu}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                      <FiShoppingBag className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Orders</span>
-                  </Link>
-
-                  <Link
-                    href={
-                      user?.role === "business"
-                        ? "/dashboard/business/subscriptions"
-                        : "/dashboard/user/subscriptions"
-                    }
-                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
-                    onClick={toggleMenu}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg flex items-center justify-center">
-                      <FiLayers className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Subscriptions</span>
-                  </Link>
-
-                  <Link
-                    href={
-                      user?.role === "business"
-                        ? "/dashboard/business/support"
-                        : "/dashboard/user/support"
-                    }
-                    className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
-                    onClick={toggleMenu}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-teal-500 to-teal-600 rounded-lg flex items-center justify-center">
-                      <FiHelpCircle className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Support</span>
-                  </Link>
+                  {mobileAccountLinks.map((link) => {
+                    const Icon = link.icon;
+                    return (
+                      <Link
+                        key={link.label}
+                        href={link.href}
+                        className="flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200"
+                        onClick={toggleMenu}
+                      >
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${link.mobileIconClassName}`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <span>{link.label}</span>
+                      </Link>
+                    );
+                  })}
                 </div>
 
                 {/* Bottom Actions */}
@@ -572,31 +381,33 @@ const AuthNavbar = () => {
                   <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                     System
                   </h3>
-                  <button
-                    className="w-full flex items-center gap-3 text-base font-medium text-gray-700 hover:text-[#240457] px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md transition-all duration-200 text-left"
-                    onClick={() => {
+                  {SYSTEM_ACTIONS.map((action) => {
+                    const Icon = action.icon;
+                    const onClick = () => {
                       toggleMenu();
-                      setIsSwitchModalOpen(true);
-                    }}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-lg flex items-center justify-center">
-                      <FiRepeat className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Switch Role</span>
-                  </button>
-
-                  <button
-                    className="w-full flex items-center gap-3 text-base font-medium text-red-600 hover:text-red-700 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:shadow-md transition-all duration-200 text-left"
-                    onClick={() => {
-                      toggleMenu();
+                      if (action.key === "switch") {
+                        setIsSwitchModalOpen(true);
+                        return;
+                      }
                       setIsSignOutModalOpen(true);
-                    }}
-                  >
-                    <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center">
-                      <FiLogOut className="w-4 h-4 text-white" />
-                    </div>
-                    <span>Sign Out</span>
-                  </button>
+                    };
+
+                    return (
+                      <button
+                        key={action.key}
+                        className={`w-full flex items-center gap-3 text-base font-medium px-4 py-3 rounded-xl hover:shadow-md transition-all duration-200 text-left ${
+                          action.mobileTextClassName ||
+                          "text-gray-700 hover:text-[#240457] hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50"
+                        }`}
+                        onClick={onClick}
+                      >
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${action.mobileIconClassName}`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                        <span>{action.label}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -618,14 +429,7 @@ const AuthNavbar = () => {
       <SignOutModal
         isOpen={isSignOutModalOpen}
         onClose={() => setIsSignOutModalOpen(false)}
-        onConfirm={() => {
-          // Handle sign out logic
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("user");
-            localStorage.removeItem("token");
-            window.location.href = "/login";
-          }
-        }}
+        onConfirm={logoutToLogin}
       />
     </>
   );

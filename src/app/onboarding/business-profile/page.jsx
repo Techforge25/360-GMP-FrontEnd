@@ -32,6 +32,20 @@ import { LocationSearch } from "@/components/ui/LocationSearch";
 import dynamic from "next/dynamic";
 import SlateRenderer from "@/components/ui/SlateRenderer";
 import { PDFViewer } from "@/components/ui/PDFViewer";
+import OnboardingImageUploadField from "@/components/onboarding/OnboardingImageUploadField";
+import { completeOnboardingSession } from "@/lib/auth/session";
+import {
+  BUSINESS_COMPANY_SIZE_OPTIONS,
+  BUSINESS_DAYS,
+  BUSINESS_INDUSTRY_OPTIONS,
+} from "@/features/onboarding/business/options";
+import {
+  isValidEmail,
+  isValidPhone,
+  isValidUrl,
+} from "@/features/onboarding/shared/validators";
+import BusinessProfileStep1Component from "@/features/onboarding/business/components/BusinessProfileStep1";
+import BusinessProfileStep2Component from "@/features/onboarding/business/components/BusinessProfileStep2";
 
 const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ssr: false,
@@ -40,24 +54,6 @@ const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ),
 });
 
-const IndustryOptions = [
-  "Manufacturing",
-  "Technology",
-  "Retail",
-  "Healthcare",
-  "Finance",
-  "Construction",
-  "Education",
-  "Other",
-];
-
-const CompanySizeOptions = [
-  "1-10 Employees",
-  "11-50 Employees",
-  "51-200 Employees",
-  "201-500 Employees",
-  "501+ Employees",
-];
 
 const formatYearMonth = (dateString) => {
   if (!dateString) return "";
@@ -67,34 +63,6 @@ const formatYearMonth = (dateString) => {
     month: "long",
   });
 };
-
-const isValidEmail = (email) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-};
-
-const isValidPhone = (phone) => {
-  const cleanPhone = phone.replace(/\s+/g, "");
-  return /^\+[1-9]\d{6,14}$/.test(cleanPhone);
-};
-
-const isValidUrl = (url) => {
-  try {
-    const urlObj = new URL(url);
-    return urlObj.protocol === "http:" || urlObj.protocol === "https:";
-  } catch {
-    return false;
-  }
-};
-
-const DAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
 
 // Remove hardcoded TIMEZONES and generate them dynamically
 const TIMEZONES = Intl.supportedValuesOf
@@ -214,7 +182,7 @@ const Step1 = ({
               <option value="" disabled>
                 Select Primary Industry
               </option>
-              {IndustryOptions.map((opt) => (
+              {BUSINESS_INDUSTRY_OPTIONS.map((opt) => (
                 <option key={opt} value={opt}>
                   {opt}
                 </option>
@@ -248,7 +216,7 @@ const Step1 = ({
               <option value="" disabled>
                 Select Company Size
               </option>
-              {CompanySizeOptions.map((opt) => (
+              {BUSINESS_COMPANY_SIZE_OPTIONS.map((opt) => (
                 <option key={opt} value={opt}>
                   {opt}
                 </option>
@@ -286,7 +254,7 @@ const Step1 = ({
                     handleScheduleChange("startDay", e.target.value)
                   }
                 >
-                  {DAYS.map((d) => (
+                  {BUSINESS_DAYS.map((d) => (
                     <option key={`start-${d}`} value={d}>
                       {d}
                     </option>
@@ -302,7 +270,7 @@ const Step1 = ({
                     handleScheduleChange("endDay", e.target.value)
                   }
                 >
-                  {DAYS.map((d) => (
+                  {BUSINESS_DAYS.map((d) => (
                     <option key={`end-${d}`} value={d}>
                       {d}
                     </option>
@@ -416,168 +384,58 @@ const Step1 = ({
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label className="text-base font-medium">
-            Profile Image <span className="text-red-500">*</span>
-          </label>
-
-          {formData.profileImageUrl ? (
-            <div className="relative group">
-              <label className="border-2 border-border-light rounded-lg p-4 bg-surface hover:bg-surface-muted cursor-pointer block transition-all">
-                <input
-                  type="file"
-                  className="hidden"
-                  accept=".jpg,.jpeg,.png"
-                  onChange={async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    if (file.size > 10 * 1024 * 1024) {
-                      alert("File must be under 10MB");
-                      return;
-                    }
-                    setIsUploading(true);
-                    try {
-                      const url = await uploadToCloudinary(
-                        file,
-                        "business/profile",
-                        () => {},
-                      );
-                      handleChange("profileImageUrl", url);
-                    } catch (err) {
-                      alert("Upload failed");
-                      console.error(err);
-                    } finally {
-                      setIsUploading(false);
-                    }
-                  }}
-                />
-                <div className="w-28 h-28 mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3">
-                  <Image
-                    src={formData.profileImageUrl}
-                    alt="Profile Preview"
-                    width={112}
-                    height={112}
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <p className="text-sm font-medium text-center text-text-secondary">
-                  Click to change image
-                </p>
-              </label>
-            </div>
-          ) : (
-            <FileUpload
-              label="Upload Profile Image"
-              subLabel="JPG, PNG (Max 10MB)"
-              onUploadingChange={setIsUploading}
-              onUpload={(file, onProgress) =>
-                uploadToCloudinary(file, "business/profile", onProgress).then(
-                  (url) => {
-                    handleChange("profileImageUrl", url);
-                    return url;
-                  },
-                )
-              }
-            />
-          )}
+          <OnboardingImageUploadField
+            label="Profile Image"
+            subLabel="JPG, PNG (Max 10MB)"
+            value={formData.profileImageUrl}
+            required
+            folder="business/profile"
+            maxSizeMb={10}
+            onChange={(url) => handleChange("profileImageUrl", url)}
+            onUploadingChange={setIsUploading}
+            updateLabel="Click to change image"
+            showRemove={false}
+            previewContainerClassName="border-2 border-border-light rounded-lg p-4 bg-surface hover:bg-surface-muted transition-all"
+            previewWrapperClassName="w-28 h-28 mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3 relative"
+            previewImageClassName="object-cover w-full h-full"
+          />
         </div>
         <div className="space-y-2">
-          <label className="text-base font-medium">
-            Banner Image <span className="text-red-500">*</span>
-          </label>
-          {formData.bannerImageUrl ? (
-            <div className="relative group">
-              <label className="border-2 border-border-light rounded-lg p-4 bg-surface hover:bg-surface-muted cursor-pointer block transition-all">
-                <input
-                  type="file"
-                  className="hidden"
-                  accept=".jpg,.jpeg,.png"
-                  onChange={async (e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    if (file.size > 10 * 1024 * 1024) {
-                      alert("File must be under 10MB");
-                      return;
-                    }
-
-                    try {
-                      const dims = await getImageDimensions(file);
-                      if (dims.width < 1440 || dims.height < 300) {
-                        handleChange(
-                          "bannerWarning",
-                          `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
-                        );
-                      } else {
-                        handleChange("bannerWarning", "");
-                      }
-
-                      setIsUploading(true);
-                      const url = await uploadToCloudinary(
-                        file,
-                        "business/banner",
-                        () => {},
-                      );
-                      handleChange("bannerImageUrl", url);
-                    } catch (err) {
-                      handleChange(
-                        "bannerWarning",
-                        "Upload failed or invalid image file",
-                      );
-                      console.error(err);
-                    } finally {
-                      setIsUploading(false);
-                    }
-                  }}
-                />
-                <div className="relative w-full aspect-[1440/300] mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3">
-                  <Image
-                    src={formData.bannerImageUrl}
-                    alt="Banner Preview"
-                    fill
-                    className="object-cover w-full h-full"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                </div>
-                <p className="text-sm font-medium text-center text-text-secondary">
-                  Click to change image
-                </p>
-              </label>
-            </div>
-          ) : (
-            <FileUpload
-              label="Upload Banner Image"
-              subLabel="Dimension 1440*300 (Max 10MB)"
-              onUploadingChange={setIsUploading}
-              onUpload={async (file, onProgress) => {
-                try {
-                  const dims = await getImageDimensions(file);
-                  if (dims.width < 1440 || dims.height < 300) {
-                    handleChange(
-                      "bannerWarning",
-                      `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
-                    );
-                  } else {
-                    handleChange("bannerWarning", "");
-                  }
-
-                  return uploadToCloudinary(
-                    file,
-                    "business/banner",
-                    onProgress,
-                  ).then((url) => {
-                    handleChange("bannerImageUrl", url);
-                    return url;
-                  });
-                } catch (err) {
+          <OnboardingImageUploadField
+            label="Banner Image"
+            subLabel="Dimension 1440*300 (Max 10MB)"
+            value={formData.bannerImageUrl}
+            required
+            folder="business/banner"
+            maxSizeMb={10}
+            onChange={(url) => handleChange("bannerImageUrl", url)}
+            onUploadingChange={setIsUploading}
+            updateLabel="Click to change image"
+            showRemove={false}
+            previewContainerClassName="border-2 border-border-light rounded-lg p-4 bg-surface hover:bg-surface-muted transition-all"
+            previewWrapperClassName="relative w-full aspect-[1440/300] mx-auto border border-gray-200 rounded-lg overflow-hidden mb-3"
+            previewImageClassName="object-cover w-full h-full"
+            previewAlt="Banner Preview"
+            beforeUpload={async (file) => {
+              try {
+                const dims = await getImageDimensions(file);
+                if (dims.width < 1440 || dims.height < 300) {
                   handleChange(
                     "bannerWarning",
-                    "Upload failed or invalid image file",
+                    `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
                   );
-                  console.error(err);
-                  throw err;
+                } else {
+                  handleChange("bannerWarning", "");
                 }
-              }}
-            />
-          )}
+              } catch (error) {
+                handleChange(
+                  "bannerWarning",
+                  "Upload failed or invalid image file",
+                );
+                throw error;
+              }
+            }}
+          />
 
           {formData.bannerWarning && (
             <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
@@ -1470,69 +1328,12 @@ export default function BusinessProfilePage() {
   };
 
   const handleSuccessNext = async () => {
-    // Update user auth and profile in localStorage
-    if (typeof window !== "undefined") {
-      const baseUser = JSON.parse(localStorage.getItem("user") || "{}");
-
-      // Try to refresh auth token so backend gets latest businessId/profileId.
-      // This mirrors logging in again, which is why things work on 2nd login.
-      let refreshedUser = { ...baseUser };
-      try {
-        const refresh = await api.get({
-          url: "/auth/refreshToken/updateRole?role=business",
-          activateLoader: false,
-          enableSuccessMessage: false,
-          enableErrorMessage: false,
-        });
-
-        if (refresh?.success) {
-          refreshedUser = {
-            ...refreshedUser,
-            ...(refresh.data || {}),
-          };
-
-          const refreshedToken =
-            refresh.accessToken ||
-            refresh.token ||
-            refresh.data?.accessToken ||
-            refresh.data?.token;
-
-          if (refreshedToken) {
-            refreshedUser.accessToken = refreshedToken;
-            refreshedUser.token = refreshedToken;
-          }
-        }
-      } catch (e) {
-        console.warn("Token refresh after business profile creation failed", e);
-      }
-
-      // Ensure we keep correct role and onboarding flags
-      const finalUser = {
-        ...refreshedUser,
-        role: "business",
-        isNewToPlatform: false,
-      };
-
-      // Store the created business profile payload for convenient access
-      if (createdProfile) {
-        finalUser.profilePayload = createdProfile;
-      }
-
-      // Fallback to token from profile creation if present
-      if (newToken) {
-        finalUser.accessToken = newToken;
-        finalUser.token = newToken;
-      }
-
-      localStorage.setItem("user", JSON.stringify(finalUser));
-
-      // Update global context so axios immediately sends the fresh token
-      if (login) {
-        login(finalUser);
-      }
-
-      window.location.href = "/dashboard/business";
-    }
+    await completeOnboardingSession({
+      role: "business",
+      createdProfile,
+      newToken,
+      login,
+    });
   };
 
   const handleBack = () => {
@@ -1561,17 +1362,23 @@ export default function BusinessProfilePage() {
           )}
 
           {currentStep === 1 && (
-            <Step1
+            <BusinessProfileStep1Component
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
               companyNameError={companyNameError}
               bioLength={bioLength}
               onBioLengthChange={setBioLength}
+              SlateEditor={SlateEditor}
+              industryOptions={BUSINESS_INDUSTRY_OPTIONS}
+              companySizeOptions={BUSINESS_COMPANY_SIZE_OPTIONS}
+              days={BUSINESS_DAYS}
+              timeOptions={TIME_OPTIONS}
+              timezones={TIMEZONES}
             />
           )}
           {currentStep === 2 && (
-            <Step2
+            <BusinessProfileStep2Component
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}

@@ -1,23 +1,22 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FiArrowRight, FiHeart } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
-import productAPI from "@/services/productAPI";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
-import { getSlateText } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useUserRole } from "@/context/UserContext";
+import { getProductsBasePath } from "@/features/dashboard/products/mappers";
+import { useProductSectionsData } from "@/features/dashboard/products/useProductSectionsData";
 
 const ProductSections = () => {
   const router = useRouter();
-  const pathname = usePathname();
-  const [featured, setFeatured] = useState([]);
-  const [topRanking, setTopRanking] = useState([]);
-  const [newProducts, setNewProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user } = useUserRole();
+  const { featured, topRanking, newProducts, loading, error } =
+    useProductSectionsData();
   const carouselRef = React.useRef(null);
   const topRankingRef = React.useRef(null);
   const newProductsRef = React.useRef(null);
+  const productsBasePath = getProductsBasePath(user?.role);
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -56,160 +55,19 @@ const ProductSections = () => {
   };
 
   const handleViewAllProducts = () => {
-    if (pathname.includes("/dashboard/business")) {
-      router.push("/dashboard/business/marketplace");
-    } else if (pathname.includes("/dashboard/user")) {
-      router.push("/dashboard/user/marketplace");
-    }
+    router.push(`${productsBasePath.replace(/\/products$/, "")}/marketplace`);
   };
 
   const handleViewTopRanking = () => {
-    if (pathname.includes("/dashboard/business")) {
-      router.push("/dashboard/business/products/top-ranking");
-    } else if (pathname.includes("/dashboard/user")) {
-      router.push("/dashboard/user/products/top-ranking");
-    }
+    router.push(`${productsBasePath}/top-ranking`);
   };
 
   const handleViewNewProducts = () => {
-    if (pathname.includes("/dashboard/business")) {
-      router.push("/dashboard/business/products/new");
-    } else if (pathname.includes("/dashboard/user")) {
-      router.push("/dashboard/user/products/new");
-    }
+    router.push(`${productsBasePath}/new`);
   };
 
   const handleViewProduct = (productId) => {
-    if (pathname.includes("/dashboard/business")) {
-      router.push(`/dashboard/business/products/${productId}`);
-    } else if (pathname.includes("/dashboard/user")) {
-      router.push(`/dashboard/user/products/${productId}`);
-    }
-  };
-
-  useEffect(() => {
-    fetchAllProducts();
-  }, []);
-
-  const fetchAllProducts = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // const newProductsRef = React.useRef(null);
-
-      // const scrollNewLeft = () => {
-      //   if (newProductsRef.current) {
-      //     newProductsRef.current.scrollBy({ left: -320, behavior: "smooth" });
-      //   }
-      // };
-
-      // const scrollNewRight = () => {
-      //   if (newProductsRef.current) {
-      //     newProductsRef.current.scrollBy({ left: 320, behavior: "smooth" });
-      //   }
-      // };
-
-      console.log("Fetching products from API...");
-
-      // Fetch all four categories in parallel
-      const [featuredRes, topRankingRes, newProductsRes, flashDealsRes] =
-        await Promise.all([
-          productAPI.getFeatured(10),
-          productAPI.getTopRanking(8),
-          productAPI.getNewProducts(8),
-          productAPI.getFlashDeals(4),
-        ]);
-
-      console.log("Featured products response:", featuredRes);
-      console.log("Top ranking products response:", topRankingRes);
-      console.log("New products response:", newProductsRes);
-      console.log("Flash deals response:", flashDealsRes);
-
-      // Transform and set featured products
-      if (
-        featuredRes.success &&
-        featuredRes.data?.docs &&
-        featuredRes.data.docs.length > 0
-      ) {
-        const transformedFeatured = featuredRes.data.docs.map(transformProduct);
-        setFeatured(transformedFeatured);
-      } else {
-        setFeatured([]);
-      }
-
-      // Transform and set top ranking products (merged with flash deals)
-      let combinedTopRanking = [];
-
-      // Process Flash Deals
-      if (
-        flashDealsRes.success &&
-        Array.isArray(flashDealsRes.data) &&
-        flashDealsRes.data.length > 0
-      ) {
-        const transformedFlashDeals = flashDealsRes.data.map(transformProduct);
-        combinedTopRanking = [...combinedTopRanking, ...transformedFlashDeals];
-      }
-
-      // Process Top Ranking
-      if (
-        topRankingRes.success &&
-        Array.isArray(topRankingRes.data) &&
-        topRankingRes.data.length > 0
-      ) {
-        const transformedTopRanking = topRankingRes.data.map(transformProduct);
-        combinedTopRanking = [...combinedTopRanking, ...transformedTopRanking];
-      }
-
-      // Remove duplicates based on ID just in case
-      const uniqueTopRanking = Array.from(
-        new Map(combinedTopRanking.map((item) => [item.id, item])).values(),
-      );
-
-      setTopRanking(uniqueTopRanking);
-
-      // Transform and set new products
-      // New products endpoint returns direct array
-      if (
-        newProductsRes.success &&
-        Array.isArray(newProductsRes.data) &&
-        newProductsRes.data.length > 0
-      ) {
-        const transformedNewProducts =
-          newProductsRes.data.map(transformProduct);
-        setNewProducts(transformedNewProducts);
-      } else {
-        setNewProducts([]);
-      }
-    } catch (err) {
-      console.error("Failed to fetch products:", err);
-      setError(err.message || "Failed to load products");
-      // Set empty arrays on error
-      setFeatured([]);
-      setTopRanking([]);
-      setNewProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const transformProduct = (product) => {
-    return {
-      id: product._id || product.productId,
-      name: product.title || "Unnamed Product",
-      image: product.image || "/assets/images/Portrait_Placeholder.png",
-      desc: getSlateText(product.detail)?.substring(0, 50) || "No description",
-      price: `$${product.pricePerUnit?.toFixed(2) || "0.00"}`,
-      category: product.category || "General",
-      tag: product.isFeatured
-        ? "Featured"
-        : product.status === "approved"
-          ? "Approved"
-          : "New",
-      minOrder: product.minOrderQty || product.moq || 1,
-      stock: product.stockQty || 0,
-      shipping: product.shippingMethod || "Standard",
-      deliveryDays: product.estimatedDeliveryDays || "5-7 days",
-    };
+    router.push(`${productsBasePath}/${productId}`);
   };
 
   if (loading) {

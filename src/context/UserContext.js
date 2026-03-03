@@ -2,6 +2,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "@/lib/axios";
 import useSocket from "@/hooks/useSocket";
+import {
+  clearStoredSession,
+  getProfileDataForRole,
+  getStoredUser,
+  persistUser,
+  redirectTo,
+  refreshRoleSession,
+} from "@/lib/auth/session";
 
 const UserContext = createContext();
 
@@ -11,11 +19,7 @@ export const UserProvider = ({ children }) => {
 
   useEffect(() => {
     // 1. Initial Load from localStorage
-    const storedUser = localStorage.getItem("user");
-    let currentUser = null;
-    if (storedUser) {
-      currentUser = JSON.parse(storedUser);
-    }
+    let currentUser = getStoredUser();
 
     // 2. URL/Hash Token Capture (Priority for Google OAuth/Production redirects)
     if (typeof window !== "undefined") {
@@ -81,10 +85,8 @@ export const UserProvider = ({ children }) => {
 
   const logout = () => {
     setUserState(null);
-    localStorage.removeItem("user");
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
-    }
+    clearStoredSession();
+    redirectTo("/login");
   };
 
   const login = (userData) => {
@@ -120,16 +122,12 @@ export const UserProvider = ({ children }) => {
     }
 
     setUserState(finalizedData);
-    localStorage.setItem("user", JSON.stringify(finalizedData));
+    persistUser(finalizedData);
   };
 
   const setOnboardingRole = async (role) => {
     try {
-      const response = await api.get({
-        url: `/auth/refreshToken/updateRole?role=${role}`,
-        enableSuccessMessage: false,
-        enableErrorMessage: false,
-      });
+      const response = await refreshRoleSession(role, user);
 
       console.log("setOnboardingRole response:", response);
 
@@ -138,29 +136,15 @@ export const UserProvider = ({ children }) => {
         // Even if response.data is empty, we must update the role locally
         const updatedUser = {
           ...(typeof user === "object" && user !== null ? user : {}),
-          ...(response.data || {}),
+          ...(response.user || {}),
           role: role, // Ensure role is explicitly set locally
-          profileData: role === "business" ? "business" : "user",
+          profileData: getProfileDataForRole(role),
           // Preserve isNewToPlatform flag - don't let backend override it
           isNewToPlatform:
             (typeof user === "object" ? user?.isNewToPlatform : true) ??
-            response.data?.isNewToPlatform ??
+            response.user?.isNewToPlatform ??
             true,
         };
-
-        // Capture any fresh access token returned by backend so subsequent
-        // requests (subscription, profile creation, dashboards) don't use
-        // a stale token that can cause 403 "Access Denied" on first login.
-        const token =
-          response.accessToken ||
-          response.token ||
-          response.data?.accessToken ||
-          response.data?.token;
-
-        if (token) {
-          updatedUser.accessToken = token;
-          updatedUser.token = token; // legacy key support
-        }
 
         login(updatedUser);
         return updatedUser;
@@ -188,7 +172,7 @@ export const UserProvider = ({ children }) => {
         const updatedUser = {
           ...(typeof user === "object" && user !== null ? user : {}),
           role: role,
-          profileData: role === "business" ? "business" : "user",
+          profileData: getProfileDataForRole(role),
           // Preserve isNewToPlatform flag, default to true for new Google OAuth users
           isNewToPlatform:
             (typeof user === "object" ? user?.isNewToPlatform : true) ?? true,
@@ -236,6 +220,7 @@ export const UserProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         user,
+        role: user?.role,
         login,
         logout,
         setOnboardingRole,

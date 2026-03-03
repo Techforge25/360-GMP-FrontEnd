@@ -1,46 +1,88 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { FiCalendar, FiChevronDown, FiEye, FiTrash2 } from "react-icons/fi";
+import { FiCalendar, FiChevronDown, FiEye } from "react-icons/fi";
 import axios from "axios";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
+const TAB_TO_ENDPOINT = {
+  "All Orders":        "/orders/user/all-orders",
+  "Awaiting Shipment": "/orders/user/processing-orders",
+  "In Transit":        "/orders/user/in-transit-orders",
+  "Delivered":         "/orders/user/completed-orders",
+  "Cancelled":         "/orders/user/cancelled-orders",
+};
 
 const UserOrdersPage = () => {
   const [activeTab, setActiveTab] = useState("All Orders");
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [ordersByTab, setOrdersByTab] = useState({});
+  const [pageByTab, setPageByTab] = useState({});
+  const [hasMoreByTab, setHasMoreByTab] = useState({});
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+  const limit = 10;
 
-        const res = await axios.get(`${BASE_URL}/orders/user/all-orders`, {
-          withCredentials: true, // cookies/session ke liye zaroori
-        });
+  // Current tab data
+  const currentOrders = ordersByTab[activeTab] || [];
+  const currentPage = pageByTab[activeTab] || 1;
+  const hasMore = hasMoreByTab[activeTab] ?? true;
 
-        if (!res.data.success) {
-          throw new Error(res.data.message || "Failed to fetch user orders");
-        }
+  const fetchOrders = useCallback(async (reset = false) => {
+    const pageToFetch = reset ? 1 : (pageByTab[activeTab] || 1);
 
-        setOrders(res.data.data.docs || []);
-      } catch (err) {
-        console.error("User orders fetch error:", err);
-        setError(err.response?.data?.message || err.message || "Could not load your orders");
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const endpoint = TAB_TO_ENDPOINT[activeTab];
+
+      const res = await axios.get(`${BASE_URL}${endpoint}`, {
+        params: { page: pageToFetch, limit },
+        withCredentials: true,
+      });
+
+      if (!res.data?.success) {
+        throw new Error(res.data?.message || "Failed to fetch orders");
       }
-    };
 
-    fetchOrders();
-  }, []);
+      const newDocs = res.data.data?.docs || [];
+      const hasNext = res.data.data?.hasNextPage ?? false;
 
-  const getStatusColor = (status) => {
-    const s = status?.toLowerCase() || "";
+      setOrdersByTab((prev) => ({
+        ...prev,
+        [activeTab]: reset ? newDocs : [...(prev[activeTab] || []), ...newDocs],
+      }));
+
+      setPageByTab((prev) => ({
+        ...prev,
+        [activeTab]: pageToFetch + 1,
+      }));
+
+      setHasMoreByTab((prev) => ({
+        ...prev,
+        [activeTab]: hasNext,
+      }));
+    } catch (err) {
+      console.error("User orders fetch error:", err);
+      const msg = err.response?.data?.message || err.message || "Could not load your orders";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab]);
+
+  // Load first page when tab changes (or if tab data doesn't exist yet)
+  useEffect(() => {
+    if (!(activeTab in ordersByTab)) {
+      fetchOrders(true);
+    }
+  }, [activeTab, fetchOrders]);
+
+  const getStatusColor = (status = "") => {
+    const s = status.toLowerCase();
     if (s.includes("await") || s === "pending" || s === "paid") {
       return "bg-amber-100 text-amber-700";
     }
@@ -56,23 +98,15 @@ const UserOrdersPage = () => {
     return "bg-gray-100 text-gray-700";
   };
 
-  const tabs = [
-    "All Orders",
-    "Awaiting Shipment",
-    "In Transit",
-    "Delivered",
-    "Cancelled",
-  ];
-
-  const filteredOrders = activeTab === "All Orders"
-    ? orders
-    : orders.filter(order => 
-        order.status?.toLowerCase().includes(activeTab.toLowerCase().replace(" ", ""))
-      );
-
   const getOrderType = (items = []) => {
-    const totalQty = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+    const totalQty = items.reduce((sum, item) => sum + (item?.quantity || 0), 0);
     return totalQty > 1 ? "Bulk" : "Single";
+  };
+
+  const handleLoadMore = () => {
+    if (!loading && hasMore) {
+      fetchOrders(false);
+    }
   };
 
   return (
@@ -107,7 +141,6 @@ const UserOrdersPage = () => {
             </div>
           </div>
 
-          {/* Right Illustration */}
           <div className="hidden lg:block absolute right-0 bottom-0 top-12 h-full pointer-events-none">
             <div className="relative h-[152px] w-[400px]">
               <img src="/assets/images/sellerImg.png" alt="" className="w-full h-full object-cover" />
@@ -136,7 +169,7 @@ const UserOrdersPage = () => {
         {/* Tabs */}
         <div className="bg-white rounded-t-xl px-3 sm:px-4 lg:px-6 pt-3 sm:pt-4">
           <div className="flex space-x-2 sm:space-x-4 lg:space-x-8 overflow-x-auto scrollbar-hide border-b border-t border-[#E3E7EE] py-3 sm:py-4">
-            {tabs.map((tab) => (
+            {Object.keys(TAB_TO_ENDPOINT).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -152,8 +185,8 @@ const UserOrdersPage = () => {
           </div>
         </div>
 
-        {/* Table */}
-        {loading ? (
+        {/* Content */}
+        {loading && currentOrders.length === 0 ? (
           <div className="py-12 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-[#240457] mx-auto mb-4"></div>
             <p className="text-gray-600">Loading your orders...</p>
@@ -161,19 +194,19 @@ const UserOrdersPage = () => {
         ) : error ? (
           <div className="py-12 text-center text-red-600">
             <p className="text-lg font-medium">{error}</p>
-            <button 
-              onClick={() => window.location.reload()}
+            <button
+              onClick={() => fetchOrders(true)}
               className="mt-4 px-6 py-2 bg-[#240457] text-white rounded-lg hover:bg-[#1e033a]"
             >
               Retry
             </button>
           </div>
-        ) : filteredOrders.length === 0 ? (
+        ) : currentOrders.length === 0 ? (
           <div className="py-12 text-center text-gray-500">
-            No orders found in this category
+            No orders found {activeTab !== "All Orders" ? `in "${activeTab}"` : ""}
           </div>
         ) : (
-          <div className="bg-white rounded-b-xl shadow-sm border border-t rounded-t-lg border-gray-200 overflow-hidden mt-3 sm:mt-4">
+          <div className="bg-white rounded-b-xl shadow-sm border border-t-0 border-gray-200 overflow-hidden mt-3 sm:mt-4">
             <div className="overflow-x-auto">
               <table className="w-full min-w-[700px]">
                 <thead className="bg-[#F0F0F0]">
@@ -202,9 +235,9 @@ const UserOrdersPage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {filteredOrders.map((order) => {
-                    const isBulk = (order.items?.reduce((sum, i) => sum + (i.quantity || 0), 0) || 0) > 1;
-                    const sellerName = order.buisnessProfile?.companyName || "Unknown Seller";
+                  {currentOrders.map((order) => {
+                    const sellerName = order.buisnessProfile?.companyName || order.seller?.name || "Unknown Seller";
+                    const orderType = getOrderType(order.items);
 
                     return (
                       <tr key={order._id} className="hover:bg-gray-50 transition-colors">
@@ -234,14 +267,12 @@ const UserOrdersPage = () => {
                         </td>
                         <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <span className="text-sm sm:text-base text-gray-600">
-                            {isBulk ? "Bulk" : "Single"}
+                            {orderType}
                           </span>
                         </td>
                         <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <span
-                            className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-sm sm:text-sm font-medium ${getStatusColor(
-                              order.status
-                            )}`}
+                            className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-sm sm:text-sm font-medium ${getStatusColor(order.status)}`}
                           >
                             {order.status || "Unknown"}
                           </span>
@@ -254,9 +285,6 @@ const UserOrdersPage = () => {
                             >
                               <FiEye className="w-4 h-4 sm:w-5 sm:h-5" />
                             </Link>
-                            <button className="p-1.5 sm:p-2 rounded-lg bg-[#DCDCDC33] text-[#FF383C] hover:bg-red-50 transition">
-                              <FiTrash2 className="w-4 h-4 sm:w-5 sm:h-5" />
-                            </button>
                           </div>
                         </td>
                       </tr>
@@ -266,16 +294,25 @@ const UserOrdersPage = () => {
               </table>
             </div>
 
-            {/* Load More */}
-            <div className="px-3 sm:px-4 lg:px-6 py-4 sm:py-6 border-t border-gray-200 flex justify-center">
-              <button className="px-6 sm:px-8 py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                Load more
-              </button>
-            </div>
+            {hasMore && (
+              <div className="px-3 sm:px-4 lg:px-6 py-4 sm:py-6 border-t border-gray-200 flex justify-center">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loading}
+                  className={`px-6 sm:px-8 py-2 border rounded-lg text-sm sm:text-base font-medium transition-colors ${
+                    loading
+                      ? "bg-gray-100 text-gray-400 cursor-wait"
+                      : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200"
+                  }`}
+                >
+                  {loading ? "Loading..." : "Load more"}
+                </button>
+              </div>
+            )}
           </div>
         )}
-
       </div>
+
       <div className="pt-4 sm:pt-6 lg:pt-8">
         <DashboardFooter />
       </div>

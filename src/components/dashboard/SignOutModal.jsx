@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { FiPower } from "react-icons/fi";
+import { logoutToLogin } from "@/lib/auth/session";
 
 const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
@@ -11,12 +12,7 @@ const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
     if (onConfirm) {
       onConfirm();
     } else {
-      // Default sign out behavior
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      }
+      logoutToLogin();
     }
   };
 

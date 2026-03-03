@@ -1,8 +1,5 @@
-import React from "react";
-import ProductListContent from "@/components/dashboard/products/ProductListContent";
+import { ProductsRoutePage } from "@/components/dashboard/routes/SharedDashboardPages";
 
-const MyProductsPage = () => {
-  return <ProductListContent isProfileView={false} />;
-};
-
-export default MyProductsPage;
+export default function MyProductsPage() {
+  return <ProductsRoutePage />;
+}

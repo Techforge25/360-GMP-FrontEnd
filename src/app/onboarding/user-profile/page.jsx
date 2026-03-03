@@ -26,6 +26,16 @@ import userProfileAPI from "@/services/userProfileAPI";
 import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 import { LocationSearch } from "@/components/ui/LocationSearch";
 import dynamic from "next/dynamic";
+import OnboardingImageUploadField from "@/components/onboarding/OnboardingImageUploadField";
+import { completeOnboardingSession } from "@/lib/auth/session";
+import { isValidPhone } from "@/features/onboarding/shared/validators";
+import {
+  USER_JOB_TITLE_SUGGESTIONS,
+  USER_ROLE_OPTIONS,
+  USER_SKILL_SUGGESTIONS,
+} from "@/features/onboarding/user/options";
+import UserProfileStep1Component from "@/features/onboarding/user/components/UserProfileStep1";
+import UserProfileStep2Component from "@/features/onboarding/user/components/UserProfileStep2";
 
 const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ssr: false,
@@ -34,33 +44,7 @@ const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ),
 });
 
-const IndustryOptions = [
-  "Software Engineer",
-  "Frontend Developer",
-  "Backend Developer",
-  "Data Analyst",
-  "Product Manager",
-  "DevOps Engineer",
-  "UI/UX Designer",
-  "Other",
-];
-
 // CountryOptions removed in favor of dynamic CountrySelect
-
-const SuggestedSkills = ["JavaScript", "React", "Node.js", "Python", "SQL"];
-
-const SuggestedJobTitles = [
-  "Software Engineer",
-  "Frontend Developer",
-  "Backend Developer",
-  "Product Manager",
-  "Data Analyst",
-];
-
-const isValidPhone = (phone) => {
-  const cleanPhone = phone.replace(/\s+/g, "");
-  return /^\+[1-9]\d{6,14}$/.test(cleanPhone);
-};
 
 const Step1 = ({
   formData,
@@ -98,149 +82,53 @@ const Step1 = ({
     <div>
       <div className="space-y-6">
         {/* Profile Photo Upload */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">
-            Upload Profile Photo <span className="text-red-500">*</span>
-          </h3>
-
-          {/* Show uploaded image preview */}
-          {formData.logo && (
-            <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100">
-                <Image
-                  src={formData.logo}
-                  alt="Profile Preview"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-green-800">
-                  Profile photo uploaded successfully!
-                </p>
-                <div className="flex gap-3 mt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      // Show file upload again for updating
-                      handleChange("logo", "");
-                    }}
-                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    Update photo
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleChange("logo", "")}
-                    className="text-sm text-red-600 hover:text-red-800"
-                  >
-                    Remove photo
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {!formData.logo && (
-            <FileUpload
-              label="Upload Profile Photo"
-              subLabel="JPG, PNG (Max 5MB)"
-              onUploadingChange={setIsUploading}
-              onUpload={async (file, onProgress) => {
-                const url = await uploadToCloudinary(
-                  file,
-                  "user/profile",
-                  onProgress,
-                );
-                handleChange("logo", url);
-
-                // If updating existing profile, call update API
-                if (onUpdateLogo) {
-                  await onUpdateLogo(url);
-                }
-
-                return url;
-              }}
-            />
-          )}
-        </div>
+        <OnboardingImageUploadField
+          label="Upload Profile Photo"
+          subLabel="JPG, PNG (Max 5MB)"
+          value={formData.logo}
+          required
+          folder="user/profile"
+          onChange={(url) => handleChange("logo", url)}
+          onUploadingChange={setIsUploading}
+          successMessage="Profile photo uploaded successfully!"
+          onUploadComplete={async (url) => {
+            if (onUpdateLogo) {
+              await onUpdateLogo(url);
+            }
+          }}
+        />
 
         {/* Banner Image Upload */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Upload Banner Image</h3>
-
-          {/* Show uploaded banner preview */}
-          {formData.banner && (
-            <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-gray-100">
-                <Image
-                  src={formData.banner}
-                  alt="Banner Preview"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-green-800">
-                  Banner image uploaded successfully!
-                </p>
-                <div className="flex gap-3 mt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleChange("banner", "");
-                    }}
-                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                  >
-                    Update banner
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleChange("banner", "")}
-                    className="text-sm text-red-600 hover:text-red-800"
-                  >
-                    Remove banner
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {!formData.banner && (
-            <FileUpload
-              label="Upload Banner Image"
-              subLabel="JPG, PNG (Max 5MB, Recommended: 1440x300px)"
-              onUploadingChange={setIsUploading}
-              onUpload={async (file, onProgress) => {
-                try {
-                  const dims = await getImageDimensions(file);
-                  if (dims.width < 1440 || dims.height < 300) {
-                    handleChange(
-                      "bannerWarning",
-                      `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
-                    );
-                  } else {
-                    handleChange("bannerWarning", "");
-                  }
-
-                  const url = await uploadToCloudinary(
-                    file,
-                    "user/banner",
-                    onProgress,
-                  );
-                  handleChange("banner", url);
-                  return url;
-                } catch (err) {
-                  handleChange(
-                    "bannerWarning",
-                    "Upload failed or invalid image file",
-                  );
-                  console.error(err);
-                  throw err;
-                }
-              }}
-            />
-          )}
+        <OnboardingImageUploadField
+          label="Upload Banner Image"
+          subLabel="JPG, PNG (Max 5MB, Recommended: 1440x300px)"
+          value={formData.banner}
+          folder="user/banner"
+          onChange={(url) => handleChange("banner", url)}
+          onUploadingChange={setIsUploading}
+          successMessage="Banner image uploaded successfully!"
+          previewWrapperClassName="relative w-32 h-20 rounded-lg overflow-hidden bg-gray-100"
+          previewAlt="Banner Preview"
+          beforeUpload={async (file) => {
+            try {
+              const dims = await getImageDimensions(file);
+              if (dims.width < 1440 || dims.height < 300) {
+                handleChange(
+                  "bannerWarning",
+                  `Warning: This image is ${dims.width}x${dims.height}. Quality might be low (1440x300 recommended).`,
+                );
+              } else {
+                handleChange("bannerWarning", "");
+              }
+            } catch (error) {
+              handleChange(
+                "bannerWarning",
+                "Upload failed or invalid image file",
+              );
+              throw error;
+            }
+          }}
+        />
 
           {formData.bannerWarning && (
             <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2 animate-in fade-in slide-in-from-top-1 duration-200">
@@ -289,7 +177,7 @@ const Step1 = ({
                 required
               >
                 <option value="">Select Title</option>
-                {IndustryOptions.map((option) => (
+                {USER_ROLE_OPTIONS.map((option) => (
                   <option key={option} value={option}>
                     {option}
                   </option>
@@ -595,7 +483,7 @@ const Step2 = ({ formData, handleChange, setIsUploading }) => {
           <span className="text-sm text-text-hint w-full mb-1">
             Suggestions:
           </span>
-          {SuggestedSkills.map((skill) => (
+          {USER_SKILL_SUGGESTIONS.map((skill) => (
             <button
               key={skill}
               type="button"
@@ -868,7 +756,7 @@ const Step3 = ({ formData, handleChange }) => (
       />
       <div className="flex flex-wrap gap-2 mt-2">
         <span className="text-sm text-text-hint w-full mb-1">Suggestions:</span>
-        {SuggestedJobTitles.map((title) => (
+        {USER_JOB_TITLE_SUGGESTIONS.map((title) => (
           <button
             key={title}
             type="button"
@@ -1286,72 +1174,12 @@ export default function UserProfilePage() {
   };
 
   const handleSuccessNext = async () => {
-    // Update user role and auth token in localStorage
-    if (typeof window !== "undefined") {
-      const baseUser = JSON.parse(localStorage.getItem("user") || "{}");
-
-      // Try to refresh auth token so backend gets latest userId/profileId
-      // This mimics the "second login" so protected endpoints like
-      // /userProfile or /businessProfile don't return 403 right after signup.
-      let refreshedUser = { ...baseUser };
-      try {
-        const refresh = await api.get({
-          url: "/auth/refreshToken/updateRole?role=user",
-          activateLoader: false,
-          enableSuccessMessage: false,
-          enableErrorMessage: false,
-        });
-
-        if (refresh?.success) {
-          refreshedUser = {
-            ...refreshedUser,
-            ...(refresh.data || {}),
-          };
-
-          const refreshedToken =
-            refresh.accessToken ||
-            refresh.token ||
-            refresh.data?.accessToken ||
-            refresh.data?.token;
-
-          if (refreshedToken) {
-            refreshedUser.accessToken = refreshedToken;
-            refreshedUser.token = refreshedToken;
-          }
-        }
-      } catch (e) {
-        // If refresh fails, we'll still proceed with existing token/newToken
-        console.warn("Token refresh after profile creation failed", e);
-      }
-
-      // Ensure final user object has correct role and onboarding flags
-      const finalUser = {
-        ...refreshedUser,
-        role: "user",
-        isNewToPlatform: false,
-      };
-
-      // Persist the newly created profile as profilePayload
-      if (createdProfile) {
-        finalUser.profilePayload = createdProfile;
-      }
-
-      // Fallback: if backend didn't send a refreshed token but profile
-      // creation did, keep using newToken to avoid stale auth.
-      if (newToken) {
-        finalUser.accessToken = newToken;
-        finalUser.token = newToken;
-      }
-
-      localStorage.setItem("user", JSON.stringify(finalUser));
-
-      // Update global context to refresh axios headers immediately
-      if (login) {
-        login(finalUser);
-      }
-
-      window.location.href = "/dashboard/user";
-    }
+    await completeOnboardingSession({
+      role: "user",
+      createdProfile,
+      newToken,
+      login,
+    });
   };
 
   // Function to update logo via API
@@ -1393,7 +1221,7 @@ export default function UserProfilePage() {
           )}
 
           {currentStep === 1 && (
-            <Step1
+            <UserProfileStep1Component
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
@@ -1405,13 +1233,16 @@ export default function UserProfilePage() {
               phoneError={phoneError}
               bioLength={bioLength}
               onBioLengthChange={setBioLength}
+              SlateEditor={SlateEditor}
+              roleOptions={USER_ROLE_OPTIONS}
             />
           )}
           {currentStep === 2 && (
-            <Step2
+            <UserProfileStep2Component
               formData={formData}
               handleChange={handleChange}
               setIsUploading={setIsUploading}
+              skillSuggestions={USER_SKILL_SUGGESTIONS}
             />
           )}
           {currentStep === 3 && (

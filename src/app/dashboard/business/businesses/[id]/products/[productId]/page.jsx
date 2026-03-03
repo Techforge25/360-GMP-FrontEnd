@@ -1,9 +1,5 @@
-"use client";
-import React from "react";
-import ProductDetailContent from "@/components/dashboard/businesses/products/ProductDetailContent";
+import { BusinessProductDetailRoutePage } from "@/components/dashboard/routes/SharedDashboardPages";
 
-export default function ProductDetailPage({ params }) {
-  const unwrappedParams = React.use(params);
-  const { id, productId } = unwrappedParams;
-  return <ProductDetailContent productId={productId} businessId={id} />;
+export default function ProductDetailPage() {
+  return <BusinessProductDetailRoutePage />;
 }

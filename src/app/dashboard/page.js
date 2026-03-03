@@ -8,6 +8,8 @@ export default function DashboardRedirect() {
   const router = useRouter();
 
   useEffect(() => {
+    if (role === undefined) return;
+
     if (role === "business") {
       router.push("/dashboard/business");
     } else {

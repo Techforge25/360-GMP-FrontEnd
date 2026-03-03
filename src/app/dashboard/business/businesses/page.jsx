@@ -1,7 +1,5 @@
-"use client";
-import React from "react";
-import BusinessesPageContent from "@/components/dashboard/businesses/BusinessesPageContent";
+import { BusinessesRoutePage } from "@/components/dashboard/routes/SharedDashboardPages";
 
 export default function BusinessesPage() {
-  return <BusinessesPageContent />;
+  return <BusinessesRoutePage />;
 }

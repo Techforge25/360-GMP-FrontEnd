@@ -1,7 +1,5 @@
-"use client";
-import React from "react";
-import JobsPageContent from "@/components/dashboard/jobs/JobsPageContent";
+import { JobsRoutePage } from "@/components/dashboard/routes/SharedDashboardPages";
 
 export default function JobsPage() {
-  return <JobsPageContent />;
+  return <JobsRoutePage />;
 }

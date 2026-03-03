@@ -9,6 +9,8 @@ import { BsBoxSeam } from "react-icons/bs";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import DashboardFooter from "../DashboardFooter";
 import axios from "axios"
+import { ToastContainer, toast } from 'react-toastify';
+import { io } from "socket.io-client";
 
 // const steps = [
 //       {
@@ -43,58 +45,92 @@ const OrderTrackingPage = ({ orderId }) => {
   
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
     
-    useEffect(() => {
-        if (!orderId) {
-        setError("Order ID not found in URL");
-        setLoading(false);
-        return;
-        }
+  // Socket.io connection
+const [socket, setSocket] = useState(null);
 
-        const fetchOrder = async () => {
-        try {
-            setLoading(true);
-            setError(null);
+useEffect(() => {
+  const socketIo = io(API_URL, { withCredentials: true });
 
-            const res = await axios.get(`${API_URL}/orders/${orderId}/view`, {
-            withCredentials: true, 
-            });
+  socketIo.on("connect", () => {
+    socketIo.emit("joinOrderRoom", orderId);
+  });
 
-            console.log("Order Response" , res)
+  socketIo.on("statusChanged", (newStatus) => {
+    toast.info(`Status updated: ${newStatus}`);
+    setOrder((prev) => ({ ...prev, status: newStatus }));
 
-            if (!res.data.success) {
-            throw new Error(res.data.message || "Failed to fetch order");
-            }
+    // Stepper lock kar do (revert nahi hoga)
+    const step = 
+      newStatus.includes("prepar") ? 1 :
+      newStatus.includes("shipped") ? 2 :
+      newStatus.includes("delivered") ? 3 :
+      4;
+    setActiveStep(step);
+    if (newStatus === "completed") setIsFinalCompleted(true);
+  });
 
-            const orderData = res.data.data;
-            console.log("order data",orderData)
-            setOrder(orderData);
+  return () => socketIo.disconnect();
+}, [orderId]);
 
-            // Status ke hisaab se stepper update karo
-            const status = orderData.status?.toLowerCase() || "pending";
+useEffect(() => {
+  if (!orderId) {
+    setError("Order ID not found");
+    setLoading(false);
+    return;
+  }
 
-            if (status === "pending" || status.includes("placed")) {
-            setActiveStep(0);
-            } else if (status.includes("prepar") || status === "processing") {
-            setActiveStep(1);
-            } else if (status.includes("ship")) {
-            setActiveStep(2);
-            } else if (status.includes("deliv") || status === "out for delivery") {
-            setActiveStep(3);
-            } else if (status === "completed" || status === "delivered") {
-            setActiveStep(4);
-            setIsFinalCompleted(true);
-            }
+  const fetchOrder = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/orders/${orderId}/view`, {
+        withCredentials: true,
+      });
 
-        } catch (err) {
-            console.error("Order fetch failed:", err);
-            setError(err.response?.data?.message || err.message || "Could not load order details");
-        } finally {
-            setLoading(false);
-        }
-        };
+      if (!res.data.success) throw new Error(res.data.message);
 
-        fetchOrder();
-    }, [orderId]);
+      const orderData = res.data.data;
+      setOrder(orderData);
+
+      // Status sync (revert nahi hone dega)
+      const status = orderData.status?.toLowerCase() || "pending";
+      setActiveStep(
+        status === "pending" || status === "paid" ? 0 :
+        status.includes("prepar") ? 1 :
+        status.includes("ship") ? 2 :
+        status.includes("deliv") ? 3 :
+        4
+      );
+      setIsFinalCompleted(status === "completed");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  fetchOrder();
+  const interval = setInterval(fetchOrder, 300); 
+  return () => clearInterval(interval);
+}, [orderId]);
+
+// Buyer "Mark as Received / Completed" button ka logic
+const handleMarkAsCompleted = async () => {
+  try {
+    const res = await axios.patch(
+      `${API_URL}/orders/${orderId}/complete`,
+      { status: "completed" },
+      { withCredentials: true }
+    );
+
+    if (res.data.success) {
+      toast.success("Order completed!");
+      setIsFinalCompleted(true);
+      setActiveStep(4);
+
+      // Socket emit for real-time update
+      socket.emit("statusUpdate", { orderId, newStatus: "completed" });
+    }
+  } catch (err) {
+    toast.error("Failed to complete order");
+  }
+};
 
   const steps = [
       {
@@ -172,7 +208,7 @@ Order# {order?._id || orderId || "N/A"}      </h1>
                                 <div
                                     key={index}
                                     className="relative z-10 flex flex-col items-center cursor-pointer group w-24 sm:w-32"
-                                    onClick={() => setActiveStep(index)}
+                                    // onClick={() => setActiveStep(index)}
                                 >
                                     <div className={`w-11 h-11 rounded-full flex items-center justify-center border-[3px] bg-white transition-colors duration-200
                     ${isPast ? "border-[#139D4C]" : ""}
@@ -346,20 +382,17 @@ Order# {order?._id || orderId || "N/A"}      </h1>
                         )}
 
                         {activeStep === 3 && (
-                            <div className="space-y-4">
-                                <button
-                                    onClick={() => setActiveStep(4)}
-                                    className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
-                                >
-                                    <FiCheck className="w-5 h-5" strokeWidth={2.5} /> Mark as Received
-                                </button>
-                                <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 py-4 px-4 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm text-[16px]">
-                                    <FiAlertCircle className="w-5 h-5" /> Create a Dispute
-                                </button>
-                                <p className="text-center text-[#8c9ca8] text-sm mt-2">
-                                    This will release funds to seller.
-                                </p>
-                            </div>
+                        <div className="space-y-4">
+                            <button
+                            onClick={handleMarkAsCompleted}
+                            className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
+                            >
+                            <FiCheck className="w-5 h-5" strokeWidth={2.5} /> Mark as Received
+                            </button>
+                            <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 py-4 px-4 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm text-[16px]">
+                            <FiAlertCircle className="w-5 h-5" /> Create a Dispute
+                            </button>
+                        </div>
                         )}
 
                         {/* Cancel Order Button */}

@@ -1,19 +1,5 @@
-"use client";
-import React from "react";
-import DashboardHero from "@/components/dashboard/DashboardHero";
-import BusinessGrid from "@/components/dashboard/BusinessGrid";
-import CommunitySection from "@/components/dashboard/CommunitySection";
-import ProductSections from "@/components/dashboard/ProductSections";
-import JobSection from "@/components/dashboard/JobSection";
+import DashboardHomeContent from "@/components/dashboard/DashboardHomeContent";
 
 export default function BusinessDashboard() {
-  return (
-    <div className="bg-white">
-      <DashboardHero />
-      <BusinessGrid />
-      <CommunitySection />
-      <ProductSections />
-      <JobSection />
-    </div>
-  );
+  return <DashboardHomeContent />;
 }

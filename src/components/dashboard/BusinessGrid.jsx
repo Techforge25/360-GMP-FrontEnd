@@ -5,14 +5,13 @@ import businessProfileAPI from "@/services/businessProfileAPI";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
+import { useFeaturedBusinesses } from "@/features/dashboard/businesses/useFeaturedBusinesses";
+import { getBusinessesBasePath } from "@/features/dashboard/businesses/mappers";
 
 // Map View removed in favor of direct Google Maps link
 
 const BusinessGrid = () => {
   const router = useRouter();
-  const [businesses, setBusinesses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   // const [showMapModal, setShowMapModal] = useState(false); // Removed
   const [showContactModal, setShowContactModal] = useState(false);
   // const [selectedBusiness, setSelectedBusiness] = useState(null); // Removed
@@ -20,6 +19,7 @@ const BusinessGrid = () => {
   // const [mapLocation, setMapLocation] = useState(null); // Removed
   const { user } = useUserRole();
   const role = user?.role;
+  const { businesses, loading, error } = useFeaturedBusinesses(6);
 
   // Debug role to ensure correct redirection
   useEffect(() => {
@@ -28,14 +28,7 @@ const BusinessGrid = () => {
     }
   }, [role]);
 
-  const basePath =
-    role?.toLowerCase() === "user"
-      ? "/dashboard/user/businesses"
-      : "/dashboard/business/businesses";
-
-  useEffect(() => {
-    fetchBusinessProfiles();
-  }, []);
+  const basePath = getBusinessesBasePath(role);
 
   const handleBusinessClick = async (businessId) => {
     try {
@@ -48,51 +41,6 @@ const BusinessGrid = () => {
       // Still navigate even if tracking fails
       router.push(`${basePath}/${businessId}`);
     }
-  };
-
-  const fetchBusinessProfiles = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await businessProfileAPI.getAll({ limit: 6 });
-
-      if (response.success && response.data) {
-        const businessesData = response.data.docs || [];
-        const transformedData = businessesData.map(transformBusinessProfile);
-
-        setBusinesses(transformedData);
-      }
-    } catch (err) {
-      console.error("Failed to fetch business profiles:", err);
-      setError(err.message || "Failed to load business profiles");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const transformBusinessProfile = (profile) => {
-    return {
-      id: profile._id,
-      name: profile.companyName || "Unknown Company",
-      description: profile.description || "No description available",
-      verified: profile.isVerified || false,
-      location: profile.location
-        ? `${profile.location.city || ""}, ${profile.location.country || ""}`
-            .trim()
-            .replace(/^,|,$/g, "") || "Location not specified"
-        : "Location not specified",
-      category: profile.businessType || profile.primaryIndustry || "General",
-      logo: profile.logo || "/assets/images/profileLogo.png",
-      banner: profile.banner || "/assets/images/pBG.png",
-      website: profile.website || "#",
-      email: profile.b2bContact?.email || profile.email || "N/A",
-      phone: profile.b2bContact?.phone || "#",
-      email: profile.b2bContact?.email || profile.email || "N/A",
-      phone: profile.b2bContact?.phone || "#",
-      latitude: profile.latitude,
-      longitude: profile.longitude,
-      rawLocation: profile.location, // Added rawLocation
-    };
   };
 
   const handleContactClick = (business, event) => {

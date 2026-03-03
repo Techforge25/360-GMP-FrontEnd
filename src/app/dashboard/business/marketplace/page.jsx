@@ -1,8 +1,5 @@
-﻿"use client";
-
-import React from "react";
-import MarketplaceContent from "@/components/dashboard/marketplace/MarketplaceContent";
+import { MarketplaceRoutePage } from "@/components/dashboard/routes/SharedDashboardPages";
 
 export default function MarketplacePage() {
-  return <MarketplaceContent />;
+  return <MarketplaceRoutePage />;
 }

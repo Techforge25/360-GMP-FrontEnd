@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import {
   Search,
   ChevronDown,
@@ -15,6 +15,19 @@ import productAPI from "@/services/productAPI";
 import { useUserRole } from "@/context/UserContext";
 import { useCart } from "@/context/CartContext";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import MarketplaceSearchHero from "@/components/dashboard/marketplace/MarketplaceSearchHero";
+import MarketplaceProductCard from "@/components/dashboard/marketplace/MarketplaceProductCard";
+import MarketplaceTopDealsSection from "@/components/dashboard/marketplace/MarketplaceTopDealsSection";
+import {
+  MARKETPLACE_COUNTRIES,
+  MARKETPLACE_PRODUCT_CATEGORIES,
+  MARKETPLACE_RATINGS,
+} from "@/features/dashboard/marketplace/constants";
+import {
+  extractEntityId,
+  getMarketplaceProductPath,
+} from "@/features/dashboard/marketplace/helpers";
+import { useMarketplaceProducts } from "@/features/dashboard/marketplace/useMarketplaceProducts";
 
 export default function MarketplaceContent() {
   const router = useRouter();
@@ -27,166 +40,34 @@ export default function MarketplaceContent() {
     ratings: false,
   });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const pathname = usePathname();
 
   const toggleCategory = (category) => {
     setExpandedCategories((prev) => ({ ...prev, [category]: !prev[category] }));
   };
-
-  const popularCategories = [
-    "Manufacturing",
-    "Healthcare",
-    "Insustrial Machinery",
-    "Apparel&Fashion",
-    "Electronic",
-    "Beauty&Personal Care",
-  ];
-
-  const productCategories = [
-    { name: "Insustrial Machinery", count: 0 },
-    { name: "Apparel & Fashion", count: 0 },
-    { name: "Beauty And Personal Care", count: 0 },
-    { name: "Electronic", count: 0 },
-    { name: "Category A", count: 0 },
-    { name: "Category B", count: 0 },
-    { name: "Category C", count: 0 },
-  ];
-
-  const countries = [
-    { name: "Pakistan", flag: "🇵🇰" },
-    { name: "United States of America", flag: "🇺🇸" },
-    { name: "Canada", flag: "🇨🇦" },
-    { name: "Germany", flag: "🇩🇪" },
-    { name: "China", flag: "🇨🇳" },
-    { name: "Belgium", flag: "🇧🇪" },
-    { name: "Spain", flag: "🇪🇸" },
-    { name: "France", flag: "🇫🇷" },
-    { name: "South Africa", flag: "🇿🇦" },
-    { name: "United Arab Emirates", flag: "🇦🇪" },
-    { name: "United Kingdom", flag: "🇬🇧" },
-  ];
-
-  // const ratings = [5, 4, 3.5, 3, 2.5, 2, 1.5, 1];
-  const ratings = ["Coming soon in phase 5"];
-
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [topRankingProducts, setTopRankingProducts] = useState([]);
-  const [newProducts, setNewProducts] = useState([]);
-  const [flashDeals, setFlashDeals] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countrySearchQuery, setCountrySearchQuery] = useState("");
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [viewMode, setViewMode] = useState("all"); // 'all' or 'top-ranking'
   const sentinelRef = useRef(null);
   const bottomSectionRef = useRef(null);
-
-  const fetchMarketplaceProducts = async () => {
-    setLoading(true);
-    try {
-      const params = { page: 1, limit: 8 };
-      if (query) {
-        params.search = query;
-      }
-      if (selectedCategories.length > 0) {
-        params.category = selectedCategories.join(",");
-      }
-      if (selectedCountry) {
-        params.country = selectedCountry.toLowerCase();
-      }
-
-      // If it's a search/filter operation, we might want to prioritize getAll
-      const [featuredRes, topRankingRes, newRes, flashRes, allRes] =
-        await Promise.all([
-          productAPI.getFeatured(6),
-          productAPI.getTopRanking(20),
-          productAPI.getNewProducts(20),
-          productAPI.getFlashDeals(3),
-          productAPI.getAll(params),
-        ]);
-
-      if (featuredRes.success)
-        setFeaturedProducts(featuredRes.data?.docs || featuredRes.data || []);
-
-      // Merge flash deals into top ranking products
-      const rawTopRanking = topRankingRes.success
-        ? topRankingRes.data?.docs || topRankingRes.data || []
-        : [];
-      const rawFlashDeals = flashRes.success
-        ? flashRes.data?.docs || flashRes.data || []
-        : [];
-
-      const mergedTopRanking = [...rawFlashDeals, ...rawTopRanking];
-      const uniqueTopRanking = Array.from(
-        new Map(
-          mergedTopRanking.map((product) => [
-            product._id || product.id,
-            product,
-          ]),
-        ).values(),
-      );
-      setTopRankingProducts(uniqueTopRanking);
-      setFlashDeals(rawFlashDeals.slice(0, 3));
-
-      if (newRes.success)
-        setNewProducts(newRes.data?.docs || newRes.data || []);
-
-      if (allRes.success) {
-        const productsList = allRes.data?.docs || allRes.data || [];
-        setFilteredProducts(productsList);
-        setAllProducts(productsList);
-        setHasMore(allRes.data?.hasNextPage || false);
-        setPage(2);
-      } else {
-        setFilteredProducts([]);
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error("Failed to fetch marketplace data", error);
-      setFilteredProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadMoreProducts = useCallback(async () => {
-    if (loadingMore || !hasMore) return;
-
-    try {
-      setLoadingMore(true);
-      const params = { page: page, limit: 8 };
-      if (query) {
-        params.search = query;
-      }
-      if (selectedCategories.length > 0) {
-        params.category = selectedCategories.join(",");
-      }
-      if (selectedCountry) {
-        params.country = selectedCountry.toLowerCase();
-      }
-
-      const res = await productAPI.getAll(params);
-
-      if (res.success && res.data) {
-        const newProductsList =
-          res.data.docs || (Array.isArray(res.data) ? res.data : []);
-        setAllProducts((prev) => [...prev, ...newProductsList]);
-        setFilteredProducts((prev) => [...prev, ...newProductsList]);
-        setHasMore(res.data.hasNextPage || false);
-        setPage((prev) => prev + 1);
-      }
-    } catch (error) {
-      console.error("Failed to load more products", error);
-    } finally {
-      setLoadingMore(false);
-    }
-  }, [loadingMore, hasMore, page, query, selectedCategories, selectedCountry]);
+  const {
+    featuredProducts,
+    topRankingProducts,
+    newProducts,
+    flashDeals,
+    allProducts,
+    filteredProducts,
+    loading,
+    loadingMore,
+    hasMore,
+    fetchMarketplaceProducts,
+    loadMoreProducts,
+  } = useMarketplaceProducts({
+    query,
+    selectedCategories,
+    selectedCountry,
+  });
 
   // Infinite scroll observer
   useEffect(() => {
@@ -210,10 +91,6 @@ export default function MarketplaceContent() {
       }
     };
   }, [loadMoreProducts, hasMore, loadingMore, loading]);
-
-  useEffect(() => {
-    fetchMarketplaceProducts();
-  }, [selectedCategories, selectedCountry, query]);
 
   const handleSearch = () => {
     fetchMarketplaceProducts();
@@ -260,24 +137,15 @@ export default function MarketplaceContent() {
   const handleProductClick = async (product) => {
     if (!product) return;
 
-    // Try all possible product ID fields
     const productId = product._id || product.id || product.productId;
-
-    // Helper to extract business ID
-    const extractId = (val) => {
-      if (!val) return null;
-      if (typeof val === "string") return val;
-      if (typeof val === "object") return val._id || val.id || null;
-      return null;
-    };
 
     // Try all possible business/supplier ID fields
     let businessId =
-      extractId(product.businessId) ||
-      extractId(product.supplierId) ||
-      extractId(product.business) ||
-      extractId(product.vendorId) ||
-      extractId(product.vendor);
+      extractEntityId(product.businessId) ||
+      extractEntityId(product.supplierId) ||
+      extractEntityId(product.business) ||
+      extractEntityId(product.vendorId) ||
+      extractEntityId(product.vendor);
 
     // If businessId is missing but we have a productId, fetch full details
     if (!businessId && productId) {
@@ -287,11 +155,11 @@ export default function MarketplaceContent() {
         if (res.success && res.data) {
           const fullProduct = res.data;
           businessId =
-            extractId(fullProduct.businessId) ||
-            extractId(fullProduct.supplierId) ||
-            extractId(fullProduct.business) ||
-            extractId(fullProduct.vendorId) ||
-            extractId(fullProduct.vendor);
+            extractEntityId(fullProduct.businessId) ||
+            extractEntityId(fullProduct.supplierId) ||
+            extractEntityId(fullProduct.business) ||
+            extractEntityId(fullProduct.vendorId) ||
+            extractEntityId(fullProduct.vendor);
         }
       } catch (error) {
         console.error("Failed to fetch product details", error);
@@ -307,8 +175,7 @@ export default function MarketplaceContent() {
       return;
     }
 
-    const basePath = isBusinessUser ? "/dashboard/business" : "/dashboard/user";
-    router.push(`${basePath}/businesses/${businessId}/products/${productId}`);
+    router.push(getMarketplaceProductPath(user?.role, businessId, productId));
   };
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -325,83 +192,12 @@ export default function MarketplaceContent() {
 
   return (
     <div className="w-full bg-gray-50">
-      {/* Navbar */}
-      <nav className="bg-white border-b border-gray-200 px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
-        <div className="max-w-[1400px] mx-auto">
-          <h1 className="text-gray-900 text-sm sm:text-base lg:text-lg font-medium">
-            Market Place
-          </h1>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <div className="relative overflow-hidden pb-16 sm:pb-20 lg:pb-24">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="/assets/images/marketplace.png"
-            alt="Marketplace Background"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0" />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-8 pb-6 sm:pb-8 pt-12 sm:pt-16">
-          <div className="text-center">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-3 sm:mb-4 lg:mb-6 px-2">
-              Find Verified supplier Across the Globe
-            </h1>
-            <p className="text-purple-100 text-sm sm:text-base lg:text-lg xl:text-xl max-w-3xl mx-auto px-4 sm:px-6">
-              Connect with top-rated verified suppliers. Low MOQ, Fast Shipping,
-              and Trade Assurance.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Search Section - Overlapping */}
-      <div className="relative z-20 max-w-[1150px] mx-auto px-3 sm:px-6 lg:px-8 -mt-16 sm:-mt-20 lg:-mt-24">
-        <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl p-4 sm:p-6">
-          <div className="flex flex-col gap-3 sm:gap-4 mb-4 sm:mb-6">
-            <div className="relative w-full">
-              <div className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2">
-                <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
-              </div>
-              <input
-                type="text"
-                placeholder="Search products, or supplier..."
-                className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 placeholder-gray-400 text-sm sm:text-base"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-            </div>
-            <button
-              onClick={handleSearch}
-              className="bg-brand-primary cursor-pointer hover:bg-brand-primary/90 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg sm:rounded-xl font-medium transition-colors duration-200 whitespace-nowrap w-full sm:w-auto text-sm sm:text-base"
-            >
-              Search
-            </button>
-          </div>
-
-          {/* <div className="flex flex-wrap items-start sm:items-center gap-2 sm:gap-3">
-            <p className="text-gray-600 text-sm sm:text-base font-medium mb-1 sm:mb-0 w-full sm:w-auto">
-              Popular:
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {popularCategories.map((category, index) => (
-                <button
-                  key={index}
-                  className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#E5E7EB] text-gray-700 rounded-full text-sm sm:text-sm lg:text-base font-medium transition-colors duration-200 hover:bg-gray-300"
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div> */}
-        </div>
-      </div>
+      <MarketplaceSearchHero
+        query={query}
+        setQuery={setQuery}
+        handleKeyDown={handleKeyDown}
+        handleSearch={handleSearch}
+      />
 
       {/* Products Section */}
       <div className="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
@@ -456,7 +252,7 @@ export default function MarketplaceContent() {
                   </button>
                   {expandedCategories.product && (
                     <div className="px-4 pb-4">
-                      {productCategories.map((cat, idx) => (
+                      {MARKETPLACE_PRODUCT_CATEGORIES.map((cat, idx) => (
                         <label
                           key={idx}
                           className="flex items-center gap-2.5 py-2 cursor-pointer hover:bg-gray-50 -mx-2 px-2 rounded transition-colors"
@@ -515,7 +311,7 @@ export default function MarketplaceContent() {
 
                       {/* Country List */}
                       <div className="space-y-1 max-h-64 overflow-y-auto custom-scrollbar pr-1">
-                        {countries
+                        {MARKETPLACE_COUNTRIES
                           .filter((c) =>
                             c.name
                               .toLowerCase()
@@ -567,7 +363,7 @@ export default function MarketplaceContent() {
                   </button>
                   {expandedCategories.ratings && (
                     <div className="px-4 pb-4">
-                      {ratings.map((rating, idx) => (
+                      {MARKETPLACE_RATINGS.map((rating, idx) => (
                         <label
                           key={idx}
                           className="flex items-center gap-2.5 py-2 cursor-pointer hover:bg-gray-50 -mx-2 px-2 rounded transition-colors"
@@ -654,7 +450,7 @@ export default function MarketplaceContent() {
                         </button>
                         {expandedCategories.product && (
                           <div className="mt-3 space-y-3">
-                            {productCategories.map((cat, idx) => (
+                            {MARKETPLACE_PRODUCT_CATEGORIES.map((cat, idx) => (
                               <label
                                 key={idx}
                                 className="flex items-center gap-3 py-3 cursor-pointer hover:bg-gray-50 rounded-lg px-2 transition-colors"
@@ -695,7 +491,7 @@ export default function MarketplaceContent() {
                         </button>
                         {expandedCategories.country && (
                           <div className="mt-3 space-y-1 max-h-64 overflow-y-auto pr-1">
-                            {countries
+                            {MARKETPLACE_COUNTRIES
                               .filter((c) =>
                                 c.name
                                   .toLowerCase()
@@ -767,7 +563,7 @@ export default function MarketplaceContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                     {filteredProducts.length > 0 ? (
                       filteredProducts.map((product, idx) => (
-                        <ProductCard
+                        <MarketplaceProductCard
                           key={idx}
                           product={product}
                           isBusinessUser={isBusinessUser}
@@ -809,7 +605,7 @@ export default function MarketplaceContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
                     {featuredProducts.length > 0 ? (
                       featuredProducts.map((product, idx) => (
-                        <ProductCard
+                        <MarketplaceProductCard
                           key={idx}
                           product={product}
                           isBusinessUser={isBusinessUser}
@@ -952,7 +748,7 @@ export default function MarketplaceContent() {
 
         {/* Top Deals Section - Always show at the bottom or only if not searching? 
             Design usually has it at the bottom. */}
-        <TopDealsSection
+        <MarketplaceTopDealsSection
           deals={flashDeals}
           isBusinessUser={isBusinessUser}
           router={router}
@@ -995,7 +791,7 @@ export default function MarketplaceContent() {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                 {displayProducts.length > 0 ? (
                   displayProducts.map((product, idx) => (
-                    <ProductCard
+                    <MarketplaceProductCard
                       key={idx}
                       product={product}
                       isBusinessUser={isBusinessUser}
