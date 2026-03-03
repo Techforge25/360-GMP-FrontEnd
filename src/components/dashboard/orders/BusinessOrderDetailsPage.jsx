@@ -28,13 +28,6 @@ import { io } from "socket.io-client";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-const steps = [
-    { label: "Order Placed", date: "Oct 24, 2025", icon: HiOutlineDocumentText },
-    { label: "prepare shipment", date: "Oct 25, 2025", icon: IoShieldCheckmarkOutline },
-    { label: "Shipped", date: "Oct 26, 2025", icon: TbTruckDelivery },
-    { label: "Delivered", date: "Oct 27, 2025", icon: BsBoxSeam },
-    { label: "Completed", date: "Oct 28, 2025", icon: FiCheck },
-];
 
 const BusinessOrderDetailsPage = () => {
   const { id: orderId } = useParams();
@@ -54,6 +47,7 @@ const [trackingId, setTrackingId] = useState("");
   const [showFinalCompletedUI, setShowFinalCompletedUI] = useState(false);
   const [isRemainderSent, setIsRemainderSent] = useState(false);
   const [isTracking, setIsTracking] = useState(false);
+  const [isPreparing, setIsPreparing] = useState(false);
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -162,8 +156,8 @@ const [trackingId, setTrackingId] = useState("");
     };
 
     fetchOrder();
-    const interval = setInterval(fetchOrder, 100); 
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchOrder, 1000); 
+    // return () => clearInterval(interval);
   }, [orderId]);
 
 
@@ -233,6 +227,7 @@ const updateOrderStatus = async (newStatus, trackingData = null) => {
 
         if (newStatus === "processing") {
           updated[1].date = currentDate; // Prepare Shipment
+          setIsShipped(true);
           setActiveStep(1);
         } else if (newStatus === "shipped") {
           updated[2].date = currentDate; // Shipped
@@ -287,6 +282,10 @@ const updateOrderStatus = async (newStatus, trackingData = null) => {
         setShowFinalCompletedUI(true);
         setActiveStep(4);
     };
+    const handlePrepareShipment = async () => {
+      await updateOrderStatus("processing");
+      setIsShippingFormOpen(true);
+    };
 
     return (
         <div className="bg-[#FAFBFD] min-h-screen flex flex-col font-sans">
@@ -338,44 +337,42 @@ const updateOrderStatus = async (newStatus, trackingData = null) => {
                             style={{ width: `${(Math.max(activeStep, 0) / (steps.length - 1)) * 100}%` }}
                         ></div>
 
-                        {steps.map((step, index) => {
-                            const isPast = index < activeStep;
-                            const isActive = index === activeStep;
-                            const isFuture = index > activeStep;
+                      {steps.map((step, index) => {
+                      const isPast = index < activeStep;
+                      const isActive = index === activeStep;
+                      const isFuture = index > activeStep;
 
-                            let iconBg = "bg-gray-100";
-                            let iconColor = "text-gray-400";
-                            let ringClass = "ring-white";
+                      // Extra check for Prepare Shipment (step 1)
+                      const isPreparingActive = isActive && index === 1 && isPreparing;
 
-                            if (isPast || (isActive && showFinalCompletedUI && index === 4)) {
-                                iconBg = "bg-[#1DAF61]";
-                                iconColor = "text-white";
-                                ringClass = "ring-white ring-4";
-                            } else if (isActive) {
-                                iconBg = "bg-[#5C24D2]";
-                                iconColor = "text-white";
-                                ringClass = "ring-white ring-4 shadow-[0_0_0_2px_#5C24D2]";
-                            } else if (isFuture) {
-                                iconBg = "bg-white border-2 border-gray-200";
-                                iconColor = "text-gray-300";
-                            }
+                      return (
+                        <div key={index} className="relative z-10 flex flex-col items-center group w-24 sm:w-32">
+                          <div
+                            className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all duration-300 transform
+                              ${isPast ? "bg-[#1DAF61] border-4 border-[#1DAF61]/30" : ""}
+                              ${isActive || isPreparingActive ? "bg-[#5C24D2] border-4 border-[#5C24D2]/30 shadow-xl scale-110 ring-4 ring-[#5C24D2]/20" : ""}
+                              ${isFuture ? "bg-white border-4 border-gray-200" : ""}
+                            `}
+                          >
+                            {isPast ? (
+                              <FiCheck className="w-6 h-6 text-white" strokeWidth={3} />
+                            ) : (
+                              <step.icon className={`w-6 h-6 ${isActive || isPreparingActive ? "text-white" : "text-gray-400"}`} />
+                            )}
+                          </div>
 
-                            return (
-                                <div key={index} className="relative z-10 flex flex-col items-center group">
-                                    <div className={`w-11 h-11 rounded-full flex items-center justify-center mb-3 transition-colors duration-300 ${iconBg} ${ringClass}`}>
-                                        <step.icon className={`w-5 h-5 ${iconColor}`} />
-                                    </div>
-                                    <span className={`text-sm font-medium text-center tracking-tight leading-tight mb-1 ${isActive ? "text-gray-900" : !isFuture ? "text-gray-800" : "text-gray-400"}`}>
-                                        {step.label}
-                                    </span>
-                                    {step.date && (
-                                        <span className="text-[12px] text-gray-400 font-medium">
-                                            {step.date}
-                                        </span>
-                                    )}
-                                </div>
-                            );
-                        })}
+                          <span
+                            className={`text-sm font-semibold text-center
+                              ${isActive || isPreparingActive ? "text-[#5C24D2] font-bold" : isPast ? "text-[#1DAF61]" : "text-gray-500"}
+                            `}
+                          >
+                            {step.label}
+                          </span>
+
+                          <span className="text-xs text-gray-400 mt-1">{step.date}</span>
+                        </div>
+                      );
+                    })}
                     </div>
                 </div>
 
@@ -480,17 +477,21 @@ const updateOrderStatus = async (newStatus, trackingData = null) => {
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Prepare / Mark as Shipped Button */}
           <button
-            onClick={() => {
+            // onClick={() => {
+            //   handlePrepareShipment
              
                 // Already shipped → edit mode
-                setIsShippingFormOpen(true);
+                // setIsShippingFormOpen(true);
+                // setIsPreparing(true);
+                // setIsShippingFormOpen(false);
               
                 // Not shipped → open form + move to Step 2
                 // if (!isShipped) {
-                      setActiveStep(1);           // ← Move to "Prepare Shipment" step
+                      // setActiveStep(1);           // ← Move to "Prepare Shipment" step
                     // }
               
-            }}
+            // }}
+            onClick={handlePrepareShipment}
             className={`flex-1 py-3.5 px-6 rounded-xl font-bold text-[15px] transition-colors shadow-sm flex items-center justify-center gap-2 ${
               isShipped 
                 ? "bg-[#1E0B4B] text-white hover:bg-[#140733]" 
@@ -750,67 +751,67 @@ const updateOrderStatus = async (newStatus, trackingData = null) => {
                     <div className="space-y-6">
                         {/* Shipment Progress */}
                       {/* Shipment Progress */}
-{["shipped", "delivered", "completed"].includes(order?.status) && (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div className="px-6 py-4 border-b border-gray-100">
-      <h2 className="font-bold text-gray-900 text-[17px]">
-        Shipment Progress
-      </h2>
-    </div>
+                    {["shipped", "delivered", "completed"].includes(order?.status) && (
+                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-100">
+                          <h2 className="font-bold text-gray-900 text-[17px]">
+                            Shipment Progress
+                          </h2>
+                        </div>
 
-    <div className="p-6">
-      <div className="border border-gray-100 rounded-xl p-5 space-y-6">
-        {/* Shipped */}
-        <div className="flex items-center gap-4 relative">
-          <div className="w-4 h-4 rounded-full border-[3.5px] border-[#A855F7]" />
-          <span className="font-bold text-gray-900 text-[15px]">
-            Shipped
-          </span>
-        </div>
+                        <div className="p-6">
+                          <div className="border border-gray-100 rounded-xl p-5 space-y-6">
+                            {/* Shipped */}
+                            <div className="flex items-center gap-4 relative">
+                              <div className="w-4 h-4 rounded-full border-[3.5px] border-[#A855F7]" />
+                              <span className="font-bold text-gray-900 text-[15px]">
+                                Shipped
+                              </span>
+                            </div>
 
-        {/* Delivered */}
-        <div className="flex items-center gap-4 relative">
-          <div
-            className={`w-4 h-4 rounded-full border-[3.5px] ${
-              ["delivered", "completed"].includes(order.status)
-                ? "border-[#A855F7]"
-                : "border-gray-200"
-            }`}
-          />
-          <span
-            className={`text-[15px] ${
-              ["delivered", "completed"].includes(order.status)
-                ? "font-bold text-gray-900"
-                : "font-semibold text-gray-400"
-            }`}
-          >
-            Delivered
-          </span>
-        </div>
+                            {/* Delivered */}
+                            <div className="flex items-center gap-4 relative">
+                              <div
+                                className={`w-4 h-4 rounded-full border-[3.5px] ${
+                                  ["delivered", "completed"].includes(order.status)
+                                    ? "border-[#A855F7]"
+                                    : "border-gray-200"
+                                }`}
+                              />
+                              <span
+                                className={`text-[15px] ${
+                                  ["delivered", "completed"].includes(order.status)
+                                    ? "font-bold text-gray-900"
+                                    : "font-semibold text-gray-400"
+                                }`}
+                              >
+                                Delivered
+                              </span>
+                            </div>
 
-        {/* Completed */}
-        <div className="flex items-center gap-4 relative">
-          <div
-            className={`w-4 h-4 rounded-full border-[3.5px] ${
-              order.status === "completed"
-                ? "border-[#A855F7]"
-                : "border-gray-200"
-            }`}
-          />
-          <span
-            className={`text-[15px] ${
-              order.status === "completed"
-                ? "font-bold text-gray-900"
-                : "font-semibold text-gray-400"
-            }`}
-          >
-            Completed
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+                            {/* Completed */}
+                            <div className="flex items-center gap-4 relative">
+                              <div
+                                className={`w-4 h-4 rounded-full border-[3.5px] ${
+                                  order.status === "completed"
+                                    ? "border-[#A855F7]"
+                                    : "border-gray-200"
+                                }`}
+                              />
+                              <span
+                                className={`text-[15px] ${
+                                  order.status === "completed"
+                                    ? "font-bold text-gray-900"
+                                    : "font-semibold text-gray-400"
+                                }`}
+                              >
+                                Completed
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                         {/* Summary Card */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
   {/* Header */}
