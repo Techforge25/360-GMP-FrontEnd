@@ -181,7 +181,7 @@ const BusinessOrdersPage = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {currentOrders.map((order) => {
-                    const buyerName = order.buyerUserProfile?.fullName || "Unknown";
+                    const buyerName = order.shippingAddress?.name || "Unknown";
                     const orderType = getOrderType(order.items);
 
                     return (

@@ -71,11 +71,11 @@ const [formData, setFormData] = useState({
       if (data) {
         window.location.href = data; // redirect to Stripe Checkout
       } else {
-        toast.error("Error creating session");
+        toast.error(err.response?.data?.message || err.message || "Something went wrong");
       }
     } catch (err) {
       console.error(err);
-      toast.error("Payment setup failed");
+      toast.error(err.response?.data?.message || err.message || "Something went wrong");
     } finally {
       setSubmitting(false);
     }

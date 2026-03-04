@@ -236,7 +236,7 @@ const UserOrdersPage = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {currentOrders.map((order) => {
-                    const sellerName = order.buisnessProfile?.companyName || order.seller?.name || "Unknown Seller";
+                    const sellerName = order.shippingAddress?.name || "Unknown Seller";
                     const orderType = getOrderType(order.items);
 
                     return (
