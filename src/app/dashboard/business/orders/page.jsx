@@ -30,57 +30,81 @@ const BusinessOrdersPage = () => {
   const currentPage = pageByTab[activeTab] || 1;
   const hasMore = hasMoreByTab[activeTab] ?? true;
 
-  const fetchOrders = useCallback(async (reset = false) => {
-    const pageToFetch = reset ? 1 : (pageByTab[activeTab] || 1);
+const fetchOrders = useCallback(async (reset = false) => {
+  // Agar reset hai to page 1, warna current page + 1
+  let pageToFetch = reset ? 1 : (pageByTab[activeTab] || 1);
 
-    setLoading(true);
-    setError(null);
+  // Agar reset nahi hai aur pehle se page 1 pe hai to force next page
+  if (!reset && pageToFetch === 1) {
+    pageToFetch = 2; // ← yeh important fix hai jab pehla load already ho chuka ho
+  }
 
-    try {
-      const endpoint = TAB_TO_ENDPOINT[activeTab];
+  setLoading(true);
+  setError(null);
 
-      const res = await axios.get(`${BASE_URL}${endpoint}`, {
-        params: { page: pageToFetch, limit },
-        withCredentials: true,
-      });
+  try {
+    const endpoint = TAB_TO_ENDPOINT[activeTab];
 
-      if (!res.data?.success) {
-        throw new Error(res.data?.message || "Failed to load orders");
-      }
+    console.log(`Fetching ${activeTab} - page: ${pageToFetch}, limit: ${limit}`); // debug ke liye
 
-      const newDocs = res.data.data?.docs || [];
-      const hasNext = res.data.data?.hasNextPage ?? (pageToFetch < (res.data.data?.totalPages || 1));
+    const res = await axios.get(`${BASE_URL}${endpoint}`, {
+      params: { page: pageToFetch, limit },
+      withCredentials: true,
+    });
 
-      setOrdersByTab(prev => ({
-        ...prev,
-        [activeTab]: reset ? newDocs : [...(prev[activeTab] || []), ...newDocs],
-      }));
+    if (!res.data?.success) {
+      throw new Error(res.data?.message || "Failed to load orders");
+    }
 
+    const newDocs = res.data.data?.docs || [];
+    const pagination = res.data.data?.pagination || res.data.data || {};
+    const hasNext = pagination.hasNextPage ?? (newDocs.length === limit);
+
+    setOrdersByTab(prev => ({
+      ...prev,
+      [activeTab]: reset ? newDocs : [...(prev[activeTab] || []), ...newDocs],
+    }));
+
+    // Sirf tabhi page badhao jab reset nahi hai
+    if (!reset) {
       setPageByTab(prev => ({
         ...prev,
         [activeTab]: pageToFetch + 1,
       }));
-
-      setHasMoreByTab(prev => ({
-        ...prev,
-        [activeTab]: hasNext,
-      }));
-    } catch (err) {
-      console.error("Fetch error:", err);
-      const msg = err.response?.data?.message || err.message || "Could not load orders";
-      setError(msg);
-    } finally {
-      setLoading(false);
     }
-  }, [activeTab]);
+
+    setHasMoreByTab(prev => ({
+      ...prev,
+      [activeTab]: hasNext,
+    }));
+  } catch (err) {
+    console.error("Fetch error:", err);
+    setError(err.response?.data?.message || err.message || "Could not load orders");
+  } finally {
+    setLoading(false);
+  }
+}, [activeTab]);
 
   // Reset & load first page when tab changes
-  useEffect(() => {
-    // Reset state for this tab if needed
-    if (!(activeTab in ordersByTab)) {
-      fetchOrders(true);
-    }
-  }, [activeTab, fetchOrders]);
+useEffect(() => {
+  // Tab change pe reset + fresh fetch
+  setPageByTab(prev => ({
+    ...prev,
+    [activeTab]: 1,
+  }));
+
+  setOrdersByTab(prev => ({
+    ...prev,
+    [activeTab]: [],
+  }));
+
+  setHasMoreByTab(prev => ({
+    ...prev,
+    [activeTab]: true,
+  }));
+
+  fetchOrders(true); // reset = true → page 1
+}, [activeTab]);   // ← sirf activeTab, fetchOrders ko hata diya
 
   const getStatusColor = (status = "") => {
     const s = status.toLowerCase();
@@ -225,19 +249,29 @@ const BusinessOrdersPage = () => {
               </table>
             </div>
 
-            {hasMore && (
-              <div className="py-8 flex justify-center">
-                <button
-                  onClick={handleLoadMore}
-                  disabled={loading}
-                  className={`px-10 py-3 border border-gray-300 rounded-lg font-medium transition ${
-                    loading ? "opacity-50 cursor-wait" : "hover:bg-gray-50"
-                  }`}
-                >
-                  {loading ? "Loading..." : "Load More"}
-                </button>
-              </div>
-            )}
+            {hasMoreByTab[activeTab] !== false && (
+  <div className="py-8 flex justify-center">
+    <button
+      onClick={handleLoadMore}
+      disabled={loading}
+      className={`px-10 py-3.5 min-w-[160px] border border-gray-300 rounded-lg font-medium text-gray-700 transition-all flex items-center justify-center gap-2
+        ${loading 
+          ? "opacity-60 cursor-wait bg-gray-50" 
+          : "hover:bg-gray-50 hover:shadow-sm active:scale-98"}`}
+    >
+      {loading ? (
+        <>
+          <svg className="animate-spin h-5 w-5 text-gray-600" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+          </svg>
+          Loading...
+        </>
+      ) : (
+        "Load More"
+      )}
+    </button>
+  </div>
+)}
           </>
         )}
       </div>
