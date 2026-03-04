@@ -10,6 +10,8 @@ import productAPI from "@/services/productAPI";
 import DashboardFooter from "../DashboardFooter";
 import axios from "axios"
 import { toast } from "react-toastify";
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 const CheckoutPage = () => {
   const { cartItems } = useCart();
@@ -294,133 +296,143 @@ const [formData, setFormData] = useState({
                 </div>
 
                 {/* Form */}
-<div className="space-y-6 pb-6">
-  {/* Country/Region – static for now */}
-  <div>
-    <label className="block text-sm font-bold text-gray-900 mb-2">
-      Country/Region
-    </label>
-    <div className="relative">
-      <div className="w-full border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between bg-white cursor-pointer hover:border-gray-300 transition-colors">
-        <div className="flex items-center gap-3">
-          <img
-            src="https://flagcdn.com/w40/us.png"
-            alt="US"
-            className="w-6 h-4 object-cover rounded-sm"
-          />
-          <span className="text-sm text-gray-700">United State</span>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div className="space-y-6 pb-6">
+                  {/* Country/Region – static for now */}
+                  {/* <div>
+                    <label className="block text-sm font-bold text-gray-900 mb-2">
+                      Country/Region
+                    </label>
+                    <div className="relative">
+                      <div className="w-full border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between bg-white cursor-pointer hover:border-gray-300 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src="https://flagcdn.com/w40/us.png"
+                            alt="US"
+                            className="w-6 h-4 object-cover rounded-sm"
+                          />
+                          <span className="text-sm text-gray-700">United State</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div> */}
 
-  {/* Full Name + Phone */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      <label className="block text-sm font-bold text-gray-900 mb-2">Full Name</label>
-      <input
-        type="text"
-        name="fullName"
-        value={formData.fullName}
-        onChange={handleChange}
-        placeholder="Full Name *"
-        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-        required
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-bold text-gray-900 mb-2">Phone</label>
-      <div className="flex border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#240457]">
-        <div className="px-3 py-3 bg-gray-50 border-r border-gray-200 text-sm text-gray-500">
-          +1
-        </div>
-        <input
-          type="tel"
-          name="phone1"
-          value={formData.phone1}
-          onChange={handleChange}
-          placeholder="Phone Number *"
-          className="flex-1 text-black px-4 py-3 text-sm focus:outline-none placeholder-gray-400"
-          required
-        />
-      </div>
-      <p className="text-sm text-gray-400 mt-1">Only Used To Contact You For Delivery Updates</p>
-    </div>
-  </div>
-
-  {/* Line Address 1 + 2 */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      <label className="block text-sm font-bold text-gray-900 mb-2">Line Address 1</label>
-      <input
-        type="text"
-        name="lineAddress1"
-        value={formData.lineAddress1 || ""}   // safe guard
-        onChange={handleChange}
-        placeholder="Line Address 1 *"
-        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-        required
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-bold text-gray-900 mb-2">Line Address 2</label>
-      <input
-        type="text"
-        name="lineAddress2"
-        value={formData.lineAddress2 || ""}   // safe guard
-        onChange={handleChange}
-        placeholder="Line Address 2 (optional)"
-        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-      />
-    </div>
-  </div>
-
-  {/* State + Zip */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div>
-      <label className="block text-sm font-bold text-gray-900 mb-2">State/Province</label>
-      <input
-        type="text"
-        name="state"
-        value={formData.state}
-        onChange={handleChange}
-        placeholder="State/Province *"
-        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-        required
-      />
-    </div>
-    <div>
-      <label className="block text-sm font-bold text-gray-900 mb-2">Zip/Postal Code</label>
-      <input
-        type="text"
-        name="zipCode"
-        value={formData.zipCode}
-        onChange={handleChange}
-        placeholder="e.g 2000 *"
-        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-        required
-      />
-    </div>
-  </div>
-
-  {/* Checkbox */}
-  <div className="flex items-center gap-2">
-    <div className="relative flex items-center">
-      <input
-        type="checkbox"
-        id="default-address"
-        name="isDefault"
-        checked={formData.isDefault}
-        onChange={handleChange}
-        className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white checked:bg-[#004D99] checked:border-[#004D99] transition-all"
-      />
-      <FiCheck className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3.5 h-3.5" />
-    </div>
-    <label htmlFor="default-address" className="text-sm text-gray-500 cursor-pointer">
-      Set As Default Shipping Address
-    </label>
-  </div>
+                  {/* Full Name + Phone */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        placeholder="Full Name *"
+                        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
+                        required
+                      />
+                    </div>
+ <div>
+  <label className="block text-sm font-bold text-gray-900 mb-2">Phone</label>
+  <PhoneInput
+    international
+    defaultCountry="PK"  // Pakistan default
+    value={formData.phone1}
+    onChange={(value) => setFormData(prev => ({ ...prev, phone1: value || '' }))}
+    placeholder="Phone Number *"
+    
+    // Yeh props sahi hain aur library accept karti hai
+    numberInputProps={{
+      className: "flex-1 text-black px-4 py-3 text-sm focus:outline-none placeholder-gray-400"
+      // Yeh internal <input> pe jaayega – tumhara original input style
+    }}
+    
+    // Agar country select button ko style karna hai (flag + code wala part)
+    countrySelectProps={{
+      className: "bg-gray-50 border-r border-gray-200 px-3 py-3 text-sm text-gray-700 min-w-[70px] flex items-center justify-center hover:bg-gray-100 transition-colors"
+    }}
+    
+    // Overall container ko style karne ke liye (border, rounded, focus ring)
+    className="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#240457]"
+    
+    // Optional: aria label for accessibility
+    aria-label="Phone number with country code"
+  />
+  <p className="text-sm text-gray-400 mt-1">Only Used To Contact You For Delivery Updates</p>
 </div>
+                  </div>
+
+                  {/* Line Address 1 + 2 */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">Line Address 1</label>
+                      <input
+                        type="text"
+                        name="lineAddress1"
+                        value={formData.lineAddress1 || ""}   // safe guard
+                        onChange={handleChange}
+                        placeholder="Line Address 1 *"
+                        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">Line Address 2</label>
+                      <input
+                        type="text"
+                        name="lineAddress2"
+                        value={formData.lineAddress2 || ""}   // safe guard
+                        onChange={handleChange}
+                        placeholder="Line Address 2 (optional)"
+                        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
+                      />
+                    </div>
+                  </div>
+
+                  {/* State + Zip */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">State/Province</label>
+                      <input
+                        type="text"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        placeholder="State/Province *"
+                        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">Zip/Postal Code</label>
+                      <input
+                        type="text"
+                        name="zipCode"
+                        value={formData.zipCode}
+                        onChange={handleChange}
+                        placeholder="e.g 2000 *"
+                        className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  {/* Checkbox */}
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex items-center">
+                      <input
+                        type="checkbox"
+                        id="default-address"
+                        name="isDefault"
+                        checked={formData.isDefault}
+                        onChange={handleChange}
+                        className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white checked:bg-[#004D99] checked:border-[#004D99] transition-all"
+                      />
+                      <FiCheck className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3.5 h-3.5" />
+                    </div>
+                    <label htmlFor="default-address" className="text-sm text-gray-500 cursor-pointer">
+                      Set As Default Shipping Address
+                    </label>
+                  </div>
+                </div>
 
               </div>
             </div>

@@ -24,6 +24,7 @@ import { BsBoxSeam } from "react-icons/bs";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
+import { Link } from "lucide-react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -230,6 +231,14 @@ const [steps, setSteps] = useState([
   const handleSendRemainder = () => { setIsRemainderSent(true); };
   const handleMarkAsCompleted = () => { setIsDelivered(false); setIsCompleted(true); setShowFinalCompletedUI(true); setActiveStep(4); };
   const handlePrepareShipment = async () => { await updateOrderStatus("processing"); setIsShippingFormOpen(true); setActiveStep(1); setIsPreparing(true); };
+
+      const goToInvoice = () => {
+      if (!order?._id) {
+        toast.error("Order ID nahi mila");
+        return;
+      }
+      router.push(`/dashboard/invoice/${order._id}`);
+    };
 
     return (
         <div className="bg-[#FAFBFD] min-h-screen flex flex-col font-sans">
@@ -873,10 +882,13 @@ const [steps, setSteps] = useState([
             ${(order?.totalAmount || 0).toFixed(2)}
           </span>
         </div>
-
-        <button className="w-full bg-[#1DAF61] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#189b53] transition-colors text-[15px]">
-          <FiDownload className="w-5 h-5" /> Download Invoice
-        </button>
+ <button
+  onClick={goToInvoice}
+  className="w-full bg-[#1DAF61] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#189b53] transition-colors text-[15px]"
+  disabled={!order?._id} // optional: disable agar order nahi hai
+>
+  <FiDownload className="w-5 h-5" /> Download Invoice
+</button>
       </div>
     </>
   ) : (
