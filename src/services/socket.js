@@ -1,49 +1,38 @@
 import { io } from "socket.io-client";
 
-// Socket configuration
-export const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
-  autoConnect: false, // Don't connect automatically
-  transports: ["websocket"], // Use WebSocket transport only
-  withCredentials: true, // Send cookies with requests
+// Socket instance
+export const socket = io(process.env.BACKEND_URL, {
+  withCredentials: true,
+  transports: ["websocket"],
+  reconnection:true,
+  reconnectionAttempts:5,
+  reconnectionDelay:2000
 });
 
-// connect socket
-export const connectSocket = (authToken = null) => {
-  // Destroy previous connection
-  if (socket.connected) {
-    socket.removeAllListeners();
-    socket.disconnect();
-  }
+// Connect socket
+// export const connectSocket = () => {
+//   if(socket.connected) return;
+//   socket.connect();
+// };
 
-  // Check auth token
-  if (authToken) {
-    // Connect with auth token
-    socket.auth = { authToken };
-    socket.connect();
-  }
-};
-
-// disconnect socket
-export const disconnectSocket = () => {
-  if (socket.connected) {
-    socket.removeAllListeners();
-    socket.disconnect();
-  }
-};
+// // Disconnect socket
+// export const disconnectSocket = () => {
+//   if(socket.connected)
+//   {
+//     socket.removeAllListeners();
+//     socket.disconnect();
+//   }
+// };
 
 // logout k time pr call
 // disconnectSocket()
 
 // Subscribe to message events
 export const subscribeToMessages = (callback) => {
-  if (socket) {
-    socket.on("message", callback);
-  }
+  if (socket) socket.on("message", callback);
 };
 
 // Unsubscribe from message events
 export const unsubscribeFromMessages = () => {
-  if (socket) {
-    socket.off("message");
-  }
+  if(socket) socket.off("message");
 };
