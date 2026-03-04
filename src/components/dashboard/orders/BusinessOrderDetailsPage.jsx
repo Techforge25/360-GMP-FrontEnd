@@ -49,13 +49,13 @@ const BusinessOrderDetailsPage = () => {
 
   const [activeStep, setActiveStep] = useState(0);
 
-  const [steps, setSteps] = useState([
-    { label: "Order Placed", date: "Loading...", icon: HiOutlineDocumentText },
-    { label: "Prepare Shipment", date: "Loading...", icon: IoShieldCheckmarkOutline },
-    { label: "Shipped", date: "Loading...", icon: TbTruckDelivery },
-    { label: "Delivered", date: "Loading...", icon: BsBoxSeam },
-    { label: "Completed", date: "Loading...", icon: FiCheck },
-  ]);
+const [steps, setSteps] = useState([
+  { label: "Order Placed", date: "", icon: HiOutlineDocumentText },
+  { label: "Prepare Shipment", date: "", icon: IoShieldCheckmarkOutline },
+  { label: "Shipped", date: "", icon: TbTruckDelivery },
+  { label: "Delivered", date: "", icon: BsBoxSeam },
+  { label: "Completed", date: "", icon: FiCheck },
+]);
 
   useEffect(() => {
     if (!orderId) {
@@ -65,105 +65,100 @@ const BusinessOrderDetailsPage = () => {
     }
 
     const fetchOrder = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/orders/${orderId}/view`, {
-          withCredentials: true,
-        });
-
-        if (!res.data.success) throw new Error(res.data.message);
-
-        const orderData = res.data.data;
-        setOrder(orderData);
-
-        const createdDate = new Date(orderData.createdAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-
-        setSteps(prev => [{ ...prev[0], date: createdDate }, ...prev.slice(1)]);
-         const status = orderData.status?.toLowerCase() || "pending";
-
-// Sab states reset
-setIsPreparing(false);
-setIsShipped(false);
-setIsDelivered(false);
-setIsCompleted(false);
-setShowFinalCompletedUI(false);
-setActiveStep(0);
-
-// Step 0 date (Order Placed) - yeh already set hai upar
-
-// Ab baaki steps ki dates status ke mutabiq set karo
-setSteps(prev => {
-  const updated = [...prev];
-
-  // Step 1: Prepare Shipment / Processing
-  if (status === "processing") {
-    setActiveStep(1);
-    setIsPreparing(true);
-    const prepDate = orderData.preparedAt || orderData.updatedAt || new Date();
-    updated[1].date = new Date(prepDate).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+  try {
+    const res = await axios.get(`${BASE_URL}/orders/${orderId}/view`, {
+      withCredentials: true,
     });
+
+    if (!res.data.success) throw new Error(res.data.message);
+
+    const orderData = res.data.data;
+    setOrder(orderData);
+
+    const orderStatus = orderData.status?.toLowerCase() || "pending";
+
+    // Fresh steps array banao – backend se dates directly lo
+    const newSteps = [
+      {
+        label: "Order Placed",
+        date: orderData.createdAt
+          ? new Date(orderData.createdAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "Pending",
+        icon: HiOutlineDocumentText,
+      },
+      {
+        label: "Prepare Shipment",
+        date: orderData.preparedAt || orderData.processingAt || orderData.updatedAt  // fallback
+          ? new Date(orderData.preparedAt || orderData.processingAt || orderData.updatedAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "Pending",
+        icon: IoShieldCheckmarkOutline,
+      },
+      {
+        label: "Shipped",
+        date: orderData.tracking?.shippedAt
+          ? new Date(orderData.tracking.shippedAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "Pending",
+        icon: TbTruckDelivery,
+      },
+      {
+        label: "Delivered",
+        date: orderData.tracking?.deliveredAt
+          ? new Date(orderData.tracking.deliveredAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "Pending",
+        icon: BsBoxSeam,
+      },
+      {
+        label: "Completed",
+        date: orderData.completedAt || orderData.updatedAt  // completedAt priority
+          ? new Date(orderData.completedAt || orderData.updatedAt).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            })
+          : "Pending",
+        icon: FiCheck,
+      },
+    ];
+
+    setSteps(newSteps);
+
+    // States aur active step set karo
+    setIsPreparing(orderStatus === "processing");
+    setIsShipped(orderStatus === "shipped" || orderStatus.includes("ship"));
+    setIsDelivered(orderStatus === "delivered" || orderStatus.includes("deliv") || orderStatus === "completed");
+    setIsCompleted(orderStatus === "completed");
+    setShowFinalCompletedUI(orderStatus === "completed");
+
+    setActiveStep(
+      orderStatus === "pending" || orderStatus === "paid" ? 0 :
+      orderStatus === "processing" ? 1 :
+      orderStatus === "shipped" || orderStatus.includes("ship") ? 2 :
+      orderStatus === "delivered" || orderStatus.includes("deliv") ? 3 :
+      orderStatus === "completed" ? 4 : 0
+    );
+
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
   }
-
-  // Step 2: Shipped
-  if (status === "shipped" || status.includes("ship")) {
-    setActiveStep(2);
-    setIsShipped(true);
-    setIsPreparing(true); // optional
-
-    const shipDate = orderData.tracking?.updatedAt || orderData.updatedAt || new Date();
-    updated[2].date = new Date(shipDate).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  }
-
-  // Step 3: Delivered
-  if (status === "delivered" || status.includes("deliv")) {
-    setActiveStep(3);
-    setIsDelivered(true);
-    setIsShipped(true);
-
-    const delivDate = orderData.deliveredAt || orderData.updatedAt || new Date();
-    updated[3].date = new Date(delivDate).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  }
-
-  // Step 4: Completed
-  if (status === "completed") {
-    setActiveStep(4);
-    setIsCompleted(true);
-    setShowFinalCompletedUI(true);
-    setIsDelivered(true);
-
-    const completeDate = orderData.completedAt || orderData.updatedAt || new Date();
-    updated[4].date = new Date(completeDate).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-  }
-
-  return updated;
-}); 
-      
-
-
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+};
 
     fetchOrder();
     const interval = setInterval(fetchOrder, 5000);
