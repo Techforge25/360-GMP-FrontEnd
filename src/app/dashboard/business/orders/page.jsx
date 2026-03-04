@@ -30,25 +30,17 @@ const BusinessOrdersPage = () => {
   const currentPage = pageByTab[activeTab] || 1;
   const hasMore = hasMoreByTab[activeTab] ?? true;
 
-const fetchOrders = useCallback(async (reset = false) => {
-  // Agar reset hai to page 1, warna current page + 1
-  let pageToFetch = reset ? 1 : (pageByTab[activeTab] || 1);
-
-  // Agar reset nahi hai aur pehle se page 1 pe hai to force next page
-  if (!reset && pageToFetch === 1) {
-    pageToFetch = 2; // ← yeh important fix hai jab pehla load already ho chuka ho
-  }
-
+const fetchOrders = useCallback(async (page, reset = false) => {
   setLoading(true);
   setError(null);
 
   try {
     const endpoint = TAB_TO_ENDPOINT[activeTab];
 
-    console.log(`Fetching ${activeTab} - page: ${pageToFetch}, limit: ${limit}`); // debug ke liye
+    console.log(`Fetching ${activeTab} page=${page}`);
 
     const res = await axios.get(`${BASE_URL}${endpoint}`, {
-      params: { page: pageToFetch, limit },
+      params: { page, limit },
       withCredentials: true,
     });
 
@@ -57,29 +49,27 @@ const fetchOrders = useCallback(async (reset = false) => {
     }
 
     const newDocs = res.data.data?.docs || [];
-    const pagination = res.data.data?.pagination || res.data.data || {};
-    const hasNext = pagination.hasNextPage ?? (newDocs.length === limit);
+    const pagination = res.data.data?.pagination || {};
+    const hasNext = pagination.hasNextPage ?? newDocs.length === limit;
 
     setOrdersByTab(prev => ({
       ...prev,
-      [activeTab]: reset ? newDocs : [...(prev[activeTab] || []), ...newDocs],
+      [activeTab]: reset
+        ? newDocs
+        : [...(prev[activeTab] || []), ...newDocs],
     }));
 
-    // Sirf tabhi page badhao jab reset nahi hai
-    if (!reset) {
-      setPageByTab(prev => ({
-        ...prev,
-        [activeTab]: pageToFetch + 1,
-      }));
-    }
+    setPageByTab(prev => ({
+      ...prev,
+      [activeTab]: page,
+    }));
 
     setHasMoreByTab(prev => ({
       ...prev,
       [activeTab]: hasNext,
     }));
   } catch (err) {
-    console.error("Fetch error:", err);
-    setError(err.response?.data?.message || err.message || "Could not load orders");
+    setError(err.message);
   } finally {
     setLoading(false);
   }
@@ -87,24 +77,11 @@ const fetchOrders = useCallback(async (reset = false) => {
 
   // Reset & load first page when tab changes
 useEffect(() => {
-  // Tab change pe reset + fresh fetch
-  setPageByTab(prev => ({
-    ...prev,
-    [activeTab]: 1,
-  }));
+  setOrdersByTab(prev => ({ ...prev, [activeTab]: [] }));
+  setHasMoreByTab(prev => ({ ...prev, [activeTab]: true }));
 
-  setOrdersByTab(prev => ({
-    ...prev,
-    [activeTab]: [],
-  }));
-
-  setHasMoreByTab(prev => ({
-    ...prev,
-    [activeTab]: true,
-  }));
-
-  fetchOrders(true); // reset = true → page 1
-}, [activeTab]);   // ← sirf activeTab, fetchOrders ko hata diya
+  fetchOrders(1, true); // always page 1
+}, [activeTab]);
 
   const getStatusColor = (status = "") => {
     const s = status.toLowerCase();
@@ -120,11 +97,12 @@ useEffect(() => {
     return totalQty > 1 ? "Bulk" : "Single";
   };
 
-  const handleLoadMore = () => {
-    if (!loading && hasMore) {
-      fetchOrders(false);
-    }
-  };
+const handleLoadMore = () => {
+  if (loading || !hasMore) return;
+
+  const nextPage = currentPage + 1;
+  fetchOrders(nextPage);
+};
 
   return (
     <div className="bg-white min-h-screen">
