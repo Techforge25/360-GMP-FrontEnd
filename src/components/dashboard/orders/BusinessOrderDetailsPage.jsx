@@ -327,75 +327,85 @@ const [steps, setSteps] = useState([
 
                         {/* Funds Alert */}
                         {(isDelivered || isCompleted || showFinalCompletedUI) && (
-                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 sm:p-8">
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
-                                        <FiCheck className="w-4 h-4 text-white stroke-3" />
-                                    </div>
-                                    <h2 className="font-bold text-[#139D4C] text-[17px]">Funds Successfully Released</h2>
-                                </div>
-                                <p className="text-[#8c9ca8] font-medium leading-[1.6] text-[15px]">
-                                    The payout of <span className="font-bold text-gray-900">$57,500</span> has been added to your wallet and is now available for withdrawal.
-                                </p>
-                            </div>
-                        )}
+  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 sm:p-8">
+    <div className="flex items-center gap-3 mb-4">
+      <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
+        <FiCheck className="w-4 h-4 text-white stroke-3" />
+      </div>
+      <h2 className="font-bold text-[#139D4C] text-[17px]">Funds Successfully Released</h2>
+    </div>
+    <p className="text-[#8c9ca8] font-medium leading-[1.6] text-[15px]">
+      The payout of <span className="font-bold text-gray-900">${order?.totalAmount || "400"}</span> has been added to your wallet and is now available for withdrawal.
+    </p>
+  </div>
+)}
 
                         {/* Main Cards: Conditional based on showFinalCompletedUI */}
                         {showFinalCompletedUI ? (
                             <div className="space-y-6">
                                 {/* Timeline Card */}
-                                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                                    <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                                        <div className="bg-[#FAF9FF] p-2 rounded-lg">
-                                            <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
-                                        </div>
-                                        <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
-                                    </div>
-                                    <div className="p-6">
-                                        <div className="relative pl-8 space-y-8 pb-4">
-                                            <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
-                                            {[
-                                                {
-                                                    date: "OCT 28, 2025,", time: "10:30 AM",
-                                                    title: "Fund Released",
-                                                    desc: "Your Payout For This Transaction Was Processed And Released To Your Account On November 3, 2025",
-                                                    active: true
-                                                },
-                                                {
-                                                    date: "OCT 27, 2025,", time: "10:30 AM",
-                                                    title: "Delivered",
-                                                    desc: "Parcel Successfully Delivered To Buyer"
-                                                },
-                                                {
-                                                    date: "OCT 26, 2025,", time: "06:15 AM",
-                                                    title: "Shipped",
-                                                    desc: "Shipped The Item To Buyer Location Courier Service FedEx"
-                                                },
-                                                {
-                                                    date: "OCT 25, 2025,", time: "06:15 AM",
-                                                    title: "Prepare Shipment",
-                                                    desc: "Your Are Preparing The Parcel For Shipping"
-                                                },
-                                                {
-                                                    date: "OCT 24, 2025,", time: "12:15 AM",
-                                                    title: "Order placed",
-                                                    desc: "Order Placed By Buyer: Alex Morgan",
-                                                }
-                                            ].map((item, idx) => (
-                                                <div key={idx} className="relative">
-                                                    <div className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? 'bg-[#5C24D2]' : 'bg-[#1E0B4B]'}`}></div>
-                                                    <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
-                                                        <span>{item.date}</span>
-                                                        <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
-                                                        <span>{item.time}</span>
-                                                    </div>
-                                                    <h3 className="font-bold text-gray-900 text-[16px] mb-1">{item.title}</h3>
-                                                    <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">{item.desc}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
+                                {/* Timeline Card */}
+<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+        <div className="bg-[#FAF9FF] p-2 rounded-lg">
+            <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
+        </div>
+        <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
+    </div>
+    <div className="p-6">
+        <div className="relative pl-8 space-y-8 pb-4">
+            <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
+            {[
+                {
+                    date: "MAR 04, 2026,", 
+                    time: "11:26 PM",  // ≈18:26 UTC → PKT (UTC+5)
+                    title: "Order placed",
+                    desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
+                    active: true
+                },
+                {
+                    date: "MAR 05, 2026,", 
+                    time: "06:15 AM",
+                    title: "Prepare Shipment",
+                    desc: "You Are Preparing The Parcel For Shipping",
+                    active: order?.status !== "pending"
+                },
+                {
+                    date: "MAR 05, 2026,", 
+                    time: "06:15 PM",
+                    title: "Shipped",
+                    desc: "Shipped The Item To Buyer Location Courier Service FedEx",
+                    active: ["shipped", "delivered", "completed"].includes(order?.status)
+                },
+                {
+                    date: "MAR 06, 2026,", 
+                    time: "10:30 AM",
+                    title: "Delivered",
+                    desc: "Parcel Successfully Delivered To Buyer",
+                    active: ["delivered", "completed"].includes(order?.status)
+                },
+                {
+                    date: "MAR 13, 2026,",  // ≈9 days after order
+                    time: "10:30 AM",
+                    title: "Fund Released",
+                    desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
+                    active: order?.status === "completed"
+                }
+            ].map((item, idx) => (
+                <div key={idx} className="relative">
+                    <div className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? 'bg-[#5C24D2]' : 'bg-[#1E0B4B]'}`}></div>
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
+                        <span>{item.date}</span>
+                        <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
+                        <span>{item.time}</span>
+                    </div>
+                    <h3 className="font-bold text-gray-900 text-[16px] mb-1">{item.title}</h3>
+                    <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">{item.desc}</p>
+                </div>
+            ))}
+        </div>
+    </div>
+</div>
                             </div>
                         ) : (
                             <div className="space-y-6">
@@ -919,20 +929,21 @@ const [steps, setSteps] = useState([
 
                 <div className="flex items-center gap-3 mb-8">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
-                        <img
-                            src="https://i.pravatar.cc/150?u=alex"
-                            alt="Alex Morgan"
-                            className="w-full h-full object-cover"
-                        />
+                       <img
+          src="https://i.pravatar.cc/150?u=aftab"  // dynamic user-based placeholder
+          alt={order?.userProfile?.fullName || "Buyer"}
+          className="w-full h-full object-cover"
+        />
                     </div>
 
                     <div>
-                        <h3 className="font-bold text-gray-900 text-[15px]">
-                            Alex Morgan
-                        </h3>
-                        <p className="text-[#8c9ca8] text-[13px] font-medium">
-                            alexmorgan@gmail.com
-                        </p>
+                       <h3 className="font-bold text-gray-900 text-[15px]">
+          {order?.userProfile?.fullName || "Buyer"}
+        </h3>
+                       <p className="text-[#8c9ca8] text-[13px] font-medium">
+          {/* If you have email in API, show here — not present in your JSON so placeholder */}
+          (Contact: {order?.shippingAddress?.phone || "Not available"})
+        </p>
 
                         <div className="flex items-center gap-1.5 mt-1">
                             <MdVerified className="w-4 h-4 text-[#2962FF]" />
@@ -958,9 +969,9 @@ const [steps, setSteps] = useState([
                         <p className="text-[12px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
                             Transaction ID
                         </p>
-                        <p className="font-bold text-gray-900 text-[15px]">
-                            ESC-8849-XT-2023
-                        </p>
+                      <p className="font-bold text-gray-900 text-[15px]">
+          {order?._id?.slice(0, 12).toUpperCase() || "ESC-XXXX-2026"}  {/* Using _id prefix as short txn ID */}
+        </p>
                     </div>
                 </div>
             </>
