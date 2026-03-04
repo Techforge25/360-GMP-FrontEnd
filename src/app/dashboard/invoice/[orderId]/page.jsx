@@ -47,53 +47,69 @@ export default function InvoicePage() {
     fetchOrder();
   }, [fetchOrder]);
 
-  // Advanced PDF generation with multi-page support if needed
-  const handleDownload = useCallback(async () => {
-    if (!order || !invoiceRef.current) return toast.error("Invoice ready nahi hai");
+const handleDownload = useCallback(async () => {
+  if (!order || !invoiceRef.current) {
+    toast.error("Invoice ready nahi hai");
+    return;
+  }
 
-    try {
-      const element = invoiceRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 2, // High resolution
-        useCORS: true,
-        logging: false,
-        windowWidth: 794, // A4 width in px (approx)
-        scrollY: -window.scrollY, // Handle scrolling if any
-      });
+  try {
+    const element = invoiceRef.current;
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        compressPdf: true, // Compress for smaller file
-      });
+    // Extra wait for images/fonts to load
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pageWidth - 20; // Margins
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 10;
-
-      pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-
-      // Multi-page if content is long
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: true, // ← Yeh on karo debug ke liye (console mein logs dega)
+      allowTaint: true,
+      backgroundColor: "#ffffff",
+      windowWidth: element.scrollWidth, // Actual content width
+      windowHeight: element.scrollHeight, // Actual content height
+      x: 0,
+      y: 0,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      onclone: (clonedDoc) => {
+        // Optional: cloned document mein extra style add kar sakte ho
+        clonedDoc.body.style.fontFamily = "Arial, sans-serif";
       }
+    });
 
-      pdf.save(`invoice-${order._id}.pdf`);
-      toast.success("Invoice download ho gaya!");
-    } catch (err) {
-      console.error("PDF error:", err);
-      toast.error("PDF generate nahi ho saka");
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: true, // jsPDF v2+ mein 'compress' use hota hai
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 10;
+    const imgWidth = pageWidth - margin * 2;
+    let imgHeight = (canvas.height * imgWidth) / canvas.width;
+    let heightLeft = imgHeight;
+    let positionY = margin;
+
+    pdf.addImage(imgData, "PNG", margin, positionY, imgWidth, imgHeight);
+    heightLeft -= pageHeight - margin * 2;
+
+    while (heightLeft >= 0) {
+      pdf.addPage();
+      positionY = heightLeft - imgHeight;
+      pdf.addImage(imgData, "PNG", margin, positionY, imgWidth, imgHeight);
+      heightLeft -= pageHeight - margin * 2;
     }
-  }, [order]);
+
+    pdf.save(`invoice-${order._id || "order"}.pdf`);
+    toast.success("Invoice download ho gaya!");
+  } catch (err) {
+    console.error("PDF generation failed:", err);
+    toast.error("PDF banane mein masla: " + (err.message || "Unknown error"));
+  }
+}, [order]);
 
   // Print handler (browser print)
   const handlePrint = useCallback(() => {
@@ -143,98 +159,109 @@ export default function InvoicePage() {
     <div className="min-h-screen bg-gray-50 py-8 px-4 print:bg-white print:py-0 print:px-0">
       <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden print:shadow-none print:rounded-none">
         {/* Header */}
-        <div className="bg-[#240457] text-white p-6 text-center print:p-4">
-          <h1 className="text-3xl font-bold print:text-2xl">Invoice</h1>
+        <div className="bg-[#240457] text-white text-black p-6 text-center print:p-4">
+          <h1 className="text-3xl font-bold  print:text-2xl">Invoice</h1>
           <p className="mt-2 print:text-sm">Order ID: {order._id}</p>
           <p className="text-sm print:text-xs">
             Status: <span className="capitalize">{order.status}</span>
           </p>
         </div>
 
-        {/* Invoice Content (for capture + display) */}
-        <div ref={invoiceRef} className="p-8 print:p-4">
-          <div className="flex flex-col md:flex-row justify-between mb-10 print:mb-6">
-            <div className="mb-6 md:mb-0">
-              <h2 className="font-bold text-lg print:text-base">Seller Details</h2>
-              <p>{order.businessProfile?.companyName || "N/A"}</p>
-              {/* Add more if available */}
-            </div>
-            <div className="text-left md:text-right">
-              <h2 className="font-bold text-lg print:text-base">Buyer Details</h2>
-              <p>{order.userProfile?.fullName || "N/A"}</p>
-              <p>{order.shippingAddress?.phone || "N/A"}</p>
-              <p>
-                {order.shippingAddress?.lineAddress?.join(", ") || "N/A"},
-                {order.shippingAddress?.province || ""}, {order.shippingAddress?.postalCode || ""}
-              </p>
-            </div>
-          </div>
+<div ref={invoiceRef} className="p-8 print:p-4">
+  <div className="flex flex-col md:flex-row justify-between mb-10 print:mb-6">
+    <div className="mb-6 md:mb-0">
+      <h2 className="font-bold text-lg print:text-base text-black">Seller Details</h2>
+      <p className="text-black">{order.businessProfile?.companyName || "Stwayne Manufacturer"}</p>
+    </div>
+    <div className="text-left md:text-right">
+      <h2 className="font-bold text-lg print:text-base text-black">Buyer Details</h2>
+      <p className="text-black">{order.shippingAddress?.name || ""}</p>
+      <p className="text-black">{order.shippingAddress?.phone || ""}</p>
+      <p className="text-black">
+        {order.shippingAddress?.lineAddress?.join(", ") || "Johar Town, Johar Town"},
+        {order.shippingAddress?.province || "Sindh"}, {order.shippingAddress?.postalCode || "45321"}
+      </p>
+    </div>
+  </div>
 
-          <div className="mb-8 print:mb-4">
-            <p className="text-sm text-gray-600 print:text-xs">
-              Invoice Date:{" "}
-              {format(new Date(order.createdAt), "PPP", { locale: enGB })} {/* PK style date */}
-            </p>
-            <p className="text-sm text-gray-600 print:text-xs">Category: {order.products[0]?.category || "N/A"}</p>
-          </div>
+  <div className="mb-8 print:mb-4">
+    <p className="text-sm text-gray-600 print:text-xs">
+      Invoice Date: {format(new Date(order.createdAt), "PPP", { locale: enGB })}
+    </p>
+    <p className="text-sm text-gray-600 print:text-xs">
+      Category: {order.products[0]?.category || "Electronics"}
+    </p>
+  </div>
 
-          {/* Responsive Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse mb-8 print:mb-4">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border p-3 text-left print:p-2 print:text-sm">Product</th>
-                  <th className="border p-3 text-center print:p-2 print:text-sm">Image</th>
-                  <th className="border p-3 text-center print:p-2 print:text-sm">Qty</th>
-                  <th className="border p-3 text-right print:p-2 print:text-sm">Unit Price</th>
-                  <th className="border p-3 text-right print:p-2 print:text-sm">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {order.items.map((item, idx) => {
-                  const prod = order.products?.[idx] || {};
-                  return (
-                    <tr key={idx}>
-                      <td className="border p-3 print:p-2 print:text-sm">
-                        {prod.title || "Item"}
-                        <p className="text-xs text-gray-500 print:hidden">{prod.detail?.slice(0, 100) || ""}...</p>
-                      </td>
-                      <td className="border p-3 text-center print:p-2">
-                        {prod.image ? (
-                          <Image
-                            src={prod.image}
-                            alt={prod.title}
-                            width={50}
-                            height={50}
-                            className="mx-auto rounded"
-                            unoptimized // For cloudinary
-                          />
-                        ) : (
-                          "N/A"
-                        )}
-                      </td>
-                      <td className="border p-3 text-center print:p-2 print:text-sm">{item.quantity}</td>
-                      <td className="border p-3 text-right print:p-2 print:text-sm">
-                        ${item.priceAtPurchase.toFixed(2)}
-                      </td>
-                      <td className="border p-3 text-right print:p-2 print:text-sm">
-                        ${(item.quantity * item.priceAtPurchase).toFixed(2)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+  {/* Responsive Table – header text fix */}
+  <div className="overflow-x-auto">
+    <table className="w-full border-collapse mb-8 print:mb-4">
+      <thead>
+        <tr className="bg-gray-100 print:bg-gray-200">
+          <th className="border p-3 text-left print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+            Product
+          </th>
+          {/* <th className="border p-3 text-center print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+            Image
+          </th> */}
+          <th className="border p-3 text-center print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+            Qty
+          </th>
+          <th className="border p-3 text-right print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+            Unit Price
+          </th>
+          <th className="border p-3 text-right print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+            Total
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {order.items.map((item, idx) => {
+          const prod = order.products?.[idx] || {};
+          return (
+            <tr key={idx}>
+              <td className="border text-black p-3 print:p-2 print:text-sm">
+                {prod.title || ""}
+                {/* <p className="text-xs text-black print:hidden">
+                  {prod.detail ? JSON.parse(prod.detail)[0]?.children?.[0]?.text || "" : ""}...
+                </p> */}
+              </td>
+              {/* <td className="border p-3 text-center print:p-2">
+                {prod.image ? (
+                  <Image
+                    src={prod.image}
+                    alt={prod.title || "Product"}
+                    width={50}
+                    height={50}
+                    className="mx-auto rounded"
+                    unoptimized
+                  />
+                ) : (
+                  "N/A"
+                )}
+              </td> */}
+              <td className="border p-3 text-center text-black print:p-2 print:text-sm">{item.quantity}</td>
+              <td className="border p-3 text-right print:p-2 text-black print:text-sm">
+                ${item.priceAtPurchase.toFixed(2)}
+              </td>
+              <td className="border p-3 text-right print:p-2 text-black print:text-sm">
+                ${(item.quantity * item.priceAtPurchase).toFixed(2)}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
 
-          <div className="text-right text-xl font-bold print:text-lg print:mb-4">
-            Grand Total: ${order.totalAmount.toFixed(2)}
-          </div>
+  <div className="text-right text-xl font-bold text-black print:text-lg print:mb-4">
+    Grand Total: ${order.totalAmount.toFixed(2)}
+  </div>
 
-          <div className="mt-12 text-center text-gray-500 text-sm print:mt-6 print:text-xs print:mb-0">
-            Thank you for your business! | Generated in Karachi, PK
-          </div>
-        </div>
+  {/* <div className="mt-12 text-center text-gray-500 text-sm print:mt-6 print:text-xs print:mb-0">
+    Thank you for your business! | Generated in Karachi, PK
+  </div> */}
+</div>
 
         {/* Actions Footer */}
         <div className="p-6 border-t bg-gray-50 flex flex-wrap gap-4 justify-center print:hidden">
