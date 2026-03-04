@@ -55,6 +55,7 @@ const Step1 = ({
   bioLength,
   onBioLengthChange,
 }) => (
+  <>
   <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
     {/* Required Fields Notice */}
     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3">
@@ -302,7 +303,7 @@ const Step1 = ({
         </p>
       )}
     </div>
-  </div>
+    </>
 );
 
 const Step2 = ({ formData, handleChange, setIsUploading }) => {
