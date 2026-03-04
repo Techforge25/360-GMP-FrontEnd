@@ -1,152 +1,140 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiArrowLeft, FiMessageSquare, FiAlertCircle, FiCheck, FiArrowRight, FiStar, FiLock, FiUser, FiCreditCard } from "react-icons/fi";
+import { FiAlertCircle, FiArrowLeft, FiArrowRight, FiCheck, FiCreditCard, FiLock, FiMessageSquare, FiStar, FiUser } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { BiCube } from "react-icons/bi";
 import { TbTruckDelivery } from "react-icons/tb";
 import { BsBoxSeam } from "react-icons/bs";
-import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import DashboardFooter from "../DashboardFooter";
-import axios from "axios"
+import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
-import { io } from "socket.io-client";
+import { IoShieldCheckmarkOutline } from "react-icons/io5";
+import ConfirmModal from "@/components/modal/ConfirmModal";
 
-// const steps = [
-//       {
-//     label: "Order Placed",
-//     date: new Date(order?.createdAt).toLocaleDateString("en-US", {
-//       month: "short",
-//       day: "numeric",
-//       year: "numeric",
-//     }),
-//     icon: HiOutlineDocumentText,
-//   },
-//     { label: "Seller Preparing", date: "Oct 24, 2025", icon: BiCube },
-//     { label: "Shipped", date: "Oct 25, 2025", icon: TbTruckDelivery },
-//     { label: "Delivered", date: "Oct 26, 2025", icon: BsBoxSeam },
-//     { label: "Completed", date: "Oct 27, 2025", icon: FiCheck },
-// ];
-const steps = [
-    { label: "Order Placed", date: "Oct 24, 2025", icon: HiOutlineDocumentText },
-    { label: "Seller Preparing", date: "Oct 24, 2025", icon: BiCube },
-    { label: "Shipped", date: "Oct 25, 2025", icon: TbTruckDelivery },
-    { label: "Delivered", date: "Oct 26, 2025", icon: BsBoxSeam },
-    { label: "Completed", date: "Oct 27, 2025", icon: FiCheck },
-];
 const OrderTrackingPage = ({ orderId }) => {
-    const router = useRouter();
-    const [activeStep, setActiveStep] = useState(0);
-    const [isFinalCompleted, setIsFinalCompleted] = useState(false);
-    const [order, setOrder] = useState(null);
-    const [loading, setLoading] = useState(true);
-     const [error, setError] = useState(null);
-  
-  
+  const router = useRouter();
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const [isFinalCompleted, setIsFinalCompleted] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+    const [cancelling, setCancelling] = useState(false);
+
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-    
-  // Socket.io connection
-const [socket, setSocket] = useState(null);
 
-useEffect(() => {
-  const socketIo = io(API_URL, { withCredentials: true });
+  // Fetch order on mount
+  useEffect(() => {
+    if (!orderId) {
+      setError("Order ID not found");
+      setLoading(false);
+      return;
+    }
 
-  socketIo.on("connect", () => {
-    socketIo.emit("joinOrderRoom", orderId);
-  });
+    const fetchOrder = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/orders/${orderId}/view`, {
+          withCredentials: true,
+        });
+        if (!res.data.success) throw new Error(res.data.message);
 
-  socketIo.on("statusChanged", (newStatus) => {
-    toast.info(`Status updated: ${newStatus}`);
-    setOrder((prev) => ({ ...prev, status: newStatus }));
+        const orderData = res.data.data;
+        setOrder(orderData);
 
-    // Stepper lock kar do (revert nahi hoga)
-    const step = 
-      newStatus.includes("prepar") ? 1 :
-      newStatus.includes("shipped") ? 2 :
-      newStatus.includes("delivered") ? 3 :
-      4;
-    setActiveStep(step);
-    if (newStatus === "completed") setIsFinalCompleted(true);
-  });
+        // Map status to step
+        const status = orderData.status?.toLowerCase() || "pending";
+        let step = 0;
+        if (status.includes("prepar")) step = 1;
+        else if (status.includes("ship")) step = 2;
+        else if (status.includes("deliv")) step = 3;
+        else if (status === "completed") step = 4;
 
-  return () => socketIo.disconnect();
-}, [orderId]);
+        setActiveStep(step);
+        setIsFinalCompleted(status === "completed");
 
-useEffect(() => {
-  if (!orderId) {
-    setError("Order ID not found");
-    setLoading(false);
-    return;
-  }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchOrder = async () => {
+    fetchOrder();
+      const interval = setInterval(fetchOrder, 5000); // poll every 5 seconds
+  return () => clearInterval(interval);
+  }, [orderId]);
+
+  // Buyer marks order as completed
+  const handleMarkAsCompleted = async () => {
     try {
-      const res = await axios.get(`${API_URL}/orders/${orderId}/view`, {
-        withCredentials: true,
-      });
-
-      if (!res.data.success) throw new Error(res.data.message);
-
-      const orderData = res.data.data;
-      setOrder(orderData);
-
-      // Status sync (revert nahi hone dega)
-      const status = orderData.status?.toLowerCase() || "pending";
-      setActiveStep(
-        status === "pending" || status === "paid" ? 0 :
-        status.includes("prepar") ? 1 :
-        status.includes("ship") ? 2 :
-        status.includes("deliv") ? 3 :
-        4
+      const res = await axios.patch(
+        `${API_URL}/orders/${orderId}/complete`,
+        { status: "completed" },
+        { withCredentials: true }
       );
-      setIsFinalCompleted(status === "completed");
+      if (res.data.success) {
+        toast.success("Order completed!");
+        setIsFinalCompleted(true);
+        setActiveStep(4);
+        setOrder(prev => ({ ...prev, status: "completed" }));
+      } else {
+        toast.error(res.data.message || "Failed to complete order");
+      }
     } catch (err) {
-      setError(err.message);
+      toast.error("Failed to complete order");
     }
   };
 
-  fetchOrder();
-  const interval = setInterval(fetchOrder, 300); 
-  return () => clearInterval(interval);
-}, [orderId]);
+  const steps = [
+    {
+      label: "Order Placed",
+      date: order ? new Date(order.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }) : "Loading...",
+      icon: HiOutlineDocumentText,
+    },
+    { label: "Seller Preparing", date: "Pending", icon: BiCube },
+    { label: "Shipped", date: "Pending", icon: TbTruckDelivery },
+    { label: "Delivered", date: "Pending", icon: BsBoxSeam },
+    { label: "Completed", date: "Pending", icon: FiCheck },
+  ];
 
-// Buyer "Mark as Received / Completed" button ka logic
-const handleMarkAsCompleted = async () => {
-  try {
-    const res = await axios.patch(
-      `${API_URL}/orders/${orderId}/complete`,
-      { status: "completed" },
-      { withCredentials: true }
-    );
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-    if (res.data.success) {
-      toast.success("Order completed!");
-      setIsFinalCompleted(true);
-      setActiveStep(4);
-
-      // Socket emit for real-time update
-      socket.emit("statusUpdate", { orderId, newStatus: "completed" });
-    }
-  } catch (err) {
-    toast.error("Failed to complete order");
-  }
+    const handleCancelOrder = async () => {
+  setShowCancelModal(true); // modal kholo
 };
 
-  const steps = [
-      {
-    label: "Order Placed",
-    date: new Date(order?.createdAt).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }),
-    icon: HiOutlineDocumentText,
-  },
-    { label: "Seller Preparing", date: "Oct 24, 2025", icon: BiCube },
-    { label: "Shipped", date: "Oct 25, 2025", icon: TbTruckDelivery },
-    { label: "Delivered", date: "Oct 26, 2025", icon: BsBoxSeam },
-    { label: "Completed", date: "Oct 27, 2025", icon: FiCheck },
-];
+// Confirm hone pe API call
+const confirmCancel = async () => {
+  setCancelling(true);
+  setShowCancelModal(false);
+
+  try {
+    const res = await axios.get(`${API_URL}/orders/${orderId}/cancel`, {
+      withCredentials: true,
+    });
+
+    // Agar DELETE chahiye to yeh use karo:
+    // await axios.delete(`${API_URL}/orders/${orderId}/cancel`, { withCredentials: true });
+
+    if (res.data.success) {
+      toast.success("Order cancelled successfully!");
+      router.push("/dashboard/user/checkout");
+    } else {
+      toast.error(res.data.message || "Failed to cancel");
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Error cancelling order");
+  } finally {
+    setCancelling(false);
+  }
+};
 
     return (
         <div className="min-h-screen bg-[#F8F9FA]">
@@ -397,11 +385,16 @@ Order# {order?._id || orderId || "N/A"}      </h1>
 
                         {/* Cancel Order Button */}
                         {(activeStep === 0 || activeStep === 1) && (
-                            <div className="pt-2">
-                                <button className="flex items-center gap-2 bg-[#2D1B54] text-white px-5 py-3 rounded-lg font-semibold text-sm hover:bg-[#1a0e36] transition-colors shadow-sm">
-                                    Cancel Order <FiArrowRight className="w-4 h-4" />
-                                </button>
-                            </div>
+                        <div className="pt-2">
+                            <button
+                            onClick={handleCancelOrder}
+                            disabled={cancelling}
+                            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg font-semibold text-sm transition-colors shadow-sm disabled:opacity-70"
+                            >
+                            {cancelling ? "Cancelling..." : "Cancel Order"} 
+                            <FiArrowRight className="w-4 h-4" />
+                            </button>
+                        </div>
                         )}
 
                         {activeStep === 4 && !isFinalCompleted && (
@@ -652,8 +645,21 @@ Order# {order?._id || orderId || "N/A"}      </h1>
 
             {/* Footer */}
             <DashboardFooter />
+            <ConfirmModal
+  isOpen={showCancelModal}
+  onClose={() => setShowCancelModal(false)}
+  onConfirm={confirmCancel}
+  title="Cancel Order"
+  message="Are you sure you want to cancel this order? This action cannot be undone."
+  confirmText="Yes, Cancel Order"
+  cancelText="No, Keep Order"
+  isLoading={cancelling}
+  danger={true} // red button
+/>
         </div>
+        
     );
+    
 };
 
 export default OrderTrackingPage;

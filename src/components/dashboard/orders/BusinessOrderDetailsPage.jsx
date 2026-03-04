@@ -1,21 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; // ← Yeh add karo
-import axios from "axios"; // ← Yeh add karo agar pehle nahi tha
+import { useParams, useRouter } from "next/navigation";
+import axios from "axios";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import {
-  FiArrowLeft,
-  FiMessageSquare,
-  FiAlertCircle,
   FiCheck,
   FiArrowRight,
-  FiStar,
-  FiLock,
   FiUser,
   FiCreditCard,
   FiCalendar,
   FiDownload,
   FiClock,
+  FiMessageSquare,
+  FiAlertCircle,
+  FiArrowLeft,
+  FiLock,
+  FiStar,
 } from "react-icons/fi";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { TbTruckDelivery } from "react-icons/tb";
@@ -23,11 +23,9 @@ import { BiCube } from "react-icons/bi";
 import { BsBoxSeam } from "react-icons/bs";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
-import { ToastContainer, toast } from 'react-toastify';
-import { io } from "socket.io-client";
+import { ToastContainer, toast } from "react-toastify";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
 
 const BusinessOrderDetailsPage = () => {
   const { id: orderId } = useParams();
@@ -37,9 +35,9 @@ const BusinessOrderDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [courierName, setCourierName] = useState("");
-const [trackingId, setTrackingId] = useState("");
+  const [trackingId, setTrackingId] = useState("");
 
-  // Shipping & Tracking states (aapke original)
+  // Shipping & Tracking states
   const [isShippingFormOpen, setIsShippingFormOpen] = useState(false);
   const [isShipped, setIsShipped] = useState(false);
   const [isDelivered, setIsDelivered] = useState(false);
@@ -51,7 +49,6 @@ const [trackingId, setTrackingId] = useState("");
 
   const [activeStep, setActiveStep] = useState(0);
 
-  // Stepper with real dates
   const [steps, setSteps] = useState([
     { label: "Order Placed", date: "Loading...", icon: HiOutlineDocumentText },
     { label: "Prepare Shipment", date: "Loading...", icon: IoShieldCheckmarkOutline },
@@ -60,57 +57,7 @@ const [trackingId, setTrackingId] = useState("");
     { label: "Completed", date: "Loading...", icon: FiCheck },
   ]);
 
-  const [socket, setSocket] = useState(null);
-
-  // Fetch + Real-time Polling (every 15 seconds)
   useEffect(() => {
-  const socketIo = io(BASE_URL, { withCredentials: true });
-  setSocket(socketIo);
-
-  socketIo.on("statusChanged", (newStatus) => {
-  toast.info(`Order status changed to ${newStatus}`);
-  setOrder((prev) => ({ ...prev, status: newStatus }));
-
-  // Stepper aur date sync
-  setSteps((prev) => {
-    const currentDate = new Date().toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-
-    let updatedSteps = [...prev];
-
-    if (newStatus.includes("prepar")) {
-      updatedSteps[1].date = currentDate; // Prepare Shipment date
-      setActiveStep(1);
-    }
-    if (newStatus.includes("ship")) {
-      updatedSteps[2].date = currentDate; // Shipped date
-      setIsShipped(true);
-      setActiveStep(2);
-    }
-    if (newStatus.includes("deliv")) {
-      updatedSteps[3].date = currentDate; // Delivered date
-      setIsDelivered(true);
-      setActiveStep(3);
-    }
-    if (newStatus === "completed") {
-      updatedSteps[4].date = currentDate; // Completed date
-      setIsCompleted(true);
-      setShowFinalCompletedUI(true);
-      setActiveStep(4);
-    }
-
-    return updatedSteps;
-  });
-});
-
-  return () => socketIo.disconnect();
-}, [orderId]);
-
-  useEffect(() => {
-
     if (!orderId) {
       setError("Order ID not found");
       setLoading(false);
@@ -128,7 +75,6 @@ const [trackingId, setTrackingId] = useState("");
         const orderData = res.data.data;
         setOrder(orderData);
 
-        // Real createdAt date
         const createdDate = new Date(orderData.createdAt).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
@@ -136,18 +82,82 @@ const [trackingId, setTrackingId] = useState("");
         });
 
         setSteps(prev => [{ ...prev[0], date: createdDate }, ...prev.slice(1)]);
+         const status = orderData.status?.toLowerCase() || "pending";
 
-        // Status sync
-        const status = orderData.status?.toLowerCase() || "pending";
-        if (status.includes("pending") || status === "paid") setActiveStep(0);
-        else if (status.includes("prepar")) setActiveStep(1);
-        else if (status.includes("ship")) { setActiveStep(2); setIsShipped(true); }
-        else if (status.includes("deliv")) { setActiveStep(3); setIsDelivered(true); }
-        else if (status === "completed") {
-          setActiveStep(4);
-          setIsCompleted(true);
-          setShowFinalCompletedUI(true);
-        }
+// Sab states reset
+setIsPreparing(false);
+setIsShipped(false);
+setIsDelivered(false);
+setIsCompleted(false);
+setShowFinalCompletedUI(false);
+setActiveStep(0);
+
+// Step 0 date (Order Placed) - yeh already set hai upar
+
+// Ab baaki steps ki dates status ke mutabiq set karo
+setSteps(prev => {
+  const updated = [...prev];
+
+  // Step 1: Prepare Shipment / Processing
+  if (status === "processing") {
+    setActiveStep(1);
+    setIsPreparing(true);
+    const prepDate = orderData.preparedAt || orderData.updatedAt || new Date();
+    updated[1].date = new Date(prepDate).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  // Step 2: Shipped
+  if (status === "shipped" || status.includes("ship")) {
+    setActiveStep(2);
+    setIsShipped(true);
+    setIsPreparing(true); // optional
+
+    const shipDate = orderData.tracking?.updatedAt || orderData.updatedAt || new Date();
+    updated[2].date = new Date(shipDate).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  // Step 3: Delivered
+  if (status === "delivered" || status.includes("deliv")) {
+    setActiveStep(3);
+    setIsDelivered(true);
+    setIsShipped(true);
+
+    const delivDate = orderData.deliveredAt || orderData.updatedAt || new Date();
+    updated[3].date = new Date(delivDate).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  // Step 4: Completed
+  if (status === "completed") {
+    setActiveStep(4);
+    setIsCompleted(true);
+    setShowFinalCompletedUI(true);
+    setIsDelivered(true);
+
+    const completeDate = orderData.completedAt || orderData.updatedAt || new Date();
+    updated[4].date = new Date(completeDate).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  return updated;
+}); 
+      
+
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -156,136 +166,75 @@ const [trackingId, setTrackingId] = useState("");
     };
 
     fetchOrder();
-    // const interval = setInterval(fetchOrder, 1000); 
-    // return () => clearInterval(interval);
+    const interval = setInterval(fetchOrder, 5000);
+  return () => clearInterval(interval);
+
   }, [orderId]);
 
-
-// Seller "Mark as Shipped" ya "Delivered" update karega
-const updateOrderStatus = async (newStatus, trackingData = null) => {
-  if (!orderId) {
-    toast.error("Order ID is missing");
-    console.error("orderId is undefined");
-    return;
-  }
-
-  try {
-    // Agar status "shipped" hai to tracking data bhejna zaroori hai
-    const payload = { status: newStatus };
-
-    if (newStatus === "shipped") {
-      if (!trackingData || !trackingData.trackingId || !trackingData.courierName) {
-        toast.error("Tracking ID and Courier Name are required for Shipped status");
-        return;
-      }
-      payload.tracking = {
-        trackingId: trackingData.trackingId,
-        courierName: trackingData.courierName,
-      };
+  // Status update function
+  const updateOrderStatus = async (newStatus, trackingData = null) => {
+    if (!orderId) {
+      toast.error("Order ID is missing");
+      return;
     }
 
-    console.log("Sending PATCH request:", {
-      url: `${BASE_URL}/orders/${orderId}/status`,
-      payload,
-    });
+    try {
+      const payload = { status: newStatus };
 
-    const res = await axios.patch(
-      `${BASE_URL}/orders/${orderId}/status`,
-      payload,
-      {
+      if (newStatus === "shipped" && trackingData) {
+        payload.tracking = {
+          trackingId: trackingData.trackingId,
+          courierName: trackingData.courierName,
+        };
+      }
+
+      const res = await axios.patch(`${BASE_URL}/orders/${orderId}/status`, payload, {
         withCredentials: true,
         headers: { "Content-Type": "application/json" },
-      }
-    );
-
-    console.log("API Response:", res.data);
-
-    if (res.data.success) {
-      toast.success(`Order status updated to ${newStatus}`);
-
-      // Local state update
-      setOrder((prev) => ({
-        ...prev,
-        status: newStatus,
-        ...(newStatus === "shipped" && { tracking: payload.tracking }),
-      }));
-
-      // Real-time socket broadcast
-      if (socket) {
-        socket.emit("statusUpdate", { orderId, newStatus });
-      }
-
-      // Stepper + UI sync + date update
-      const currentDate = new Date().toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
       });
 
-      setSteps((prev) => {
-        let updated = [...prev];
+      if (res.data.success) {
+        toast.success(`Order status updated to ${newStatus}`);
+        setOrder(prev => ({
+          ...prev,
+          status: newStatus,
+          ...(newStatus === "shipped" && { tracking: payload.tracking }),
+        }));
 
-        if (newStatus === "processing") {
-          updated[1].date = currentDate; // Prepare Shipment
-          setIsShipped(true);
-          setActiveStep(1);
-        } else if (newStatus === "shipped") {
-          updated[2].date = currentDate; // Shipped
-          setIsShipped(true);
-          setActiveStep(2);
-        } else if (newStatus === "delivered") {
-          updated[3].date = currentDate; // Delivered
-          setIsDelivered(true);
-          setActiveStep(3);
-        }
+        const currentDate = new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
 
-        return updated;
-      });
-    } else {
-      toast.error(res.data.message || "API returned failure");
+        setSteps(prev => {
+          let updated = [...prev];
+          if (newStatus === "processing") { updated[1].date = currentDate; setActiveStep(1); setIsPreparing(true); }
+          else if (newStatus === "shipped") { updated[2].date = currentDate; setIsShipped(true); setActiveStep(2); }
+          else if (newStatus === "delivered") { updated[3].date = currentDate; setIsDelivered(true); setActiveStep(3); }
+          else if (newStatus === "completed") { 
+              updated[4].date = currentDate;           // ← yahan date set kar rahe ho
+              setIsCompleted(true); 
+              setShowFinalCompletedUI(true); 
+              setActiveStep(4); 
+            }          return updated;
+        });
+      } else {
+        toast.error(res.data.message || "API returned failure");
+      }
+    } catch (err) {
+      console.error("Status update error:", err);
+      toast.error(err.response?.data?.message || err.message || "Failed to update status.");
     }
-  } catch (err) {
-    console.error("Status update error:", err);
-    toast.error(
-      err.response?.data?.message ||
-      err.message ||
-      "Failed to update status. Check console."
-    );
-  }
-};
+  };
 
-
-    const handleTracking = () => {
-        setIsTracking(true);
-        setActiveStep(1)
-    }
-
-    const   handleSubmitDetails = () => {
-        setIsShippingFormOpen(false);
-        setIsShipped(true);
-        setActiveStep(2);
-    };
-
-    const handleMarkAsShipped = () => {
-        setIsShipped(false);
-        setIsDelivered(true);
-        setActiveStep(3);
-    };
-
-    const handleSendRemainder = () => {
-        setIsRemainderSent(true);
-    };
-
-    const handleMarkAsCompleted = () => {
-        setIsDelivered(false);
-        setIsCompleted(true);
-        setShowFinalCompletedUI(true);
-        setActiveStep(4);
-    };
-    const handlePrepareShipment = async () => {
-      await updateOrderStatus("processing");
-      setIsShippingFormOpen(true);
-    };
+  // Handlers
+  const handleTracking = () => { setIsTracking(true); setActiveStep(1); };
+  const handleSubmitDetails = () => { setIsShippingFormOpen(false); setIsShipped(true); setActiveStep(2); };
+  const handleMarkAsShipped = () => { setIsShipped(false); setIsDelivered(true); setActiveStep(3); };
+  const handleSendRemainder = () => { setIsRemainderSent(true); };
+  const handleMarkAsCompleted = () => { setIsDelivered(false); setIsCompleted(true); setShowFinalCompletedUI(true); setActiveStep(4); };
+  const handlePrepareShipment = async () => { await updateOrderStatus("processing"); setIsShippingFormOpen(true); setActiveStep(1); setIsPreparing(true); };
 
     return (
         <div className="bg-[#FAFBFD] min-h-screen flex flex-col font-sans">
@@ -478,20 +427,35 @@ const updateOrderStatus = async (newStatus, trackingData = null) => {
           {/* Prepare / Mark as Shipped Button */}
           <button
             // onClick={() => {
-            //   handlePrepareShipment
-             
-                // Already shipped → edit mode
-                // setIsShippingFormOpen(true);
-                // setIsPreparing(true);
-                // setIsShippingFormOpen(false);
+            //     setIsShippingFormOpen(true);
+            //     setIsPreparing(true);
+                
               
-                // Not shipped → open form + move to Step 2
-                // if (!isShipped) {
-                      // setActiveStep(1);           // ← Move to "Prepare Shipment" step
-                    // }
+            //     if (!isShipped) {
+            //           setActiveStep(1);          
+            //         }
               
             // }}
-            onClick={handlePrepareShipment}
+            onClick={async () => {
+              if (isShipped) {
+                // Already shipped → sirf form edit mode kholo (no status change)
+                setCourierName(order?.tracking?.courierName || "");
+      setTrackingId(order?.tracking?.trackingId || "");
+                setIsShippingFormOpen(true);
+                setIsPreparing(true);
+              } else {
+                // Not shipped yet → pehle status "processing" karo, phir form kholo
+                try {
+                  await updateOrderStatus("processing");
+                  // Agar backend success hua to local UI update (already updateOrderStatus mein ho raha hai)
+                  setIsShippingFormOpen(true);
+                  setIsPreparing(true);
+                  setActiveStep(1);
+                } catch (err) {
+                  // Agar error aaye to kuch mat karo ya toast dikhao (already updateOrderStatus mein toast hai)
+                }
+              }
+            }}
             className={`flex-1 py-3.5 px-6 rounded-xl font-bold text-[15px] transition-colors shadow-sm flex items-center justify-center gap-2 ${
               isShipped 
                 ? "bg-[#1E0B4B] text-white hover:bg-[#140733]" 
@@ -576,25 +540,66 @@ const updateOrderStatus = async (newStatus, trackingData = null) => {
           </button>
 
           <button
-           onClick={() => {
-              if (!courierName || !trackingId.trim()) {
-                toast.error("Courier Name and Tracking ID are required");
-                return;
-              }
+  onClick={async () => {
+    if (!courierName || !trackingId.trim()) {
+      toast.error("Courier Name and Tracking ID are required");
+      return;
+    }
 
-              updateOrderStatus("shipped", {
-                trackingId: trackingId.trim(),
-                courierName,
-              });
+    try {
+      const payload = {
+        status: "shipped",
+        tracking: {
+          courierName: courierName.trim(),
+          trackingId: trackingId.trim(),
+        },
+      };
 
-              setIsShippingFormOpen(false);
-              setActiveStep(2);               // ← Move to "Shipped" step
-              toast.success("Shipment details submitted & order marked as Shipped!");
-            }}
-            className="px-6 py-2.5 rounded-lg font-semibold text-white bg-[#1E0B4B] hover:bg-[#140733] transition-colors text-[15px]"
-          >
-            Submit Details
-          </button>
+      const res = await axios.patch(
+        `${BASE_URL}/orders/${orderId}/status`,
+        payload,
+        { withCredentials: true }
+      );
+
+      if (res.data.success) {
+        toast.success(
+          isShipped ? "Shipment details updated!" : "Order marked as Shipped!"
+        );
+
+        // Local state update
+        setOrder((prev) => ({
+          ...prev,
+          status: "shipped",
+          tracking: payload.tracking,
+        }));
+
+        setIsShipped(true);
+        setIsShippingFormOpen(false);
+        setActiveStep(2);
+
+        // Steps date update (shipped date)
+        const currentDate = new Date().toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+        setSteps((prev) => {
+          const updated = [...prev];
+          updated[2].date = currentDate;
+          return updated;
+        });
+      } else {
+        toast.error(res.data.message || "Failed to update");
+      }
+    } catch (err) {
+      toast.error("Error updating shipment details");
+      console.error(err);
+    }
+  }}
+  className="px-6 py-2.5 rounded-lg font-semibold text-white bg-[#1E0B4B] hover:bg-[#140733] ..."
+>
+  Submit Details
+</button>
         </div>
       </div>
     )}

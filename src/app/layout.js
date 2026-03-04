@@ -8,13 +8,14 @@ const openSans = Open_Sans({
 
 export const metadata = {
   title: "360-GMP",
-  description: "360gmp is an all-in-one digital platform to discover businesses, communities, jobs, and e-commerce in one place. Connect, explore, and grow with a complete 360° online experience."
+  description:
+    "360gmp is an all-in-one digital platform to discover businesses, communities, jobs, and e-commerce in one place. Connect, explore, and grow with a complete 360° online experience.",
 };
 
 import { UserProvider } from "@/context/UserContext";
 import { CartProvider } from "@/context/CartContext";
-// import { ToastContainer } from "react-toastify";
-// import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({ children }) {
   return (
@@ -32,7 +33,20 @@ export default function RootLayout({ children }) {
         <CartProvider>
           <UserProvider>
             {children}
-            {/* <ToastContainer /> */}
+
+            {/* Toast container placed here so any page/component can trigger a toast */}
+            <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+            />
           </UserProvider>
         </CartProvider>
       </body>
