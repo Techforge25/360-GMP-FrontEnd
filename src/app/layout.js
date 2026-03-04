@@ -16,6 +16,7 @@ import { UserProvider } from "@/context/UserContext";
 import { CartProvider } from "@/context/CartContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SocketInitializer from "@/components/SocketInitializer";
 
 export default function RootLayout({ children }) {
   return (
@@ -32,6 +33,7 @@ export default function RootLayout({ children }) {
       >
         <CartProvider>
           <UserProvider>
+            <SocketInitializer />
             {children}
 
             {/* Toast container placed here so any page/component can trigger a toast */}
