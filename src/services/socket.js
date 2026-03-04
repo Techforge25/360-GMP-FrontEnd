@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 // Socket instance
-export const socket = io(process.env.BACKEND_URL, {
+export const socket = io("https://gmp-backend.techforgeinnovations.com", {
   withCredentials: true,
   transports: ["websocket"],
   reconnection:true,
