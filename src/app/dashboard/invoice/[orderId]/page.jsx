@@ -37,7 +37,7 @@ export default function InvoicePage() {
       }
     } catch (err) {
       setError(err.message || "Failed to fetch order");
-      toast.error(err.message || "Order fetch nahi ho saka");
+      toast.error(err.message || "Order Not fetch ");
     } finally {
       setLoading(false);
     }
@@ -49,7 +49,7 @@ export default function InvoicePage() {
 
 const handleDownload = useCallback(async () => {
   if (!order || !invoiceRef.current) {
-    toast.error("Invoice ready nahi hai");
+    toast.error("Invoice Not Ready");
     return;
   }
 
@@ -104,10 +104,10 @@ const handleDownload = useCallback(async () => {
     }
 
     pdf.save(`invoice-${order._id || "order"}.pdf`);
-    toast.success("Invoice download ho gaya!");
+    toast.success("Invoice downloaded ");
   } catch (err) {
     console.error("PDF generation failed:", err);
-    toast.error("PDF banane mein masla: " + (err.message || "Unknown error"));
+    toast.error("PDF not generate: " + (err.message || "Unknown error"));
   }
 }, [order]);
 
@@ -126,10 +126,10 @@ const handleDownload = useCallback(async () => {
           url: window.location.href,
         });
       } catch (err) {
-        toast.error("Share nahi ho saka");
+        toast.error("Not Share");
       }
     } else {
-      toast.info("Share feature supported nahi hai iss browser mein");
+      toast.info("Share feature not supported browser ");
     }
   }, [order]);
 
