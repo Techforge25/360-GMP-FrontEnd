@@ -470,14 +470,24 @@ Order# {order?._id || orderId || "N/A"}      </h1>
                                     <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-[17px]">
                                         Shipping Details
                                     </h2>
-                                    <div className="p-6">
-                                        <div className="space-y-2">
-                                            <p className="text-[#8c9ca8] font-medium text-sm">
-                                                Name: <span className="text-[#8c9ca8]">Alex Morgan</span>
-                                            </p>
-                                            <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-                                                Location: <span className="text-[#8c9ca8]">124 Tec Parkway,Suite 100 San Francisco,CA 94105 United State</span>
-                                            </p>
+                                   <div className="p-6">
+                                    <div className="space-y-2">
+                                      <p className="text-[#8c9ca8] font-medium text-sm">
+                                        Name: <span className="text-gray-900 font-semibold">
+                                          {order?.shippingAddress?.name || "—"}
+                                        </span>
+                                      </p>
+                                      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                                        Location:{" "}
+                                        <span className="text-gray-900 font-semibold">
+                                          {order?.shippingAddress?.lineAddress?.join(", ") || "—"}, {order?.shippingAddress?.province || "—"}, {order?.shippingAddress?.postalCode || "—"}
+                                        </span>
+                                      </p>
+                                      <p className="text-[#8c9ca8] font-medium text-sm">
+                                        Phone: <span className="text-gray-900 font-semibold">
+                                          {order?.shippingAddress?.phone || "—"}
+                                        </span>
+                                      </p>
                                         </div>
                                     </div>
                                 </div>
@@ -490,16 +500,19 @@ Order# {order?._id || orderId || "N/A"}      </h1>
                                                 <FiUser className="w-5 h-5 text-gray-500" />
                                             </div>
                                             <h2 className="font-bold text-gray-900 text-[17px]">Seller Information</h2>
-                                        </div>
-                                        <div className="p-6 space-y-5">
+                                          </div>
+                                          <div className="p-6 space-y-5">
                                             <div>
-                                                <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">SELLER NAME</p>
-                                                <p className="font-bold text-gray-900 text-[16px]">VintageTime LLC</p>
+                                              <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">SELLER NAME</p>
+                                              <p className="font-bold text-gray-900 text-[16px]">
+                                                {order?.businessProfile?.companyName || "—"}
+                                              </p>
                                             </div>
                                             <div>
-                                                <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">EMAIL</p>
-                                                <p className="font-bold text-gray-900 text-[16px]">VintageTime @gmail.com</p>
-                                            </div>
+                                              <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">EMAIL</p>
+                                              <p className="font-bold text-gray-900 text-[16px]">
+                                                {order?.businessProfile?.email || "—"}
+                                              </p></div>
                                         </div>
                                     </div>
 
