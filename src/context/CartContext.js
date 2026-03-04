@@ -38,33 +38,36 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (product, quantity = 1) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find(
-        (item) =>
-          item.productId === product._id || item.productId === product.id,
+const addToCart = (product, quantity = 1) => {
+  let message = "Added to cart!";
+
+  setCartItems((prevItems) => {
+    const existingItem = prevItems.find(
+      (item) => item.productId === product._id || item.productId === product.id
+    );
+
+    if (existingItem) {
+      message = "Cart updated!";
+      return prevItems.map((item) =>
+        item.productId === (product._id || product.id)
+          ? { ...item, quantity: item.quantity + quantity }
+          : item
       );
+    }
 
-      if (existingItem) {
-        showSuccess("Cart updated!");
-        return prevItems.map((item) =>
-          item.productId === (product._id || product.id)
-            ? { ...item, quantity: item.quantity + quantity }
-            : item,
-        );
-      }
+    return [
+      ...prevItems,
+      {
+        productId: product._id || product.id,
+        quantity,
+        addedAt: new Date().toISOString(),
+      },
+    ];
+  });
 
-      showSuccess("Added to cart!");
-      return [
-        ...prevItems,
-        {
-          productId: product._id || product.id,
-          quantity,
-          addedAt: new Date().toISOString(),
-        },
-      ];
-    });
-  };
+  // Ab safe hai – render phase ke baad chalega
+  showSuccess(message);
+};
 
   const removeFromCart = (productId) => {
     setCartItems((prevItems) => {
