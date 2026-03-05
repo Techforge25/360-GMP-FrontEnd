@@ -24,7 +24,6 @@ const OrderTrackingPage = ({ orderId }) => {
 
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // Fetch order on mount
   useEffect(() => {
     if (!orderId) {
       setError("Order ID not found");
@@ -42,7 +41,6 @@ const OrderTrackingPage = ({ orderId }) => {
         const orderData = res.data.data;
         setOrder(orderData);
 
-        // Map status to step
         const status = orderData.status?.toLowerCase() || "pending";
         let step = 0;
         if (status.includes("prepar")) step = 1;
@@ -61,30 +59,28 @@ const OrderTrackingPage = ({ orderId }) => {
     };
 
     fetchOrder();
-      const interval = setInterval(fetchOrder, 5000); // poll every 5 seconds
-  return () => clearInterval(interval);
+     
   }, [orderId]);
 
-  // Buyer marks order as completed
-  const handleMarkAsCompleted = async () => {
-    try {
-      const res = await axios.patch(
-        `${API_URL}/orders/${orderId}/complete`,
-        { status: "completed" },
-        { withCredentials: true }
-      );
-      if (res.data.success) {
-        toast.success("Order completed!");
-        setIsFinalCompleted(true);
-        setActiveStep(4);
-        setOrder(prev => ({ ...prev, status: "completed" }));
-      } else {
-        toast.error(res.data.message || "Failed to complete order");
+    const handleMarkAsCompleted = async () => {
+      try {
+        const res = await axios.patch(
+          `${API_URL}/orders/${orderId}/complete`,
+          { status: "completed" },
+          { withCredentials: true }
+        );
+        if (res.data.success) {
+          toast.success("Order completed!");
+          setIsFinalCompleted(true);
+          setActiveStep(4);
+          setOrder(prev => ({ ...prev, status: "completed" }));
+        } else {
+          toast.error(res.data.message || "Failed to complete order");
+        }
+      } catch (err) {
+        toast.error("Failed to complete order");
       }
-    } catch (err) {
-      toast.error("Failed to complete order");
-    }
-  };
+    };
 
   const steps = [
     {
@@ -106,35 +102,33 @@ const OrderTrackingPage = ({ orderId }) => {
   if (error) return <div>Error: {error}</div>;
 
     const handleCancelOrder = async () => {
-  setShowCancelModal(true); // modal kholo
+     setShowCancelModal(true);
 };
 
-// Confirm hone pe API call
-const confirmCancel = async () => {
-  setCancelling(true);
-  setShowCancelModal(false);
+      const confirmCancel = async () => {
+        setCancelling(true);
+        setShowCancelModal(false);
 
-  try {
-    const res = await axios.get(`${API_URL}/orders/${orderId}/cancel`, {
-      withCredentials: true,
-    });
+        try {
+          const res = await axios.get(`${API_URL}/orders/${orderId}/cancel`, {
+            withCredentials: true,
+          });
 
-    // Agar DELETE chahiye to yeh use karo:
-    // await axios.delete(`${API_URL}/orders/${orderId}/cancel`, { withCredentials: true });
+          // await axios.delete(`${API_URL}/orders/${orderId}/cancel`, { withCredentials: true });
 
-    if (res.data.success) {
-      toast.success("Order cancelled successfully!");
-      router.push("/dashboard/user/checkout");
-    } else {
-      toast.error(res.data.message || "Failed to cancel");
-    }
-  } catch (err) {
-    console.error(err);
-    toast.error("Error cancelling order");
-  } finally {
-    setCancelling(false);
-  }
-};
+          if (res.data.success) {
+            toast.success("Order cancelled successfully!");
+            router.push("/dashboard/user/checkout");
+          } else {
+            toast.error(res.data.message || "Failed to cancel");
+          }
+        } catch (err) {
+          console.error(err);
+          toast.error("Error cancelling order");
+        } finally {
+          setCancelling(false);
+        }
+      };
 
     return (
         <div className="min-h-screen bg-[#F8F9FA]">
@@ -148,28 +142,28 @@ const confirmCancel = async () => {
                 </button>
 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-  <div>
-    <div className="flex items-center gap-3 mb-1">
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-Order# {order?._id || orderId || "N/A"}      </h1>
-      <span className="bg-[#EBF3FE] text-[#2F73F5] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
-        Escrow Secured
-      </span>
-    </div>
-    <p className="text-gray-500 text-sm">
-      Placed on {new Date(order?.createdAt).toLocaleDateString()}
-    </p>
-  </div>
+                <div>
+                  <div className="flex items-center gap-3 mb-1">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+              Order# {order?._id || orderId || "N/A"}      </h1>
+                    <span className="bg-[#EBF3FE] text-[#2F73F5] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+                      Escrow Secured
+                    </span>
+                  </div>
+                  <p className="text-gray-500 text-sm">
+                    Placed on {new Date(order?.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
 
-  <div className="flex items-center gap-3">
-    <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
-      <FiMessageSquare className="w-4 h-4" /> Contact Seller
-    </button>
-    <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
-      <FiAlertCircle className="w-4 h-4" /> Report Issue
-    </button>
-  </div>
-</div>
+                <div className="flex items-center gap-3">
+                  <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
+                    <FiMessageSquare className="w-4 h-4" /> Contact Seller
+                  </button>
+                  <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors bg-white shadow-sm">
+                    <FiAlertCircle className="w-4 h-4" /> Report Issue
+                  </button>
+                </div>
+              </div>
             </div>
 
             <div className=" max-w-[1440px] mx-auto pb-12 px-4 sm:px-8 mt-6 sm:mt-8 space-y-6">
@@ -277,32 +271,32 @@ Order# {order?._id || orderId || "N/A"}      </h1>
 
                         {/* Dynamic Card (Order Placed vs Seller Preparing) */}
                       {activeStep === 0 && order?.businessProfile && (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
-      Seller Information
-    </h2>
-    <div className="p-6">
-      <div className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-[#7A40F2] rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0">
-            {order?.businessProfile.companyName?.charAt(0) || "S"}
-          </div>
-          <div>
-            <h3 className="font-bold text-gray-900 text-lg">
-              {order?.businessProfile.companyName || "Unknown Seller"}
-            </h3>
-            <p className="text-gray-500 text-sm mt-0.5">
-              {/* Optional: You can dynamically fetch rating or sales if you have it */}
-              {order?.businessProfile.rating
-                ? `${order?.businessProfile.rating}/5 Rating (${order?.businessProfile.sales} sales)`
-                : "No rating available"}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+                      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+                          Seller Information
+                        </h2>
+                        <div className="p-6">
+                          <div className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm">
+                            <div className="flex items-center gap-4">
+                              <div className="w-14 h-14 bg-[#7A40F2] rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0">
+                                {order?.businessProfile.companyName?.charAt(0) || "S"}
+                              </div>
+                              <div>
+                                <h3 className="font-bold text-gray-900 text-lg">
+                                  {order?.businessProfile.companyName || "Unknown Seller"}
+                                </h3>
+                                <p className="text-gray-500 text-sm mt-0.5">
+                                  {/* Optional: You can dynamically fetch rating or sales if you have it */}
+                                  {order?.businessProfile.rating
+                                    ? `${order?.businessProfile.rating}/5 Rating (${order?.businessProfile.sales} sales)`
+                                    : "No rating available"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                         {activeStep === 1 && (
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -346,26 +340,26 @@ Order# {order?._id || orderId || "N/A"}      </h1>
 
                                 {/* Shipping Details Card */}
                              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-  <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-lg">
-    Shipping Details
-  </h2>
-  <div className="p-6">
-    <div className="space-y-2">
-      <p className="text-[#8c9ca8] font-medium text-sm">
-        Name: <span className="text-[#8c9ca8]">{order?.shippingAddress?.name}</span>
-      </p>
-      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-        Location:{" "}
-        <span className="text-[#8c9ca8]">
-          {order?.shippingAddress?.lineAddress?.join(", ")}, {order?.shippingAddress?.province}, {order?.shippingAddress?.postalCode}
-        </span>
-      </p>
-      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-        Phone: <span className="text-[#8c9ca8]">{order?.shippingAddress?.phone}</span>
-      </p>
-    </div>
-  </div>
-</div>
+                            <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-lg">
+                              Shipping Details
+                            </h2>
+                            <div className="p-6">
+                              <div className="space-y-2">
+                                <p className="text-[#8c9ca8] font-medium text-sm">
+                                  Name: <span className="text-[#8c9ca8]">{order?.shippingAddress?.name}</span>
+                                </p>
+                                <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                                  Location:{" "}
+                                  <span className="text-[#8c9ca8]">
+                                    {order?.shippingAddress?.lineAddress?.join(", ")}, {order?.shippingAddress?.province}, {order?.shippingAddress?.postalCode}
+                                  </span>
+                                </p>
+                                <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                                  Phone: <span className="text-[#8c9ca8]">{order?.shippingAddress?.phone}</span>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                             </div>
                         )}
 
@@ -561,63 +555,63 @@ Order# {order?._id || orderId || "N/A"}      </h1>
 
                         {/* Summary Card */}
                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-  <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
-    Summary
-  </h2>
-  <div className="p-6">
-    <div className="space-y-4 mb-6">
-      <div className="flex justify-between text-[15px]">
-        <span className="text-gray-400 font-medium">Item Total</span>
-        <span className="text-gray-500 font-bold">
-          ${order?.totalAmount - (order?.shippingCost || 0)}
-        </span>
-      </div>
-      <div className="flex justify-between text-[15px]">
-        <span className="text-gray-400 font-medium">Shipping</span>
-        <span className="text-gray-500 font-bold">
-          ${order?.shippingCost || 0}
-        </span>
-      </div>
-      <div className="flex justify-between text-[15px]">
-        <span className="text-[#139D4C] font-medium">Escrow Fee Deduction</span>
-        <span className="text-[#139D4C] font-bold">
-          -${order?.escrowFee || 0}
-        </span>
-      </div>
-    </div>
+                        <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+                          Summary
+                        </h2>
+                        <div className="p-6">
+                          <div className="space-y-4 mb-6">
+                            <div className="flex justify-between text-[15px]">
+                              <span className="text-gray-400 font-medium">Item Total</span>
+                              <span className="text-gray-500 font-bold">
+                                ${order?.totalAmount - (order?.shippingCost || 0)}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-[15px]">
+                              <span className="text-gray-400 font-medium">Shipping</span>
+                              <span className="text-gray-500 font-bold">
+                                ${order?.shippingCost || 0}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-[15px]">
+                              <span className="text-[#139D4C] font-medium">Escrow Fee Deduction</span>
+                              <span className="text-[#139D4C] font-bold">
+                                -${order?.escrowFee || 0}
+                              </span>
+                            </div>
+                          </div>
 
-    <div className="border-t border-gray-100 pt-4">
-      <div className="flex justify-between text-[15px] mb-3">
-        <span className="text-gray-400 font-bold">Grand Total</span>
-        <span className="text-gray-900 font-bold">${order?.totalAmount}</span>
-      </div>
-      <div className="flex justify-between items-center text-xl mt-1">
-        <span className="font-bold text-gray-900">Est. Net Payout</span>
-        <span className="font-bold text-gray-900">${order?.totalAmount}</span>
-      </div>
-    </div>
+                          <div className="border-t border-gray-100 pt-4">
+                            <div className="flex justify-between text-[15px] mb-3">
+                              <span className="text-gray-400 font-bold">Grand Total</span>
+                              <span className="text-gray-900 font-bold">${order?.totalAmount}</span>
+                            </div>
+                            <div className="flex justify-between items-center text-xl mt-1">
+                              <span className="font-bold text-gray-900">Est. Net Payout</span>
+                              <span className="font-bold text-gray-900">${order?.totalAmount}</span>
+                            </div>
+                          </div>
 
-    {isFinalCompleted && (
-      <div className="mt-8 bg-[#F8F9FA] rounded-xl border border-gray-100 p-5">
-        <div className="flex items-center gap-2.5 mb-4">
-          <div className="bg-white p-1 rounded border border-gray-200">
-            <FiLock className="w-3.5 h-3.5 text-gray-500" />
-          </div>
-          <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-            RELEASED FROM ESCROW
-          </span>
-        </div>
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-[15px] font-bold text-gray-900">Final Amount</span>
-          <span className="text-[15px] font-bold text-gray-900">${order?.totalAmount.toFixed(2)}</span>
-        </div>
-        <p className="text-[11px] font-bold text-gray-400 mt-2">
-          Paid To Seller On {new Date(order?.updatedAt).toLocaleDateString()}, At {new Date(order?.updatedAt).toLocaleTimeString()}
-        </p>
-      </div>
-    )}
-  </div>
-</div>
+                          {isFinalCompleted && (
+                            <div className="mt-8 bg-[#F8F9FA] rounded-xl border border-gray-100 p-5">
+                              <div className="flex items-center gap-2.5 mb-4">
+                                <div className="bg-white p-1 rounded border border-gray-200">
+                                  <FiLock className="w-3.5 h-3.5 text-gray-500" />
+                                </div>
+                                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+                                  RELEASED FROM ESCROW
+                                </span>
+                              </div>
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="text-[15px] font-bold text-gray-900">Final Amount</span>
+                                <span className="text-[15px] font-bold text-gray-900">${order?.totalAmount.toFixed(2)}</span>
+                              </div>
+                              <p className="text-[11px] font-bold text-gray-400 mt-2">
+                                Paid To Seller On {new Date(order?.updatedAt).toLocaleDateString()}, At {new Date(order?.updatedAt).toLocaleTimeString()}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
 
                         {/* Escrow Status Card */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -659,17 +653,17 @@ Order# {order?._id || orderId || "N/A"}      </h1>
             {/* Footer */}
             <DashboardFooter />
             <ConfirmModal
-  isOpen={showCancelModal}
-  onClose={() => setShowCancelModal(false)}
-  onConfirm={confirmCancel}
-  title="Cancel Order"
-  message="Are you sure you want to cancel this order? This action cannot be undone."
-  confirmText="Yes, Cancel Order"
-  cancelText="No, Keep Order"
-  isLoading={cancelling}
-  danger={true} // red button
-/>
-        </div>
+              isOpen={showCancelModal}
+              onClose={() => setShowCancelModal(false)}
+              onConfirm={confirmCancel}
+              title="Cancel Order"
+              message="Are you sure you want to cancel this order? This action cannot be undone."
+              confirmText="Yes, Cancel Order"
+              cancelText="No, Keep Order"
+              isLoading={cancelling}
+              danger={true} // red button
+            />
+            </div>
         
     );
     

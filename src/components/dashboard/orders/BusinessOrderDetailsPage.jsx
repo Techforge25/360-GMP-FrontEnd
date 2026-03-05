@@ -78,7 +78,6 @@ const [steps, setSteps] = useState([
 
     const orderStatus = orderData.status?.toLowerCase() || "pending";
 
-    // Fresh steps array banao – backend se dates directly lo
     const newSteps = [
       {
         label: "Order Placed",
@@ -93,7 +92,7 @@ const [steps, setSteps] = useState([
       },
       {
         label: "Prepare Shipment",
-        date: orderData.preparedAt || orderData.processingAt || orderData.updatedAt  // fallback
+        date: orderData.preparedAt || orderData.processingAt || orderData.updatedAt  
           ? new Date(orderData.preparedAt || orderData.processingAt || orderData.updatedAt).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -126,7 +125,7 @@ const [steps, setSteps] = useState([
       },
       {
         label: "Completed",
-        date: orderData.completedAt || orderData.updatedAt  // completedAt priority
+        date: orderData.completedAt || orderData.updatedAt  
           ? new Date(orderData.completedAt || orderData.updatedAt).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -139,7 +138,6 @@ const [steps, setSteps] = useState([
 
     setSteps(newSteps);
 
-    // States aur active step set karo
     setIsPreparing(orderStatus === "processing");
     setIsShipped(orderStatus === "shipped" || orderStatus.includes("ship"));
     setIsDelivered(orderStatus === "delivered" || orderStatus.includes("deliv") || orderStatus === "completed");
@@ -162,8 +160,7 @@ const [steps, setSteps] = useState([
 };
 
     fetchOrder();
-    const interval = setInterval(fetchOrder, 5000);
-  return () => clearInterval(interval);
+    
 
   }, [orderId]);
 
@@ -336,38 +333,38 @@ const [steps, setSteps] = useState([
 
                         {/* Funds Alert */}
                         {(isDelivered || isCompleted || showFinalCompletedUI) && (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 sm:p-8">
-    <div className="flex items-center gap-3 mb-4">
-      <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
-        <FiCheck className="w-4 h-4 text-white stroke-3" />
-      </div>
-      <h2 className="font-bold text-[#139D4C] text-[17px]">Funds Successfully Released</h2>
-    </div>
-    <p className="text-[#8c9ca8] font-medium leading-[1.6] text-[15px]">
-      The payout of <span className="font-bold text-gray-900">${order?.totalAmount || "400"}</span> has been added to your wallet and is now available for withdrawal.
-    </p>
-  </div>
-)}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6 sm:p-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
+                      <FiCheck className="w-4 h-4 text-white stroke-3" />
+                    </div>
+                    <h2 className="font-bold text-[#139D4C] text-[17px]">Funds Successfully Released</h2>
+                  </div>
+                  <p className="text-[#8c9ca8] font-medium leading-[1.6] text-[15px]">
+                    The payout of <span className="font-bold text-gray-900">${order?.totalAmount || "400"}</span> has been added to your wallet and is now available for withdrawal.
+                  </p>
+                </div>
+              )}
 
                         {/* Main Cards: Conditional based on showFinalCompletedUI */}
                         {showFinalCompletedUI ? (
                             <div className="space-y-6">
                                 {/* Timeline Card */}
                                 {/* Timeline Card */}
-<div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-        <div className="bg-[#FAF9FF] p-2 rounded-lg">
-            <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
-        </div>
-        <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
-    </div>
-    <div className="p-6">
-        <div className="relative pl-8 space-y-8 pb-4">
-            <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
-            {[
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="bg-[#FAF9FF] p-2 rounded-lg">
+                        <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
+                    </div>
+                    <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
+                </div>
+                <div className="p-6">
+                    <div className="relative pl-8 space-y-8 pb-4">
+                        <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
+                        {[
                 {
                     date: "MAR 04, 2026,", 
-                    time: "11:26 PM",  // ≈18:26 UTC → PKT (UTC+5)
+                    time: "11:26 PM",  
                     title: "Order placed",
                     desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
                     active: true
@@ -421,20 +418,20 @@ const [steps, setSteps] = useState([
                                 {/* Dynamic Action Card (Escrow / Shipping) */}
                                {/* Dynamic Action Card (Escrow / Shipping) */}
                            {/* Dynamic Action Card (Escrow / Shipping) */}
-{!(isDelivered || isCompleted) && (
-  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-    {!isShippingFormOpen ? (
-      <div className="p-6 sm:p-8">
-        <div className="flex items-center gap-2 mb-4">
-          <IoShieldCheckmarkOutline className="w-5 h-5 text-[#139D4C]" />
-          <h2 className="font-bold text-[#139D4C] text-lg">Escrow Payment Status</h2>
-        </div>
+              {!(isDelivered || isCompleted) && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  {!isShippingFormOpen ? (
+                    <div className="p-6 sm:p-8">
+                      <div className="flex items-center gap-2 mb-4">
+                        <IoShieldCheckmarkOutline className="w-5 h-5 text-[#139D4C]" />
+                        <h2 className="font-bold text-[#139D4C] text-lg">Escrow Payment Status</h2>
+                      </div>
 
-        <div className="border-b border-gray-100 pb-6 mb-6">
-          <p className="text-gray-600 leading-relaxed text-[15px]">
-            Your payment of <span className="font-bold text-gray-900">${order?.totalAmount?.toFixed(2) || "0.00"}</span> is securely held in escrow. Funds will be released after buyer confirms delivery.
-          </p>
-        </div>
+                      <div className="border-b border-gray-100 pb-6 mb-6">
+                        <p className="text-gray-600 leading-relaxed text-[15px]">
+                          Your payment of <span className="font-bold text-gray-900">${order?.totalAmount?.toFixed(2) || "0.00"}</span> is securely held in escrow. Funds will be released after buyer confirms delivery.
+                        </p>
+                      </div>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4">
@@ -609,16 +606,16 @@ const [steps, setSteps] = useState([
       toast.error("Error updating shipment details");
       console.error(err);
     }
-  }}
-  className="px-6 py-2.5 rounded-lg font-semibold text-white bg-[#1E0B4B] hover:bg-[#140733] ..."
->
-  Submit Details
-</button>
-        </div>
+      }}
+      className="px-6 py-2.5 rounded-lg font-semibold text-white bg-[#1E0B4B] hover:bg-[#140733] ..."
+    >
+      Submit Details
+    </button>
+            </div>
+          </div>
+        )}
       </div>
-    )}
-  </div>
-)}  
+    )}  
 
                                     
                                 {/* Order Summary Card */}
@@ -833,93 +830,93 @@ const [steps, setSteps] = useState([
                     )}
                         {/* Summary Card */}
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-  {/* Header */}
-  <div className="px-6 py-4 border-b border-gray-100">
-    <h2 className="font-bold text-gray-900 text-[17px]">
-      {showFinalCompletedUI ? "Summary" : "Buyer Information"}
-    </h2>
-  </div>
+                        {/* Header */}
+                        <div className="px-6 py-4 border-b border-gray-100">
+                          <h2 className="font-bold text-gray-900 text-[17px]">
+                            {showFinalCompletedUI ? "Summary" : "Buyer Information"}
+                          </h2>
+                        </div>
 
-  {/* BODY */}
-  {showFinalCompletedUI ? (
-    <>
-      {/* Summary Breakdown */}
-      <div className="p-6 border-b border-gray-100">
-        <div className="space-y-3">
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-[#8c9ca8] font-medium">
-              Gross Sale Amount
-            </span>
-            <span className="font-bold text-gray-900">
-              ${(order?.totalAmount || 0).toFixed(2)}
-            </span>
-          </div>
+                        {/* BODY */}
+                        {showFinalCompletedUI ? (
+                          <>
+                            {/* Summary Breakdown */}
+                            <div className="p-6 border-b border-gray-100">
+                              <div className="space-y-3">
+                                <div className="flex justify-between items-center text-sm">
+                                  <span className="text-[#8c9ca8] font-medium">
+                                    Gross Sale Amount
+                                  </span>
+                                  <span className="font-bold text-gray-900">
+                                    ${(order?.totalAmount || 0).toFixed(2)}
+                                  </span>
+                                </div>
 
-          <div className="flex justify-between items-center text-sm text-red-500 font-medium">
-            <span>Platform Fee</span>
-            <span>—</span>
-          </div>
+                                <div className="flex justify-between items-center text-sm text-red-500 font-medium">
+                                  <span>Platform Fee</span>
+                                  <span>—</span>
+                                </div>
 
-          <div className="flex justify-between items-center text-sm text-red-500 font-medium">
-            <span>Shipping</span>
-            <span>—</span>
-          </div>
+                                <div className="flex justify-between items-center text-sm text-red-500 font-medium">
+                                  <span>Shipping</span>
+                                  <span>—</span>
+                                </div>
 
-          <div className="flex justify-between items-center text-sm text-[#1DAF61] font-medium">
-            <span>Escrow Fee Deduction</span>
-            <span>—</span>
-          </div>
-        </div>
-      </div>
+                                <div className="flex justify-between items-center text-sm text-[#1DAF61] font-medium">
+                                  <span>Escrow Fee Deduction</span>
+                                  <span>—</span>
+                                </div>
+                              </div>
+                            </div>
 
-      {/* Net Payout */}
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
-          <span className="font-bold text-gray-900 text-[17px]">
-            Est. Net Payout
-          </span>
-          <span className="font-bold text-gray-900 text-[19px] tracking-tight">
-            ${(order?.totalAmount || 0).toFixed(2)}
-          </span>
-        </div>
- <button
-  onClick={goToInvoice}
-  className="w-full bg-[#1DAF61] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#189b53] transition-colors text-[15px]"
-  disabled={!order?._id} // optional: disable agar order nahi hai
->
-  <FiDownload className="w-5 h-5" /> Download Invoice
-</button>
-      </div>
-    </>
-  ) : (
-    /* Buyer Info */
-    <div className="p-6 space-y-4">
-      <div className="flex justify-between items-start gap-4">
-        <span className="text-[#8c9ca8] text-sm shrink-0">Name</span>
-        <span className="text-gray-600 text-[15px] text-right">
-          {order?.userProfile?.fullName || "—"}
-        </span>
-      </div>
+                            {/* Net Payout */}
+                            <div className="p-6">
+                              <div className="flex justify-between items-center mb-6">
+                                <span className="font-bold text-gray-900 text-[17px]">
+                                  Est. Net Payout
+                                </span>
+                                <span className="font-bold text-gray-900 text-[19px] tracking-tight">
+                                  ${(order?.totalAmount || 0).toFixed(2)}
+                                </span>
+                              </div>
+                      <button
+                        onClick={goToInvoice}
+                        className="w-full bg-[#1DAF61] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#189b53] transition-colors text-[15px]"
+                        disabled={!order?._id} // optional: disable agar order nahi hai
+                      >
+                        <FiDownload className="w-5 h-5" /> Download Invoice
+                      </button>
+                            </div>
+                          </>
+                        ) : (
+                          /* Buyer Info */
+                          <div className="p-6 space-y-4">
+                            <div className="flex justify-between items-start gap-4">
+                              <span className="text-[#8c9ca8] text-sm shrink-0">Name</span>
+                              <span className="text-gray-600 text-[15px] text-right">
+                                {order?.userProfile?.fullName || "—"}
+                              </span>
+                            </div>
 
-     <div className="flex justify-between items-start gap-4">
-  <span className="text-[#8c9ca8] text-sm shrink-0">Address</span>
-  <div className="text-gray-600 text-[15px] text-right space-y-1">
-    <div>{order?.shippingAddress?.name}</div>
-    <div>{order?.shippingAddress?.lineAddress}</div>
-    <div>{order?.shippingAddress?.province}, {order?.shippingAddress?.postalCode}</div>
-    <div>{order?.shippingAddress?.phone}</div>
-  </div>
-</div>
+                          <div className="flex justify-between items-start gap-4">
+                        <span className="text-[#8c9ca8] text-sm shrink-0">Address</span>
+                        <div className="text-gray-600 text-[15px] text-right space-y-1">
+                          <div>{order?.shippingAddress?.name}</div>
+                          <div>{order?.shippingAddress?.lineAddress}</div>
+                          <div>{order?.shippingAddress?.province}, {order?.shippingAddress?.postalCode}</div>
+                          <div>{order?.shippingAddress?.phone}</div>
+                        </div>
+                      </div>
 
-      <div className="flex justify-between items-start gap-4">
-        <span className="text-[#8c9ca8] text-sm shrink-0">Order ID</span>
-        <span className="text-gray-600 text-[15px] text-right">
-          {order?._id || "—"}
-        </span>
-      </div>
-    </div>
-  )}
-</div>
+                        <div className="flex justify-between items-start gap-4">
+                          <span className="text-[#8c9ca8] text-sm shrink-0">Order ID</span>
+                          <span className="text-gray-600 text-[15px] text-right">
+                            {order?._id || "—"}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
                         {/* Order Details or Payout Status */}
                        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
