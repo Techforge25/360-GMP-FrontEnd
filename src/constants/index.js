@@ -1,0 +1,127 @@
+export const orders = [
+  {
+    id: "#39202",
+    buyer: "Bio Pharm Supply Co.",
+    date: "Nov 25, 2025",
+    total: "$57,500",
+    type: "Bulk",
+    status: "Awaiting Shipment",
+  },
+  {
+    id: "#39203",
+    buyer: "Pioneer Labs",
+    date: "Nov 26, 2025",
+    total: "$8,890",
+    type: "Single",
+    status: "Delivered",
+  },
+  {
+    id: "#39201",
+    buyer: "TechGlobal Inc.",
+    date: "Nov 24, 2025",
+    total: "$13,475",
+    type: "Bulk",
+    status: "Delivered",
+  },
+  {
+    id: "#39203",
+    buyer: "Pioneer Labs",
+    date: "Nov 26, 2025",
+    total: "$8,890",
+    type: "Single",
+    status: "Delivered",
+  },
+  {
+    id: "#39202",
+    buyer: "Bio Pharm Supply Co.",
+    date: "Nov 25, 2025",
+    total: "$57,500",
+    type: "Bulk",
+    status: "In Transit",
+  },
+  {
+    id: "#39202",
+    buyer: "Bio Pharm Supply Co.",
+    date: "Nov 25, 2025",
+    total: "$57,500",
+    type: "Bulk",
+    status: "Delivered",
+  },
+  {
+    id: "#39202",
+    buyer: "Pioneer Labs",
+    date: "Nov 25, 2025",
+    total: "$57,500",
+    type: "Bulk",
+    status: "Delivered",
+  },
+  {
+    id: "#39202",
+    buyer: "Bio Pharm Supply Co.",
+    date: "Nov 25, 2025",
+    total: "$57,500",
+    type: "Bulk",
+    status: "Cancelled",
+  },
+  {
+    id: "#39201",
+    buyer: "Pioneer Labs",
+    date: "Nov 24, 2025",
+    total: "$13,475",
+    type: "Bulk",
+    status: "Delivered",
+  },
+  {
+    id: "#39203",
+    buyer: "TechGlobal Inc.",
+    date: "Nov 26, 2025",
+    total: "$8,890",
+    type: "Single",
+    status: "Delivered",
+  },
+  {
+    id: "#39202",
+    buyer: "TechGlobal Inc.",
+    date: "Nov 25, 2025",
+    total: "$57,500",
+    type: "Bulk",
+    status: "Delivered",
+  },
+  {
+    id: "#39201",
+    buyer: "Pioneer Labs",
+    date: "Nov 24, 2025",
+    total: "$13,475",
+    type: "Bulk",
+    status: "Completed",
+  },
+];
+
+export const tabs = [
+  "All Orders",
+  "New",
+  "Prepare Shipment",
+  "Shipped",
+  "Delivered",
+  "Completed",
+  "Cancelled",
+];
+
+export const getStatusColor = (status) => {
+  switch (status) {
+    case "Awaiting Shipment":
+      return "bg-amber-100 text-amber-700";
+    case "In Transit":
+      return "bg-purple-100 text-purple-700";
+    case "Delivered":
+      return "bg-green-100 text-green-700";
+    case "Completed":
+      return "bg-green-100 text-green-700";
+    case "Cancelled":
+      return "bg-red-100 text-red-700";
+    case "Canceled":
+      return "bg-red-100 text-red-700";
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+};

@@ -34,9 +34,9 @@ const WhyChooseUsPage = () => {
             Connectivity
           </h2>
           <p className="text-gray-600 text-base md:text-xl leading-relaxed mb-12">
-            360 Global Marketplace isn't just another platform. It is a complete
+            360 Global Marketplace isn&apos;t just another platform. It is a complete
             digital ecosystem built to empower businesses, corporations,
-            suppliers, and entrepreneurs worldwide. Here's why thousands of
+            suppliers, and entrepreneurs worldwide. Here&apos;s why thousands of
             professionals choose us as their global business gateway.
           </p>
 

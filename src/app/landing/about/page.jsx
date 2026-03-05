@@ -38,7 +38,7 @@ const AboutPage = () => {
             involved.
           </p>
           <p className="text-black/80 leading-relaxed">
-            By joining 360 Global Marketplace LLC, you're taking a significant
+            By joining 360 Global Marketplace LLC, you&apos;re taking a significant
             step towards empowering businesses and creating a more equitable and
             connected global business community.
           </p>

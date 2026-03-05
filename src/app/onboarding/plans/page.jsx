@@ -129,8 +129,8 @@ const PlanCard = ({
 };
 
 const PaymentModal = ({ isOpen, onClose, onConfirm, planName }) => {
-  if (!isOpen) return null;
   const [method, setMethod] = useState("stripe");
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">

@@ -10,7 +10,7 @@ export default function UnauthorizedPage() {
         Access Denied
       </h2>
       <p className="text-text-secondary mb-8 max-w-md">
-        You don't have permission to access this page. If you believe this is an
+        You don&apos;t have permission to access this page. If you believe this is an
         error, please contact support.
       </p>
       <div className="flex gap-4">
