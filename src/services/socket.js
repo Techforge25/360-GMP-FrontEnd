@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 
 // Socket instance
 export const socket = io("https://gmp-backend.techforgeinnovations.com", {
+  autoConnect:false,
   withCredentials: true,
   transports: ["websocket"],
   reconnection:true,
@@ -11,22 +12,19 @@ export const socket = io("https://gmp-backend.techforgeinnovations.com", {
 });
 
 // Connect socket
-// export const connectSocket = () => {
-//   if(socket.connected) return;
-//   socket.connect();
-// };
+export const connectSocket = () => {
+  if(socket.connected) return;
+  socket.connect();
+};
 
-// // Disconnect socket
-// export const disconnectSocket = () => {
-//   if(socket.connected)
-//   {
-//     socket.removeAllListeners();
-//     socket.disconnect();
-//   }
-// };
-
-// logout k time pr call
-// disconnectSocket()
+// Disconnect socket
+export const disconnectSocket = () => {
+  if(socket.connected)
+  {
+    socket.removeAllListeners();
+    socket.disconnect();
+  }
+};
 
 // Subscribe to message events
 export const subscribeToMessages = (callback) => {

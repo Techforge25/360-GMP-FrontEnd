@@ -18,8 +18,8 @@ export default function AuthSuccess()
             login(res.data);
 
             if(res.data.role === "user") router.push("/dashboard/user");
-            else if(res.data.role === "business") router.push("/dashboard/business");
-            else router.push("/onboarding/role");
+            if(res.data.role === "business") router.push("/dashboard/business");
+            if(!res.data.role || res.data.role === null) router.push("/onboarding/role");
         }
         catch(e)
         {
