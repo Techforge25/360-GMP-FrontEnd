@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
+import CryptoJS from "crypto-js";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -24,6 +25,7 @@ function LoginPageContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
   const { login } = useUserRole();
   const router = useRouter();
@@ -43,6 +45,18 @@ function LoginPageContent() {
       router.push("/onboarding/role");
     }
   }, [router, redirectPath, searchParams]);
+
+  useEffect(() => {
+    const savedEmail = localStorage.getItem("rememberEmail");
+    const savedEncryptedPassword = localStorage.getItem("rememberPassword");
+
+    if (savedEmail) setEmail(savedEmail);
+    if (savedEncryptedPassword) {
+      const bytes = CryptoJS.AES.decrypt(savedEncryptedPassword, SECRET_KEY);
+      const savedPassword = bytes.toString(CryptoJS.enc.Utf8);
+      setPassword(savedPassword);
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,6 +80,18 @@ function LoginPageContent() {
         };
 
         login(finalUserData);
+
+        if (rememberMe) {
+          const encryptedPassword = CryptoJS.AES.encrypt(
+            password,
+            SECRET_KEY,
+          ).toString();
+          localStorage.setItem("rememberEmail", email);
+          localStorage.setItem("rememberPassword", encryptedPassword);
+        } else {
+          localStorage.removeItem("rememberEmail");
+          localStorage.removeItem("rememberPassword");
+        }
 
         if (finalUserData.isNewToPlatform) {
           router.push("/onboarding/role");
