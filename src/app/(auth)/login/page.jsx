@@ -62,12 +62,7 @@ function LoginPageContent() {
         // ...Existing success logic...
         console.log("Logged in:", res.data);
         const finalUserData = {
-          ...res.data,
-          accessToken:
-            res.accessToken ||
-            res.token ||
-            res.data?.accessToken ||
-            res.data?.token,
+          ...res.data
         };
 
         login(finalUserData);
