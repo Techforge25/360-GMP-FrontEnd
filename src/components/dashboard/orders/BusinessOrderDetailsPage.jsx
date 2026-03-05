@@ -25,12 +25,15 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import { Link } from "lucide-react";
+import { useOrderSocket } from "@/hooks/useOrderSocket";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const BusinessOrderDetailsPage = () => {
   const { id: orderId } = useParams();
   const router = useRouter();
+
+  const { isConnected } = useOrderSocket(orderId);
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +78,7 @@ const [steps, setSteps] = useState([
 
     const orderData = res.data.data;
     setOrder(orderData);
+    updateLocalUIFromOrder(orderData);
 
     const orderStatus = orderData.status?.toLowerCase() || "pending";
 
@@ -159,9 +163,99 @@ const [steps, setSteps] = useState([
   }
 };
 
-    fetchOrder();
-    
+    fetchOrder();   
+  }, [orderId]);
 
+  // Helper function – steps aur states ko update karne ke liye
+  const updateLocalUIFromOrder = (orderData) => {
+    if (!orderData) return;
+
+    const status = orderData.status?.toLowerCase() || "pending";
+
+    const newSteps = [
+      { label: "Order Placed", date: formatDate(orderData.createdAt), icon: HiOutlineDocumentText },
+      { label: "Prepare Shipment", date: formatDate(orderData.processingAt || orderData.updatedAt), icon: IoShieldCheckmarkOutline },
+      { label: "Shipped", date: formatDate(orderData.tracking?.shippedAt), icon: TbTruckDelivery },
+      { label: "Delivered", date: formatDate(orderData.tracking?.deliveredAt), icon: BsBoxSeam },
+      { label: "Completed", date: formatDate(orderData.completedAt || orderData.updatedAt), icon: FiCheck },
+    ];
+
+    setSteps(newSteps);
+
+    setIsPreparing(status === "processing");
+    setIsShipped(status === "shipped");
+    setIsDelivered(status === "delivered" || status === "completed");
+    setIsCompleted(status === "completed");
+    setShowFinalCompletedUI(status === "completed");
+
+    setActiveStep(
+      status === "pending" || status === "paid" ? 0 :
+      status === "processing" ? 1 :
+      status === "shipped" ? 2 :
+      status === "delivered" ? 3 :
+      status === "completed" ? 4 : 0
+    );
+  };
+
+  // Small helper
+  const formatDate = (dateStr) => {
+    return dateStr ? new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Pending";
+  };
+
+
+  useEffect(() => {
+    if (!orderId) return;
+
+    const handleOrderUpdate = (e) => {
+      const { orderId: updatedId, status, tracking } = e.detail || {};
+
+      if (updatedId !== orderId) return;
+
+      console.log("Real-time update received:", { status, tracking });
+
+      toast.info(`Order status changed to: ${status}`);
+
+      setOrder((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          status,
+          tracking: tracking || prev.tracking,   // ← agar backend tracking bhej raha to update
+        };
+      });
+
+      // Local UI update
+      const now = new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+
+      setSteps((prev) => {
+        const updated = [...prev];
+        if (status === "processing") {
+          updated[1].date = now;
+          setActiveStep(1);
+          setIsPreparing(true);
+        } else if (status === "shipped") {
+          updated[2].date = now;
+          setIsShipped(true);
+          setActiveStep(2);
+        } else if (status === "delivered") {
+          updated[3].date = now;
+          setIsDelivered(true);
+          setActiveStep(3);
+        } else if (status === "completed") {
+          updated[4].date = now;
+          setIsCompleted(true);
+          setShowFinalCompletedUI(true);
+          setActiveStep(4);
+        }
+        return updated;
+      });
+    };
+
+    window.addEventListener("order-status-updated", handleOrderUpdate);
+
+    return () => {
+      window.removeEventListener("order-status-updated", handleOrderUpdate);
+    };
   }, [orderId]);
 
   // Status update function
@@ -206,7 +300,7 @@ const [steps, setSteps] = useState([
           else if (newStatus === "shipped") { updated[2].date = currentDate; setIsShipped(true); setActiveStep(2); }
           else if (newStatus === "delivered") { updated[3].date = currentDate; setIsDelivered(true); setActiveStep(3); }
           else if (newStatus === "completed") { 
-              updated[4].date = currentDate;           // ← yahan date set kar rahe ho
+              updated[4].date = currentDate;          
               setIsCompleted(true); 
               setShowFinalCompletedUI(true); 
               setActiveStep(4); 

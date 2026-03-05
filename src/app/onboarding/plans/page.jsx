@@ -6,12 +6,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader, CardContent } from "@/components/ui/Card";
 import { FiCheck, FiX } from "react-icons/fi";
-import { FaCrown, FaPaypal, FaStripe, FaBitcoin } from "react-icons/fa";
+import { FaCrown, FaPaypal, FaStripe, FaBitcoin, FaCheckCircle } from "react-icons/fa";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { useUserRole } from "@/context/UserContext";
 import api from "@/lib/axios";
 import subscriptionAPI from "@/services/subscriptionAPI";
+import { ToastContainer, toast } from 'react-toastify';
 
 const CheckItem = ({ children }) => (
   <div className="flex items-start gap-3">
@@ -227,7 +228,7 @@ const ConfirmationModal = ({
             {isError ? (
               <FiX className="w-8 h-8 text-red-500" />
             ) : (
-              <BsCheckCircleFill className="w-8 h-8 text-green-400" />
+              <FaCheckCircle  className="w-8 h-8 text-green-400" />
             )}
           </div>
 
@@ -299,8 +300,10 @@ function PlansList() {
       try {
         const response = await api.get({ url: "/plan" });
         setSubscription(response);
+        toast.success(response.message)
       } catch (err) {
         console.error("Failed to fetch plans", err);
+        toast.error(err.response?.data?.message || err.message)
       } finally {
         setLoading(false);
       }

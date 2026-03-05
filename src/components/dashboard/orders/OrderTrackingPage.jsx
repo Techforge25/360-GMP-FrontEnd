@@ -21,10 +21,14 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import ConfirmModal from "@/components/modal/ConfirmModal";
+import { useOrderSocket } from "@/hooks/useOrderSocket";
+
 
 const OrderTrackingPage = ({ orderId }) => {
   const router = useRouter();
   const [order, setOrder] = useState(null);
+  const { isConnected } = useOrderSocket(orderId);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -70,23 +74,62 @@ const OrderTrackingPage = ({ orderId }) => {
     fetchOrder();
   }, [orderId]);
 
+  const updateUIFromStatus = (status, orderData = order) => {
+    let step = 0;
+    if (status === "processing") step = 1;
+    else if (status === "shipped") step = 2;
+    else if (status === "delivered") step = 3;
+    else if (status === "completed") step = 4;
+
+    setActiveStep(step);
+    setIsFinalCompleted(status === "completed");
+
+  };
+
+  useEffect(() => {
+    if (!orderId) return;
+
+    const handleOrderUpdate = (e) => {
+      const { orderId: updatedId, status } = e.detail || {};
+
+      if (updatedId !== orderId) return;
+
+      console.log("Buyer received real-time update:", status);
+
+      toast.info(`Order updated: ${status.charAt(0).toUpperCase() + status.slice(1)}`);
+
+      setOrder((prev) => prev ? { ...prev, status } : prev);
+
+      updateUIFromStatus(status);
+    };
+
+    window.addEventListener("order-status-updated", handleOrderUpdate);
+
+    return () => {
+      window.removeEventListener("order-status-updated", handleOrderUpdate);
+    };
+  }, [orderId]);
+
   const handleMarkAsCompleted = async () => {
+    if (!orderId) return toast.error("Order ID missing");
+
     try {
       const res = await axios.patch(
         `${API_URL}/orders/${orderId}/complete`,
-        { status: "completed" },
-        { withCredentials: true },
+        {},
+        { withCredentials: true }
       );
+
       if (res.data.success) {
-        toast.success("Order completed!");
-        setIsFinalCompleted(true);
-        setActiveStep(4);
+        toast.success("Order marked as completed!");
         setOrder((prev) => ({ ...prev, status: "completed" }));
+        updateUIFromStatus("completed");
       } else {
-        toast.error(res.data.message || "Failed to complete order");
+        toast.error(res.data.message || "Failed to complete");
       }
     } catch (err) {
-      toast.error("Failed to complete order");
+      console.error(err);
+      toast.error(err.response?.data?.message || "Network/server error");
     }
   };
 
@@ -405,7 +448,7 @@ const OrderTrackingPage = ({ orderId }) => {
               </div>
             )}
 
-            {activeStep === 3 && (
+            {activeStep === 3 && !isFinalCompleted && (
               <div className="space-y-4">
                 <button
                   onClick={handleMarkAsCompleted}
