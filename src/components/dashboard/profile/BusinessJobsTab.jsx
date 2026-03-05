@@ -43,7 +43,6 @@ export default function BusinessJobsTab() {
 
       // First, get the business profile to get businessId
       const profileResponse = await businessProfileAPI.getMyProfile();
-      console.log("Business Profile Response:", profileResponse);
 
       if (profileResponse?.data) {
         setBusinessProfile(profileResponse.data);
@@ -51,7 +50,6 @@ export default function BusinessJobsTab() {
 
         // Fetch jobs for this business
         const jobsResponse = await jobAPI.getAll({ businessId });
-        console.log("Jobs Response:", jobsResponse);
 
         if (jobsResponse?.success && jobsResponse?.data) {
           const jobsData =

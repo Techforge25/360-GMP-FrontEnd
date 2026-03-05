@@ -62,7 +62,7 @@ function LoginPageContent() {
         // ...Existing success logic...
         console.log("Logged in:", res.data);
         const finalUserData = {
-          ...res.data
+          ...res.data,
         };
 
         login(finalUserData);
@@ -241,7 +241,7 @@ function LoginPageContent() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-brand-primary transition-colors focus:outline-none"
               >
-                {showPassword ? (
+                {!showPassword ? (
                   <FiEyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
                 ) : (
                   <FiEye className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -274,6 +274,7 @@ function LoginPageContent() {
           <Button
             type="submit"
             isLoading={loading}
+            disabled={email === "" || password === ""}
             className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base mt-1 xs:mt-2"
           >
             Sign In

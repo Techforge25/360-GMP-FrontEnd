@@ -16,51 +16,40 @@ import {
 
 import { backendURL } from "@/constants";
 import api from "@/lib/axios";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { signupSchema } from "@/validations";
 
 export default function SignupPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(signupSchema),
+    mode: "onChange",
+  });
+
+  const firstError = Object.values(errors)[0]?.message;
+
+  const handleSignup = async (data) => {
     setLoading(true);
     setError("");
-
-    // Password regex from backend
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#()[\]{}|\\<>+=._-])[A-Za-z\d@$!%*?&^#()[\]{}|\\<>+=._-]+$/;
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long.");
-      setLoading(false);
-      return;
-    }
-
-    if (!passwordRegex.test(password)) {
-      setError(
-        "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
-      );
-      setLoading(false);
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
     try {
       // Create the account - backend will send OTP automatically
       const res = await api.post({
         url: `/auth/user/signup`,
-        payload: { email, passwordHash: password, confirmPassword },
+        payload: {
+          email: data.email,
+          passwordHash: data.password,
+          confirmPassword: data.confirmPassword,
+        },
         enableSuccessMessage: false,
         enableErrorMessage: false,
         activateLoader: false,
@@ -72,7 +61,7 @@ export default function SignupPage() {
 
         // Redirect to OTP verification page with userId and email
         router.push(
-          `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
+          `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(data.email)}&type=signup`,
         );
       } else {
         setError(res.message || "Signup failed");
@@ -93,7 +82,7 @@ export default function SignupPage() {
           try {
             const res = await api.post({
               url: `/auth/user/resend-otp`,
-              payload: { email },
+              payload: { email: data.email },
               enableSuccessMessage: true,
               enableErrorMessage: false,
               activateLoader: false,
@@ -103,7 +92,7 @@ export default function SignupPage() {
             if (res.success && res.data) {
               const userId = res.data;
               router.push(
-                `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(email)}&type=signup`,
+                `/otp-verification?userId=${encodeURIComponent(userId)}&email=${encodeURIComponent(data.email)}&type=signup`,
               );
             }
           } catch (resendErr) {
@@ -135,14 +124,14 @@ export default function SignupPage() {
       </CardHeader>
 
       <CardContent className="space-y-3 xs:space-y-4 sm:space-y-6 px-3 xs:px-4 sm:px-6 pb-4 xs:pb-6 sm:pb-8 pt-3 xs:pt-4 sm:pt-6">
-        {error && (
+        {(error || firstError) && (
           <div className="p-2 xs:p-3 text-sm xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
-            {error}
+            {error || firstError}
           </div>
         )}
 
         <form
-          onSubmit={handleSignup}
+          onSubmit={handleSubmit(handleSignup)}
           className="space-y-3 xs:space-y-4 sm:space-y-6"
         >
           <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
@@ -156,11 +145,8 @@ export default function SignupPage() {
               id="email"
               placeholder="info@gmail.com"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
               className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base"
-              required
-              autoFocus
             />
           </div>
 
@@ -176,17 +162,15 @@ export default function SignupPage() {
                 id="password"
                 placeholder="••••••••••"
                 type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register("password")}
                 className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 pr-8 xs:pr-10 text-sm xs:text-sm sm:text-base"
-                required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-2 xs:right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary p-1"
               >
-                {showPassword ? (
+                {!showPassword ? (
                   <FiEyeOff className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
                 ) : (
                   <FiEye className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
@@ -207,8 +191,7 @@ export default function SignupPage() {
                 id="confirmPassword"
                 placeholder="••••••••••"
                 type={showConfirmPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                {...register("confirmPassword")}
                 className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 pr-8 xs:pr-10 text-sm xs:text-sm sm:text-base"
                 required
               />
@@ -217,7 +200,7 @@ export default function SignupPage() {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-2 xs:right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary p-1"
               >
-                {showConfirmPassword ? (
+                {!showConfirmPassword ? (
                   <FiEyeOff className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
                 ) : (
                   <FiEye className="w-3 h-3 xs:w-4 xs:h-4 sm:w-5 sm:h-5" />
@@ -230,6 +213,7 @@ export default function SignupPage() {
             type="submit"
             isLoading={loading}
             className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base mt-1 xs:mt-2 shadow-lg shadow-brand-primary/20"
+            disabled={error || firstError}
           >
             Sign Up
           </Button>

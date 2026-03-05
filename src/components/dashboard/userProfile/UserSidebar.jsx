@@ -12,6 +12,7 @@ import {
   FiBriefcase,
   FiX,
   FiChevronRight,
+  FiCheck,
 } from "react-icons/fi";
 import {
   FaLinkedinIn,
