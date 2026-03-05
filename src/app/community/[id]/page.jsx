@@ -290,7 +290,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
             Community Not Found
           </h1>
           <p className="text-gray-500 mb-6">
-            The community you're looking for doesn't exist or you don't have
+            The community you&apos;re looking for doesn&apos;t exist or you don&apos;t have
             access.
           </p>
           <Link

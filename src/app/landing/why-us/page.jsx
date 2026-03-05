@@ -28,7 +28,7 @@ const WhyUsPage = () => {
         <div className="mb-16">
           <h2 className="text-3xl font-bold text-indigo-950 mb-6">Welcome</h2>
           <p className="text-text-secondary leading-relaxed">
-            Greetings from 360 Global Marketplace LLC! We're excited to welcome
+            Greetings from 360 Global Marketplace LLC! We&apos;re excited to welcome
             you to our platform, where you can find a wide array of products and
             services. Dive into our marketplace and uncover unique selections
             tailored to meet your every need. We appreciate you choosing us as
@@ -116,12 +116,12 @@ const WhyUsPage = () => {
 
         <div className="max-w-4xl mx-auto text-center mb-12">
           <p className="text-text-secondary text-base leading-relaxed border-l-4 border-indigo-500 pl-6 italic bg-gray-50 py-4 rounded-r-lg">
-            360GMP is not just a marketplace—it's a global business ecosystem.
+            360GMP is not just a marketplace—it&apos;s a global business ecosystem.
             360GMP is a unified digital ecosystem that connects buyers, sellers,
             job seekers, and companies in a single platform. With one account,
             you can buy products, apply to jobs, create a business profile, list
             products, post jobs, join communities, and access secure
-            escrow-based transactions. It's simple. It's smart. It's scalable.
+            escrow-based transactions. It&apos;s simple. It&apos;s smart. It&apos;s scalable.
           </p>
         </div>
       </main>

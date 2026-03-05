@@ -20,7 +20,7 @@ const CheckoutPage = () => {
           Payment Secured in Escrow
         </h1>
         <p className="text-gray-600 text-center max-w-2xl mb-12 text-base sm:text-lg">
-          Great news! We've secured your funds. The seller has been notified to prepare your shipment.{" "}
+          Great news! We&apos;ve secured your funds. The seller has been notified to prepare your shipment.{" "}
           <br className="hidden sm:inline" />
           Funds will only be released once you confirm delivery.
         </p>

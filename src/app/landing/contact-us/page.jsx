@@ -60,7 +60,7 @@ const ContactUsPage = () => {
             Contact Us
           </h2>
           <p className="text-gray-500 max-w-2xl mx-auto text-base md:text-xl">
-            We're here to help with demos, support, partnerships, and inquiries.
+            We&apos;re here to help with demos, support, partnerships, and inquiries.
           </p>
         </div>
 
