@@ -76,8 +76,15 @@ export const UserProvider = ({ children }) => {
     };
 
     const initialize = async () => {
-      const verifiedUser = await verifySession(currentUser);
-      setUserState(verifiedUser || null);
+      if(currentUser)
+      {
+        const verifiedUser = await verifySession(currentUser);
+        setUserState(verifiedUser || null);
+      }
+      else
+      {
+        setUserState(null);
+      }
     };
 
     initialize();
