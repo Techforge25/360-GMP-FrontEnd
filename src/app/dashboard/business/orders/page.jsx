@@ -8,21 +8,21 @@ import { tabs } from "@/constants/index";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
-// const TAB_TO_ENDPOINT = {
-//   "All Orders": "/orders/business/all-orders",
-//   "Awaiting Shipment": "/orders/business/processing-orders",
-//   "In Transit": "/orders/business/in-transit-orders",
-//   Delivered: "/orders/business/completed-orders",
-//   Cancelled: "/orders/business/cancelled-orders",
-// };
+const TAB_TO_ENDPOINT = {
+  "All Orders": "/orders/business/all-orders",
+  "Awaiting Shipment": "/orders/business/processing-orders",
+  "In Transit": "/orders/business/in-transit-orders",
+  Delivered: "/orders/business/completed-orders",
+  Cancelled: "/orders/business/cancelled-orders",
+};
 
-const TAB_TO_ENDPOINT = [
-  "All Orders",
-  "Awaiting Shipment",
-  "In Transit",
-  "Delivered",
-  "Cancelled",
-];
+// const TAB_TO_ENDPOINT = [
+//   "All Orders",
+//   "Awaiting Shipment",
+//   "In Transit",
+//   "Delivered",
+//   "Cancelled",
+// ];
 
 const BusinessOrdersPage = () => {
   const [activeTab, setActiveTab] = useState("All Orders");
@@ -148,7 +148,7 @@ const BusinessOrdersPage = () => {
         {/* Tabs */}
         <div className="mb-6">
           <div className="flex space-x-2 sm:space-x-4 overflow-x-auto pb-3 border-b border-gray-200">
-            {tabs.map((tab) => (
+            {Object.keys(TAB_TO_ENDPOINT).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
