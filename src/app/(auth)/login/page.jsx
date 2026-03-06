@@ -85,7 +85,7 @@ function LoginPageContent() {
           const encryptedPassword = CryptoJS.AES.encrypt(
             password,
             SECRET_KEY,
-          ).toString();
+          )?.toString();
           localStorage.setItem("rememberEmail", email);
           localStorage.setItem("rememberPassword", encryptedPassword);
         } else {
