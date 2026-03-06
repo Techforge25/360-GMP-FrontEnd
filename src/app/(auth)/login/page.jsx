@@ -53,7 +53,7 @@ function LoginPageContent() {
     if (savedEmail) setEmail(savedEmail);
     if (savedEncryptedPassword) {
       const bytes = CryptoJS.AES.decrypt(savedEncryptedPassword, SECRET_KEY);
-      const savedPassword = bytes.toString(CryptoJS.enc.Utf8);
+      const savedPassword = bytes?.toString(CryptoJS.enc.Utf8);
       setPassword(savedPassword);
     }
   }, []);
