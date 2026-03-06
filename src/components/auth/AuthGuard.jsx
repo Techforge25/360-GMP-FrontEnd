@@ -25,7 +25,9 @@ export default function AuthGuard({ children }) {
         activateLoader: false,
       });
 
-      if (!user) {
+      console.log(response.message, "respomsesssss")
+
+      if (!user || response.message !== "Authenticated!") {
         // Not logged in, redirect to login
         router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       } else {
