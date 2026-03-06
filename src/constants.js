@@ -8,5 +8,3 @@ export const cloudinaryCloudName =
 
 export const cloudinaryUploadPreset =
   process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-
-export const secretKey = process.env.SECRET_KEY

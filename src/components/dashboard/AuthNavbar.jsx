@@ -136,7 +136,7 @@ const AuthNavbar = () => {
     <>
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-21">
             {/* Logo */}
             <Link
               href={
@@ -165,9 +165,9 @@ const AuthNavbar = () => {
                     <Link
                       key={link.label}
                       href={link.href}
-                      className={`text-base font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-indigo-600 after:transition-all ${isActive
-                          ? "text-[#240457] after:w-full"
-                          : "text-gray-700 hover:text-[#240457] after:w-0"
+                      className={`text-base font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[#240457] after:transition-all ${isActive
+                          ? "text-[#240457] text-[18px] after:w-full"
+                          : "text-gray-700 text-[18px] hover:text-[#240457] after:w-0"
                         }`}
                     >
                       {link.label}

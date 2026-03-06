@@ -126,3 +126,4 @@ export const getStatusColor = (status) => {
   }
 };
 
+export const tags = ["Manufacturing", "Healthcare", "Technology", "Consulting"]
