@@ -17,6 +17,7 @@ import {
 import api from "@/lib/axios";
 import { useUserRole } from "@/context/UserContext";
 import { backendURL } from "@/constants";
+import { decodePassword, encodePassword } from "@/helpers";
 
 function LoginPageContent() {
   const [email, setEmail] = useState("");
@@ -25,7 +26,7 @@ function LoginPageContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
+  const keyPrefix = "ABC"
 
   const { login } = useUserRole();
   const router = useRouter();
@@ -52,11 +53,11 @@ function LoginPageContent() {
 
     if (savedEmail) setEmail(savedEmail);
     if (savedEncryptedPassword) {
-      const bytes = CryptoJS.AES.decrypt(savedEncryptedPassword, SECRET_KEY);
-      const savedPassword = bytes?.toString(CryptoJS.enc.Utf8);
+      const savedPassword = decodePassword(savedEncryptedPassword);
       setPassword(savedPassword);
     }
   }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,12 +83,9 @@ function LoginPageContent() {
         login(finalUserData);
 
         if (rememberMe) {
-          const encryptedPassword = CryptoJS.AES.encrypt(
-            password,
-            SECRET_KEY,
-          )?.toString();
+          const encodedPassword = encodePassword(password);
           localStorage.setItem("rememberEmail", email);
-          localStorage.setItem("rememberPassword", encryptedPassword);
+          localStorage.setItem("rememberPassword", encodedPassword);
         } else {
           localStorage.removeItem("rememberEmail");
           localStorage.removeItem("rememberPassword");
