@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
+import api from "@/lib/axios";
 
 export default function AuthGuard({ children }) {
   const { user } = useUserRole();
@@ -17,7 +18,14 @@ export default function AuthGuard({ children }) {
     const checkAuth = async () => {
       if (user === undefined) return; // Wait for context to initialize
 
-      if (!user) {
+      const response = await api.get({
+        url: `/auth/user/me`,
+        enableErrorMessage: false,
+        enableSuccessMessage: false,
+        activateLoader: false,
+      });
+
+      if (!user || response.message !== "Authenticated") {
         // Not logged in, redirect to login
         router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
       } else {
