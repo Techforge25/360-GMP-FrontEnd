@@ -4,16 +4,9 @@ import Link from "next/link";
 import { FiCalendar, FiChevronDown, FiEye } from "react-icons/fi";
 import axios from "axios";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
+import { userTabs } from "@/constants/index";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-
-const TAB_TO_ENDPOINT = {
-  "All Orders":        "/orders/user/all-orders",
-  "Awaiting Shipment": "/orders/user/processing-orders",
-  "In Transit":        "/orders/user/in-transit-orders",
-  "Delivered":         "/orders/user/completed-orders",
-  "Cancelled":         "/orders/user/cancelled-orders",
-};
 
 const UserOrdersPage = () => {
   const [activeTab, setActiveTab] = useState("All Orders");
@@ -37,7 +30,7 @@ const UserOrdersPage = () => {
     setError(null);
 
     try {
-      const endpoint = TAB_TO_ENDPOINT[activeTab];
+      const endpoint = userTabs[activeTab];
 
       const res = await axios.get(`${BASE_URL}${endpoint}`, {
         params: { page: pageToFetch, limit },
@@ -169,7 +162,7 @@ const UserOrdersPage = () => {
         {/* Tabs */}
         <div className="bg-white rounded-t-xl px-3 sm:px-4 lg:px-6 pt-3 sm:pt-4">
           <div className="flex space-x-2 sm:space-x-4 lg:space-x-8 overflow-x-auto scrollbar-hide border-b border-t border-[#E3E7EE] py-3 sm:py-4">
-            {Object.keys(TAB_TO_ENDPOINT).map((tab) => (
+            {Object.keys(userTabs).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}

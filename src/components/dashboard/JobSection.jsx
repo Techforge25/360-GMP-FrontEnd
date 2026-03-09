@@ -63,7 +63,7 @@ const JobSection = () => {
               className="w-[50%] h-[50%] object-contain"
             />
           </div>
-          <h2 className="text-2xl font-semibold mx-auto text-black mb-2 max-w-sm">
+          <h2 className="text-[2rem] font-semibold mx-auto text-black mb-2 max-w-sm">
             Latest Jobs Posted By Other Companies
           </h2>
         </div>
@@ -78,12 +78,12 @@ const JobSection = () => {
               <div
                 className={`w-35 h-full rounded-2xl bg-[#ECEFF6] border border-[#E3E7EE] flex-shrink-0 flex items-center justify-center`}
               >
-                <div className="w-26 h-26 bg-white rounded-xl flex items-center justify-center overflow-hidden">
+                <div className="w-26 h-26 rounded-xl flex items-center justify-center overflow-hidden">
                   {job.logo ? (
                     <img
                       src={job.logo}
                       alt={job.company}
-                      className="w-full h-full object-contain p-1"
+                      className="w-full h-full object-cover p-1"
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.style.display = 'none';
@@ -91,7 +91,7 @@ const JobSection = () => {
                       }}
                     />
                   ) : null}
-                  <span 
+                  <span
                     className={`text-2xl font-bold text-gray-700 ${job.logo ? 'hidden' : 'flex'}`}
                     style={{ display: job.logo ? 'none' : 'flex' }}
                   >
@@ -124,7 +124,7 @@ const JobSection = () => {
                 </div>
 
                 {/* View Details Button */}
-                <button 
+                <button
                   onClick={() => handleViewJobDetail(job.id)}
                   className="px-4 mt-6 py-2 border border-[#240457] text-[#240457] rounded-xl font-medium hover:bg-[#240457] hover:text-white transition-colors text-base flex items-center gap-2"
                 >

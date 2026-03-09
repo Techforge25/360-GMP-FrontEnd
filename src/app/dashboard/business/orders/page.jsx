@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FiEye, FiCalendar, FiChevronDown } from "react-icons/fi";
 import axios from "axios";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
-import { tabs } from "@/constants/index";
+import { businessTabs, tabs } from "@/constants/index";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
@@ -45,7 +45,7 @@ const BusinessOrdersPage = () => {
       setError(null);
 
       try {
-        const endpoint = TAB_TO_ENDPOINT[activeTab];
+        const endpoint = businessTabs[activeTab];
 
         console.log(`Fetching ${activeTab} page=${page}`);
 
@@ -148,13 +148,13 @@ const BusinessOrdersPage = () => {
         {/* Tabs */}
         <div className="mb-6">
           <div className="flex space-x-2 sm:space-x-4 overflow-x-auto pb-3 border-b border-gray-200">
-            {tabs.map((tab) => (
+            {Object.keys(businessTabs).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === tab
-                    ? "bg-[#240457] text-white"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
+                  ? "bg-[#240457] text-white"
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
                   }`}
               >
                 {tab}

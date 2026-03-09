@@ -144,12 +144,12 @@ const BusinessGrid = () => {
                 />
                 {/* Logo Overlay */}
                 <div className="absolute -bottom-8 left-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-12  h-12 rounded-lg bg-white p-1 shadow-sm border border-gray-100 flex items-center justify-center">
+                  <div className="flex items-end gap-2">
+                    <div className="w-[100px] h-[100px] rounded-lg bg-white p-1 shadow-sm border border-gray-100 flex items-center justify-center">
                       <img
                         src={biz.logo}
                         alt={biz.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                         onError={(e) => {
                           e.target.src = "/assets/images/profileLogo.png";
                         }}

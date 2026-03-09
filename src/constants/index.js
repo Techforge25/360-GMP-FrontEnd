@@ -97,6 +97,26 @@ export const orders = [
   },
 ];
 
+export const businessTabs = {
+  "All Orders": "/orders/business/all-orders",
+  "New": "/orders/business/new-orders",
+  "Prepare Shipment": "/orders/business/processing-orders",
+  "Shipped": "/orders/business/in-transit-orders",
+  "Delivered": "/orders/business/delivered-orders",
+  "Completed": "/orders/business/completed-orders",
+  "Cancelled": "/orders/business/cancelled-orders",
+};
+
+export const userTabs = {
+  "All Orders": "/orders/user/all-orders",
+  "New": "/orders/user/new-orders",
+  "Seller Preparing": "/orders/user/processing-orders",
+  "Shipped": "/orders/user/in-transit-orders",
+  "Delivered": "/orders/user/delivered-orders",
+  "Completed": "/orders/user/completed-orders",
+  "Cancelled": "/orders/user/cancelled-orders",
+};
+
 export const tabs = [
   "All Orders",
   "New",

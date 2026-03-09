@@ -207,7 +207,7 @@ const CommunitySection = () => {
 
       <div className="flex justify-center mt-10">
         <Link
-          href="/dashboard/business/communities"
+          href="/dashboard/user/businesses"
           className="px-6 py-2 bg-white border border-gray-300 rounded-full text-base font-medium text-black hover:bg-gray-50 shadow-sm"
         >
           Explore all communities

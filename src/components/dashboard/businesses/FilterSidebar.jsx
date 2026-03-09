@@ -93,13 +93,13 @@ const FilterSidebar = ({ filters = {}, onFilterChange }) => {
       <FilterGroup
         title="Country"
         options={[
-          "United States of America",
-          "Pakistan",
-          "Germany",
-          "China",
-          "Belgium",
-          "France",
-          "South Africa",
+          "us United States of America",
+          "pk Pakistan",
+          "de Germany",
+          "cn China",
+          "be Belgium",
+          "fr France",
+          "za South Africa",
         ]}
         selectedValues={filters.countries || []}
         onChange={handleCountryChange}

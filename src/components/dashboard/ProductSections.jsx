@@ -92,6 +92,8 @@ const ProductSections = () => {
     return null;
   }
 
+  console.log(featured, "featureds product")
+
   return (
     <div className="space-y-16 py-12 relative overflow-hidden">
       {error && (
@@ -134,7 +136,7 @@ const ProductSections = () => {
                 <>
                   <button
                     onClick={scrollLeft}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
+                    className="absolute left-0 top-1/2 -translate-y-3/4 -translate-x-4 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
                   >
                     <svg
                       className="w-5 h-5"
@@ -152,7 +154,7 @@ const ProductSections = () => {
                   </button>
                   <button
                     onClick={scrollRight}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
+                    className="absolute right-0 top-1/2 -translate-y-3/4 -translate-x-10 z-10 w-10 h-10 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-colors"
                   >
                     <svg
                       className="w-5 h-5"
@@ -191,7 +193,10 @@ const ProductSections = () => {
                       className="flex-shrink-0 cursor-pointer w-[280px] sm:w-[300px] bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                     >
                       {/* Product Image */}
-                      <div  className="h-48 bg-gray-100 relative">
+                      <div className="relative h-48 bg-gray-100 relative">
+                        <span className={`absolute top-4 right-4 ${prod.stock > 1000 ? "bg-green-500" : "bg-orange-500"}  text-white text-sm font-bold px-3 py-1 rounded-full z-10`}>
+                          Stock {prod?.stock}
+                        </span>
                         <img
                           src={prod.image}
                           alt={prod.name}
@@ -224,7 +229,7 @@ const ProductSections = () => {
                           </div>
                           <div className="text-right">
                             <span className="text-sm text-[#787878]">
-                              USD {prod.price.replace("$", "")}
+                              USD {prod.price}
                             </span>
                           </div>
                         </div>
@@ -246,17 +251,17 @@ const ProductSections = () => {
         </section>
       )}
 
-      {/* Split Section: Top Ranking & New Products */}
       {(topRanking.length > 0 || newProducts.length > 0) && (
         <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Top Ranking (Purple Gradient) */}
             {topRanking.length > 0 && (
-              <div className="bg-[#9747FF] rounded-2xl p-6 text-white relative group">
-                <div className="flex justify-between items-center mb-6">
+              <div className="bg-[#9747FF] rounded-2xl p-6 text-white relative overflow-hidden group">
+                <div className="absolute  top-0 right-0 w-32 h-32 bg-gray-800 rounded-full blur-3xl -mr-10 -mt-10" />
+
+                <div className="flex justify-between items-center mb-6 relative z-10">
                   <div>
                     <h2 className="text-xl font-semibold">Top Ranking</h2>
-                    <p className="text-white/80 text-sm">
+                    <p className="text-[#D9D9D9] text-sm">
                       Highest priced premium products
                     </p>
                   </div>
@@ -268,67 +273,66 @@ const ProductSections = () => {
                   </span>
                 </div>
 
-                {/* Navigation Arrows */}
-                {topRanking.length > 2 && (
-                  <>
-                    <button
-                      onClick={scrollTopRankingLeft}
-                      className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={scrollTopRankingRight}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </>
-                )}
+                <div className="relative">
+                  {topRanking.length > 2 && (
+                    <>
+                      <button
+                        onClick={scrollNewLeft}
+                        className="absolute left-0 top-1/2 shadow-amber-50 -translate-y-1/2 -translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={scrollNewRight}
+                        className="absolute right-0 shadow-amber-50 top-1/2 -translate-y-1/2 translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
+                      >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </>
+                  )}
 
-                <div
-                  ref={topRankingRef}
-                  className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
-                >
-                  {topRanking.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => handleViewProduct(item.id)}
-                      className="min-w-[calc(50%-8px)] flex-shrink-0 bg-white rounded-xl p-3 text-gray-900 shadow-lg cursor-pointer hover:shadow-xl transition-shadow"
-                    >
-                      <div className="h-32 bg-gray-100 rounded-lg mb-3 overflow-hidden relative">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.src =
-                              "/assets/images/Portrait_Placeholder.png";
-                          }}
-                        />
+                  <div
+                    ref={topRankingRef}
+                    className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
+                  >
+                    {topRanking.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => handleViewProduct(item.id)}
+                        className="min-w-[200px] w-[calc(50%-8px)] bg-white rounded-xl p-3 border border-gray-700 shadow-lg flex-shrink-0 cursor-pointer hover:shadow-xl transition-shadow"
+                      >
+                        <div className="h-32 bg-gray-100 rounded-lg mb-3 overflow-hidden relative">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src =
+                                "/assets/images/Portrait_Placeholder.png";
+                            }}
+                          />
+                        </div>
+                        <h3 className="font-bold text-base truncate text-black mb-1">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-gray-500 mb-3 truncate">
+                          {item.desc}
+                        </p>
+                        <div className="flex justify-between items-center text-sm text-gray-600">
+                          <span>MOQ: {item.minOrder || 100}</span>
+                          <span className="text-sm text-gray-500">
+                            USD {item.price}
+                          </span>
+                        </div>
                       </div>
-                      <h3 className="font-bold text-base truncate mb-1">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-gray-500 mb-3 truncate">
-                        {item.desc}
-                      </p>
-                      <div className="flex justify-between items-center text-sm text-gray-600">
-                        <span>MOQ: {item.minOrder || 100}</span>
-                        <span className="text-sm text-gray-500">
-                          USD {item.price}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* New Product (Dark Overlay) */}
             {newProducts.length > 0 && (
               <div className="bg-[#3A373E] rounded-2xl p-6 text-white relative overflow-hidden group">
-                {/* Background element */}
                 <div className="absolute  top-0 right-0 w-32 h-32 bg-gray-800 rounded-full blur-3xl -mr-10 -mt-10" />
 
                 <div className="flex justify-between items-center mb-6 relative z-10">
@@ -346,9 +350,7 @@ const ProductSections = () => {
                   </span>
                 </div>
 
-                {/* Carousel Container */}
                 <div className="relative">
-                  {/* Navigation Arrows */}
                   {newProducts.length > 2 && (
                     <>
                       <button
