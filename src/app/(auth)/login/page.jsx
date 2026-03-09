@@ -18,6 +18,7 @@ import api from "@/lib/axios";
 import { useUserRole } from "@/context/UserContext";
 import { backendURL } from "@/constants";
 import { decodePassword, encodePassword } from "@/helpers";
+import { connectSocket } from "@/services/socket";
 
 function LoginPageContent() {
   const [email, setEmail] = useState("");
@@ -76,6 +77,7 @@ function LoginPageContent() {
       if (res.success) {
         // ...Existing success logic...
         console.log("Logged in:", res.data);
+        connectSocket();
         const finalUserData = {
           ...res.data,
         };

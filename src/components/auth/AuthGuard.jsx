@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import api from "@/lib/axios";
+import { connectSocket } from "@/services/socket";
 
 export default function AuthGuard({ children }) {
   const { user } = useUserRole();
@@ -34,6 +35,7 @@ export default function AuthGuard({ children }) {
         // Optional: Verify user session validity with backend if token exists
         // This handles cases where a shared URL might have been used or token is expired
         setLoading(false);
+        connectSocket();
       }
     };
 
