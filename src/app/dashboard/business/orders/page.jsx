@@ -8,21 +8,21 @@ import { tabs } from "@/constants/index";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
 
-// const TAB_TO_ENDPOINT = {
-//   "All Orders": "/orders/business/all-orders",
-//   "Awaiting Shipment": "/orders/business/processing-orders",
-//   "In Transit": "/orders/business/in-transit-orders",
-//   Delivered: "/orders/business/completed-orders",
-//   Cancelled: "/orders/business/cancelled-orders",
-// };
+const TAB_TO_ENDPOINT = {
+  "All Orders": "/orders/business/all-orders",
+  "Awaiting Shipment": "/orders/business/processing-orders",
+  "In Transit": "/orders/business/in-transit-orders",
+  Delivered: "/orders/business/completed-orders",
+  Cancelled: "/orders/business/cancelled-orders",
+};
 
-const TAB_TO_ENDPOINT = [
-  "All Orders",
-  "Awaiting Shipment",
-  "In Transit",
-  "Delivered",
-  "Cancelled",
-];
+// const TAB_TO_ENDPOINT = [
+//   "All Orders",
+//   "Awaiting Shipment",
+//   "In Transit",
+//   "Delivered",
+//   "Cancelled",
+// ];
 
 const BusinessOrdersPage = () => {
   const [activeTab, setActiveTab] = useState("All Orders");
@@ -152,11 +152,10 @@ const BusinessOrdersPage = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeTab === tab
+                className={`px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${activeTab === tab
                     ? "bg-[#240457] text-white"
                     : "text-gray-600 hover:bg-gray-100 hover:text-gray-800"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -274,11 +273,10 @@ const BusinessOrdersPage = () => {
                   onClick={handleLoadMore}
                   disabled={loading}
                   className={`px-10 py-3.5 min-w-[160px] border border-gray-300 rounded-lg font-medium text-gray-700 transition-all flex items-center justify-center gap-2
-        ${
-          loading
-            ? "opacity-60 cursor-wait bg-gray-50"
-            : "hover:bg-gray-50 hover:shadow-sm active:scale-98"
-        }`}
+        ${loading
+                      ? "opacity-60 cursor-wait bg-gray-50"
+                      : "hover:bg-gray-50 hover:shadow-sm active:scale-98"
+                    }`}
                 >
                   {loading ? (
                     <>

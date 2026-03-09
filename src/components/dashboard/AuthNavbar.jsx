@@ -9,7 +9,6 @@ import {
   FiUser,
   FiMenu,
   FiX,
-  FiChevronDown,
 } from "react-icons/fi";
 import { useUserRole } from "@/context/UserContext";
 import { useCart } from "@/context/CartContext";
@@ -33,6 +32,7 @@ import {
 
 import ProfileSwitchModal from "./ProfileSwitchModal";
 import SignOutModal from "./SignOutModal";
+import { MdArrowDropDown } from "react-icons/md";
 
 const AuthNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -245,8 +245,8 @@ const AuthNavbar = () => {
                         "U"}
                     </div>
                   )}
-                  <FiChevronDown
-                    className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
+                  <MdArrowDropDown
+                    className={`w-4 h-4 text-[#240457] transition-transform duration-200 ${isProfileOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 

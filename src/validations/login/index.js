@@ -16,3 +16,7 @@ export const signupSchema = object({
     .required("Confirm password is required")
     .oneOf([ref("password")], "Passwords do not match"),
 });
+
+export const forgotPasswordSchema = object({
+  email: string().email("Invalid email").required("Email is required"),
+})

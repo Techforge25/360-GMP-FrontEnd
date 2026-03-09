@@ -18,7 +18,7 @@ import { backendURL } from "@/constants";
 import api from "@/lib/axios";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { signupSchema } from "@/validations";
+import { signupSchema } from "@/validations/login";
 
 export default function SignupPage() {
   const router = useRouter();

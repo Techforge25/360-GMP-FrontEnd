@@ -1,9 +1,5 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import {
   Card,
   CardContent,
@@ -11,42 +7,9 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/Card";
-import api from "@/lib/axios";
+import ForgotPasswordForm from "@/components/forms/ForgotPasswordForm";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await api.post({
-        url: `/auth/forgotPassword`,
-        payload: { email },
-        enableSuccessMessage: false,
-        enableErrorMessage: false,
-        activateLoader: false,
-      });
-
-      if (res.success) {
-        router.push(
-          `/otp-verification?email=${encodeURIComponent(email)}&type=password-reset`,
-        );
-      } else {
-        setError(res.message || "Request failed");
-      }
-    } catch (err) {
-      setError(err.message || "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <Card className="w-full max-w-[320px] xs:max-w-[360px] sm:max-w-md lg:max-w-lg mx-auto border-none shadow-xl bg-surface-elevated">
       <CardHeader className="text-center pb-1 sm:pb-2 px-3 xs:px-4 sm:px-6 pt-4 xs:pt-6 sm:pt-8">
@@ -67,44 +30,7 @@ export default function ForgotPasswordPage() {
             Please Enter Your Registered Email Address
           </p>
         </div>
-
-        {error && (
-          <div className="p-2 xs:p-3 text-sm xs:text-sm sm:text-base text-red-500 bg-red-50 rounded-md text-center">
-            {error}
-          </div>
-        )}
-
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4 xs:space-y-5 sm:space-y-6"
-        >
-          <div className="space-y-1 xs:space-y-1.5 sm:space-y-2">
-            <label
-              htmlFor="email"
-              className="text-sm xs:text-sm sm:text-base font-medium text-text-primary"
-            >
-              Enter Your Email
-            </label>
-            <Input
-              id="email"
-              placeholder="info@gmail.com"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-surface border-border-light h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base"
-              required
-            />
-          </div>
-
-          <Button
-            type="submit"
-            isLoading={loading}
-            className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-sm xs:text-base sm:text-xl shadow-lg shadow-brand-primary/20"
-          >
-            Request OTP
-          </Button>
-        </form>
-
+        <ForgotPasswordForm />
         <div className="text-center text-sm xs:text-sm sm:text-base text-text-secondary">
           Take me back to{" "}
           <Link
