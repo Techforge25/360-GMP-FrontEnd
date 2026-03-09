@@ -13,16 +13,36 @@ export const socket = io("https://gmp-backend.techforgeinnovations.com", {
 
 // Connect socket
 export const connectSocket = () => {
-  if(socket.connected) return;
-  socket.connect();
+  try 
+  {
+    // Cleanup previous connection
+    if(socket.connected)
+    {
+      socket.removeAllListeners();
+      socket.disconnect();
+    }
+    
+    socket.connect();
+  } 
+  catch(error) 
+  {
+    console.log("Failed to connect socket", error.message);
+  }
 };
 
 // Disconnect socket
 export const disconnectSocket = () => {
-  if(socket.connected)
+  try 
   {
-    socket.removeAllListeners();
-    socket.disconnect();
+    if(socket.connected)
+    {
+      socket.removeAllListeners();
+      socket.disconnect();
+    }
+  } 
+  catch(error) 
+  {
+    console.log("Failed to disconnect socket", error.message);
   }
 };
 
