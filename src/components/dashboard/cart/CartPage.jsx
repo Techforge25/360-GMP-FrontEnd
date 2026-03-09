@@ -11,6 +11,7 @@ import {
 } from "react-icons/ri";
 import { useCart } from "@/context/CartContext";
 import productAPI from "@/services/productAPI";
+import moment from "moment";
 
 const CartPage = () => {
   const router = useRouter();
@@ -26,9 +27,9 @@ const CartPage = () => {
         const cachedProduct = productsCache[item.productId];
         return cachedProduct
           ? {
-              ...cachedProduct,
-              quantity: item.quantity,
-            }
+            ...cachedProduct,
+            quantity: item.quantity,
+          }
           : null;
       })
       .filter(Boolean);
@@ -194,9 +195,9 @@ const CartPage = () => {
                         •
                       </span>
                       <div className="flex items-center gap-2 text-sm sm:text-sm text-gray-600">
-                        <span>3 yrs</span>
+                        <span>{moment(product.businessId.foundedDate).fromNow()}</span>
                         <span className="text-gray-300">•</span>
-                        <span>Global Manufacturing</span>
+                        <span>{product.businessId.companyName}</span>
                       </div>
                     </div>
 

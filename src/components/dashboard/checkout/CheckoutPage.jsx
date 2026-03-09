@@ -18,18 +18,22 @@ const CheckoutPage = () => {
   const [productsCache, setProductsCache] = useState({});
   const [loading, setLoading] = useState(true);
   const [isPaid, setIsPaid] = useState(false);
+  const [checkQtyAvailability, setCheckQtyAvailability] = useState({
+    minOrderQty: 0,
+    availableStock: 0
+  })
 
   // Form State
-const [formData, setFormData] = useState({
-  country: "United State",
-  fullName: "",
-  phone1: "",
-  lineAddress1: "",           // ← ADD THIS
-  lineAddress2: "",           // ← ADD THIS
-  state: "",
-  zipCode: "",
-  isDefault: true,
-});
+  const [formData, setFormData] = useState({
+    country: "United State",
+    fullName: "",
+    phone1: "",
+    lineAddress1: "",           // ← ADD THIS
+    lineAddress2: "",           // ← ADD THIS
+    state: "",
+    zipCode: "",
+    isDefault: true,
+  });
 
   const [submitting, setSubmitting] = useState(false);
 
@@ -52,24 +56,21 @@ const [formData, setFormData] = useState({
 
   const handleSubmit = async () => {
     if (submitting) return;
-
-
     setSubmitting(true);
-
- try {
-  const res = await axios.post(`${API_URL}/orders/stripe`, {
-    shippingAddress: {
-      name: formData.fullName,
-      phone: formData.phone1,
-      lineAddress: [formData.lineAddress1, formData.lineAddress2 || ''],
-      province: formData.state,
-      postalCode: formData.zipCode,
-    },
-    items: cartItems, // [{ productId, quantity }]
-  }, { withCredentials:true });
-
+    try {
+      const res = await axios.post(`${API_URL}/orders/stripe`, {
+        shippingAddress: {
+          name: formData.fullName,
+          phone: formData.phone1,
+          lineAddress: [formData.lineAddress1, formData.lineAddress2 || ''],
+          province: formData.state,
+          postalCode: formData.zipCode,
+        },
+        items: cartItems, // [{ productId, quantity }]
+      }, { withCredentials: true });
       const data = await res.data.data;
-
+      console.log("success")
+      localStorage.removeItem("cart")
       if (data) {
         window.location.href = data; // redirect to Stripe Checkout
       } else {
@@ -151,7 +152,6 @@ const [formData, setFormData] = useState({
       return total + (product.pricePerUnit * product.quantity);
     }, 0);
   };
-
   const subtotal = calculateSubtotal();
   const shipping = 10;
   const shippingDiscount = 0;
@@ -330,34 +330,34 @@ const [formData, setFormData] = useState({
                         required
                       />
                     </div>
- <div>
-  <label className="block text-sm font-bold text-gray-900 mb-2">Phone</label>
-  <PhoneInput
-    international
-    defaultCountry="PK"  // Pakistan default
-    value={formData.phone1}
-    onChange={(value) => setFormData(prev => ({ ...prev, phone1: value || '' }))}
-    placeholder="Phone Number *"
-    
-    // Yeh props sahi hain aur library accept karti hai
-    numberInputProps={{
-      className: "flex-1 text-black px-4 py-3 text-sm focus:outline-none placeholder-gray-400"
-      // Yeh internal <input> pe jaayega – tumhara original input style
-    }}
-    
-    // Agar country select button ko style karna hai (flag + code wala part)
-    countrySelectProps={{
-      className: "bg-gray-50 border-r border-gray-200 px-3 py-3 text-sm text-gray-700 min-w-[70px] flex items-center justify-center hover:bg-gray-100 transition-colors"
-    }}
-    
-    // Overall container ko style karne ke liye (border, rounded, focus ring)
-    className="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#240457]"
-    
-    // Optional: aria label for accessibility
-    aria-label="Phone number with country code"
-  />
-  <p className="text-sm text-gray-400 mt-1">Only Used To Contact You For Delivery Updates</p>
-</div>
+                    <div>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">Phone</label>
+                      <PhoneInput
+                        international
+                        defaultCountry="PK"  // Pakistan default
+                        value={formData.phone1}
+                        onChange={(value) => setFormData(prev => ({ ...prev, phone1: value || '' }))}
+                        placeholder="Phone Number *"
+
+                        // Yeh props sahi hain aur library accept karti hai
+                        numberInputProps={{
+                          className: "flex-1 text-black px-4 py-3 text-sm focus:outline-none placeholder-gray-400"
+                          // Yeh internal <input> pe jaayega – tumhara original input style
+                        }}
+
+                        // Agar country select button ko style karna hai (flag + code wala part)
+                        countrySelectProps={{
+                          className: "bg-gray-50 border-r border-gray-200 px-3 py-3 text-sm text-gray-700 min-w-[70px] flex items-center justify-center hover:bg-gray-100 transition-colors"
+                        }}
+
+                        // Overall container ko style karne ke liye (border, rounded, focus ring)
+                        className="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#240457]"
+
+                        // Optional: aria label for accessibility
+                        aria-label="Phone number with country code"
+                      />
+                      <p className="text-sm text-gray-400 mt-1">Only Used To Contact You For Delivery Updates</p>
+                    </div>
                   </div>
 
                   {/* Line Address 1 + 2 */}
@@ -436,13 +436,13 @@ const [formData, setFormData] = useState({
 
               </div>
             </div>
-           <button
-            onClick={handleSubmit}
-            disabled={submitting || loading}
-            className="block mt-6 w-full text-center bg-[#240457] text-white py-3 rounded-lg font-medium text-base hover:bg-[#2a0b4d] transition-colors disabled:opacity-50"
-          >
-            {submitting ? "Processing..." : "Continue To Payment"}
-          </button>
+            <button
+              onClick={handleSubmit}
+              disabled={submitting || loading}
+              className="block mt-6 w-full text-center bg-[#240457] text-white py-3 rounded-lg font-medium text-base hover:bg-[#2a0b4d] transition-colors disabled:opacity-50"
+            >
+              {submitting ? "Processing..." : "Continue To Payment"}
+            </button>
           </div>
 
           {/* Right Column - Order Summary */}
