@@ -305,21 +305,18 @@ const OrderTrackingPage = ({ orderId }) => {
             />
             {/* Stepper Nodes */}
             {steps.map((step, index) => {
-              const isPast = index < activeStep;
-              const isActive = index === activeStep;
+              const isPast = index < activeStep || (index === steps.length - 1 && isFinalCompleted);
+              const isActive = index === activeStep && !isFinalCompleted;
               const isFuture = index > activeStep;
+
               return (
-                <div
-                  key={index}
-                  className="relative z-10 flex flex-col items-center cursor-pointer group w-24 sm:w-32"
-                // onClick={() => setActiveStep(index)}
-                >
+                <div key={index} className="relative z-10 flex flex-col items-center cursor-pointer group w-24 sm:w-32">
                   <div
                     className={`w-11 h-11 rounded-full flex items-center justify-center border-[3px] bg-white transition-colors duration-200
-                    ${isPast ? "border-[#139D4C]" : ""}
-                    ${isActive ? "border-transparent bg-[#5C24D2]" : ""}
-                    ${isFuture ? "border-gray-200 text-gray-400 group-hover:border-gray-300" : ""}
-                  `}
+          ${isPast ? "border-[#139D4C]" : ""}
+          ${isActive ? "border-transparent bg-[#5C24D2]" : ""}
+          ${isFuture ? "border-gray-200 text-gray-400 group-hover:border-gray-300" : ""}
+        `}
                   >
                     {/* Inner Content of Node */}
                     {isPast ? (
@@ -338,8 +335,8 @@ const OrderTrackingPage = ({ orderId }) => {
                   <div className="mt-3 text-center">
                     <p
                       className={`text-sm font-semibold transition-colors duration-200
-                      ${isPast || isActive ? "text-gray-900" : "text-gray-400"}
-                    `}
+            ${isPast || isActive ? "text-gray-900" : "text-gray-400"}
+          `}
                     >
                       {step.label}
                     </p>
