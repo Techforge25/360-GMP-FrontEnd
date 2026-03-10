@@ -61,7 +61,8 @@ const BusinessOrderDetailsPage = () => {
 
   // Listen for real time event
   useSocket("update-order-status", (data) => {
-    console.log("Order ID:", data);
+    setShowFinalCompletedUI(true)
+    setIsCompleted(true)
   });
 
   useEffect(() => {
