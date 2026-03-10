@@ -49,44 +49,42 @@ const OrderTrackingPage = ({ orderId }) => {
     });
 
     // Update steps array with dates
-    setSteps((prev) => {
-      const updated = [...prev];
+    const updated = [...prev];
 
-      switch (status) {
-        case "processing":
-        case "preparing":
-          updated[1].date = formattedDate; // Seller Preparing
-          setActiveStep(1);
-          break;
-        case "shipped":
-          updated[2].date = formattedDate; // Shipped
-          setActiveStep(2);
-          break;
-        case "delivered":
-          updated[3].date = formattedDate; // Delivered
-          setActiveStep(3);
-          break;
-        case "completed":
-          updated[4].date = formattedDate; // Completed
-          setActiveStep(4);
-          setIsFinalCompleted(true);
-          break;
-        default:
-          updated[0].date = formattedDate; // Fallback to Order Placed
-          setActiveStep(0);
-          break;
-      }
+    switch (status) {
+      case "processing":
+      case "preparing":
+        updated[1].date = formattedDate; // Seller Preparing
+        setActiveStep(1);
+        break;
+      case "shipped":
+        updated[2].date = formattedDate; // Shipped
+        setActiveStep(2);
+        break;
+      case "delivered":
+        updated[3].date = formattedDate; // Delivered
+        setActiveStep(3);
+        break;
+      case "completed":
+        updated[4].date = formattedDate; // Completed
+        setActiveStep(4);
+        setIsFinalCompleted(true);
+        break;
+      default:
+        updated[0].date = formattedDate; // Fallback to Order Placed
+        setActiveStep(0);
+        break;
+    }
 
-      return updated;
-    });
+    return updated;
 
-    // Update order state with new status & timestamp
-    setOrder((prev) => ({
-      ...prev,
-      status,
-      updatedAt: currentDate.toISOString(),
-      ...(status === "completed" ? { completedAt: currentDate.toISOString() } : {}),
-    }));
+    // // Update order state with new status & timestamp
+    // setOrder((prev) => ({
+    //   ...prev,
+    //   status,
+    //   updatedAt: currentDate.toISOString(),
+    //   ...(status === "completed" ? { completedAt: currentDate.toISOString() } : {}),
+    // }));
   });
 
   useEffect(() => {
