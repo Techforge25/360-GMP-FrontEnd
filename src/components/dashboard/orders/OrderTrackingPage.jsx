@@ -37,75 +37,72 @@ const OrderTrackingPage = ({ orderId }) => {
 
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+  useSocket("update-order-status", (data) => {
+    if (!data?.status) return;
+
+    const status = data.status.toLowerCase();
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+    // Reset all flags before updating
+    setIsPreparing(false);
+    setIsShipped(false);
+    setIsDelivered(false);
+    setIsFinalCompleted(false);
+
+    // Update steps array with dates
+    setSteps(prev => {
+      const updated = [...prev];
+
+      switch (status) {
+        case "processing":
+        case "preparing":
+          updated[1].date = formattedDate;
+          setActiveStep(1);
+          setIsPreparing(true);
+          break;
+        case "shipped":
+          updated[2].date = formattedDate;
+          setActiveStep(2);
+          setIsShipped(true);
+          break;
+        case "delivered":
+          updated[3].date = formattedDate;
+          setActiveStep(3);
+          setIsDelivered(true);
+          break;
+        case "completed":
+          updated[4].date = formattedDate;
+          setActiveStep(4);
+          setIsFinalCompleted(true);
+          break;
+        default:
+          // fallback for pending or unknown
+          updated[0].date = formattedDate;
+          setActiveStep(0);
+          break;
+      }
+
+      return updated;
+    });
+
+    setOrder(prev => ({
+      ...prev,
+      status: status,
+      updatedAt: currentDate.toISOString(),
+    }));
+  });
+
   useEffect(() => {
     if (!orderId) {
       setError("Order ID not found");
       setLoading(false);
       return;
     }
-
-    useSocket("update-order-status", (data) => {
-      if (!data?.status) return;
-
-      const status = data.status.toLowerCase();
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      });
-
-      // Reset all flags before updating
-      setIsPreparing(false);
-      setIsShipped(false);
-      setIsDelivered(false);
-      setIsFinalCompleted(false);
-      setShowFinalCompletedUI(false);
-
-      // Update steps array with dates
-      setSteps(prev => {
-        const updated = [...prev];
-
-        switch (status) {
-          case "processing":
-          case "preparing":
-            updated[1].date = formattedDate;
-            setActiveStep(1);
-            setIsPreparing(true);
-            break;
-          case "shipped":
-            updated[2].date = formattedDate;
-            setActiveStep(2);
-            setIsShipped(true);
-            break;
-          case "delivered":
-            updated[3].date = formattedDate;
-            setActiveStep(3);
-            setIsDelivered(true);
-            break;
-          case "completed":
-            updated[4].date = formattedDate;
-            setActiveStep(4);
-            setIsFinalCompleted(true);
-            setShowFinalCompletedUI(true);
-            break;
-          default:
-            // fallback for pending or unknown
-            updated[0].date = formattedDate;
-            setActiveStep(0);
-            break;
-        }
-
-        return updated;
-      });
-
-      setOrder(prev => ({
-        ...prev,
-        status: status,
-        updatedAt: currentDate.toISOString(),
-      }));
-    });
-
     const fetchOrder = async () => {
       try {
         const res = await axios.get(`${API_URL}/orders/${orderId}/view`, {
