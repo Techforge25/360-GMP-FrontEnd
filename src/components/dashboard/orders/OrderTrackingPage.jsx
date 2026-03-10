@@ -31,6 +31,7 @@ const OrderTrackingPage = ({ orderId }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [isFinalCompleted, setIsFinalCompleted] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false)
   const [cancelling, setCancelling] = useState(false);
 
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -41,6 +42,68 @@ const OrderTrackingPage = ({ orderId }) => {
       setLoading(false);
       return;
     }
+
+    useSocket("update-order-status", (data) => {
+      if (!data?.status) return;
+
+      const status = data.status.toLowerCase();
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+      // Reset all flags before updating
+      setIsPreparing(false);
+      setIsShipped(false);
+      setIsDelivered(false);
+      setIsFinalCompleted(false);
+      setShowFinalCompletedUI(false);
+
+      // Update steps array with dates
+      setSteps(prev => {
+        const updated = [...prev];
+
+        switch (status) {
+          case "processing":
+          case "preparing":
+            updated[1].date = formattedDate;
+            setActiveStep(1);
+            setIsPreparing(true);
+            break;
+          case "shipped":
+            updated[2].date = formattedDate;
+            setActiveStep(2);
+            setIsShipped(true);
+            break;
+          case "delivered":
+            updated[3].date = formattedDate;
+            setActiveStep(3);
+            setIsDelivered(true);
+            break;
+          case "completed":
+            updated[4].date = formattedDate;
+            setActiveStep(4);
+            setIsFinalCompleted(true);
+            setShowFinalCompletedUI(true);
+            break;
+          default:
+            // fallback for pending or unknown
+            updated[0].date = formattedDate;
+            setActiveStep(0);
+            break;
+        }
+
+        return updated;
+      });
+
+      setOrder(prev => ({
+        ...prev,
+        status: status,
+        updatedAt: currentDate.toISOString(),
+      }));
+    });
 
     const fetchOrder = async () => {
       try {
@@ -175,8 +238,7 @@ const OrderTrackingPage = ({ orderId }) => {
   };
 
   const handleUpdateCompletion = async () => {
-    setIsFinalCompleted(true)
-
+    setIsCompleting(false);
     try {
       const res = await api.patch({
         url: `/orders/${orderId}/complete`,
@@ -188,7 +250,8 @@ const OrderTrackingPage = ({ orderId }) => {
     } catch (err) {
       const errorMessage = err.message || "Error in Completing Order";
     } finally {
-      setLoading(false);
+      setIsCompleting(false);
+      setLoading(false)
     }
   }
 
@@ -557,8 +620,31 @@ const OrderTrackingPage = ({ orderId }) => {
                       }}
                       className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
                     >
-                      <FiCheck className="w-5 h-5" strokeWidth={2.5} />{" "}
-                      Completed
+                      {isCompleting ? (
+                        <svg
+                          className="animate-spin w-5 h-5 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          ></path>
+                        </svg>
+                      ) : (
+                        <FiCheck className="w-5 h-5" strokeWidth={2.5} />
+                      )}
+                      {isCompleting ? "Processing..." : "Completed"}
                     </button>
                   </div>
                 </div>
