@@ -14,6 +14,7 @@ import Link from "next/link";
 import { FaArrowRight, FaCheckCircle } from "react-icons/fa";
 
 export default function Home() {
+  
   return (
     <div className="min-h-screen bg-surface">
       <Navbar />

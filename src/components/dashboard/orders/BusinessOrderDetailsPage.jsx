@@ -62,7 +62,7 @@ const BusinessOrderDetailsPage = () => {
   // Listen for real time event
   useSocket("update-order-status", (data) => {
     console.log("Order ID:", data);
-  }, [order]);
+  });
 
   useEffect(() => {
     if (!orderId) {

@@ -16,10 +16,9 @@ const Navbar = () => {
     const isActive = pathname === href;
     return `
       relative inline-block text-md transition-colors duration-300
-      ${
-        isActive
-          ? "text-brand-primary after:scale-x-100"
-          : "text-text-secondary hover:text-brand-primary-light after:scale-x-0 hover:after:scale-x-100"
+      ${isActive
+        ? "text-brand-primary after:scale-x-100"
+        : "text-text-secondary hover:text-brand-primary-light after:scale-x-0 hover:after:scale-x-100"
       }
       after:content-['']
       after:absolute after:left-0 after:-bottom-1
@@ -105,55 +104,50 @@ const Navbar = () => {
           <div className="px-4 pt-2 pb-6 space-y-2">
             <Link
               href="/"
-              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${
-                pathname === "/"
+              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${pathname === "/"
                   ? "text-brand-primary bg-gray-50"
                   : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
-              }`}
+                }`}
               onClick={toggleMenu}
             >
               Home
             </Link>
             <Link
               href="/landing/about"
-              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${
-                pathname === "/landing/about"
+              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${pathname === "/landing/about"
                   ? "text-brand-primary bg-gray-50"
                   : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
-              }`}
+                }`}
               onClick={toggleMenu}
             >
               About
             </Link>
             <Link
               href="/landing/why-choose-us"
-              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${
-                pathname === "/landing/why-choose-us"
+              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${pathname === "/landing/why-choose-us"
                   ? "text-brand-primary bg-gray-50"
                   : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
-              }`}
+                }`}
               onClick={toggleMenu}
             >
               Why Choose Us
             </Link>
             <Link
               href="/landing/pricing"
-              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${
-                pathname === "/landing/pricing"
+              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${pathname === "/landing/pricing"
                   ? "text-brand-primary bg-gray-50"
                   : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
-              }`}
+                }`}
               onClick={toggleMenu}
             >
               Prices
             </Link>
             <Link
               href="/landing/contact-us"
-              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${
-                pathname === "/landing/contact-us"
+              className={`block px-3 py-2 rounded-md text-xl font-medium transition-colors ${pathname === "/landing/contact-us"
                   ? "text-brand-primary bg-gray-50"
                   : "text-text-secondary hover:text-brand-primary hover:bg-gray-50"
-              }`}
+                }`}
               onClick={toggleMenu}
             >
               Contact Us
