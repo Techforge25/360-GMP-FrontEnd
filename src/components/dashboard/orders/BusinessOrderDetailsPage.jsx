@@ -70,7 +70,7 @@ const BusinessOrderDetailsPage = () => {
     useSocket("update-order-status", useCallback(({ orderId, status }) => {
       console.log("Order ID:", orderId);
       console.log("Status ID:", status);      
-    }));
+    }, []));
 
     const fetchOrder = async () => {
       try {
