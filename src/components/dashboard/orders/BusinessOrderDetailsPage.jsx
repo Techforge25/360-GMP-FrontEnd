@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
@@ -25,6 +25,7 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import { MdVerified } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import { Link } from "lucide-react";
+import useSocket from "@/hooks/useSocket";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -64,6 +65,12 @@ const BusinessOrderDetailsPage = () => {
       setLoading(false);
       return;
     }
+
+    // Listen for real time event
+    useSocket("update-order-status", useCallback(({ orderId, status }) => {
+      console.log("Order ID:", orderId);
+      console.log("Status ID:", status);      
+    }));
 
     const fetchOrder = async () => {
       try {
