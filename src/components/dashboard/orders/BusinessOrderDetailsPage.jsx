@@ -59,6 +59,11 @@ const BusinessOrderDetailsPage = () => {
     { label: "Completed", date: "", icon: FiCheck },
   ]);
 
+  // Listen for real time event
+  useSocket("update-order-status", useCallback((data) => {
+    console.log("Order ID:", data);
+  }, [order]));
+
   useEffect(() => {
     if (!orderId) {
       setError("Order ID not found");
@@ -66,11 +71,6 @@ const BusinessOrderDetailsPage = () => {
       return;
     }
 
-    // Listen for real time event
-    useSocket("update-order-status", useCallback(({ orderId, status }) => {
-      console.log("Order ID:", orderId);
-      console.log("Status ID:", status);      
-    }, []));
 
     const fetchOrder = async () => {
       try {
@@ -82,9 +82,7 @@ const BusinessOrderDetailsPage = () => {
 
         const orderData = res.data.data;
         setOrder(orderData);
-
         const orderStatus = orderData.status?.toLowerCase() || "pending";
-
         const newSteps = [
           {
             label: "Order Placed",
@@ -99,8 +97,8 @@ const BusinessOrderDetailsPage = () => {
           },
           {
             label: "Prepare Shipment",
-            date: orderData.preparedAt || orderData.processingAt || orderData.updatedAt
-              ? new Date(orderData.preparedAt || orderData.processingAt || orderData.updatedAt).toLocaleDateString("en-US", {
+            date: orderData.createdAt
+              ? new Date(orderData.createdAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
                 year: "numeric",
@@ -144,7 +142,6 @@ const BusinessOrderDetailsPage = () => {
         ];
 
         setSteps(newSteps);
-
         setIsPreparing(orderStatus === "processing");
         setIsShipped(orderStatus === "shipped" || orderStatus.includes("ship"));
         setIsDelivered(orderStatus === "delivered" || orderStatus.includes("deliv") || orderStatus === "completed");
@@ -265,12 +262,12 @@ const BusinessOrderDetailsPage = () => {
             </h1>
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${showFinalCompletedUI || order?.status === "completed"
+                ? "bg-green-100 text-green-700"
+                : order?.status === "delivered"
                   ? "bg-green-100 text-green-700"
-                  : order?.status === "delivered"
-                    ? "bg-green-100 text-green-700"
-                    : order?.status === "shipped"
-                      ? "bg-purple-100 text-purple-700"
-                      : "bg-amber-100 text-amber-700"
+                  : order?.status === "shipped"
+                    ? "bg-purple-100 text-purple-700"
+                    : "bg-amber-100 text-amber-700"
                 }`}
             >
               {order?.status?.charAt(0).toUpperCase() + order?.status?.slice(1) || "Pending"}
@@ -294,7 +291,7 @@ const BusinessOrderDetailsPage = () => {
             ></div>
 
             {steps.map((step, index) => {
-              const isPast = index < activeStep;
+              const isPast = index < activeStep || (showFinalCompletedUI && index === activeStep);
               const isActive = index === activeStep;
               const isFuture = index > activeStep;
 
@@ -306,8 +303,7 @@ const BusinessOrderDetailsPage = () => {
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 transition-all duration-300 transform
                               ${isPast ? "bg-[#1DAF61] border-4 border-[#1DAF61]/30" : ""}
-                              ${isActive || isPreparingActive ? "bg-[#5C24D2] border-4 border-[#5C24D2]/30 shadow-xl scale-110 ring-4 ring-[#5C24D2]/20" : ""}
-                              ${isFuture ? "bg-white border-4 border-gray-200" : ""}
+${(isActive || isPreparingActive) && !showFinalCompletedUI ? "bg-[#5C24D2] border-4 border-[#5C24D2]/30 shadow-xl scale-110 ring-4 ring-[#5C24D2]/20" : ""}                              ${isFuture ? "bg-white border-4 border-gray-200" : ""}
                             `}
                   >
                     {isPast ? (
@@ -319,8 +315,11 @@ const BusinessOrderDetailsPage = () => {
 
                   <span
                     className={`text-sm font-semibold text-center
-                              ${isActive || isPreparingActive ? "text-[#5C24D2] font-bold" : isPast ? "text-[#1DAF61]" : "text-gray-500"}
-                            `}
+${(isActive || isPreparingActive) && !showFinalCompletedUI
+                        ? "text-[#5C24D2] font-bold"
+                        : isPast || showFinalCompletedUI
+                          ? "text-[#1DAF61]"
+                          : "text-gray-500"}                            `}
                   >
                     {step.label}
                   </span>
@@ -474,8 +473,8 @@ const BusinessOrderDetailsPage = () => {
                               }
                             }}
                             className={`flex-1 py-3.5 px-6 rounded-xl font-bold text-[15px] transition-colors shadow-sm flex items-center justify-center gap-2 ${isShipped
-                                ? "bg-[#1E0B4B] text-white hover:bg-[#140733]"
-                                : "bg-[#1DAF61] text-white hover:bg-[#189b53]"
+                              ? "bg-[#1E0B4B] text-white hover:bg-[#140733]"
+                              : "bg-[#1DAF61] text-white hover:bg-[#189b53]"
                               }`}
                           >
                             <TbTruckDelivery className="w-5 h-5" />
@@ -794,14 +793,14 @@ const BusinessOrderDetailsPage = () => {
                     <div className="flex items-center gap-4 relative">
                       <div
                         className={`w-4 h-4 rounded-full border-[3.5px] ${["delivered", "completed"].includes(order.status)
-                            ? "border-[#A855F7]"
-                            : "border-gray-200"
+                          ? "border-[#A855F7]"
+                          : "border-gray-200"
                           }`}
                       />
                       <span
                         className={`text-[15px] ${["delivered", "completed"].includes(order.status)
-                            ? "font-bold text-gray-900"
-                            : "font-semibold text-gray-400"
+                          ? "font-bold text-gray-900"
+                          : "font-semibold text-gray-400"
                           }`}
                       >
                         Delivered
@@ -812,14 +811,14 @@ const BusinessOrderDetailsPage = () => {
                     <div className="flex items-center gap-4 relative">
                       <div
                         className={`w-4 h-4 rounded-full border-[3.5px] ${order.status === "completed"
-                            ? "border-[#A855F7]"
-                            : "border-gray-200"
+                          ? "border-[#A855F7]"
+                          : "border-gray-200"
                           }`}
                       />
                       <span
                         className={`text-[15px] ${order.status === "completed"
-                            ? "font-bold text-gray-900"
-                            : "font-semibold text-gray-400"
+                          ? "font-bold text-gray-900"
+                          : "font-semibold text-gray-400"
                           }`}
                       >
                         Completed
@@ -1004,8 +1003,8 @@ const BusinessOrderDetailsPage = () => {
                         </span>
                         <span
                           className={`px-2.5 py-1 rounded-sm text-[11px] font-bold tracking-wide ${isDelivered || isCompleted
-                              ? "bg-[#EBFBF2] text-[#139D4C]"
-                              : "bg-[#EBF1FF] text-[#2962FF]"
+                            ? "bg-[#EBFBF2] text-[#139D4C]"
+                            : "bg-[#EBF1FF] text-[#2962FF]"
                             }`}
                         >
                           {isDelivered || isCompleted

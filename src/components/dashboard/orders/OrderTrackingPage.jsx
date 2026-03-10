@@ -21,6 +21,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import ConfirmModal from "@/components/modal/ConfirmModal";
+import api from "@/lib/axios";
 
 const OrderTrackingPage = ({ orderId }) => {
   const router = useRouter();
@@ -54,9 +55,10 @@ const OrderTrackingPage = ({ orderId }) => {
         const status = orderData.status?.toLowerCase() || "pending";
         let step = 0;
         if (status.includes("prepar")) step = 1;
-        else if (status.includes("ship")) step = 2;
-        else if (status.includes("deliv")) step = 3;
-        else if (status === "completed") step = 4;
+        else if (status.includes("process")) step = 2;
+        else if (status.includes("ship")) step = 3;
+        else if (status.includes("deliv")) step = 4;
+        else if (status.includes("comp")) step = 5;
 
         setActiveStep(step);
         setIsFinalCompleted(status === "completed");
@@ -95,17 +97,49 @@ const OrderTrackingPage = ({ orderId }) => {
       label: "Order Placed",
       date: order
         ? new Date(order.createdAt).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          })
-        : "Loading...",
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending",
       icon: HiOutlineDocumentText,
     },
-    { label: "Seller Preparing", date: "Pending", icon: BiCube },
-    { label: "Shipped", date: "Pending", icon: TbTruckDelivery },
-    { label: "Delivered", date: "Pending", icon: BsBoxSeam },
-    { label: "Completed", date: "Pending", icon: FiCheck },
+    {
+      label: "Seller Preparing", date: order
+        ? new Date(order.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: BiCube
+    },
+    {
+      label: "Shipped", date: order
+        ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: TbTruckDelivery
+    },
+    {
+      label: "Delivered", date: order
+        ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: BsBoxSeam
+    },
+    {
+      label: "Completed", date: order
+        ? new Date(order.completedAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: FiCheck
+    },
   ];
 
   if (loading) return <div>Loading...</div>;
@@ -139,6 +173,24 @@ const OrderTrackingPage = ({ orderId }) => {
       setCancelling(false);
     }
   };
+
+  const handleUpdateCompletion = async () => {
+    setIsFinalCompleted(true)
+
+    try {
+      const res = await api.patch({
+        url: `/orders/${orderId}/complete`,
+      });
+
+      if (res.success) {
+        toast.success("Order Completed successfully!");
+      }
+    } catch (err) {
+      const errorMessage = err.message || "Error in Completing Order";
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
@@ -186,21 +238,24 @@ const OrderTrackingPage = ({ orderId }) => {
 
             {/* Active Line (Calculated Width based on Active Step) */}
             <div
-              className="absolute top-[22px] left-0 h-[2px] bg-[#139D4C] transition-all duration-300 ease-in-out -z-0"
-              style={{ width: `${(activeStep / (steps.length - 1)) * 100}%` }}
-            ></div>
-
+              className="absolute top-5.5 left-0 h-[2px] bg-[#139D4C] transition-all duration-300 ease-in-out"
+              style={{
+                width: `${Math.min(
+                  (activeStep / (steps.length - 1)) * 100,
+                  100
+                )}%`
+              }}
+            />
             {/* Stepper Nodes */}
             {steps.map((step, index) => {
               const isPast = index < activeStep;
               const isActive = index === activeStep;
               const isFuture = index > activeStep;
-
               return (
                 <div
                   key={index}
                   className="relative z-10 flex flex-col items-center cursor-pointer group w-24 sm:w-32"
-                  // onClick={() => setActiveStep(index)}
+                // onClick={() => setActiveStep(index)}
                 >
                   <div
                     className={`w-11 h-11 rounded-full flex items-center justify-center border-[3px] bg-white transition-colors duration-200
@@ -497,7 +552,9 @@ const OrderTrackingPage = ({ orderId }) => {
 
                   <div className="mt-8">
                     <button
-                      onClick={() => setIsFinalCompleted(true)}
+                      onClick={() => {
+                        handleUpdateCompletion()
+                      }}
                       className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
                     >
                       <FiCheck className="w-5 h-5" strokeWidth={2.5} />{" "}
