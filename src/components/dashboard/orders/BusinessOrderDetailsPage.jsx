@@ -59,10 +59,59 @@ const BusinessOrderDetailsPage = () => {
     { label: "Completed", date: "", icon: FiCheck },
   ]);
 
+  const resetFlags = () => {
+    setIsPreparing(false);
+    setIsShipped(false);
+    setIsDelivered(false);
+    setIsCompleted(false);
+    setShowFinalCompletedUI(false);
+  };
+
   // Listen for real time event
   useSocket("update-order-status", (data) => {
-    setShowFinalCompletedUI(true)
-    setIsCompleted(true)
+    if (!data?.status) return;
+
+    resetFlags();
+    const status = data.status.toLowerCase();
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+    setSteps(prev => {
+      const updated = [...prev];
+
+      switch (status) {
+        case "processing":
+          updated[1].date = formattedDate;
+          setActiveStep(1);
+          setIsPreparing(true);
+          break;
+        case "shipped":
+          updated[2].date = formattedDate;
+          setActiveStep(2);
+          setIsShipped(true);
+          break;
+        case "delivered":
+          updated[3].date = formattedDate;
+          setActiveStep(3);
+          setIsDelivered(true);
+          break;
+        case "completed":
+          updated[4].date = formattedDate;
+          setActiveStep(4);
+          setIsCompleted(true);
+          setShowFinalCompletedUI(true);
+          break;
+        default:
+          updated[0].date = formattedDate;
+          setActiveStep(0);
+          break;
+      }
+      return updated;
+    });
   });
 
   useEffect(() => {
@@ -369,50 +418,108 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                       <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
                       {[
                         {
-                          date: "MAR 04, 2026,",
-                          time: "11:26 PM",
+                          date: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
                           title: "Order placed",
                           desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
-                          active: true
+                          active: true,
                         },
                         {
-                          date: "MAR 05, 2026,",
-                          time: "06:15 AM",
+                          date: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
                           title: "Prepare Shipment",
                           desc: "You Are Preparing The Parcel For Shipping",
-                          active: order?.status !== "pending"
+                          active: order?.status !== "pending",
                         },
                         {
-                          date: "MAR 05, 2026,",
-                          time: "06:15 PM",
+                          date: order?.tracking?.shippedAt
+                            ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.tracking?.shippedAt
+                            ? new Date(order.tracking.shippedAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
                           title: "Shipped",
                           desc: "Shipped The Item To Buyer Location Courier Service FedEx",
-                          active: ["shipped", "delivered", "completed"].includes(order?.status)
+                          active: ["shipped", "delivered", "completed"].includes(order?.status),
                         },
                         {
-                          date: "MAR 06, 2026,",
-                          time: "10:30 AM",
+                          date: order?.tracking?.deliveredAt
+                            ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.tracking?.deliveredAt
+                            ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
                           title: "Delivered",
                           desc: "Parcel Successfully Delivered To Buyer",
-                          active: ["delivered", "completed"].includes(order?.status)
+                          active: ["delivered", "completed"].includes(order?.status),
                         },
                         {
-                          date: "MAR 13, 2026,",  // ≈9 days after order
-                          time: "10:30 AM",
+                          date: "MAR 13, 2026",
+                          time: "10:30 AM", // if you have a real date, you can format it dynamically too
                           title: "Fund Released",
                           desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
-                          active: order?.status === "completed"
-                        }
+                          active: order?.status === "completed",
+                        },
                       ].map((item, idx) => (
                         <div key={idx} className="relative">
-                          <div className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? 'bg-[#5C24D2]' : 'bg-[#1E0B4B]'}`}></div>
+                          <div
+                            className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? "bg-[#5C24D2]" : "bg-[#1E0B4B]"
+                              }`}
+                          ></div>
+
                           <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
                             <span>{item.date}</span>
                             <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
                             <span>{item.time}</span>
                           </div>
-                          <h3 className="font-bold text-gray-900 text-[16px] mb-1">{item.title}</h3>
-                          <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">{item.desc}</p>
+
+                          <h3 className="font-bold text-gray-900 text-[16px] mb-1">
+                            {item.title}
+                          </h3>
+
+                          <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">
+                            {item.desc}
+                          </p>
                         </div>
                       ))}
                     </div>
