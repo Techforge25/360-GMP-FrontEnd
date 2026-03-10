@@ -48,41 +48,31 @@ const OrderTrackingPage = ({ orderId }) => {
       year: "numeric",
     });
 
-    // Reset all flags before updating
-    setIsPreparing(false);
-    setIsShipped(false);
-    setIsDelivered(false);
-    setIsFinalCompleted(false);
-
     // Update steps array with dates
-    setSteps(prev => {
+    setSteps((prev) => {
       const updated = [...prev];
 
       switch (status) {
         case "processing":
         case "preparing":
-          updated[1].date = formattedDate;
+          updated[1].date = formattedDate; // Seller Preparing
           setActiveStep(1);
-          setIsPreparing(true);
           break;
         case "shipped":
-          updated[2].date = formattedDate;
+          updated[2].date = formattedDate; // Shipped
           setActiveStep(2);
-          setIsShipped(true);
           break;
         case "delivered":
-          updated[3].date = formattedDate;
+          updated[3].date = formattedDate; // Delivered
           setActiveStep(3);
-          setIsDelivered(true);
           break;
         case "completed":
-          updated[4].date = formattedDate;
+          updated[4].date = formattedDate; // Completed
           setActiveStep(4);
           setIsFinalCompleted(true);
           break;
         default:
-          // fallback for pending or unknown
-          updated[0].date = formattedDate;
+          updated[0].date = formattedDate; // Fallback to Order Placed
           setActiveStep(0);
           break;
       }
@@ -90,10 +80,12 @@ const OrderTrackingPage = ({ orderId }) => {
       return updated;
     });
 
-    setOrder(prev => ({
+    // Update order state with new status & timestamp
+    setOrder((prev) => ({
       ...prev,
-      status: status,
+      status,
       updatedAt: currentDate.toISOString(),
+      ...(status === "completed" ? { completedAt: currentDate.toISOString() } : {}),
     }));
   });
 
