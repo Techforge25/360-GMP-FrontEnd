@@ -60,9 +60,9 @@ const BusinessOrderDetailsPage = () => {
   ]);
 
   // Listen for real time event
-  useSocket("update-order-status", useCallback((data) => {
+  useSocket("update-order-status", (data) => {
     console.log("Order ID:", data);
-  }, [order]));
+  }, [order]);
 
   useEffect(() => {
     if (!orderId) {
