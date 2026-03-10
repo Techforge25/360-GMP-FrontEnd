@@ -18,11 +18,6 @@ const CheckoutPage = () => {
   const [productsCache, setProductsCache] = useState({});
   const [loading, setLoading] = useState(true);
   const [isPaid, setIsPaid] = useState(false);
-  const [checkQtyAvailability, setCheckQtyAvailability] = useState({
-    minOrderQty: 0,
-    availableStock: 0
-  })
-
   // Form State
   const [formData, setFormData] = useState({
     country: "United State",
@@ -407,8 +402,10 @@ const CheckoutPage = () => {
                         type="text"
                         name="zipCode"
                         value={formData.zipCode}
-                        onChange={handleChange}
-                        placeholder="e.g 2000 *"
+                        onChange={(e) => {
+                          const numericValue = e.target.value.replace(/\D/g, "");
+                          setFormData({ ...formData, zipCode: numericValue });
+                        }} placeholder="e.g 2000 *"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                         required
                       />
