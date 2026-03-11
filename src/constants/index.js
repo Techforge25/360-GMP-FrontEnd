@@ -1,3 +1,7 @@
+import { BsTagsFill } from "react-icons/bs";
+import { CiCircleMore, CiWallet } from "react-icons/ci";
+import { GrApps } from "react-icons/gr";
+
 export const orders = [
   {
     id: "#39202",
@@ -147,3 +151,98 @@ export const getStatusColor = (status) => {
 };
 
 export const tags = ["Manufacturing", "Healthcare", "Technology", "Consulting"]
+
+export const cards = [
+  {
+    amount: "$12,450.00",
+    icon: "/assets/images/card-1.png",
+    text: "Net Balance",
+    text2: "Available for withdrawal"
+  },
+  {
+    amount: "$3,200.00",
+    icon: "/assets/images/card-2.png",
+    text: "Pending Settlements",
+    text2: "Held in escrow"
+  },
+  {
+    amount: "$156,500.00",
+    icon: "/assets/images/card-3.png",
+    text: "Total Sales Volume",
+    text2: "Total Sales Volume"
+  },
+  {
+    amount: "$3,200.00",
+    icon: "/assets/images/card-4.png",
+    text: "Platform & Service Deductions",
+    text2: "Total Fee"
+  },
+]
+
+export const transactions = [
+  { id: 1, description: "Sale - CNC Machined Component", date: "OCT 24, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$900.00", positive: true },
+  { id: 2, description: "Sale - High-Speed USB-C Data Cable", date: "OCT 22, 2025, 10:30 AM", method: "Visa **** 4321", status: "Pending", amount: "+$100.00", positive: true },
+  { id: 3, description: "Sale - Industrial Smart Watch", date: "OCT 27, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$600.00", positive: true },
+  { id: 4, description: "Sale - Noise Reduction Headset", date: "OCT 29, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$2,000.00", positive: true },
+  { id: 5, description: "Sale - High-Speed USB-C Data Cable", date: "OCT 22, 2025, 10:30 AM", method: "Visa **** 4321", status: "Pending", amount: "+$100.00", positive: true },
+  { id: 6, description: "Withdrawal To Bank Account ****4567", date: "OCT 22, 2025, 10:30 AM", method: "Bank Account ****4567", status: "Completed", amount: "-$100.00", positive: false },
+  { id: 7, description: "Sale - Industrial Smart Watch", date: "OCT 27, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$600.00", positive: true },
+  { id: 8, description: "Sale - Noise Reduction Headset", date: "OCT 29, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$2,000.00", positive: true },
+  { id: 9, description: "Sale - High-Speed USB-C Data Cable", date: "OCT 22, 2025, 10:30 AM", method: "Visa **** 4321", status: "Pending", amount: "+$100.00", positive: true },
+];
+
+export const businessWalletTabs = ["My Wallet",
+  "Earnings",
+  "Transactions"]
+
+export const paymentCards = [
+  {
+    logo: "/assets/images/mastercard.png",
+    cardName: "Mastercard · Default Method",
+    extraInfo: "globalmanufacturing@gmail.com",
+    btnText: "Disconnect"
+  },
+  {
+    logo: "/assets/images/visa.png",
+    cardName: "visa ****2125",
+    extraInfo: "Expiry · 12/27",
+    btnText: "Set as Default"
+  },
+]
+
+export const businessTableTabs = ["Description/Date", "Payment Method", "Status", "Amount"]
+
+export const events = [
+  { date: "OCT 25, 2025,", time: "10:30 AM", title: "Order Placed", description: "Order #ORD-2025-55 Crated." },
+  { date: "OCT 26, 2025,", time: "10:30 AM", title: "Escrow Period", description: "Fund Held Securely Pending Delivery." },
+  { date: "OCT 27, 2025,", time: "06:15 AM", title: "Delivery Confirmed", description: "Buyer Confirmed Receipt Of Goods." },
+  { date: "OCT 28, 2025,", time: "12:15 AM", title: "Funds Released", description: "Payout Successfully Transferred To Seller Wallet", isLast: true },
+];
+
+export const financialBreakdown = [
+  {
+    type: "Gross Sale Amount",
+    desc: "Total Order Value",
+    amount: "$900"
+  },
+  {
+    type: "Platform Fee",
+    desc: "Standard Service Rate (10%)",
+    amount: "-$100.00"
+  },
+  {
+    type: "VAT/TAX",
+    desc: "Applied Regional Tax (0%)",
+    amount: "..."
+  }
+]
+
+export const chartData = [
+  { day: "Mon", escrowVolume: 2200, netIncome: 3200 },
+  { day: "Tue", escrowVolume: 1200, netIncome: 3000 },
+  { day: "Wed", escrowVolume: 8900, netIncome: 2000 },
+  { day: "Thu", escrowVolume: 3200, netIncome: 2800 },
+  { day: "Fri", escrowVolume: 3500, netIncome: 2200 },
+  { day: "Sat", escrowVolume: 2800, netIncome: 2600 },
+  { day: "Sun", escrowVolume: 3400, netIncome: 3000 },
+];

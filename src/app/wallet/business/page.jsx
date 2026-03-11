@@ -1,5 +1,10 @@
-export default function BusinessWallet() {
+import BusinessWalletMainComp from "@/components/wallet/business/BusinessWalletMainComp";
+import { WalletProvider } from "@/context/WalletContext";
+
+export default function BusinessWalletPage() {
      return (
-          <div>asodasdksalk</div>
+          <WalletProvider>
+               <BusinessWalletMainComp />
+          </WalletProvider>
      )
 }

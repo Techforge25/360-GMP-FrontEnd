@@ -20,6 +20,7 @@
   --color-text-hint: #9ca3af;
   --color-text-inverse: #ffffff;
   --color-text-link: #2497cd;
+  --color-text-gray-more: #768299;
 
   /* ===== Borders ===== */
   --color-border-light: #d3d6de;
@@ -76,6 +77,72 @@
 :root {
   --background: #f2f2f2;
   --foreground: #ffffff;
+  /* ===== Brand ===== */
+  --color-brand-primary: #240457;
+  --color-brand-primary-light: #9747ff;
+  --color-brand-secondary: #e8eef6;
+
+  /* ===== Surfaces ===== */
+  --color-surface-DEFAULT: #ffffff;
+  --color-surface-muted: #f3f4f6;
+  --color-surface-elevated: #ffffff;
+  --color-scaffold-background: #e3e3e3;
+  --color-surface: #ffffff;
+
+  /* ===== Text ===== */
+  --color-text-primary: #010101;
+  --color-text-secondary: #556179;
+  --color-text-hint: #9ca3af;
+  --color-text-inverse: #ffffff;
+  --color-text-link: #2497cd;
+  --color-text-gray-more: #768299;
+
+  /* ===== Borders ===== */
+  --color-border-light: #d3d6de;
+  --color-border-dark: rgba(51, 51, 51, 0.6);
+
+  /* ===== Status / Accent ===== */
+  --color-accent-success: #22c55e;
+  --color-accent-warning: #facc15;
+  --color-accent-danger: #dc2626;
+  --color-accent-info: #0a78d2;
+
+  /* ===== Highlight Backgrounds ===== */
+  --color-highlight-yellow: #fef3c7;
+  --color-highlight-red: #fecaca;
+  --color-highlight-purple: #e9d5ff;
+  --color-highlight-blue: #d1defa;
+  --color-highlight-green: #dcfce7;
+
+  /* ===== Mislenous Colors ===== */
+  --color-teal: #14b8a6;
+  --color-brown: #92400e;
+  --color-green: #0ea443;
+  --color-purple-dark: #6b21a8;
+  --color-blue-dark: #3b82f6;
+
+  /* ===== Typography ===== */
+  --font-primary: "Open Sans", sans-serif;
+  --text-heading-size: 22px;
+  --text-heading-weight: 400;
+
+  /* ===== Shadows ===== */
+  --shadow-appBar: 0 4px 10px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* ===== Radius ===== */
+  --radius-input: 0.7rem;
+  --radius-card: 0.4rem;
+
+  /* ===== Sizes ===== */
+  --height-input: 2.75rem;
+  --spacing-100: 25rem;
+
+  /* ===== Breakpoints ===== */
+  --breakpoint-sm: 900px;
+  --breakpoint-md: 1024px;
+  --breakpoint-lg: 1366px;
+  --breakpoint-xl: 1440px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -93,6 +160,13 @@ body {
 
 input {
   color: black;
+}
+
+@layer components {
+  .businessWalletBanner {
+    background: radial-gradient(circle at center, #d1b9f1 0%, transparent 40%),
+      linear-gradient(90deg, #8e47f6, #a766fd);
+  }
 }
 
 @layer utilities {
@@ -119,6 +193,8 @@ input {
     animation: slideInRight 0.3s ease-out forwards;
   }
 }
+
+
 
 button {
   cursor: pointer;
