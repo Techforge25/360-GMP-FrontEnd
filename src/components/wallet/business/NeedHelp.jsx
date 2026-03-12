@@ -1,3 +1,4 @@
+import ContactSupport from "@/components/ui/ContactSupport";
 import Image from "next/image";
 
 export default function NeedHelp() {
@@ -12,9 +13,7 @@ export default function NeedHelp() {
                          <div className="text-xs text-gray-400">your payment information is processed securely. for any billing questions, please contact our support center.</div>
                     </div>
                </div>
-               <button className="bg-brand-primary text-white text-[13px] font-medium px-5 py-2.5 rounded-lg whitespace-nowrap hover:bg-gray-800 transition-colors cursor-pointer border-0">
-                    Contact Support
-               </button>
+               <ContactSupport />
           </section>
      )
 }

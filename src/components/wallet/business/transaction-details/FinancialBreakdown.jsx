@@ -3,7 +3,7 @@ import { DollarSign } from "lucide-react";
 
 export default function FinancialBreakdown() {
      return (
-          <div className="rounded-lg border border-border bg-card p-6">
+          <div className="rounded-lg border bg-white border-border bg-card p-6">
                <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center bg-[#f1f1f0] text-primary">
                          <DollarSign className="h-4 w-4" color="#240457" />

@@ -1,6 +1,6 @@
 export default function TransactionHeader() {
      return (
-          <div className="rounded-lg border border-border bg-card p-6">
+          <div className="rounded-lg border bg-white border-border bg-card p-6">
                <div className="flex items-start justify-between">
                     <div>
                          <h1 className="text-xl font-semibold text-black">Transaction @ TRX-99821</h1>

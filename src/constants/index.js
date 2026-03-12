@@ -143,6 +143,8 @@ export const getStatusColor = (status) => {
       return "bg-green-100 text-green-700";
     case "Cancelled":
       return "bg-red-100 text-red-700";
+    case "Failed":
+      return "bg-red-100 text-red-700";
     case "Canceled":
       return "bg-red-100 text-red-700";
     default:
@@ -152,7 +154,7 @@ export const getStatusColor = (status) => {
 
 export const tags = ["Manufacturing", "Healthcare", "Technology", "Consulting"]
 
-export const cards = [
+export const cardsBusiness = [
   {
     amount: "$12,450.00",
     icon: "/assets/images/card-1.png",
@@ -176,6 +178,21 @@ export const cards = [
     icon: "/assets/images/card-4.png",
     text: "Platform & Service Deductions",
     text2: "Total Fee"
+  },
+]
+
+export const cardsUser = [
+  {
+    amount: "$12,450.00",
+    icon: "/assets/images/card-1.png",
+    text: "Net Balance",
+    text2: "Available for withdrawal"
+  },
+  {
+    amount: "$3,200.00",
+    icon: "/assets/images/card-2.png",
+    text: "Pending Settlements",
+    text2: "Held in escrow"
   },
 ]
 
@@ -210,7 +227,6 @@ export const paymentCards = [
   },
 ]
 
-export const businessTableTabs = ["Description/Date", "Payment Method", "Status", "Amount"]
 
 export const events = [
   { date: "OCT 25, 2025,", time: "10:30 AM", title: "Order Placed", description: "Order #ORD-2025-55 Crated." },
@@ -246,3 +262,33 @@ export const chartData = [
   { day: "Sat", escrowVolume: 2800, netIncome: 2600 },
   { day: "Sun", escrowVolume: 3400, netIncome: 3000 },
 ];
+
+export const sortOptionsByTime = ["Last 3 Month", "Last 2 Weeks", "Last 1 Week"]
+
+export const tabsTransactionBusinessWallet = ["All", "Sale", "Withdrawal", "Refund"]
+
+export const tabsTransactionUserWallet = ["All", "Purchase", "Top-Ups", "Refund"]
+
+export const walletTransactionTabs = ["Description/Date", "Status", "Amount"]
+
+export const walletMyWalletsTabs = ["Description/Date", "Payment Method", "Status", "Amount"]
+
+export const walletEarningsTabs = ["Date", "Gross Amounts", "Fee (10%)", "Net Profit", "Status"]
+
+export const transactionsUserWallet = [
+  { id: 1, title: "Buy - High-Speed USB-C Data Cable", date: "TODAY, 14:23 AM", amount: "- $100.00", type: "debit", status: "Completed" },
+  { id: 2, title: "Service Subscription", date: "OCT 22, 2025, 9:30 AM", amount: "- $199.00", type: "debit", status: "Completed" },
+  { id: 3, title: "Buy - Earbuds", date: "OCT 22, 2025, 11:30 AM", amount: "- $99.00", type: "debit", status: "Failed" },
+  { id: 4, title: "Refund From Store-ABC", date: "OCT 22, 2025, 10:30 AM", amount: "+ $100.00", type: "credit", status: "Completed" },
+  { id: 5, title: "Refund From Store-ABC", date: "OCT 22, 2025, 10:30 AM", amount: "+ $100.00", type: "credit", status: "Completed" },
+];
+
+export const chartDataUser = [
+  { month: "Mon", marketplace: 800, refund: 200 },
+  { month: "Tue", marketplace: 1000, refund: 250 },
+  { month: "Wed", marketplace: 880, refund: 130 },
+  { month: "Thurs", marketplace: 1500, refund: 300 },
+  { month: "Fri", marketplace: 2000, refund: 280 },
+  { month: "Sat", marketplace: 2200, refund: 350 },
+  { month: "Sun", marketplace: 2200, refund: 350 },
+]

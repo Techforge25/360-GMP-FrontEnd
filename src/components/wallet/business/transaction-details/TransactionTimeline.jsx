@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function TransactionTimeline() {
      return (
-          <div className="rounded-lg border border-border bg-card p-6">
+          <div className="rounded-lg bg-white border border-border bg-card p-6">
                <div className="mb-4 flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-primary">
                          <Image src={"/assets/images/transaction-timeline.png"} width={32} height={30} alt="transaction" />

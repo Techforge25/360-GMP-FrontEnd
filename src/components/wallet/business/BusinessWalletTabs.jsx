@@ -1,8 +1,7 @@
 "use client";
 import { businessWalletTabs } from "@/constants/index";
 import { useWallet } from "@/context/WalletContext";
-import { FaCircleDollarToSlot } from "react-icons/fa6";
-import { FiDownload } from "react-icons/fi";
+import TabsRight from "@/components/wallet/business/TabsRight";
 
 export default function BusinessWalletTabs() {
      const { activeTabs, setActiveTabs } = useWallet();
@@ -22,24 +21,7 @@ export default function BusinessWalletTabs() {
                          </button>
                     ))}
                </div>
-               {activeTabs === "My Wallet" ? (
-                    <button className="flex items-center gap-2 bg-brand-primary text-white text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer border-0">
-                         Withdraw <FaCircleDollarToSlot />
-                    </button>
-               ) : (
-                    <>
-                         <div className="flex items-center gap-3">
-                              <p className="text-[#768299]">Last Updated: Oct24, 14:30PM</p>
-                              <button
-                                   className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-                              >
-                                   <span>Export Report</span>
-                                   <FiDownload className="w-4 h-4" />
-                              </button>
-                         </div>
-                    </>
-               )}
-
+               <TabsRight activeTabs={activeTabs} />
           </section>
      );
 }
