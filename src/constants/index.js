@@ -135,15 +135,27 @@ export const getStatusColor = (status) => {
   switch (status) {
     case "Awaiting Shipment":
       return "bg-amber-100 text-amber-700";
+    case "stripe":
+      return "bg-amber-100 text-amber-700";
+    case "held":
+      return "bg-amber-100 text-amber-700";
     case "In Transit":
       return "bg-purple-100 text-purple-700";
     case "Delivered":
       return "bg-green-100 text-green-700";
     case "Completed":
       return "bg-green-100 text-green-700";
+    case "completed":
+      return "bg-green-100 text-green-700";
+    case "released":
+      return "bg-green-100 text-green-700";
     case "Cancelled":
       return "bg-red-100 text-red-700";
+    case "refunded":
+      return "bg-red-100 text-red-700";
     case "Failed":
+      return "bg-red-100 text-red-700";
+    case "failed":
       return "bg-red-100 text-red-700";
     case "Canceled":
       return "bg-red-100 text-red-700";
@@ -265,9 +277,9 @@ export const chartData = [
 
 export const sortOptionsByTime = ["Last 3 Month", "Last 2 Weeks", "Last 1 Week"]
 
-export const tabsTransactionBusinessWallet = ["All", "Sale", "Withdrawal", "Refund"]
+export const tabsTransactionBusinessWallet = ["All", "Withdrawal"]
 
-export const tabsTransactionUserWallet = ["All", "Purchase", "Top-Ups", "Refund"]
+export const tabsTransactionUserWallet = ["All", "Refund"]
 
 export const walletTransactionTabs = ["Description/Date", "Status", "Amount"]
 

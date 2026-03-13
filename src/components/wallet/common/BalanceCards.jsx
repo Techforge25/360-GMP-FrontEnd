@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 export default function BalanceCards({ cards, card }) {
-     const cardGrid = card === "user" ? "grid grid-cols-2 gap-4 pb-4" : "grid grid-cols-4 gap-4 pb-4"
+     const cardGrid = card === "user" ? "grid grid-cols-2 gap-4 pb-4" : "grid grid-cols-1 md:grid-cols-4 gap-4 pb-4"
      return (
           <div className={cardGrid}>
                {cards?.map((card, index) => {

@@ -25,6 +25,7 @@ const CartPage = () => {
     return cartItems
       .map((item) => {
         const cachedProduct = productsCache[item.productId];
+        console.log(cachedProduct, "cahced oridyct")
         return cachedProduct
           ? {
             ...cachedProduct,
@@ -147,6 +148,8 @@ const CartPage = () => {
       </div>
     );
   }
+
+  console.log(products, "productss")
 
   return (
     <div className="min-h-screen bg-gray-50 pb-12">

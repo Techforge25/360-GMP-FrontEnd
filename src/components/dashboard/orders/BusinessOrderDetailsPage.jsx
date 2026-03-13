@@ -387,7 +387,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
         </div>
 
         {/* Main Content Grid */}
-        {isCancelled ? (
+        {isCancelled || order?.status === "cancelled" ? (
           <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-2xl shadow-lg border border-gray-200 text-center">
             <div className="flex flex-col items-center space-y-4">
               <svg
@@ -416,8 +416,8 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
               </p>
 
               {/* Optional Button */}
-              <button className="mt-4 px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition">
-                Contact Support
+              <button className="mt-4 px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition" onClick={() => router.push("/dashboard/business/orders")}>
+                Back To Orders
               </button>
             </div>
           </div>

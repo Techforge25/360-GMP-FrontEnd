@@ -48,6 +48,17 @@ class WalletBusinessAPI {
           });
      }
 
+     // get single transaction details
+     async getSingleTransactionDetails(orderId) {
+          return await api.get({
+               url: `/orders/${orderId}/view`,
+               activateLoader: true,
+               enableSuccessMessage: false,
+               enableErrorMessage: true,
+               withCredentials: true,
+          });
+     }
+
      // get withdrawals earning
      async getWithdrawalsEarning(params = {}) {
           const url = "/wallet/business/withdrawals"

@@ -2,17 +2,17 @@
 import AuthNavbar from "@/components/dashboard/AuthNavbar";
 import BusinessWalletTabs from "@/components/wallet/business/BusinessWalletTabs";
 import NeedHelp from "@/components/wallet/business/NeedHelp";
-import SavePaymentMethod from "@/components/wallet/business/SavePaymentMethod";
 import BalanceCards from "@/components/wallet/common/BalanceCards";
-import Tables from "@/components/wallet/common/Tables";
+import Tables from "@/components/wallet/business/TablesBusiness";
 import WalletBanner from "@/components/wallet/common/WalletBanner";
 import Chart from "@/components/wallet/business/Chart";
 import { useWallet } from "@/context/WalletContext";
-import { cardsBusiness, walletMyWalletsTabs, walletTransactionTabs, walletEarningsTabs } from "@/constants/index";
+import { walletMyWalletsTabs, walletTransactionTabs, walletEarningsTabs } from "@/constants/index";
 import walletBusinessAPI from "@/services/walletBusinessAPI";
 import { useEffect, useState } from "react";
 import { getAnalytics } from "@/helpers/wallet";
 import { useTablesData } from "@/hooks/useTablesData";
+import TablesBusiness from "@/components/wallet/business/TablesBusiness";
 
 export default function BusinessWalletMainComp() {
      const { activeTabs } = useWallet()
@@ -42,11 +42,11 @@ export default function BusinessWalletMainComp() {
                     )}
                     {activeTabs === "Earnings" && (
                          <>
-                              <BalanceCards cards={cardsBusiness} card="business" />
+                              <BalanceCards cards={analytics} card="business" />
                               <Chart />
                          </>
                     )}
-                    <Tables tableData={tablesData} tablesTabHeader={tablesTabHeader} />
+                    <TablesBusiness tableData={tablesData} tablesTabHeader={tablesTabHeader} />
                     {activeTabs === "My Wallet" && <NeedHelp />}
                </div>
           </>

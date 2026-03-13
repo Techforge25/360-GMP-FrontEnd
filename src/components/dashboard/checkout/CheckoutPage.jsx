@@ -48,6 +48,8 @@ const CheckoutPage = () => {
   //   return;
   // }
 
+  console.log(cartItems, "cardssss")
+
 
   const handleSubmit = async () => {
     if (submitting) return;

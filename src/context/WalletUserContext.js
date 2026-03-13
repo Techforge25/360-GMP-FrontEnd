@@ -7,12 +7,12 @@ export function WalletUserProvider({ children }) {
      const [activeTabs, setActiveTabs] = useState("Welcome Back");
 
      return (
-          <WalletUserContext.Provider value={{ activeTabs, setActiveTabs }}>
+          <WalletUserContext.Provider value={{ activeTabs, setActiveTabs, setTransactionTab, transactionTab }}>
                {children}
           </WalletUserContext.Provider>
      );
 }
 
-export function useWallet() {
+export function useWalletUser() {
      return useContext(WalletUserContext);
 }

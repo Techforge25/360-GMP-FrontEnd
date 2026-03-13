@@ -1,7 +1,6 @@
 "use client"
 import AuthNavbar from "@/components/dashboard/AuthNavbar";
 import FundAddCard from "@/components/wallet/user/FundAddCard";
-import PaymentSelectionMethod from "@/components/wallet/user/PaymentSelectionMethod";
 
 function ChevronRightIcon() {
      return (
@@ -28,9 +27,8 @@ export default function AddFund() {
                          </div>
                     </div>
                     <FundAddCard />
-
                     {/* Payment Method Selection */}
-                    <PaymentSelectionMethod />
+                    {/* <PaymentSelectionMethod /> */}
                </div>
           </div>
      );

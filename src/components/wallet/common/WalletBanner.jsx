@@ -3,25 +3,19 @@ import { usePathname } from "next/navigation"
 
 export default function WalletBanner({ activeTabs }) {
      const pathname = usePathname()
-     const generateBannerBg = pathname === "/wallet/business" ? "relative h-[186px] flex items-center justify-center overflow-hidden bg-gradient-to-r from-[#185ADB] to-[#240457]" : "relative h-[186px] flex items-center justify-center overflow-hidden bg-gradient-to-tr from-[#41099A] to-[#A968FF]"
+     const generateBannerBg = pathname === "/wallet/business" ? "relative h-[186px] flex items-center justify-center overflow-hidden bg-gradient-to-tr from-[#41099A] to-[#A968FF]" : "relative h-[186px] flex items-center justify-center overflow-hidden bg-gradient-to-r from-[#185ADB] to-[#240457]"
      return (
           <section className="w-full">
-               {/* Header Label */}
                <div className="bg-gray-50 px-8 py-2.5">
-                    {pathname === "/wallet/user" && (
+                    {pathname === "/wallet/user" || pathname === "/wallet/business" && (
                          <span className="text-[13px] text-gray-500">My Wallet</span>
                     )}
                     {pathname === "/wallet/user/view-all-transactions" && (
                          <span className="text-[13px] text-gray-500">My Wallet &gt; <span className="text-brand-primary">Transactions</span></span>
                     )}
-                    {pathname !== "/wallet/user" || pathname !== "/wallet/user/view-all-transactions" && (
-                         <span className="text-[13px] text-gray-500">{activeTabs}</span>
-                    )}
                </div>
 
-               {/* Main Banner Container */}
                <div className={generateBannerBg}>
-
                     {/* Topographic Background Overlay */}
                     <div
                          className="absolute inset-0 opacity-10 pointer-events-none"

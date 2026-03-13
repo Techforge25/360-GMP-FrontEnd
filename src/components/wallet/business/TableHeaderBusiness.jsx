@@ -3,17 +3,16 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { FiDownload } from "react-icons/fi";
 
-export default function TablesHeader({ tablesCommon }) {
+export default function TablesHeaderBusiness({ tablesCommon }) {
      const [activeTab, setActiveTab] = useState("All");
-     const pathname = usePathname()
      const { activeTabs } = useWallet()
-     const recentTransactionsCond = activeTabs === "My Wallet" && pathname !== "/wallet/user/view-all-transactions"
-     const detailedEarningTableCond = activeTabs === "Earnings" && pathname !== "/wallet/user/view-all-transactions"
-     const transactionCond = activeTabs === "Transactions" && pathname === "/wallet/business" || pathname === "/wallet/user/view-all-transactions"
+     const myWalletCond = activeTabs === "My Wallet"
+     const earningsCond = activeTabs === "Earnings"
+     const transactionCond = activeTabs === "Transactions"
      return (
           <div className="w-full bg-white px-6 py-5 font-sans">
                {
-                    recentTransactionsCond ? (
+                    myWalletCond ? (
                          <>
                               <div className="flex items-start justify-between">
                                    <div>
@@ -44,7 +43,7 @@ export default function TablesHeader({ tablesCommon }) {
                                    </button>
                               </div>
                          </>
-                    ) : detailedEarningTableCond ? (
+                    ) : earningsCond ? (
                          <div className="flex items-start justify-between">
                               <div>
                                    <h1 className="text-lg font-bold text-black leading-tight">
@@ -63,20 +62,6 @@ export default function TablesHeader({ tablesCommon }) {
                                              A Complete History Of Your Business Payments And Withdrawals.
                                         </p>
                                    </div>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                   {tablesCommon.map((tab) => (
-                                        <button
-                                             key={tab}
-                                             onClick={() => setActiveTab(tab)}
-                                             className={`px-4 py-3 text-md rounded-lg transition-colors ${activeTab === tab
-                                                  ? "bg-brand-primary text-primary-foreground"
-                                                  : "text-[#444953] hover:text-foreground"
-                                                  }`}
-                                        >
-                                             {tab}
-                                        </button>
-                                   ))}
                               </div>
                          </>
                     ) : null

@@ -42,6 +42,7 @@ export const getHeaderIconLinks = (role) => {
 };
 
 export const getProfileMenuLinks = (role) => {
+  console.log(role, "roled")
   const prefix = getRolePrefix(role);
   const links = [
     {
@@ -53,7 +54,7 @@ export const getProfileMenuLinks = (role) => {
     },
     {
       label: "Wallet",
-      href: `${prefix}/wallet`,
+      href: role === "business" ? "/wallet/business" : "/wallet/user",
       icon: FiCreditCard,
       mobileIconClassName:
         "bg-gradient-to-r from-purple-500 to-purple-600",

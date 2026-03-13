@@ -11,8 +11,9 @@ import {
      ResponsiveContainer,
 } from "recharts";
 import { ChevronDown } from "lucide-react";
-import { useState } from "react";
-import { chartData } from "@/constants/index";
+import { useEffect, useState } from "react";
+import walletBusinessAPI from "@/services/walletBusinessAPI";
+import { getFormattedChartData } from "@/helpers/wallet";
 
 const formatYAxis = (value) => {
      if (value >= 1000) return `$${value / 1000}k`;
@@ -22,14 +23,26 @@ const formatYAxis = (value) => {
 const CustomTooltip = ({ active, payload, label }) => {
      if (!active || !payload?.length) return null;
 
+     const escrow = payload.find(p => p.dataKey === "escrowVolume");
+     const income = payload.find(p => p.dataKey === "netIncome");
+
      return (
           <div className="rounded-lg border border-border bg-white px-4 py-3 shadow-md">
-               <p className="mb-1 text-sm font-medium text-[#556179]">{label}</p>
-               {payload.map((entry, index) => (
-                    <p key={index} className="text-sm" style={{ color: entry.color }}>
-                         {entry.name} : {entry.value}
+               <p className="mb-1 text-sm font-medium text-[#556179]">
+                    {label}
+               </p>
+
+               {escrow && (
+                    <p className="text-sm text-blue-600">
+                         Escrow Volume : ${escrow.value}
                     </p>
-               ))}
+               )}
+
+               {income && (
+                    <p className="text-sm text-black">
+                         Net Income : ${income.value}
+                    </p>
+               )}
           </div>
      );
 };
@@ -53,6 +66,17 @@ const CustomLegend = ({ payload }) => {
 
 export default function Chart() {
      const [sortBy, setSortBy] = useState("Last 7 Days");
+     const [chartData, setChartData] = useState([])
+
+     useEffect(() => {
+          const fetchFinancialPerformanceChartData = async () => {
+               const chart = await walletBusinessAPI.getFinancialPerformance()
+               const getChartData = getFormattedChartData(chart.data)
+               setChartData(getChartData)
+
+          }
+          fetchFinancialPerformanceChartData()
+     }, [])
 
      return (
           <div className="rounded-xl border border-border bg-card p-6 mb-6">
@@ -91,36 +115,16 @@ export default function Chart() {
                                    tickLine={false}
                                    tickFormatter={formatYAxis}
                                    tick={{ fontSize: 13, fill: "#556179" }}
-                                   domain={[0, 10000]}
                                    ticks={[0, 2500, 5000, 7500, 10000]}
                               />
                               <Tooltip content={<CustomTooltip />} />
                               <Legend content={<CustomLegend />} />
                               <Bar
-                                   dataKey="escrowVolume"
+                                   dataKey="value"
                                    name="Escrow Volume"
                                    fill="hsl(225, 100%, 55%)"
                                    radius={[4, 4, 0, 0]}
                                    barSize={28}
-                              />
-                              <Line
-                                   dataKey="netIncome"
-                                   name="Net Income"
-                                   type="monotone"
-                                   stroke="black"
-                                   strokeWidth={2}
-                                   dot={{
-                                        r: 5,
-                                        fill: "hsl(var(--card))",
-                                        stroke: "hsl(var(--foreground))",
-                                        strokeWidth: 2,
-                                   }}
-                                   activeDot={{
-                                        r: 6,
-                                        fill: "hsl(var(--card))",
-                                        stroke: "hsl(var(--foreground))",
-                                        strokeWidth: 2,
-                                   }}
                               />
                          </ComposedChart>
                     </ResponsiveContainer>
