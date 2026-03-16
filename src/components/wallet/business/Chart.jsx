@@ -79,7 +79,7 @@ export default function Chart() {
      }, [])
 
      return (
-          <div className="rounded-xl border border-border bg-card p-6 mb-6">
+          <div className="rounded-xl bg-white border border-border bg-card p-6 mb-6">
                {/* Header */}
                <div className="mb-6 flex items-center justify-between">
                     <h2 className="text-lg font-semibold text-black">

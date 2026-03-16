@@ -23,6 +23,7 @@ import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import api from "@/lib/axios";
 import useSocket from "@/hooks/useSocket";
+import { getStatusColor } from "@/constants/index";
 
 const OrderTrackingPage = ({ orderId }) => {
   const router = useRouter();
@@ -37,13 +38,11 @@ const OrderTrackingPage = ({ orderId }) => {
   const [steps, setSteps] = useState([
     {
       label: "Order Placed",
-      date: order
-        ? new Date(order.createdAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-        : "Pending",
+      date: new Date(order?.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }) ?? "Pending",
       icon: HiOutlineDocumentText,
     },
     {
@@ -112,8 +111,9 @@ const OrderTrackingPage = ({ orderId }) => {
 
     // Update steps dynamically
     setSteps((prevSteps) => {
+      console.log(prevSteps, "prefios steps")
       const updated = [...prevSteps];
-
+      console.log(status, "status of order")
       switch (status) {
         case "processing":
         case "preparing":
@@ -219,7 +219,7 @@ const OrderTrackingPage = ({ orderId }) => {
 
       if (res.data.success) {
         toast.success("Order cancelled successfully!");
-        router.push("/dashboard/user/checkout");
+        router.push("/dashboard/user/marketplace");
       } else {
         toast.error(res.data.message || "Failed to cancel");
       }
@@ -249,6 +249,8 @@ const OrderTrackingPage = ({ orderId }) => {
     }
   }
 
+  console.log(steps, "order data")
+
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
       {/* Top Header */}
@@ -266,8 +268,8 @@ const OrderTrackingPage = ({ orderId }) => {
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 Order# {order?._id || orderId || "N/A"}{" "}
               </h1>
-              <span className="bg-[#EBF3FE] text-[#2F73F5] text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
-                Escrow Secured
+              <span className={`${getStatusColor(order?.status)} text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1`}>
+                {order?.status}
               </span>
             </div>
             <p className="text-gray-500 text-sm">
@@ -349,662 +351,721 @@ const OrderTrackingPage = ({ orderId }) => {
         </div>
 
         {/* Dynamic Content Grid */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Column (Changes based on activeStep) */}
-          <div className="flex-1 space-y-6">
-            {/* Items Ordered Card (Always shows) */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
-                Items Ordered
-              </h2>
-              <div className="p-6">
-                {order?.items.map((item) => {
-                  const product = order?.products.find(
-                    (p) => p._id === item.productId,
-                  );
+        {order?.status === "cancelled" ? (
+          <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-2xl shadow-lg border border-gray-200 text-center">
+            <div className="flex flex-col items-center space-y-4">
+              <svg
+                className="w-16 h-16 text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
 
-                  return (
-                    <div
-                      key={item.productId}
-                      className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm"
-                    >
+              {/* Heading */}
+              <h2 className="text-2xl font-bold text-gray-900">
+                Order Cancelled
+              </h2>
+
+              {/* Message */}
+              <p className="text-gray-600 text-base">
+                You have cancelled this order.
+              </p>
+
+              {/* Optional Button */}
+              <button className="mt-4 px-6 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition" onClick={() => router.push("/dashboard/user/orders")}>
+                Back To Orders
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Left Column (Changes based on activeStep) */}
+            <div className="flex-1 space-y-6">
+              {/* Items Ordered Card (Always shows) */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+                  Items Ordered
+                </h2>
+                <div className="p-6">
+                  {order?.items.map((item) => {
+                    const product = order?.products.find(
+                      (p) => p._id === item.productId,
+                    );
+
+                    return (
+                      <div
+                        key={item.productId}
+                        className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
+                            <img
+                              src={
+                                product?.image ||
+                                "https://placehold.co/100x100?text=No+Image"
+                              }
+                              alt={product?.title || "Item"}
+                              className="w-12 h-12 object-contain"
+                              onError={(e) => {
+                                e.target.src =
+                                  "https://placehold.co/100x100?text=No+Image";
+                              }}
+                            />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">
+                              {product?.title || "Unknown Product"}
+                            </h3>
+                            <p className="text-gray-500 text-sm mt-0.5">
+                              Quantity: {item.quantity}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="font-bold text-gray-900 text-lg">
+                          ${item.priceAtPurchase * item.quantity}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="space-y-6">
+                {/* Timeline Card */}
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="bg-[#FAF9FF] p-2 rounded-lg">
+                      <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
+                    </div>
+                    <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
+                  </div>
+                  <div className="p-6">
+                    <div className="relative pl-8 space-y-8 pb-4">
+                      <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
+                      {[
+                        {
+                          date: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Order placed",
+                          desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
+                          active: true,
+                        },
+                        {
+                          date: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Prepare Shipment",
+                          desc: "You Are Preparing The Parcel For Shipping",
+                          active: order?.status !== "pending",
+                        },
+                        {
+                          date: order?.tracking?.shippedAt
+                            ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.tracking?.shippedAt
+                            ? new Date(order.tracking.shippedAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Shipped",
+                          desc: "Shipped The Item To Buyer Location Courier Service FedEx",
+                          active: ["shipped", "delivered", "completed"].includes(order?.status),
+                        },
+                        {
+                          date: order?.tracking?.deliveredAt
+                            ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.tracking?.deliveredAt
+                            ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Delivered",
+                          desc: "Parcel Successfully Delivered To Buyer",
+                          active: ["delivered", "completed"].includes(order?.status),
+                        },
+                        {
+                          date: "MAR 13, 2026",
+                          time: "10:30 AM", // if you have a real date, you can format it dynamically too
+                          title: "Fund Released",
+                          desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
+                          active: order?.status === "completed",
+                        },
+                      ].map((item, idx) => (
+                        <div key={idx} className="relative">
+                          <div
+                            className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? "bg-[#5C24D2]" : "bg-[#1E0B4B]"
+                              }`}
+                          ></div>
+
+                          <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
+                            <span>{item.date}</span>
+                            <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
+                            <span>{item.time}</span>
+                          </div>
+
+                          <h3 className="font-bold text-gray-900 text-[16px] mb-1">
+                            {item.title}
+                          </h3>
+
+                          <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">
+                            {item.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dynamic Card (Order Placed vs Seller Preparing) */}
+              {activeStep === 0 && order?.businessProfile && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+                    Seller Information
+                  </h2>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm">
                       <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-gray-50 border border-gray-100 rounded-lg flex items-center justify-center overflow-hidden shrink-0">
-                          <img
-                            src={
-                              product?.image ||
-                              "https://placehold.co/100x100?text=No+Image"
-                            }
-                            alt={product?.title || "Item"}
-                            className="w-12 h-12 object-contain"
-                            onError={(e) => {
-                              e.target.src =
-                                "https://placehold.co/100x100?text=No+Image";
-                            }}
-                          />
+                        <div className="w-14 h-14 bg-[#7A40F2] rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0">
+                          {order?.businessProfile.companyName?.charAt(0) || "S"}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900">
-                            {product?.title || "Unknown Product"}
+                          <h3 className="font-bold text-gray-900 text-lg">
+                            {order?.businessProfile.companyName ||
+                              "Unknown Seller"}
                           </h3>
                           <p className="text-gray-500 text-sm mt-0.5">
-                            Quantity: {item.quantity}
+                            {/* Optional: You can dynamically fetch rating or sales if you have it */}
+                            {order?.businessProfile.rating
+                              ? `${order?.businessProfile.rating}/5 Rating (${order?.businessProfile.sales} sales)`
+                              : "No rating available"}
                           </p>
                         </div>
                       </div>
-                      <div className="font-bold text-gray-900 text-lg">
-                        ${item.priceAtPurchase * item.quantity}
-                      </div>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="space-y-6">
-              {/* Timeline Card */}
-              {/* Timeline Card */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                  <div className="bg-[#FAF9FF] p-2 rounded-lg">
-                    <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
                   </div>
-                  <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
                 </div>
-                <div className="p-6">
-                  <div className="relative pl-8 space-y-8 pb-4">
-                    <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
-                    {[
-                      {
-                        date: order?.createdAt
-                          ? new Date(order.createdAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })
-                          : "Pending",
-                        time: order?.createdAt
-                          ? new Date(order.createdAt).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })
-                          : "Pending",
-                        title: "Order placed",
-                        desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
-                        active: true,
-                      },
-                      {
-                        date: order?.createdAt
-                          ? new Date(order.createdAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })
-                          : "Pending",
-                        time: order?.createdAt
-                          ? new Date(order.createdAt).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })
-                          : "Pending",
-                        title: "Prepare Shipment",
-                        desc: "You Are Preparing The Parcel For Shipping",
-                        active: order?.status !== "pending",
-                      },
-                      {
-                        date: order?.tracking?.shippedAt
-                          ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })
-                          : "Pending",
-                        time: order?.tracking?.shippedAt
-                          ? new Date(order.tracking.shippedAt).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })
-                          : "Pending",
-                        title: "Shipped",
-                        desc: "Shipped The Item To Buyer Location Courier Service FedEx",
-                        active: ["shipped", "delivered", "completed"].includes(order?.status),
-                      },
-                      {
-                        date: order?.tracking?.deliveredAt
-                          ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                            year: "numeric",
-                          })
-                          : "Pending",
-                        time: order?.tracking?.deliveredAt
-                          ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          })
-                          : "Pending",
-                        title: "Delivered",
-                        desc: "Parcel Successfully Delivered To Buyer",
-                        active: ["delivered", "completed"].includes(order?.status),
-                      },
-                      {
-                        date: "MAR 13, 2026",
-                        time: "10:30 AM", // if you have a real date, you can format it dynamically too
-                        title: "Fund Released",
-                        desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
-                        active: order?.status === "completed",
-                      },
-                    ].map((item, idx) => (
-                      <div key={idx} className="relative">
-                        <div
-                          className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? "bg-[#5C24D2]" : "bg-[#1E0B4B]"
-                            }`}
-                        ></div>
+              )}
 
-                        <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
-                          <span>{item.date}</span>
-                          <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
-                          <span>{item.time}</span>
+              {activeStep === 1 && (
+                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <h2 className="px-6 py-4 font-semibold text-gray-900 text-xl">
+                    Seller is preparing your order
+                  </h2>
+                  <div className="flex items-center justify-center">
+                    <div className="w-full max-w-[430px] rounded-2xl flex items-center justify-center relative overflow-hidden">
+                      {/* Using an inline SVG illustration mockup to match the feel */}
+                      <img
+                        src="/assets/images/orderPreparing.png"
+                        alt="orderPreparing"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeStep === 2 && (
+                <div className="space-y-6">
+                  {/* Tracking Information Card */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-[#1E0B4B] rounded-xl flex items-center justify-center shrink-0">
+                          <TbTruckDelivery className="w-7 h-7 text-white" />
                         </div>
-
-                        <h3 className="font-bold text-gray-900 text-[16px] mb-1">
-                          {item.title}
-                        </h3>
-
-                        <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">
-                          {item.desc}
-                        </p>
+                        <div>
+                          <h3 className="font-bold text-gray-900 text-lg">
+                            Tracking Information
+                          </h3>
+                          <p className="text-gray-500 text-sm mt-0.5">
+                            Shipping carrier: FedEx
+                          </p>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {/* Dynamic Card (Order Placed vs Seller Preparing) */}
-            {activeStep === 0 && order?.businessProfile && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
-                  Seller Information
-                </h2>
-                <div className="p-6">
-                  <div className="flex items-center justify-between border border-gray-100 p-4 rounded-xl shadow-sm">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#7A40F2] rounded-full flex items-center justify-center text-white text-xl font-bold shrink-0">
-                        {order?.businessProfile.companyName?.charAt(0) || "S"}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900 text-lg">
-                          {order?.businessProfile.companyName ||
-                            "Unknown Seller"}
-                        </h3>
-                        <p className="text-gray-500 text-sm mt-0.5">
-                          {/* Optional: You can dynamically fetch rating or sales if you have it */}
-                          {order?.businessProfile.rating
-                            ? `${order?.businessProfile.rating}/5 Rating (${order?.businessProfile.sales} sales)`
-                            : "No rating available"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeStep === 1 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <h2 className="px-6 py-4 font-semibold text-gray-900 text-xl">
-                  Seller is preparing your order
-                </h2>
-                <div className="flex items-center justify-center">
-                  <div className="w-full max-w-[430px] rounded-2xl flex items-center justify-center relative overflow-hidden">
-                    {/* Using an inline SVG illustration mockup to match the feel */}
-                    <img
-                      src="/assets/images/orderPreparing.png"
-                      alt="orderPreparing"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeStep === 2 && (
-              <div className="space-y-6">
-                {/* Tracking Information Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#1E0B4B] rounded-xl flex items-center justify-center shrink-0">
-                        <TbTruckDelivery className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900 text-lg">
-                          Tracking Information
-                        </h3>
-                        <p className="text-gray-500 text-sm mt-0.5">
-                          Shipping carrier: FedEx
-                        </p>
+                      <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 w-fit">
+                        <HiOutlineDocumentText className="w-4 h-4 text-gray-500" />
+                        <span className="font-semibold text-gray-700">
+                          #123456789
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200 w-fit">
-                      <HiOutlineDocumentText className="w-4 h-4 text-gray-500" />
-                      <span className="font-semibold text-gray-700">
-                        #123456789
-                      </span>
-                    </div>
+                    <button className="w-full flex items-center justify-center gap-2 bg-[#1E0B4B] text-white py-3 px-4 rounded-xl font-semibold hover:bg-[#140733] transition-colors shadow-sm text-[15px]">
+                      Track Your Order <FiArrowRight className="w-4.5 h-4.5" />
+                    </button>
                   </div>
 
-                  <button className="w-full flex items-center justify-center gap-2 bg-[#1E0B4B] text-white py-3 px-4 rounded-xl font-semibold hover:bg-[#140733] transition-colors shadow-sm text-[15px]">
-                    Track Your Order <FiArrowRight className="w-4.5 h-4.5" />
+                  {/* Shipping Details Card */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-lg">
+                      Shipping Details
+                    </h2>
+                    <div className="p-6">
+                      <div className="space-y-2">
+                        <p className="text-[#8c9ca8] font-medium text-sm">
+                          Name:{" "}
+                          <span className="text-[#8c9ca8]">
+                            {order?.shippingAddress?.name}
+                          </span>
+                        </p>
+                        <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                          Location:{" "}
+                          <span className="text-[#8c9ca8]">
+                            {order?.shippingAddress?.lineAddress?.join(", ")},{" "}
+                            {order?.shippingAddress?.province},{" "}
+                            {order?.shippingAddress?.postalCode}
+                          </span>
+                        </p>
+                        <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                          Phone:{" "}
+                          <span className="text-[#8c9ca8]">
+                            {order?.shippingAddress?.phone}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeStep === 3 && (
+                <div className="space-y-4">
+                  <button
+                    onClick={handleMarkAsCompleted}
+                    className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
+                  >
+                    <FiCheck className="w-5 h-5" strokeWidth={2.5} /> Mark as
+                    Received
+                  </button>
+                  <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 py-4 px-4 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm text-[16px]">
+                    <FiAlertCircle className="w-5 h-5" /> Create a Dispute
                   </button>
                 </div>
+              )}
 
-                {/* Shipping Details Card */}
+              {/* Cancel Order Button */}
+              {(activeStep === 0 || activeStep === 1) && (
+                <div className="pt-2">
+                  <button
+                    onClick={handleCancelOrder}
+                    disabled={cancelling}
+                    className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg font-semibold text-sm transition-colors shadow-sm disabled:opacity-70"
+                  >
+                    {cancelling ? "Cancelling..." : "Cancel Order"}
+                    <FiArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* {activeStep === 4 && isFinalCompleted && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                  <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-lg">
-                    Shipping Details
-                  </h2>
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                    <div className="bg-[#F8F6FF] text-[#5C24D2] p-1.5 rounded-md flex items-center justify-center shrink-0">
+                      <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
+                    </div>
+                    <h2 className="font-bold text-gray-900 text-lg">Timeline</h2>
+                  </div>
                   <div className="p-6">
-                    <div className="space-y-2">
-                      <p className="text-[#8c9ca8] font-medium text-sm">
-                        Name:{" "}
-                        <span className="text-[#8c9ca8]">
-                          {order?.shippingAddress?.name}
-                        </span>
-                      </p>
-                      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-                        Location:{" "}
-                        <span className="text-[#8c9ca8]">
-                          {order?.shippingAddress?.lineAddress?.join(", ")},{" "}
-                          {order?.shippingAddress?.province},{" "}
-                          {order?.shippingAddress?.postalCode}
-                        </span>
-                      </p>
-                      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-                        Phone:{" "}
-                        <span className="text-[#8c9ca8]">
-                          {order?.shippingAddress?.phone}
-                        </span>
-                      </p>
+                    <div className="relative pl-8 space-y-8 pb-4">
+                      <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
+                      {[
+                        {
+                          date: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Order placed",
+                          desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
+                          active: true,
+                        },
+                        {
+                          date: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.createdAt
+                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Prepare Shipment",
+                          desc: "You Are Preparing The Parcel For Shipping",
+                          active: order?.status !== "pending",
+                        },
+                        {
+                          date: order?.tracking?.shippedAt
+                            ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.tracking?.shippedAt
+                            ? new Date(order.tracking.shippedAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Shipped",
+                          desc: "Shipped The Item To Buyer Location Courier Service FedEx",
+                          active: ["shipped", "delivered", "completed"].includes(order?.status),
+                        },
+                        {
+                          date: order?.tracking?.deliveredAt
+                            ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })
+                            : "Pending",
+                          time: order?.tracking?.deliveredAt
+                            ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                            : "Pending",
+                          title: "Delivered",
+                          desc: "Parcel Successfully Delivered To Buyer",
+                          active: ["delivered", "completed"].includes(order?.status),
+                        },
+                        {
+                          date: "MAR 13, 2026",
+                          time: "10:30 AM", // if you have a real date, you can format it dynamically too
+                          title: "Fund Released",
+                          desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
+                          active: order?.status === "completed",
+                        },
+                      ].map((item, idx) => (
+                        <div key={idx} className="relative">
+                          <div
+                            className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? "bg-[#5C24D2]" : "bg-[#1E0B4B]"
+                              }`}
+                          ></div>
+
+                          <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
+                            <span>{item.date}</span>
+                            <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
+                            <span>{item.time}</span>
+                          </div>
+
+                          <h3 className="font-bold text-gray-900 text-[16px] mb-1">
+                            {item.title}
+                          </h3>
+
+                          <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">
+                            {item.desc}
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )} */}
 
-            {activeStep === 3 && (
-              <div className="space-y-4">
-                <button
-                  onClick={handleMarkAsCompleted}
-                  className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
-                >
-                  <FiCheck className="w-5 h-5" strokeWidth={2.5} /> Mark as
-                  Received
-                </button>
-                <button className="w-full flex items-center justify-center gap-2 bg-white text-gray-800 py-4 px-4 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm text-[16px]">
-                  <FiAlertCircle className="w-5 h-5" /> Create a Dispute
-                </button>
-              </div>
-            )}
-
-            {/* Cancel Order Button */}
-            {(activeStep === 0 || activeStep === 1) && (
-              <div className="pt-2">
-                <button
-                  onClick={handleCancelOrder}
-                  disabled={cancelling}
-                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-3 rounded-lg font-semibold text-sm transition-colors shadow-sm disabled:opacity-70"
-                >
-                  {cancelling ? "Cancelling..." : "Cancel Order"}
-                  <FiArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-            {activeStep === 4 && !isFinalCompleted && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-                  <div className="bg-[#F8F6FF] text-[#5C24D2] p-1.5 rounded-md flex items-center justify-center shrink-0">
-                    <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
-                  </div>
-                  <h2 className="font-bold text-gray-900 text-lg">Timeline</h2>
-                </div>
-                <div className="p-6">
-                  <div className="relative pl-6 space-y-6">
-                    {/* Timeline Line */}
-                    <div className="absolute left-2.5 top-2 bottom-2 w-0.5 bg-linear-to-b from-[#5C24D2] via-[#5C24D2] to-transparent"></div>
-
-                    {/* Timeline Items */}
-                    {[
-                      {
-                        date: "OCT 25, 2025,",
-                        time: "10:30 AM",
-                        title: "Order # 39201 Placed And fund Secure in Escrow",
-                        desc: "You Started The Transaction. $500.00 Was Debited From Your Wallet",
-                      },
-                      {
-                        date: "OCT 26, 2025,",
-                        time: "10:30 AM",
-                        title: "Seller Is Preparing Your Order",
-                        desc: "Seller Is Preparing Your Parcel",
-                      },
-                      {
-                        date: "OCT 27, 2025,",
-                        time: "06:15 AM",
-                        title: "Shipped Your Parcel",
-                        desc: "Shipping Carrier: FedEx",
-                      },
-                      {
-                        date: "OCT 27, 2025,",
-                        time: "06:15 AM",
-                        title: "Delivery Confirmed",
-                        desc: "Carrier Marked Item As Delivered. Please Inspect Your Item And Confirm.",
-                      },
-                      {
-                        date: "OCT 28, 2025,",
-                        time: "12:15 AM",
-                        title: "Funds Released",
-                        desc: "Waiting For Your Confirmation..    Pending..",
-                      },
-                    ].map((item, idx) => (
-                      <div key={idx} className="relative">
-                        <div className="absolute -left-[27px] mt-1 w-[14px] h-[14px] bg-[#5C24D2] rounded-full ring-4 ring-white"></div>
-                        <div className="flex items-center gap-2 text-xs text-[#8c9ca8] font-medium mb-1 tracking-wide">
-                          <span>{item.date}</span>
-                          <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
-                          <span>{item.time}</span>
-                        </div>
-                        <h3 className="font-bold text-gray-900 text-base mb-1">
-                          {item.title}
-                        </h3>
-                        <p className="text-[#8c9ca8] text-sm">{item.desc}</p>
+              {activeStep === 4 && isFinalCompleted && (
+                <div className="space-y-6">
+                  {/* Shipping Details Card */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-[17px]">
+                      Shipping Details
+                    </h2>
+                    <div className="p-6">
+                      <div className="space-y-2">
+                        <p className="text-[#8c9ca8] font-medium text-sm">
+                          Name:{" "}
+                          <span className="text-gray-900 font-semibold">
+                            {order?.shippingAddress?.name || "—"}
+                          </span>
+                        </p>
+                        <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                          Location:{" "}
+                          <span className="text-gray-900 font-semibold">
+                            {order?.shippingAddress?.lineAddress?.join(", ") ||
+                              "—"}
+                            , {order?.shippingAddress?.province || "—"},{" "}
+                            {order?.shippingAddress?.postalCode || "—"}
+                          </span>
+                        </p>
+                        <p className="text-[#8c9ca8] font-medium text-sm">
+                          Phone:{" "}
+                          <span className="text-gray-900 font-semibold">
+                            {order?.shippingAddress?.phone || "—"}
+                          </span>
+                        </p>
                       </div>
-                    ))}
+                    </div>
                   </div>
 
-                  <div className="mt-8">
-                    <button
-                      onClick={() => {
-                        handleUpdateCompletion()
-                      }}
-                      className="w-full flex items-center justify-center gap-2 bg-[#1DAF61] text-white py-4 px-4 rounded-xl font-semibold hover:bg-[#189b53] transition-colors shadow-sm text-[16px]"
-                    >
-                      {isCompleting ? (
-                        <svg
-                          className="animate-spin w-5 h-5 text-white"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                          ></path>
-                        </svg>
-                      ) : (
-                        <FiCheck className="w-5 h-5" strokeWidth={2.5} />
-                      )}
-                      {isCompleting ? "Processing..." : "Completed"}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Seller Information Card */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                      <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                        <div className="bg-gray-50 p-2 rounded-lg">
+                          <FiUser className="w-5 h-5 text-gray-500" />
+                        </div>
+                        <h2 className="font-bold text-gray-900 text-[17px]">
+                          Seller Information
+                        </h2>
+                      </div>
+                      <div className="p-6 space-y-5">
+                        <div>
+                          <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
+                            SELLER NAME
+                          </p>
+                          <p className="font-bold text-gray-900 text-[16px]">
+                            {order?.businessProfile?.companyName || "—"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
+                            EMAIL
+                          </p>
+                          <p className="font-bold text-gray-900 text-[16px]">
+                            {order?.businessProfile?.email || "—"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Pay Method Card */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                      <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                        <div className="bg-purple-50 p-2 rounded-lg">
+                          <FiCreditCard className="w-5 h-5 text-[#5C24D2]" />
+                        </div>
+                        <h2 className="font-bold text-gray-900 text-[17px]">
+                          Pay Method
+                        </h2>
+                      </div>
+                      <div className="p-6 space-y-6">
+                        <p className="text-gray-600 font-bold text-[16px] flex items-center tracking-wide">
+                          Visa{" "}
+                          <span className="text-gray-400 font-black mx-2 text-xs">
+                            ••••
+                          </span>{" "}
+                          4321
+                        </p>
+                        <div className="flex justify-between items-center">
+                          <span className="font-bold text-gray-900 text-[15px]">
+                            Escro Fee
+                          </span>
+                          <span className="font-bold text-[#1DAF61] text-[15px]">
+                            Free
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Funds Released Alert Card */}
+                  <div className="bg-[#EBFBF2] rounded-xl border border-[#D5F3D1] p-6 sm:p-8">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
+                        <FiCheck className="w-4 h-4 text-white stroke-[3]" />
+                      </div>
+                      <h2 className="font-bold text-[#139D4C] text-[17px]">
+                        Funds Successfully Released
+                      </h2>
+                    </div>
+                    <p className="text-[#139D4C] font-medium leading-[1.6] text-[15px] mb-8">
+                      The transaction is complete. Funds have been securely
+                      released to{" "}
+                      <span className="font-bold">Camera Pro Outlet</span>. Thank
+                      you for using our escrow service for a secure purchase.
+                    </p>
+                    <button className="w-full bg-[#1E0B4B] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#140733] transition-colors text-[16px]">
+                      Leave Feedback <FiStar className="w-4 h-4 fill-white" />
                     </button>
                   </div>
                 </div>
+              )}
+            </div>
+
+            {/* Right Column (Summary & Escrow) */}
+            <div className="w-full lg:w-[350px] space-y-6">
+              {/* Summary Card */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
+                  Summary
+                </h2>
+                <div className="p-6">
+                  <div className="space-y-4 mb-6">
+                    <div className="flex justify-between text-[15px]">
+                      <span className="text-gray-400 font-medium">
+                        Item Total
+                      </span>
+                      <span className="text-gray-500 font-bold">
+                        ${order?.totalAmount - (order?.shippingCost || 0)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-[15px]">
+                      <span className="text-gray-400 font-medium">Shipping</span>
+                      <span className="text-gray-500 font-bold">
+                        ${order?.shippingCost || 0}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-[15px]">
+                      <span className="text-[#139D4C] font-medium">
+                        Escrow Fee Deduction
+                      </span>
+                      <span className="text-[#139D4C] font-bold">
+                        -${order?.escrowFee || 0}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="border-t border-gray-100 pt-4">
+                    <div className="flex justify-between text-[15px] mb-3">
+                      <span className="text-gray-400 font-bold">Grand Total</span>
+                      <span className="text-gray-900 font-bold">
+                        ${order?.totalAmount}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-xl mt-1">
+                      <span className="font-bold text-gray-900">
+                        Est. Net Payout
+                      </span>
+                      <span className="font-bold text-gray-900">
+                        ${order?.totalAmount}
+                      </span>
+                    </div>
+                  </div>
+
+                  {isFinalCompleted && (
+                    <div className="mt-8 bg-[#F8F9FA] rounded-xl border border-gray-100 p-5">
+                      <div className="flex items-center gap-2.5 mb-4">
+                        <div className="bg-white p-1 rounded border border-gray-200">
+                          <FiLock className="w-3.5 h-3.5 text-gray-500" />
+                        </div>
+                        <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
+                          RELEASED FROM ESCROW
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[15px] font-bold text-gray-900">
+                          Final Amount
+                        </span>
+                        <span className="text-[15px] font-bold text-gray-900">
+                          ${order?.totalAmount.toFixed(2)}
+                        </span>
+                      </div>
+                      <p className="text-[11px] font-bold text-gray-400 mt-2">
+                        Paid To Seller On{" "}
+                        {new Date(order?.updatedAt).toLocaleDateString()}, At{" "}
+                        {new Date(order?.updatedAt).toLocaleTimeString()}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
 
-            {activeStep === 4 && isFinalCompleted && (
-              <div className="space-y-6">
-                {/* Shipping Details Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                  <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-[17px]">
-                    Shipping Details
-                  </h2>
-                  <div className="p-6">
-                    <div className="space-y-2">
-                      <p className="text-[#8c9ca8] font-medium text-sm">
-                        Name:{" "}
-                        <span className="text-gray-900 font-semibold">
-                          {order?.shippingAddress?.name || "—"}
-                        </span>
-                      </p>
-                      <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-                        Location:{" "}
-                        <span className="text-gray-900 font-semibold">
-                          {order?.shippingAddress?.lineAddress?.join(", ") ||
-                            "—"}
-                          , {order?.shippingAddress?.province || "—"},{" "}
-                          {order?.shippingAddress?.postalCode || "—"}
-                        </span>
-                      </p>
-                      <p className="text-[#8c9ca8] font-medium text-sm">
-                        Phone:{" "}
-                        <span className="text-gray-900 font-semibold">
-                          {order?.shippingAddress?.phone || "—"}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Seller Information Card */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                      <div className="bg-gray-50 p-2 rounded-lg">
-                        <FiUser className="w-5 h-5 text-gray-500" />
-                      </div>
-                      <h2 className="font-bold text-gray-900 text-[17px]">
-                        Seller Information
-                      </h2>
-                    </div>
-                    <div className="p-6 space-y-5">
-                      <div>
-                        <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
-                          SELLER NAME
-                        </p>
-                        <p className="font-bold text-gray-900 text-[16px]">
-                          {order?.businessProfile?.companyName || "—"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
-                          EMAIL
-                        </p>
-                        <p className="font-bold text-gray-900 text-[16px]">
-                          {order?.businessProfile?.email || "—"}
-                        </p>
-                      </div>
-                    </div>
+              {/* Escrow Status Card */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <IoShieldCheckmarkOutline className="w-5 h-5 text-[#139D4C]" />
+                    <span className="font-bold text-gray-900">Escrow Status</span>
                   </div>
 
-                  {/* Pay Method Card */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                      <div className="bg-purple-50 p-2 rounded-lg">
-                        <FiCreditCard className="w-5 h-5 text-[#5C24D2]" />
-                      </div>
-                      <h2 className="font-bold text-gray-900 text-[17px]">
-                        Pay Method
-                      </h2>
-                    </div>
-                    <div className="p-6 space-y-6">
-                      <p className="text-gray-600 font-bold text-[16px] flex items-center tracking-wide">
-                        Visa{" "}
-                        <span className="text-gray-400 font-black mx-2 text-xs">
-                          ••••
-                        </span>{" "}
-                        4321
-                      </p>
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-gray-900 text-[15px]">
-                          Escro Fee
-                        </span>
-                        <span className="font-bold text-[#1DAF61] text-[15px]">
-                          Free
-                        </span>
-                      </div>
-                    </div>
+                  {/* Mini Progress Bar */}
+                  <div className="w-full h-2.5 bg-[#B7EFCD] rounded-full mb-3 overflow-hidden flex">
+                    <div
+                      className="h-full bg-[#1DAF61] rounded-full transition-all duration-500"
+                      style={{ width: activeStep === 4 ? "100%" : "35%" }}
+                    ></div>
                   </div>
-                </div>
 
-                {/* Funds Released Alert Card */}
-                <div className="bg-[#EBFBF2] rounded-xl border border-[#D5F3D1] p-6 sm:p-8">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
-                      <FiCheck className="w-4 h-4 text-white stroke-[3]" />
-                    </div>
-                    <h2 className="font-bold text-[#139D4C] text-[17px]">
-                      Funds Successfully Released
-                    </h2>
+                  <div className="flex justify-between text-[11px] font-bold mb-6">
+                    <span className="text-[#1DAF61] uppercase tracking-wider">
+                      Funds Locked
+                    </span>
+                    <span
+                      className={`uppercase tracking-wider ${isFinalCompleted ? "text-[#1DAF61]" : "text-[#96C7A9]"}`}
+                    >
+                      Funds Released
+                    </span>
                   </div>
-                  <p className="text-[#139D4C] font-medium leading-[1.6] text-[15px] mb-8">
-                    The transaction is complete. Funds have been securely
-                    released to{" "}
-                    <span className="font-bold">Camera Pro Outlet</span>. Thank
-                    you for using our escrow service for a secure purchase.
+
+                  <p className="text-[#8c9ca8] font-bold text-[13px] leading-relaxed">
+                    {isFinalCompleted
+                      ? "Funds have been released to the seller. Thank you for your business."
+                      : "Funds are securely held. Seller has not been paid yet."}
                   </p>
-                  <button className="w-full bg-[#1E0B4B] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#140733] transition-colors text-[16px]">
-                    Leave Feedback <FiStar className="w-4 h-4 fill-white" />
-                  </button>
                 </div>
               </div>
-            )}
-          </div>
 
-          {/* Right Column (Summary & Escrow) */}
-          <div className="w-full lg:w-[350px] space-y-6">
-            {/* Summary Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100">
-                Summary
-              </h2>
-              <div className="p-6">
-                <div className="space-y-4 mb-6">
-                  <div className="flex justify-between text-[15px]">
-                    <span className="text-gray-400 font-medium">
-                      Item Total
-                    </span>
-                    <span className="text-gray-500 font-bold">
-                      ${order?.totalAmount - (order?.shippingCost || 0)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[15px]">
-                    <span className="text-gray-400 font-medium">Shipping</span>
-                    <span className="text-gray-500 font-bold">
-                      ${order?.shippingCost || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[15px]">
-                    <span className="text-[#139D4C] font-medium">
-                      Escrow Fee Deduction
-                    </span>
-                    <span className="text-[#139D4C] font-bold">
-                      -${order?.escrowFee || 0}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-100 pt-4">
-                  <div className="flex justify-between text-[15px] mb-3">
-                    <span className="text-gray-400 font-bold">Grand Total</span>
-                    <span className="text-gray-900 font-bold">
-                      ${order?.totalAmount}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-xl mt-1">
-                    <span className="font-bold text-gray-900">
-                      Est. Net Payout
-                    </span>
-                    <span className="font-bold text-gray-900">
-                      ${order?.totalAmount}
-                    </span>
-                  </div>
-                </div>
-
-                {isFinalCompleted && (
-                  <div className="mt-8 bg-[#F8F9FA] rounded-xl border border-gray-100 p-5">
-                    <div className="flex items-center gap-2.5 mb-4">
-                      <div className="bg-white p-1 rounded border border-gray-200">
-                        <FiLock className="w-3.5 h-3.5 text-gray-500" />
-                      </div>
-                      <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">
-                        RELEASED FROM ESCROW
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-[15px] font-bold text-gray-900">
-                        Final Amount
-                      </span>
-                      <span className="text-[15px] font-bold text-gray-900">
-                        ${order?.totalAmount.toFixed(2)}
-                      </span>
-                    </div>
-                    <p className="text-[11px] font-bold text-gray-400 mt-2">
-                      Paid To Seller On{" "}
-                      {new Date(order?.updatedAt).toLocaleDateString()}, At{" "}
-                      {new Date(order?.updatedAt).toLocaleTimeString()}
-                    </p>
-                  </div>
-                )}
-              </div>
+              {/* Seller Information & Pay Method were removed from here as they are moved to the left column in completed state */}
+              {activeStep !== 4 && activeStep === 4 && (
+                <>
+                  {/* This is just to satisfy the previous structure if needed, but they are gone in activeStep 4 */}
+                </>
+              )}
             </div>
-
-            {/* Escrow Status Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <IoShieldCheckmarkOutline className="w-5 h-5 text-[#139D4C]" />
-                  <span className="font-bold text-gray-900">Escrow Status</span>
-                </div>
-
-                {/* Mini Progress Bar */}
-                <div className="w-full h-2.5 bg-[#B7EFCD] rounded-full mb-3 overflow-hidden flex">
-                  <div
-                    className="h-full bg-[#1DAF61] rounded-full transition-all duration-500"
-                    style={{ width: activeStep === 4 ? "100%" : "35%" }}
-                  ></div>
-                </div>
-
-                <div className="flex justify-between text-[11px] font-bold mb-6">
-                  <span className="text-[#1DAF61] uppercase tracking-wider">
-                    Funds Locked
-                  </span>
-                  <span
-                    className={`uppercase tracking-wider ${isFinalCompleted ? "text-[#1DAF61]" : "text-[#96C7A9]"}`}
-                  >
-                    Funds Released
-                  </span>
-                </div>
-
-                <p className="text-[#8c9ca8] font-bold text-[13px] leading-relaxed">
-                  {isFinalCompleted
-                    ? "Funds have been released to the seller. Thank you for your business."
-                    : "Funds are securely held. Seller has not been paid yet."}
-                </p>
-              </div>
-            </div>
-
-            {/* Seller Information & Pay Method were removed from here as they are moved to the left column in completed state */}
-            {activeStep !== 4 && activeStep === 4 && (
-              <>
-                {/* This is just to satisfy the previous structure if needed, but they are gone in activeStep 4 */}
-              </>
-            )}
           </div>
-        </div>
+        )}
+
       </div>
 
       {/* Footer */}

@@ -303,21 +303,29 @@ const CartPage = () => {
 
               <div className="p-4 sm:p-6">
                 {/* Tiny Product Preview */}
-                <div className="mb-4 sm:mb-6 relative inline-block">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded overflow-hidden border border-gray-200">
-                    <img
-                      src={products[0]?.image || "/assets/images/earbuds.png"}
-                      alt="Item"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = "https://placehold.co/50x50?text=Item";
-                      }}
-                    />
-                  </div>
-                  <span className="absolute -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-[#240457] text-white text-sm sm:text-sm font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full border-2 border-white">
-                    {products.length}
-                  </span>
+                <div className="flex gap-3">
+                  {products.map((product, index) => {
+                    return (
+                      <div className="mb-4 sm:mb-6 relative inline-block">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded overflow-hidden border border-gray-200">
+                          <img
+                            src={product.image || "/assets/images/earbuds.png"}
+                            key={index}
+                            alt="Item"
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.src = "https://placehold.co/50x50?text=Item";
+                            }}
+                          />
+                        </div>
+                        <span className="absolute p-2 -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-[#240457] text-white text-sm sm:text-sm font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full border-2 border-white">
+                          {product.quantity}
+                        </span>
+                      </div>
+                    )
+                  })}
                 </div>
+
 
                 {/* Summary Lines */}
                 <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">

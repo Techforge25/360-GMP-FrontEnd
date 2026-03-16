@@ -8,10 +8,10 @@ export default function WalletBanner({ activeTabs }) {
           <section className="w-full">
                <div className="bg-gray-50 px-8 py-2.5">
                     {pathname === "/wallet/user" || pathname === "/wallet/business" && (
-                         <span className="text-[13px] text-gray-500">My Wallet</span>
+                         <span className="font-inter text-[#444953] font-normal text-[14px] leading-[24px] tracking-normal align-middle capitalize">My Wallet</span>
                     )}
                     {pathname === "/wallet/user/view-all-transactions" && (
-                         <span className="text-[13px] text-gray-500">My Wallet &gt; <span className="text-brand-primary">Transactions</span></span>
+                         <span className="font-inter text-[#444953] font-normal text-[14px] leading-[24px] tracking-normal align-middle capitalize">My Wallet &gt; <span className="text-brand-primary">Transactions</span></span>
                     )}
                </div>
 
@@ -38,7 +38,7 @@ export default function WalletBanner({ activeTabs }) {
 
                     {/* CENTER TITLE */}
                     <div className="flex flex-col items-center">
-                         <h1 className="relative z-10 text-white text-[42px] font-bold tracking-tight">
+                         <h1 className="relative z-10 font-bold text-[42px] leading-[57.28px] tracking-[-0.005em] text-center font-['Open_Sans']">
                               {activeTabs}
                          </h1>
                          {activeTabs === "Earnings" &&

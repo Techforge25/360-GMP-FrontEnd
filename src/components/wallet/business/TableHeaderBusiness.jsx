@@ -1,7 +1,5 @@
 import { useWallet } from "@/context/WalletContext";
-import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { FiDownload } from "react-icons/fi";
 
 export default function TablesHeaderBusiness({ tablesCommon }) {
      const [activeTab, setActiveTab] = useState("All");
@@ -16,7 +14,7 @@ export default function TablesHeaderBusiness({ tablesCommon }) {
                          <>
                               <div className="flex items-start justify-between">
                                    <div>
-                                        <h1 className="text-lg font-bold text-black leading-tight">
+                                        <h1 className="text-black font-open font-semibold text-[22px] leading-[100%] tracking-normal capitalize">
                                              Recent Transactions
                                         </h1>
                                    </div>
@@ -27,26 +25,21 @@ export default function TablesHeaderBusiness({ tablesCommon }) {
                                              <button
                                                   key={tab}
                                                   onClick={() => setActiveTab(tab)}
-                                                  className={`px-4 py-3 text-md rounded-lg transition-colors ${activeTab === tab
-                                                       ? "bg-brand-primary text-primary-foreground"
-                                                       : "text-[#444953] hover:text-foreground"
+                                                  className={`px-4 py-2 text-md rounded-lg transition-colors ${activeTab === tab
+                                                       ? "bg-brand-primary text-primary-foreground font-inter font-normal text-sm leading-6 tracking-normal text-center align-middle capitalize"
+                                                       : "text-[#444953] hover:text-foreground font-inter font-normal text-sm leading-6 tracking-normal text-center align-middle capitalize"
                                                        }`}
                                              >
                                                   {tab}
                                              </button>
                                         ))}
                                    </div>
-
-                                   <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                                        <span>Export Report</span>
-                                        <FiDownload className="w-4 h-4" />
-                                   </button>
                               </div>
                          </>
                     ) : earningsCond ? (
                          <div className="flex items-start justify-between">
                               <div>
-                                   <h1 className="text-lg font-bold text-black leading-tight">
+                                   <h1 className="text-black font-open font-semibold text-[22px] leading-[100%] tracking-normal capitalize">
                                         Detailed Earning Table
                                    </h1>
                               </div>
@@ -55,10 +48,10 @@ export default function TablesHeaderBusiness({ tablesCommon }) {
                          <>
                               <div className="flex items-start justify-between mb-5">
                                    <div>
-                                        <h1 className="text-lg font-bold text-black leading-tight">
+                                        <h1 className="text-black font-open font-semibold text-[22px] leading-[100%] tracking-normal capitalize">
                                              Transactions
                                         </h1>
-                                        <p className="text-[13px] text-[#768299] mt-0.5">
+                                        <p className="text-[#768299] mt-1 font-inter font-normal text-[14px] leading-[16px] tracking-normal align-middle capitalize">
                                              A Complete History Of Your Business Payments And Withdrawals.
                                         </p>
                                    </div>

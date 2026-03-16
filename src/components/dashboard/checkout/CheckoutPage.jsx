@@ -321,8 +321,10 @@ const CheckoutPage = () => {
                         type="text"
                         name="fullName"
                         value={formData.fullName}
-                        onChange={handleChange}
-                        placeholder="Full Name *"
+                        onChange={(e) => {
+                          const lettersOnly = e.target.value.replace(/[^a-zA-Z]/g, "");
+                          setFormData({ ...formData, fullName: lettersOnly });
+                        }} placeholder="Full Name *"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                         required
                       />
@@ -407,7 +409,8 @@ const CheckoutPage = () => {
                         onChange={(e) => {
                           const numericValue = e.target.value.replace(/\D/g, "");
                           setFormData({ ...formData, zipCode: numericValue });
-                        }} placeholder="e.g 2000 *"
+                        }}
+                        placeholder="e.g 2000 *"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                         required
                       />

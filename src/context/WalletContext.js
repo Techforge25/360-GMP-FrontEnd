@@ -5,10 +5,10 @@ const WalletContext = createContext();
 
 export function WalletProvider({ children }) {
      const [activeTabs, setActiveTabs] = useState("My Wallet");
-     const [transactionTab, setTransactionTab] = useState("All")
+     const [userTransactionTab, setUserTransactionTab] = useState("All")
 
      return (
-          <WalletContext.Provider value={{ activeTabs, setActiveTabs, transactionTab, setTransactionTab }}>
+          <WalletContext.Provider value={{ activeTabs, setActiveTabs, userTransactionTab, setUserTransactionTab }}>
                {children}
           </WalletContext.Provider>
      );

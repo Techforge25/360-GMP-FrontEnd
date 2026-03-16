@@ -3,7 +3,6 @@ import AuthNavbar from "@/components/dashboard/AuthNavbar";
 import BusinessWalletTabs from "@/components/wallet/business/BusinessWalletTabs";
 import NeedHelp from "@/components/wallet/business/NeedHelp";
 import BalanceCards from "@/components/wallet/common/BalanceCards";
-import Tables from "@/components/wallet/business/TablesBusiness";
 import WalletBanner from "@/components/wallet/common/WalletBanner";
 import Chart from "@/components/wallet/business/Chart";
 import { useWallet } from "@/context/WalletContext";

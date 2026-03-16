@@ -69,3 +69,92 @@ export const getFormattedSpendingChartData = (data) => {
           { month: "Sun", value: 100, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
      ]
 }
+
+// export const getEvents = (data) => {
+
+//      console.log(data, "data")
+//      return [
+//           { date: "OCT 25, 2025,", time: "10:30 AM", title: "Order Placed", description: "Order Created." },
+//           { date: "OCT 26, 2025,", time: "10:30 AM", title: "Shipped At", description: "Business has Shipped the product." },
+//           { date: "OCT 27, 2025,", time: "06:15 AM", title: "Delivery Confirmed", description: "Buyer Confirmed Receipt Of Goods." },
+//           { date: "OCT 28, 2025,", time: "12:15 AM", title: "Completed At", description: "Payout Successfully Transferred To Seller Wallet", isLast: true },
+//      ]
+// }
+
+export const formatEventDate = (date) => {
+     if (!date) return { date: "", time: "" }
+
+     const d = new Date(date)
+
+     const formattedDate = d.toLocaleDateString("en-US", {
+          month: "short",
+          day: "2-digit",
+          year: "numeric",
+     }).toUpperCase()
+
+     const formattedTime = d.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true,
+     })
+
+     return {
+          date: formattedDate + ",",
+          time: formattedTime
+     }
+}
+
+export const getEvents = (data) => {
+     const placed = formatEventDate(data?.orderPlacedAt)
+     const shipped = formatEventDate(data?.shippedAt)
+     const delivered = formatEventDate(data?.deliveredAt)
+     const completed = formatEventDate(data?.completedAt)
+
+     return [
+          {
+               date: placed.date ?? "Not Done yet.",
+               time: placed.time,
+               title: "Order Placed",
+               description: "Order Created."
+          },
+          {
+               date: shipped.date ?? "Not Done yet.",
+               time: shipped.time,
+               title: "Shipped At",
+               description: "Business has Shipped the product."
+          },
+          {
+               date: delivered.date ?? "Not Done yet.",
+               time: delivered.time,
+               title: "Delivery Confirmed",
+               description: "Buyer Confirmed Receipt Of Goods."
+          },
+          {
+               date: completed.date ?? "Not Done yet.",
+               time: completed.time,
+               title: "Completed At",
+               description: "Payout Successfully Transferred To Seller Wallet",
+               isLast: true
+          }
+     ]
+}
+
+export const getAmounts = (data) => {
+     return [
+          {
+               type: "Gross Sale Amount",
+               desc: "Total Order Value",
+               amount: data?.grossSaleAmount
+          },
+          {
+               type: "Platform Fee",
+               desc: "Standard Service Rate (10%)",
+               amount: data?.platformFee
+          },
+          {
+               type: "VAT/TAX",
+               desc: "Applied Regional Tax (0%)",
+               amount: "..."
+          }
+     ]
+}

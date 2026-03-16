@@ -1,7 +1,8 @@
-import { events } from "@/constants/index";
+import { getEvents } from "@/helpers/wallet";
 import Image from "next/image";
 
-export default function TransactionTimeline() {
+export default function TransactionTimeline({ data }) {
+     const getEventsFormat = getEvents(data)
      return (
           <div className="rounded-lg bg-white border border-border bg-card p-6">
                <div className="mb-4 flex items-center gap-3">
@@ -12,7 +13,7 @@ export default function TransactionTimeline() {
                </div>
                <div className="mb-4 border-t border-border" />
                <div className="relative ml-2 space-y-0">
-                    {events.map((event, index) => (
+                    {getEventsFormat?.map((event, index) => (
                          <div key={index} className="relative flex gap-2 pb-8 last:pb-0">
                               <Image src={event.isLast ? "/assets/images/timeline-purple.png" : "/assets/images/timeline-gray.png"} width={14} height={73} alt="timeline" />
                               <div className="relative z-10 mt-1.5 h-3 w-3 flex-shrink-0 rounded-full bg-timeline-dot" />

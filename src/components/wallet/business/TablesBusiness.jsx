@@ -11,10 +11,10 @@ export default function TablesBusiness({ tableData, tablesTabHeader }) {
           <div className="bg-white rounded-xl border border-gray-200">
                <TablesHeaderBusiness tablesCommon={transactionTabsBusinessOrUser} />
                <table className="min-w-full border-collapse">
-                    <thead className="bg-gray-50 border-b border-gray-100">
+                    <thead className="bg-[#f2f2f2] border-b border-gray-100">
                          <tr className="">
                               {tablesTabHeader.map((tab, index) => (
-                                   <th key={index} className="leading-[24%] px-6 py-2.5 text-left text-[#22252b] text-[16px]">
+                                   <th key={index} className="leading-[24%] px-6 py-5 text-left text-[#22252b] text-[16px]">
                                         {tab}
                                    </th>
                               ))}
@@ -26,7 +26,7 @@ export default function TablesBusiness({ tableData, tablesTabHeader }) {
                                    tableData.map((item) => (
                                         <tr key={item.orderId}>
                                              <td className="px-6 py-3.5">
-                                                  <Link href={`/wallet/business/transaction-details/1`}>
+                                                  <Link href={`/wallet/business/transaction-details/${item.orderId}`}>
                                                        <div className="text-[13px] font-medium text-gray-900">
                                                             {item?.orderId
                                                                  ? item.orderId.slice(0, -5).replace(/./g, "*") + item.orderId.slice(-5)
@@ -50,7 +50,7 @@ export default function TablesBusiness({ tableData, tablesTabHeader }) {
                                              </td>
                                              <Link href={`/wallet/business/transaction-details/${item.orderId}`}>
                                                   <td className="flex items-center gap-3 px-6 py-3.5 text-[16px] font-semibold text-black">
-                                                       {item.amount} <MdKeyboardArrowRight />
+                                                       ${item.amount} <MdKeyboardArrowRight />
                                                   </td>
                                              </Link>
                                         </tr>
@@ -110,20 +110,13 @@ export default function TablesBusiness({ tableData, tablesTabHeader }) {
                                    tableData.map((item) => (
                                         <tr key={item.id}>
                                              <td className="px-6 py-3.5">
-                                                  <Link href={`/wallet/business/transaction-details/1`}>
+                                                  <Link href={`/wallet/business/transaction-details/${item.orderId}`}>
                                                        <div className="text-[13px] font-medium text-gray-900">
                                                             {item?.id
                                                                  ? item.id.slice(0, -5).replace(/./g, "*") + item.id.slice(-5)
                                                                  : "N/A"}
                                                        </div>
                                                   </Link>
-                                             </td>
-                                             <td className="px-5 py-4 whitespace-nowrap">
-                                                  <span
-                                                       className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(item.stripe)}`}
-                                                  >
-                                                       {item.paymentMethod || "Unknown"}
-                                                  </span>
                                              </td>
                                              <td className="px-5 py-4 whitespace-nowrap">
                                                   <span
@@ -134,7 +127,7 @@ export default function TablesBusiness({ tableData, tablesTabHeader }) {
                                              </td>
                                              <Link href={`/wallet/business/transaction-details/${item.orderId}`}>
                                                   <td className="flex items-center gap-3 px-6 py-3.5 text-[16px] font-semibold text-black">
-                                                       {item.amount} <MdKeyboardArrowRight />
+                                                       ${item.amount} <MdKeyboardArrowRight />
                                                   </td>
                                              </Link>
                                         </tr>

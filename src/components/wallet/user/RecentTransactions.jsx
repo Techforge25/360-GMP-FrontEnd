@@ -7,7 +7,11 @@ export default function RecentTransactions() {
      const [transactions, setTransactions] = useState(null)
      useEffect(() => {
           const fetchTransactions = async () => {
-               const transactData = await walletUserAPI.getWalletUserTransactions()
+               const transactData = await walletUserAPI.getWalletUserTransactions({
+                    limit: 5,
+                    currentPage: 1,
+                    getCond: ""
+               })
                setTransactions(transactData.data.docs)
           }
           fetchTransactions()

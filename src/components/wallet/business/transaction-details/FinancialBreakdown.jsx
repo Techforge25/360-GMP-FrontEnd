@@ -1,7 +1,8 @@
-import { financialBreakdown } from "@/constants/index";
+import { getAmounts } from "@/helpers/wallet";
 import { DollarSign } from "lucide-react";
 
-export default function FinancialBreakdown() {
+export default function FinancialBreakdown({ data }) {
+     const getAmountsFinancial = getAmounts(data)
      return (
           <div className="rounded-lg border bg-white border-border bg-card p-6">
                <div className="mb-4 flex items-center gap-3">
@@ -13,15 +14,14 @@ export default function FinancialBreakdown() {
                <div className="border-t border-border" />
                <div className="space-y-0">
                     <div className="py-8">
-                         {financialBreakdown.map((breakdown, index) => {
-                              const amountColor = breakdown?.type === "Platform Fee" ? "text-[#9f7802]" : "text-black"
+                         {getAmountsFinancial?.map((breakdown, index) => {
                               return (
-                                   <div className="flex items-center justify-between py-4">
+                                   <div className="flex items-center justify-between py-4" key={index}>
                                         <div>
-                                             <p className="text-lg font-semibold text-black">{breakdown.type}</p>
-                                             <p className="mt-0.5 text-md text-[#768299]">{breakdown.desc}</p>
+                                             <p className="text-lg font-semibold text-black">{breakdown?.type}</p>
+                                             <p className="mt-0.5 text-md text-[#768299]">{breakdown?.desc}</p>
                                         </div>
-                                        <p className={`text-base font-bold ${amountColor}`}>{breakdown.amount}</p>
+                                        <p className={`text-base font-bold text-black`}>${breakdown?.amount}</p>
                                    </div>
                               )
                          })}
@@ -30,9 +30,8 @@ export default function FinancialBreakdown() {
                     <div className="flex items-center justify-between pt-4">
                          <div>
                               <p className="text-lg font-semibold text-black">Total Net Payout</p>
-                              <p className="mt-0.5 text-md text-[#768299]">Applied Regional Tax (0%)</p>
                          </div>
-                         <p className="text-base font-bold text-black">$800.00</p>
+                         <p className="text-base font-bold text-black">${data?.netAmount}</p>
                     </div>
                </div>
           </div>

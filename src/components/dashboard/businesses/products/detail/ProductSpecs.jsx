@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 
 export default function ProductSpecs({ product }) {
   const [activeTab, setActiveTab] = useState("specs");
@@ -18,13 +20,18 @@ export default function ProductSpecs({ product }) {
   return (
     <div className="mb-12">
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 mb-6">
+      <div className="flex border-b border-gray-200">
         <button
           onClick={() => setActiveTab("specs")}
           className={`pb-3 pr-6 text-sm font-bold border-b-2 transition-colors ${activeTab === "specs" ? "border-indigo-900 text-indigo-900" : "border-transparent text-gray-500 hover:text-gray-700"}`}
         >
           Product Specifications
         </button>
+      </div>
+      <div className="my-4">
+        <Link href={`/dashboard/user/businesses`} className="bg-[#240957] text-white p-2 rounded-md" variant="default">
+          View Company Profile
+        </Link>
       </div>
 
       {/* Content */}

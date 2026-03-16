@@ -296,6 +296,8 @@ const BusinessOrderDetailsPage = () => {
     router.push(`/dashboard/invoice/${order._id}`);
   };
 
+  console.log(order, "ordersss")
+
   return (
     <div className="bg-[#FAFBFD] min-h-screen flex flex-col font-sans">
       <div className="grow max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-18">
@@ -840,7 +842,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                         <div className="flex justify-between items-center">
                           <span className="text-[#8c9ca8] font-medium">Shipping</span>
                           <span className="text-gray-600 font-medium">
-                            ${(order?.shippingFee || 0).toFixed(2)}
+                            ${(order?.shippingCost || 0).toFixed(2)}
                           </span>
                         </div>
 
@@ -904,8 +906,8 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                         <div className="bg-gray-50/70 p-3 rounded-lg flex items-center gap-2 text-sm font-medium text-gray-500">
                           <BsBoxSeam className="w-4 h-4" />
                           Delivered on{" "}
-                          {order?.deliveredAt
-                            ? new Date(order.deliveredAt).toLocaleDateString()
+                          {order?.tracking?.deliveredAt
+                            ? new Date(order?.tracking?.deliveredAt).toLocaleDateString()
                             : "—"}
                         </div>
                       </div>
@@ -1007,7 +1009,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
 
                         <div className="flex justify-between items-center text-sm text-red-500 font-medium">
                           <span>Shipping</span>
-                          <span>—</span>
+                          <span>{order?.shippingCost}</span>
                         </div>
 
                         <div className="flex justify-between items-center text-sm text-[#1DAF61] font-medium">
@@ -1051,7 +1053,19 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                       <div className="text-gray-600 text-[15px] text-right space-y-1">
                         <div>{order?.shippingAddress?.name}</div>
                         <div>{order?.shippingAddress?.lineAddress}</div>
-                        <div>{order?.shippingAddress?.province}, {order?.shippingAddress?.postalCode}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-start gap-4">
+                      <span className="text-[#8c9ca8] text-sm shrink-0">Province</span>
+                      <div className="text-gray-600 text-[15px] text-right space-y-1">
+                        <div>{order?.shippingAddress?.province}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-start gap-4">
+                      <span className="text-[#8c9ca8] text-sm shrink-0">Phone</span>
+                      <div className="text-gray-600 text-[15px] text-right space-y-1">
                         <div>{order?.shippingAddress?.phone}</div>
                       </div>
                     </div>

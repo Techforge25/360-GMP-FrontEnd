@@ -16,8 +16,10 @@ import { useUserRole } from "@/context/UserContext";
 import ActionRequiredModal from "./ProfileSwitchModal";
 import ProfileSwitchModal from "@/components/dashboard/ProfileSwitchModal";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import Image from "next/image";
 
 export default function ProductInfo({ product }) {
+  console.log(product, "product overview")
   const router = useRouter();
   const { user, setOnboardingRole } = useUserRole();
   const { addToCart } = useCart();
@@ -88,16 +90,23 @@ export default function ProductInfo({ product }) {
       </div>
 
       {/* Price */}
-      <div className="flex justify-between items-end mb-6 pb-2">
+      <div className="flex justify-between items-end pb-2">
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-semibold text-black">
             ${product.pricePerUnit.toFixed(2)}
           </span>
           <span className="text-gray-500 text-base font-semibold">/Pc</span>
         </div>
+
         <span className="text-gray-500 text-sm">
           MOQ: {product.minOrderQty} pc
         </span>
+      </div>
+
+      <div className="flex items-center justify-between bg-[#e3e7ee] py-4 my-4 px-2 rounded-md">
+        <span className="text-black">{product.businessId.companyName}</span>
+        <hr />
+        <span className="text-[#22252b] bg-[#dfedff] px-4 py-1 rounded-md flex items-center gap-2"><Image src={"/assets/images/verified.png"} width={20} height={20} alt="verified" />verified supplier</span>
       </div>
 
       {/* Supplier Card */}
