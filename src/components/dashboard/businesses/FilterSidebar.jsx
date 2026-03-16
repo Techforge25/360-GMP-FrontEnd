@@ -18,7 +18,7 @@ const FilterGroup = ({
       onChange([...selectedValues, option]);
     }
   };
-
+  
   return (
     <div className="mb-6">
       <button

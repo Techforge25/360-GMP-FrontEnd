@@ -31,7 +31,7 @@ const BusinessMapView = dynamic(
 
 export default function ProfileOverview({ business, socialLinks = [] }) {
   const [isClient, setIsClient] = useState(false);
-  const [mapLocation, setMapLocation] = useState([51.505, -0.09]); // Default location
+  const [mapLocation, setMapLocation] = useState([]); // Default location
 
   const { user } = useUserRole();
   const role = user?.role;
@@ -308,7 +308,7 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
           {/* Map Display */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden py-3 px-5 mt-4">
             <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden">
-              {isClient && <BusinessMapView center={mapLocation} zoom={13} />}
+              {mapLocation.lenght>0? <BusinessMapView center={mapLocation} zoom={13} />:'Map Loading..'}
             </div>
           </div>
         </div>

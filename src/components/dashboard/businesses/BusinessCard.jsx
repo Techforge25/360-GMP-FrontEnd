@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import Image from "next/image";
 
 const BusinessCard = ({ business, onContactClick }) => {
   const { user } = useUserRole();
@@ -113,6 +114,8 @@ const BusinessCard = ({ business, onContactClick }) => {
     sponsored = false,
   } = business || {};
 
+  console.log(business, "bussines Data");
+
   return (
     <div
       className={`bg-[#F8F9FB] rounded-xl p-6 border-2 ${
@@ -129,11 +132,13 @@ const BusinessCard = ({ business, onContactClick }) => {
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 mb-4 ">
-        <div className="w-16 h-16 rounded-full border border-gray-100 shadow-sm flex items-center justify-center p-2 bg-white flex-shrink-0">
-          <img
+        <div className="">
+          <Image
             src={logo}
             alt={name}
-            className="w-full h-full object-contain"
+            width={100}
+            height={100}
+            className="w-[100px] h-[100px] rounded-lg shadow-md shadow-gray-300"
             onError={(e) => {
               e.target.style.display = "none";
             }}
@@ -144,7 +149,7 @@ const BusinessCard = ({ business, onContactClick }) => {
           <div className="flex flex-wrap items-center gap-2 mb-1">
             <h3
               onClick={handleViewProfile}
-              className="text-lg font-bold hover:underline text-gray-900 cursor-pointer"
+              className="text-[22px] font-bold hover:underline text-gray-900 cursor-pointer"
             >
               {name}
             </h3>
@@ -172,12 +177,14 @@ const BusinessCard = ({ business, onContactClick }) => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 bg-gray-50/50 rounded-lg p-4 mb-6 border border-gray-100">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50/50 rounded-lg p-4 mb-6 border border-gray-100">
         <div>
           <p className="text-sm text-black font-semibold mb-1">
             On-time delivery
           </p>
-          <p className="text-sm font-sm text-gray-600">N/A</p>
+          <p className="text-sm font-sm text-gray-600">
+            {business?.stats?.onTime}
+          </p>
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Reorder rate</p>
@@ -185,22 +192,9 @@ const BusinessCard = ({ business, onContactClick }) => {
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Response time</p>
-          <p className="text-sm font-sm text-gray-600">N/A</p>
-        </div>
-        <div>
-          <p className="text-sm text-black font-semibold mb-1">
-            Online revenue
+          <p className="text-sm font-sm text-gray-600">
+            {business?.stats?.responseRate}
           </p>
-          {isFreeTrial ? (
-            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-purple-50 border border-purple-100 rounded-full group cursor-pointer hover:bg-purple-100 transition-colors">
-              <FaCrown className="text-purple-600 text-[10px]" />
-              <span className="text-[11px] font-bold text-purple-600 uppercase tracking-tight">
-                Upgrade
-              </span>
-            </div>
-          ) : (
-            <p className="text-sm font-sm text-gray-600">N/A</p>
-          )}
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Products</p>

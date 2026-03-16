@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { CiMenuBurger } from "react-icons/ci";
 import { FiX } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
+import { TbMapSearch } from "react-icons/tb";
 
 export default function BusinessesPageContent() {
   const [businesses, setBusinesses] = useState([]);
@@ -294,17 +295,17 @@ export default function BusinessesPageContent() {
                     } `}
                 </h2>
 
-                {/* <div className="flex items-center gap-2">
+                <div className="flex items-center">
                   <Button
-                    size="sm"
-                    className="bg-[#240457] mx-auto lg:mx-0 text-white text-sm sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5"
+                    size="lg"
+                    className="bg-[#240457] mx-auto lg:mx-0 text-white lg:text-[16px] text-sm px-3 rounded-full sm:px-8 py-2 sm:py-6"
                   >
                     <span className="mr-1 sm:mr-2">
-                      <CiMenuBurger className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <TbMapSearch size={26} />
                     </span>{" "}
                     Open Map
                   </Button>
-                </div> */}
+                </div>
               </div>
 
               {/* Loading State */}

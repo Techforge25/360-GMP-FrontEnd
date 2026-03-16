@@ -10,7 +10,7 @@ import ProfileTestimonials from "./profile/ProfileTestimonials";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import socialLinkAPI from "@/services/socialLinkAPI";
 
-export default function BusinessProfileDetail({ businessId }) {
+export default function   BusinessProfileDetail({ businessId }) {
   const [businessData, setBusinessData] = useState(null);
   const [socialLinks, setSocialLinks] = useState([]);
   const [loading, setLoading] = useState(true);

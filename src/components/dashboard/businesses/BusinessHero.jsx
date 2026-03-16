@@ -2,6 +2,7 @@
 import React from "react";
 import { FiSearch, FiMapPin } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
+import { IoSend } from "react-icons/io5";
 
 const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
   const handleKeyDown = (e) => {
@@ -13,12 +14,12 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
   return (
     <div className="relative w-full h-[300px] xs:h-[320px] sm:h-[340px] md:h-[360px] lg:h-[400px] flex items-center justify-center overflow-hidden mb-4 sm:mb-6 lg:mb-8 px-2 sm:px-4 py-4">
       {/* Background with Overlay */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/90 to-blue-900/80 z-10" />
+      <div className="absolute -top-26  inset-0 z-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-900/10 to-blue-800/15 z-10" />
         <img
           src="/assets/images/businessHero.png"
           alt="Background"
-          className="w-full h-full object-cover"
+          className="w-full h-full"
           onError={(e) => {
             e.target.style.display = "none";
             e.target.parentElement.style.backgroundColor = "#1e3a8a";
@@ -64,8 +65,8 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
               className="bg-[#240457] text-white rounded-lg px-4 py-3 font-medium hover:bg-[#240457]/90 w-full transition-colors text-sm"
             >
               <div className="flex items-center justify-center gap-2">
-                <span>▶</span>
                 <span>Search</span>
+                <span><IoSend size={20} /></span>
               </div>
             </Button>
           </div>
@@ -96,9 +97,9 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch }) => {
             </div>
             <Button
               onClick={onSearch}
-              className="bg-[#240457] text-white rounded-lg px-6 lg:px-8 h-12 lg:h-14 font-medium hover:bg-[#240457]/90 flex-shrink-0 transition-colors flex items-center"
+              className="bg-[#240457] text-white rounded-lg px-4 lg:px-6 h-12 lg:h-14 font-medium hover:bg-[#240457]/90 flex-shrink-0 transition-colors flex items-center"
             >
-              <span className="text-white">▶</span>
+              <span className="text-white"><IoSend size={23} /></span>
             </Button>
           </div>
         </div>

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import { useFeaturedBusinesses } from "@/features/dashboard/businesses/useFeaturedBusinesses";
 import { getBusinessesBasePath } from "@/features/dashboard/businesses/mappers";
+import Image from "next/image";
 
 // Map View removed in favor of direct Google Maps link
 
@@ -134,10 +135,12 @@ const BusinessGrid = () => {
             >
               {/* Cover Image */}
               <div className="h-32 bg-gray-200 relative">
-                <img
+                <Image
                   src={biz.banner}
                   alt={biz.name}
-                  className="w-full h-full object-cover"
+                  width={100}
+                  height={100}
+                  className="w-[100px] h-[100px] rounded-lg shadow-md shadow-gray-300"
                   onError={(e) => {
                     e.target.src = "/assets/images/pBG.png";
                   }}
@@ -155,7 +158,7 @@ const BusinessGrid = () => {
                         }}
                       />
                     </div>
-                    <h1 className="text-lg text-black mt-6 ">{biz.name}</h1>
+                    <h1 className="text-lg text-black mt-6 font-semibold">{biz.name}</h1>
                   </div>
                 </div>
               </div>
