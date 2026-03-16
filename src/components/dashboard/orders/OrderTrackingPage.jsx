@@ -18,7 +18,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { BsBoxSeam } from "react-icons/bs";
 import DashboardFooter from "../DashboardFooter";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { IoShieldCheckmarkOutline } from "react-icons/io5";
 import ConfirmModal from "@/components/modal/ConfirmModal";
 import api from "@/lib/axios";
@@ -35,53 +35,46 @@ const OrderTrackingPage = ({ orderId }) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false)
   const [cancelling, setCancelling] = useState(false);
-  const [steps, setSteps] = useState([
+
+  const formatDate = (date) => {
+    if (!date) return "Pending";
+
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  console.log(order, "order")
+
+  const steps = [
     {
       label: "Order Placed",
-      date: new Date(order?.createdAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }) ?? "Pending",
+      date: formatDate(order?.createdAt),
       icon: HiOutlineDocumentText,
     },
     {
-      label: "Seller Preparing", date: order
-        ? new Date(order.createdAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-        : "Pending", icon: BiCube
+      label: "Seller Preparing",
+      date: formatDate(order?.processingAt),
+      icon: BiCube,
     },
     {
-      label: "Shipped", date: order
-        ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-        : "Pending", icon: TbTruckDelivery
+      label: "Shipped",
+      date: formatDate(order?.tracking?.shippedAt),
+      icon: TbTruckDelivery,
     },
     {
-      label: "Delivered", date: order
-        ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-        : "Pending", icon: BsBoxSeam
+      label: "Delivered",
+      date: formatDate(order?.tracking?.deliveredAt),
+      icon: BsBoxSeam,
     },
     {
-      label: "Completed", date: order
-        ? new Date(order.completedAt).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        })
-        : "Pending", icon: FiCheck
+      label: "Completed",
+      date: formatDate(order?.completedAt),
+      icon: FiCheck,
     },
-  ])
+  ];
 
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -89,58 +82,43 @@ const OrderTrackingPage = ({ orderId }) => {
     if (!data?.status) return;
 
     const status = data.status.toLowerCase();
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
+    const currentDate = new Date().toISOString();
 
-    // Update order state
+    console.log(currentDate)
+
     setOrder((prev) => ({
       ...prev,
       status,
-      updatedAt: currentDate.toISOString(),
       tracking: {
-        ...prev.tracking,
-        shippedAt: status === "shipped" ? currentDate.toISOString() : prev.tracking?.shippedAt,
-        deliveredAt: status === "delivered" ? currentDate.toISOString() : prev.tracking?.deliveredAt,
+        ...prev?.tracking,
+        shippedAt: status === "shipped" ? currentDate : prev?.tracking?.shippedAt,
+        deliveredAt: status === "delivered" ? currentDate : prev?.tracking?.deliveredAt,
       },
-      completedAt: status === "completed" ? currentDate.toISOString() : prev.completedAt,
+      completedAt: status === "completed" ? currentDate : prev?.completedAt,
     }));
 
-    // Update steps dynamically
-    setSteps((prevSteps) => {
-      console.log(prevSteps, "prefios steps")
-      const updated = [...prevSteps];
-      console.log(status, "status of order")
-      switch (status) {
-        case "processing":
-        case "preparing":
-          updated[1].date = formattedDate; // Seller Preparing
-          setActiveStep(1);
-          break;
-        case "shipped":
-          updated[2].date = formattedDate; // Shipped
-          setActiveStep(2);
-          break;
-        case "delivered":
-          updated[3].date = formattedDate; // Delivered
-          setActiveStep(3);
-          break;
-        case "completed":
-          updated[4].date = formattedDate; // Completed
-          setActiveStep(4);
-          setIsFinalCompleted(true);
-          break;
-        default:
-          updated[0].date = formattedDate; // Order Placed / fallback
-          setActiveStep(0);
-          break;
-      }
+    switch (status) {
+      case "processing":
+      case "preparing":
+        setActiveStep(1);
+        break;
 
-      return updated;
-    });
+      case "shipped":
+        setActiveStep(2);
+        break;
+
+      case "delivered":
+        setActiveStep(3);
+        break;
+
+      case "completed":
+        setActiveStep(4);
+        setIsFinalCompleted(true);
+        break;
+
+      default:
+        setActiveStep(0);
+    }
   });
 
   useEffect(() => {
@@ -310,7 +288,7 @@ const OrderTrackingPage = ({ orderId }) => {
               const isPast = index < activeStep || (index === steps.length - 1 && isFinalCompleted);
               const isActive = index === activeStep && !isFinalCompleted;
               const isFuture = index > activeStep;
-
+              console.log(step, "stepped")
               return (
                 <div key={index} className="relative z-10 flex flex-col items-center cursor-pointer group w-24 sm:w-32">
                   <div
