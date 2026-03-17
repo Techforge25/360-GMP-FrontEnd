@@ -35,6 +35,10 @@ const OrderTrackingPage = ({ orderId }) => {
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false)
   const [cancelling, setCancelling] = useState(false);
+  const [reason, setReason] = useState("")
+  // const [steps, setSteps] = useState([
+
+  // ])
 
   const formatDate = (date) => {
     if (!date) return "Pending";
@@ -45,8 +49,6 @@ const OrderTrackingPage = ({ orderId }) => {
       year: "numeric",
     });
   };
-
-  console.log(order, "order")
 
   const steps = [
     {
@@ -189,7 +191,7 @@ const OrderTrackingPage = ({ orderId }) => {
     setShowCancelModal(false);
 
     try {
-      const res = await axios.get(`${API_URL}/orders/${orderId}/cancel`, {
+      const res = await axios.patch(`${API_URL}/orders/${orderId}/cancel`, {
         withCredentials: true,
       });
 
@@ -415,128 +417,131 @@ const OrderTrackingPage = ({ orderId }) => {
                   })}
                 </div>
               </div>
-              <div className="space-y-6">
-                {/* Timeline Card */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                    <div className="bg-[#FAF9FF] p-2 rounded-lg">
-                      <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
+
+              {activeStep === 4 && isFinalCompleted && (
+                <div className="space-y-6">
+                  {/* Timeline Card */}
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                      <div className="bg-[#FAF9FF] p-2 rounded-lg">
+                        <HiOutlineDocumentText className="w-5 h-5 text-[#5C24D2]" />
+                      </div>
+                      <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
                     </div>
-                    <h2 className="font-bold text-gray-900 text-[17px]">Timeline</h2>
-                  </div>
-                  <div className="p-6">
-                    <div className="relative pl-8 space-y-8 pb-4">
-                      <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
-                      {[
-                        {
-                          date: order?.createdAt
-                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                            : "Pending",
-                          time: order?.createdAt
-                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            })
-                            : "Pending",
-                          title: "Order placed",
-                          desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
-                          active: true,
-                        },
-                        {
-                          date: order?.createdAt
-                            ? new Date(order.createdAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                            : "Pending",
-                          time: order?.createdAt
-                            ? new Date(order.createdAt).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            })
-                            : "Pending",
-                          title: "Prepare Shipment",
-                          desc: "You Are Preparing The Parcel For Shipping",
-                          active: order?.status !== "pending",
-                        },
-                        {
-                          date: order?.tracking?.shippedAt
-                            ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                            : "Pending",
-                          time: order?.tracking?.shippedAt
-                            ? new Date(order.tracking.shippedAt).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            })
-                            : "Pending",
-                          title: "Shipped",
-                          desc: "Shipped The Item To Buyer Location Courier Service FedEx",
-                          active: ["shipped", "delivered", "completed"].includes(order?.status),
-                        },
-                        {
-                          date: order?.tracking?.deliveredAt
-                            ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                            : "Pending",
-                          time: order?.tracking?.deliveredAt
-                            ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            })
-                            : "Pending",
-                          title: "Delivered",
-                          desc: "Parcel Successfully Delivered To Buyer",
-                          active: ["delivered", "completed"].includes(order?.status),
-                        },
-                        {
-                          date: "MAR 13, 2026",
-                          time: "10:30 AM", // if you have a real date, you can format it dynamically too
-                          title: "Fund Released",
-                          desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
-                          active: order?.status === "completed",
-                        },
-                      ].map((item, idx) => (
-                        <div key={idx} className="relative">
-                          <div
-                            className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? "bg-[#5C24D2]" : "bg-[#1E0B4B]"
-                              }`}
-                          ></div>
+                    <div className="p-6">
+                      <div className="relative pl-8 space-y-8 pb-4">
+                        <div className="absolute left-[15px] top-2 bottom-2 w-0.5 bg-gray-100"></div>
+                        {[
+                          {
+                            date: order?.createdAt
+                              ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                              : "Pending",
+                            time: order?.createdAt
+                              ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              : "Pending",
+                            title: "Order placed",
+                            desc: `Order Placed By Buyer: ${order?.userProfile?.fullName || "Customer"}`,
+                            active: true,
+                          },
+                          {
+                            date: order?.createdAt
+                              ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                              : "Pending",
+                            time: order?.createdAt
+                              ? new Date(order.createdAt).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              : "Pending",
+                            title: "Prepare Shipment",
+                            desc: "You Are Preparing The Parcel For Shipping",
+                            active: order?.status !== "pending",
+                          },
+                          {
+                            date: order?.tracking?.shippedAt
+                              ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                              : "Pending",
+                            time: order?.tracking?.shippedAt
+                              ? new Date(order.tracking.shippedAt).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              : "Pending",
+                            title: "Shipped",
+                            desc: "Shipped The Item To Buyer Location Courier Service FedEx",
+                            active: ["shipped", "delivered", "completed"].includes(order?.status),
+                          },
+                          {
+                            date: order?.tracking?.deliveredAt
+                              ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                              : "Pending",
+                            time: order?.tracking?.deliveredAt
+                              ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              : "Pending",
+                            title: "Delivered",
+                            desc: "Parcel Successfully Delivered To Buyer",
+                            active: ["delivered", "completed"].includes(order?.status),
+                          },
+                          {
+                            date: "MAR 13, 2026",
+                            time: "10:30 AM", // if you have a real date, you can format it dynamically too
+                            title: "Fund Released",
+                            desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
+                            active: order?.status === "completed",
+                          },
+                        ].map((item, idx) => (
+                          <div key={idx} className="relative">
+                            <div
+                              className={`absolute -left-[33px] mt-1.5 w-4 h-4 rounded-full ring-4 ring-white z-10 ${item.active ? "bg-[#5C24D2]" : "bg-[#1E0B4B]"
+                                }`}
+                            ></div>
 
-                          <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
-                            <span>{item.date}</span>
-                            <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
-                            <span>{item.time}</span>
+                            <div className="flex items-center gap-2 text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-2">
+                              <span>{item.date}</span>
+                              <div className="w-1 h-1 bg-[#8c9ca8] rounded-full"></div>
+                              <span>{item.time}</span>
+                            </div>
+
+                            <h3 className="font-bold text-gray-900 text-[16px] mb-1">
+                              {item.title}
+                            </h3>
+
+                            <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">
+                              {item.desc}
+                            </p>
                           </div>
-
-                          <h3 className="font-bold text-gray-900 text-[16px] mb-1">
-                            {item.title}
-                          </h3>
-
-                          <p className="text-[#8c9ca8] font-medium text-[14px] leading-relaxed max-w-2xl">
-                            {item.desc}
-                          </p>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Dynamic Card (Order Placed vs Seller Preparing) */}
               {activeStep === 0 && order?.businessProfile && (
@@ -1046,9 +1051,31 @@ const OrderTrackingPage = ({ orderId }) => {
 
       </div>
 
+      {showCancelModal && (
+        <ConfirmModal
+          isOpen={showCancelModal}
+          onClose={() => setShowCancelModal(false)}
+          orderId={orderId}
+          // onConfirm={confirmCancel}
+          title="Cancel Order"
+          message="Are you sure you want to cancel this order? This action cannot be undone."
+          confirmText="Yes, Cancel Order"
+          cancelText="No, Keep Order"
+          isLoading={cancelling}
+          setReason={setReason}
+          reason={reason}
+          setCancelling={setCancelling}
+          setShowCancelModal={setShowCancelModal}
+          danger={true} // red button
+        />
+      )}
+
+
+
       {/* Footer */}
       <DashboardFooter />
-      <ConfirmModal
+
+      {/* <ConfirmModal
         isOpen={showCancelModal}
         onClose={() => setShowCancelModal(false)}
         onConfirm={confirmCancel}
@@ -1058,7 +1085,7 @@ const OrderTrackingPage = ({ orderId }) => {
         cancelText="No, Keep Order"
         isLoading={cancelling}
         danger={true} // red button
-      />
+      /> */}
     </div>
   );
 };

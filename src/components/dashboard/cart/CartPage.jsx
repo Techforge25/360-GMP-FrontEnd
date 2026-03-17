@@ -252,6 +252,7 @@ const CartPage = () => {
                               <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 h-8 sm:h-9">
                                 <button
                                   type="button"
+                                  disabled={product.minOrderQty >= product.quantity}
                                   onClick={() => decrementQuantity(product._id)}
                                   className="w-8 sm:w-9 h-full flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-700 rounded-l-lg transition-colors"
                                 >
@@ -306,11 +307,10 @@ const CartPage = () => {
                 <div className="flex gap-3">
                   {products.map((product, index) => {
                     return (
-                      <div className="mb-4 sm:mb-6 relative inline-block">
+                      <div key={index} className="mb-4 sm:mb-6 relative inline-block">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-100 rounded overflow-hidden border border-gray-200">
                           <img
                             src={product.image || "/assets/images/earbuds.png"}
-                            key={index}
                             alt="Item"
                             className="w-full h-full object-cover"
                             onError={(e) => {

@@ -17,9 +17,9 @@ import ActionRequiredModal from "./ProfileSwitchModal";
 import ProfileSwitchModal from "@/components/dashboard/ProfileSwitchModal";
 import SlateRenderer from "@/components/ui/SlateRenderer";
 import Image from "next/image";
+import { useProductBuy } from "@/hooks/useProductBuy";
 
 export default function ProductInfo({ product }) {
-  console.log(product, "product overview")
   const router = useRouter();
   const { user, setOnboardingRole } = useUserRole();
   const { addToCart } = useCart();
@@ -104,7 +104,10 @@ export default function ProductInfo({ product }) {
       </div>
 
       <div className="flex items-center justify-between bg-[#e3e7ee] py-4 my-4 px-2 rounded-md">
-        <span className="text-black">{product.businessId.companyName}</span>
+        <div className="flex items-center gap-2">
+          <Image width={40} height={50} src={product.businessId.logo} alt="logo" className="rounded-md" />
+          <span className="text-black">{product.businessId.companyName}</span>
+        </div>
         <hr />
         <span className="text-[#22252b] bg-[#dfedff] px-4 py-1 rounded-md flex items-center gap-2"><Image src={"/assets/images/verified.png"} width={20} height={20} alt="verified" />verified supplier</span>
       </div>
@@ -213,9 +216,10 @@ export default function ProductInfo({ product }) {
       <div className="flex gap-4 mb-8">
         <button
           onClick={handleAddToCart}
-          className="flex-1 bg-[#240457] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors"
+          disabled={product.isOwner}
+          className="flex-1 bg-[#240457] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Add To Cart <FaShoppingCart />
+          Add To Cart  <FaShoppingCart />
         </button>
         <button className="flex-1 border border-gray-200 text-gray-700 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
           Chat Now <FaCommentAlt />

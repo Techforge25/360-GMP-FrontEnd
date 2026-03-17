@@ -3,31 +3,44 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 
-const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-40 bg-gray-50 border border-gray-200 rounded-lg animate-pulse flex items-center justify-center text-gray-400">
-      Loading Editor...
-    </div>
-  ),
-});
+// const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
+//   ssr: false,
+//   loading: () => (
+//     <div className="h-40 bg-gray-50 border border-gray-200 rounded-lg animate-pulse flex items-center justify-center text-gray-400">
+//       Loading Editor...
+//     </div>
+//   ),
+// });
+
 import productAPI from "@/services/productAPI";
 import React, { useRef, useState } from "react";
+import CKEditorField from "@/components/ui/CKEditor";
+// import CKEditorField from "@/components/CKEditorField";
+
+// const CKEditor = dynamic(
+//   () => import("@/components/ui/CKEditorField").then(mod => mod.CKEditor),
+//   { ssr: false }
+// );
+
 
 const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [errors, setErrors] = useState({});
   const [descLength, setDescLength] = useState(0);
+
   const [formData, setFormData] = useState({
     title: "",
     category: "",
     minOrderQty: "",
     pricePerUnit: "",
-    tieredPricing: "",
-    description: "",
     isSingleProductAvailable: false,
-    shippingMethod: "FOB (Free On Board)",
+    tieredPricing: [{
+      qty: "",
+      price: 0
+    }],
+    description: "",
     estimatedDeliveryDays: "",
     stockQty: "",
     lowStockThreshold: 5,
@@ -37,18 +50,62 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     isFeatured: false,
   });
 
+  const step1DisabledNext =
+    currentStep === 1 &&
+    (
+      !formData.title ||
+      !formData.category ||
+      !formData.minOrderQty ||
+      !formData.pricePerUnit ||
+      !formData.description ||
+      !formData.lowStockThreshold ||
+
+      errors.title ||
+      errors.category ||
+      errors.minOrderQty ||
+      errors.pricePerUnit ||
+      errors.tieredPricing ||
+      errors.lowStockThreshold ||
+      errors.description
+    );
+
+  const step2DisabledNext =
+    currentStep === 2 &&
+    (
+      !formData.estimatedDeliveryDays ||
+      !formData.stockQty ||
+
+      errors.estimatedDeliveryDays ||
+      errors.category
+    );
+
+  const step3DisabledNext =
+    currentStep === 3 &&
+    (
+      !formData.previewImage ||
+
+      errors.previewImage
+    );
+
   const mainImageInputRef = useRef(null);
   const galleryInputRef = useRef(null);
 
   // Populate form data if editing
   React.useEffect(() => {
     if (editProduct && isOpen) {
-      // Format tiered pricing Map/Object to string "Q:P, Q:P"
-      let tieredString = "";
-      if (editProduct.tieredPricing) {
-        tieredString = Object.entries(editProduct.tieredPricing)
-          .map(([q, p]) => `${q}:${p}`)
-          .join(", ");
+      // Convert backend Object → Array
+      let tieredArray = [{ qty: "", price: 0 }];
+
+      if (
+        editProduct.tieredPricing &&
+        typeof editProduct.tieredPricing === "object"
+      ) {
+        tieredArray = Object.entries(editProduct.tieredPricing).map(
+          ([q, p]) => ({
+            qty: q,
+            price: Number(p),
+          })
+        );
       }
 
       setFormData({
@@ -56,17 +113,16 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         category: editProduct.category || "",
         minOrderQty: editProduct.minOrderQty || "",
         pricePerUnit: editProduct.pricePerUnit || "",
-        tieredPricing: tieredString,
+        tieredPricing: tieredArray,
         description:
           editProduct.detail ||
           JSON.stringify([{ type: "paragraph", children: [{ text: "" }] }]),
         isSingleProductAvailable: editProduct.isSingleProductAvailable || false,
-        shippingMethod: editProduct.shippingMethod || "FOB (Free On Board)",
         estimatedDeliveryDays: editProduct.estimatedDeliveryDays || "",
         stockQty: editProduct.stockQty || "",
         lowStockThreshold: editProduct.lowStockThreshold || 5,
-        mainImage: null, // New file not selected yet
-        previewImage: editProduct.image || null, // Existing image URL
+        mainImage: null,
+        previewImage: editProduct.image || null,
         galleryImages: (editProduct.groupImages || []).map((url) => ({
           file: null,
           previewUrl: url,
@@ -74,18 +130,14 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         isFeatured: editProduct.isFeatured || false,
       });
     } else if (isOpen && !editProduct) {
-      // Reset if opening in Add mode
       setFormData({
         title: "",
         category: "",
         minOrderQty: "",
         pricePerUnit: "",
-        tieredPricing: "",
-        description: JSON.stringify([
-          { type: "paragraph", children: [{ text: "" }] },
-        ]),
+        tieredPricing: [{ qty: "", price: 0 }],
+        description: "",
         isSingleProductAvailable: false,
-        shippingMethod: "FOB (Free On Board)",
         estimatedDeliveryDays: "",
         stockQty: "",
         lowStockThreshold: 5,
@@ -94,6 +146,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         galleryImages: [],
         isFeatured: false,
       });
+
       setCurrentStep(1);
     }
   }, [editProduct, isOpen]);
@@ -107,17 +160,66 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     }));
   };
 
-  const handleStandardInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const addTier = () => {
+    if (formData.tieredPricing.length >= 4) return;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      tieredPricing: [...prev.tieredPricing, { qty: "", price: 0 }],
+    }));
+  };
+
+  const updateTier = (index, field, value) => {
+    const updated = [...formData.tieredPricing];
+    updated[index][field] = value;
+
+    setFormData((prev) => ({
+      ...prev,
+      tieredPricing: updated,
+    }));
+
+  };
+
+  const removeTier = (index) => {
+    const updated = formData.tieredPricing.filter((_, i) => i !== index);
+
+    setFormData((prev) => ({
+      ...prev,
+      tieredPricing: updated,
+    }));
+  };
+
+  const handleStandardInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    const finalValue = type === "checkbox" ? checked : value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: finalValue,
+    }));
+
+    // ✅ Validate field
+    const error = validateField(name, finalValue, {
+      ...formData,
+      [name]: finalValue,
+    });
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
     }));
   };
 
   const handleNext = () => {
     // Basic validation could go here
-    if (currentStep < 3) setCurrentStep(currentStep + 1);
+    if (step1DisabledNext) {
+      setCurrentStep(1)
+    } else if (step2DisabledNext) {
+      setCurrentStep(2)
+    } else {
+      setCurrentStep(3)
+    }
   };
 
   const handleBack = () => {
@@ -126,6 +228,14 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
   const handleMainImageChange = async (e) => {
     const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setErrors((prev) => ({
+        ...prev,
+        image: "Only image files allowed",
+      }));
+    }
     if (file) {
       // Create preview
       const previewUrl = URL.createObjectURL(file);
@@ -197,17 +307,18 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
       // Parse Tiered Pricing
       let tieredPricingMap = {};
-      if (formData.tieredPricing) {
-        const parts = formData.tieredPricing.split(",");
-        parts.forEach((part) => {
-          if (part.includes(":")) {
-            const [qty, price] = part.split(":").map((s) => s.trim());
-            if (qty && price) {
-              tieredPricingMap[qty] = Number(price);
-            }
+
+
+      if (Array.isArray(formData.tieredPricing)) {
+        formData.tieredPricing.forEach((tier) => {
+          if (tier.qty && tier.price !== undefined && tier.price !== "") {
+            tieredPricingMap[tier.qty] = Number(tier.price);
           }
         });
       }
+
+      console.log(formData.tieredPricing, "tieredPricing")
+
 
       const payload = {
         title: formData.title,
@@ -215,14 +326,13 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         minOrderQty: Number(formData.minOrderQty),
         pricePerUnit: Number(formData.pricePerUnit),
         detail: formData.description,
-        shippingMethod: formData.shippingMethod,
         estimatedDeliveryDays: formData.estimatedDeliveryDays,
         image: imageUrl,
-        groupImages: galleryUrls.slice(0, 3), // Backend allows max 3
+        groupImages: galleryUrls.slice(0, 3),
         stockQty: Number(formData.stockQty) || 0,
         lowStockThreshold: Number(formData.lowStockThreshold),
         isSingleProductAvailable: formData.isSingleProductAvailable,
-        tieredPricing: tieredPricingMap,
+        tieredPricing: formData.tieredPricing,
         shippingCost: 0,
         status: "approved",
       };
@@ -257,6 +367,56 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     }
   };
 
+  const validateField = (name, value, formData) => {
+    let error = "";
+
+    switch (name) {
+      case "title":
+        if (!value.trim()) error = "Product title is required";
+        else if (value.length < 3) error = "Minimum 3 characters";
+        else if (value.length > 150) error = "Max 150 characters";
+        break;
+
+      case "category":
+        if (!value) error = "Category is required";
+        break;
+
+      case "pricePerUnit":
+        if (!value) error = "Price is required";
+        else if (Number(value) <= 0) error = "Must be positive";
+        break;
+
+      case "minOrderQty":
+        if (!value) error = "Minimum order quantity required";
+        else if (Number(value) < 1) error = "Must be at least 1";
+        break;
+
+      case "stockQty":
+        if (!value) error = "Stock quantity required";
+        else if (Number(value) < Number(formData.minOrderQty || 0)) {
+          error = "Stock must be Greater than or equals to Min Order Qty";
+        }
+        break;
+
+      case "lowStockThreshold":
+        if (value && Number(value) < 1) {
+          error = "Must be at least 1";
+        }
+        break;
+
+      case "estimatedDeliveryDays":
+        if (!value) error = "Delivery time required";
+        break;
+
+      default:
+        break;
+    }
+
+    return error;
+  };
+
+  console.log(errors, "errors")
+
   const renderStepIndicator = () => (
     <div className="flex justify-between items-center mb-6">
       <button
@@ -270,6 +430,11 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       </span>
     </div>
   );
+
+  const findQtySingle = () => {
+    const data = formData.tieredPricing.find((item) => item.qty !== "1")
+    return data
+  }
 
   const renderStep1 = () => (
     <div className="space-y-4">
@@ -290,6 +455,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             <option value="Textiles">Textiles</option>
             <option value="Raw Materials">Raw Materials</option>
           </select>
+          {errors.category && (
+            <p className="text-red-500 text-xs mt-1">{errors.category}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -303,6 +471,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             placeholder="Product Title"
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
+          {errors.title && (
+            <p className="text-red-500 text-xs mt-1">{errors.title}</p>
+          )}
         </div>
       </div>
 
@@ -319,6 +490,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             placeholder="e.g 100 Units"
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
+          {errors.minOrderQty && (
+            <p className="text-red-500 text-xs mt-1">{errors.minOrderQty}</p>
+          )}
         </div>
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -332,41 +506,100 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             placeholder="$50 USD"
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
+          {errors.pricePerUnit && (
+            <p className="text-red-500 text-xs mt-1">{errors.pricePerUnit}</p>
+          )}
         </div>
       </div>
 
+      {/* Tiered Pricing */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Tiered Pricing (Q: Price, Q: Price)
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          Tiered Pricing
         </label>
-        <input
-          type="text"
-          name="tieredPricing"
-          value={formData.tieredPricing}
-          onChange={handleStandardInputChange}
-          placeholder="e.g., 100:150.00, 500:120.00"
-          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        />
+
+        {formData.tieredPricing.map((tier, index) => (
+          <div key={index} className="flex gap-3 mb-3">
+            {/* Quantity */}
+            <input
+              type="text"
+              value={formData.isSingleProductAvailable && findQtySingle() ? "1" : tier.qty}
+              onChange={(e) =>
+                updateTier(index, "qty", e.target.value)
+              }
+              placeholder="Quantity (e.g. 1-100)"
+              className="flex-1 text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+
+            {/* Price */}
+            <input
+              type="number"
+              step="0.01"
+              value={tier.price}
+              onChange={(e) =>
+                updateTier(index, "price", Number(e.target.value))
+              }
+              placeholder="Price"
+              className="flex-1 text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+
+
+            {/* Remove */}
+            {formData.tieredPricing.length > 1 && (
+              <button
+                type="button"
+                onClick={() => removeTier(index)}
+                className="px-3 text-red-500 hover:text-red-700"
+              >
+                <FiTrash2 />
+              </button>
+            )}
+
+          </div>
+        ))}
+        {errors.tieredPricing && (
+          <p className="text-red-500 text-xs my-3">{errors.tieredPricing}</p>
+        )}
+
+        {/* Add Button */}
+        {formData.tieredPricing.length < 4 && (
+          <button
+            type="button"
+            onClick={addTier}
+            className="flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800"
+          >
+            <FiPlus /> Add Tier
+          </button>
+        )}
       </div>
 
-      <div>
+
+      <div className="flex items-start gap-3">
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Single Product
         </label>
-        <select
+        <input
+          type="checkbox"
           name="isSingleProductAvailable"
-          value={formData.isSingleProductAvailable}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              isSingleProductAvailable: e.target.value === "true",
-            })
-          }
-          className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-        >
-          <option value="false">Bulk Only</option>
-          <option value="true">Single Product Available</option>
-        </select>
+          checked={formData.isSingleProductAvailable}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setFormData((prev) => ({
+              ...prev,
+              isSingleProductAvailable: checked,
+              tieredPricing: [
+                {
+                  qty: checked ? "1" : "",
+                  price: prev.tieredPricing[0]?.price || 0,
+                },
+              ],
+            }));
+          }}
+          className="w-4 h-4 border-2 border-gray-300 rounded-md checked:border-indigo-600 checked:bg-indigo-50 transition-all cursor-pointer"
+        />
+        {errors.isSingleProductAvailable && (
+          <p className="text-red-500 text-xs mt-1">{errors.isSingleProductAvailable}</p>
+        )}
       </div>
 
       <div>
@@ -381,6 +614,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           placeholder="10 units"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
+        {errors.lowStockThreshold && (
+          <p className="text-red-500 text-xs mt-1">{errors.lowStockThreshold}</p>
+        )}
       </div>
 
       <div className="flex justify-between items-center mb-1">
@@ -393,13 +629,26 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           {descLength} / 5000
         </span>
       </div>
-      <SlateEditor
+      <CKEditorField
         value={formData.description}
-        onChange={(val) => handleInputChange("description", val)}
-        onLengthChange={(len) => setDescLength(len)}
+        onChange={(val) => {
+          handleInputChange("description", val);
+
+          const text = val.replace(/<[^>]*>/g, "");
+          if (text.length > 2000) {
+            setErrors((prev) => ({
+              ...prev,
+              description: "Max 2000 characters allowed",
+            }));
+          } else {
+            setErrors((prev) => ({
+              ...prev,
+              description: "",
+            }));
+          }
+        }} onLengthChange={(len) => setDescLength(len)}
         placeholder="Detailed job description..."
         maxLength={5000}
-        className="text-black"
       />
       {descLength >= 5000 && (
         <p className="text-red-500 text-[12px] mt-1 italic">
@@ -417,19 +666,22 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Lead Time
+          Preparing Time
         </label>
         <input
           type="text"
           name="estimatedDeliveryDays"
           value={formData.estimatedDeliveryDays}
           onChange={handleStandardInputChange}
-          placeholder="Estimated Production Days Based On Order Quantity (e.g., 'Ready To Ship In 7 Days')"
+          placeholder="Eg: 1-3 Days"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
+        {errors.estimatedDeliveryDays && (
+          <p className="text-red-500 text-xs mt-1">{errors.estimatedDeliveryDays}</p>
+        )}
       </div>
 
-      <div>
+      {/* <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Shipping Terms
         </label>
@@ -448,7 +700,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         <p className="text-[14px] text-gray-400 mt-1">
           Select the shipping term applicable for this product.
         </p>
-      </div>
+      </div> */}
 
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -462,6 +714,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           placeholder="e.g. 1000"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
+        {errors.stockQty && (
+          <p className="text-red-500 text-xs mt-1">{errors.stockQty}</p>
+        )}
       </div>
     </div>
   );
@@ -488,6 +743,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
                 fill
                 className="object-contain"
               />
+              {errors.previewImage && (
+                <p className="text-red-500 text-xs mt-1">{errors.previewImage}</p>
+              )}
             </div>
           ) : (
             <>
@@ -599,7 +857,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
           {renderStepIndicator()}
-
           {currentStep === 1 && renderStep1()}
           {currentStep === 2 && renderStep2()}
           {currentStep === 3 && renderStep3()}
@@ -617,7 +874,8 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           {currentStep < 3 ? (
             <button
               onClick={handleNext}
-              className="px-8 py-2.5 bg-[#2e1065] text-white text-sm font-bold rounded-lg hover:bg-[#1e0a45] transition-colors"
+              disabled={step1DisabledNext || step2DisabledNext || step3DisabledNext}
+              className="px-8 py-2.5 bg-[#2e1065] text-white text-sm font-bold rounded-lg hover:bg-[#1e0a45] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
             </button>

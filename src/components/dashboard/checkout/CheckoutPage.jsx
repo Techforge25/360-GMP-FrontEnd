@@ -12,6 +12,9 @@ import axios from "axios"
 import { toast } from "react-toastify";
 import PhoneInput from 'react-phone-number-input';
 import 'react-phone-number-input/style.css';
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { checkoutSchema } from "@/validations/cart";
 
 const CheckoutPage = () => {
   const { cartItems } = useCart();
@@ -19,63 +22,70 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(true);
   const [isPaid, setIsPaid] = useState(false);
   // Form State
-  const [formData, setFormData] = useState({
-    country: "United State",
-    fullName: "",
-    phone1: "",
-    lineAddress1: "",           // ← ADD THIS
-    lineAddress2: "",           // ← ADD THIS
-    state: "",
-    zipCode: "",
-    isDefault: true,
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm({
+    resolver: yupResolver(checkoutSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: {
+      country: "United States",
+      fullName: "",
+      phone1: "",
+      lineAddress1: "",
+      lineAddress2: "",
+      state: "",
+      zipCode: "",
+      isDefault: true,
+    },
   });
 
   const [submitting, setSubmitting] = useState(false);
 
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  };
-
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  // Simple validation (add more if needed)
-  // if (!formData.fullName || !formData.phone1 || !formData.streetAddress || !formData.state || !formData.zipCode) {
-  //   alert("Please fill all required shipping fields");
-  //   return;
-  // }
-
-  console.log(cartItems, "cardssss")
-
-
-  const handleSubmit = async () => {
+  const onSubmit = async (data) => {
     if (submitting) return;
+
     setSubmitting(true);
+
     try {
-      const res = await axios.post(`${API_URL}/orders/stripe`, {
-        shippingAddress: {
-          name: formData.fullName,
-          phone: formData.phone1,
-          lineAddress: [formData.lineAddress1, formData.lineAddress2 || ''],
-          province: formData.state,
-          postalCode: formData.zipCode,
+      const res = await axios.post(
+        `${API_URL}/orders/stripe`,
+        {
+          shippingAddress: {
+            name: data.fullName,
+            phone: data.phone1,
+            lineAddress: [
+              data.lineAddress1,
+              data.lineAddress2,
+            ].filter(Boolean),
+            province: data.state,
+            postalCode: data.zipCode,
+          },
+          items: cartItems,
         },
-        items: cartItems, // [{ productId, quantity }]
-      }, { withCredentials: true });
-      const data = await res.data.data;
-      console.log("success")
-      localStorage.removeItem("cart")
-      if (data) {
-        window.location.href = data; // redirect to Stripe Checkout
+        { withCredentials: true }
+      );
+
+      const response = res.data?.data;
+
+      if (response) {
+        localStorage.removeItem("cart");
+        window.location.href = response;
       } else {
-        toast.error(err.response?.data?.message || err.message || "Something went wrong");
+        toast.error("Something went wrong");
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || err.message || "Something went wrong");
+      toast.error(
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong"
+      );
     } finally {
       setSubmitting(false);
     }
@@ -154,7 +164,6 @@ const CheckoutPage = () => {
   const shippingDiscount = 0;
   const total = subtotal + shipping - shippingDiscount;
 
-  // Handle empty cart
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -254,6 +263,8 @@ const CheckoutPage = () => {
     );
   }
 
+  console.log(errors.fullName, "full name error")
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Breadcrumb */}
@@ -293,127 +304,148 @@ const CheckoutPage = () => {
                 </div>
 
                 {/* Form */}
-                <div className="space-y-6 pb-6">
-                  {/* Country/Region – static for now */}
-                  {/* <div>
-                    <label className="block text-sm font-bold text-gray-900 mb-2">
-                      Country/Region
-                    </label>
-                    <div className="relative">
-                      <div className="w-full border border-gray-200 rounded-lg px-4 py-3 flex items-center justify-between bg-white cursor-pointer hover:border-gray-300 transition-colors">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src="https://flagcdn.com/w40/us.png"
-                            alt="US"
-                            className="w-6 h-4 object-cover rounded-sm"
-                          />
-                          <span className="text-sm text-gray-700">United State</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 pb-6">
 
                   {/* Full Name + Phone */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    {/* Full Name */}
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-2">Full Name</label>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">
+                        Full Name
+                      </label>
+
                       <input
                         type="text"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={(e) => {
-                          const lettersOnly = e.target.value.replace(/[^a-zA-Z]/g, "");
-                          setFormData({ ...formData, fullName: lettersOnly });
-                        }} placeholder="Full Name *"
+                        {...register("fullName")}
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-                        required
                       />
+
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.fullName?.message}
+                      </p>
                     </div>
+
+                    {/* Phone */}
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-2">Phone</label>
-                      <PhoneInput
-                        international
-                        defaultCountry="PK"  // Pakistan default
-                        value={formData.phone1}
-                        onChange={(value) => setFormData(prev => ({ ...prev, phone1: value || '' }))}
-                        placeholder="Phone Number *"
+                      <label className="block text-sm font-bold text-gray-900 mb-2">
+                        Phone
+                      </label>
 
-                        // Yeh props sahi hain aur library accept karti hai
-                        numberInputProps={{
-                          className: "flex-1 text-black px-4 py-3 text-sm focus:outline-none placeholder-gray-400"
-                          // Yeh internal <input> pe jaayega – tumhara original input style
-                        }}
+                      <Controller
+                        name="phone1"
+                        control={control}
+                        render={({ field }) => (
+                          <PhoneInput
+                            {...field}
+                            international
+                            defaultCountry="PK"
+                            placeholder="Phone Number *"
 
-                        // Agar country select button ko style karna hai (flag + code wala part)
-                        countrySelectProps={{
-                          className: "bg-gray-50 border-r border-gray-200 px-3 py-3 text-sm text-gray-700 min-w-[70px] flex items-center justify-center hover:bg-gray-100 transition-colors"
-                        }}
+                            numberInputProps={{
+                              className:
+                                "flex-1 text-black px-4 py-3 text-sm focus:outline-none placeholder-gray-400",
+                            }}
 
-                        // Overall container ko style karne ke liye (border, rounded, focus ring)
-                        className="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#240457]"
+                            countrySelectProps={{
+                              className:
+                                "bg-gray-50 border-r border-gray-200 px-3 py-3 text-sm text-gray-700 min-w-[70px] flex items-center justify-center hover:bg-gray-100 transition-colors",
+                            }}
 
-                        // Optional: aria label for accessibility
-                        aria-label="Phone number with country code"
+                            className="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-[#240457]"
+
+                            aria-label="Phone number with country code"
+                          />
+                        )}
                       />
-                      <p className="text-sm text-gray-400 mt-1">Only Used To Contact You For Delivery Updates</p>
+
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.phone1?.message}
+                      </p>
+
+                      <p className="text-sm text-gray-400 mt-1">
+                        Only Used To Contact You For Delivery Updates
+                      </p>
                     </div>
                   </div>
 
                   {/* Line Address 1 + 2 */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    {/* Line Address 1 */}
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-2">Line Address 1</label>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">
+                        Line Address 1
+                      </label>
+
                       <input
                         type="text"
-                        name="lineAddress1"
-                        value={formData.lineAddress1 || ""}   // safe guard
-                        onChange={handleChange}
+                        {...register("lineAddress1")}
                         placeholder="Line Address 1 *"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-                        required
                       />
+
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.lineAddress1?.message}
+                      </p>
                     </div>
+
+                    {/* Line Address 2 */}
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-2">Line Address 2</label>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">
+                        Line Address 2
+                      </label>
+
                       <input
                         type="text"
-                        name="lineAddress2"
-                        value={formData.lineAddress2 || ""}   // safe guard
-                        onChange={handleChange}
+                        {...register("lineAddress2")}
                         placeholder="Line Address 2 (optional)"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
                       />
+
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.lineAddress2?.message}
+                      </p>
                     </div>
                   </div>
 
                   {/* State + Zip */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    {/* State */}
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-2">State/Province</label>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">
+                        State/Province
+                      </label>
+
                       <input
                         type="text"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleChange}
+                        {...register("state")}
                         placeholder="State/Province *"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-                        required
                       />
+
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.state?.message}
+                      </p>
                     </div>
+
+                    {/* Zip */}
                     <div>
-                      <label className="block text-sm font-bold text-gray-900 mb-2">Zip/Postal Code</label>
+                      <label className="block text-sm font-bold text-gray-900 mb-2">
+                        Zip/Postal Code
+                      </label>
+
                       <input
                         type="text"
-                        name="zipCode"
-                        value={formData.zipCode}
-                        onChange={(e) => {
-                          const numericValue = e.target.value.replace(/\D/g, "");
-                          setFormData({ ...formData, zipCode: numericValue });
-                        }}
+                        {...register("zipCode")}
                         placeholder="e.g 2000 *"
                         className="w-full text-black border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#240457] focus:border-transparent placeholder-gray-400"
-                        required
                       />
+
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.zipCode?.message}
+                      </p>
                     </div>
                   </div>
 
@@ -422,29 +454,38 @@ const CheckoutPage = () => {
                     <div className="relative flex items-center">
                       <input
                         type="checkbox"
+                        {...register("isDefault")}
                         id="default-address"
-                        name="isDefault"
-                        checked={formData.isDefault}
-                        onChange={handleChange}
                         className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white checked:bg-[#004D99] checked:border-[#004D99] transition-all"
                       />
+
                       <FiCheck className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3.5 h-3.5" />
                     </div>
-                    <label htmlFor="default-address" className="text-sm text-gray-500 cursor-pointer">
+
+                    <label
+                      htmlFor="default-address"
+                      className="text-sm text-gray-500 cursor-pointer"
+                    >
                       Set As Default Shipping Address
                     </label>
                   </div>
-                </div>
+                  <button
+                    type="submit"
+                    disabled={submitting || loading || !isValid}
+                    className={`block mt-6 w-full text-center py-3 rounded-lg font-medium text-base transition-colors
+    ${submitting || loading || !isValid
+                        ? "bg-gray-400 cursor-not-allowed opacity-60"
+                        : "bg-[#240457] hover:bg-[#2a0b4d] text-white"
+                      }
+  `}
+                  >
+                    {submitting ? "Processing..." : "Continue To Payment"}
+                  </button>
+                </form>
 
               </div>
             </div>
-            <button
-              onClick={handleSubmit}
-              disabled={submitting || loading}
-              className="block mt-6 w-full text-center bg-[#240457] text-white py-3 rounded-lg font-medium text-base hover:bg-[#2a0b4d] transition-colors disabled:opacity-50"
-            >
-              {submitting ? "Processing..." : "Continue To Payment"}
-            </button>
+
           </div>
 
           {/* Right Column - Order Summary */}

@@ -16,6 +16,34 @@ const CustomEditor = {
     return !!match;
   },
 
+  isBlockActive(editor, format) {
+    const [match] = Editor.nodes(editor, {
+      match: (n) => n.type === format,
+    });
+    return !!match;
+  },
+
+  toggleBlock(editor, format) {
+    const isActive = CustomEditor.isBlockActive(editor, format);
+
+    Transforms.unwrapNodes(editor, {
+      match: (n) =>
+        n.type === "bulleted-list" || n.type === "numbered-list",
+      split: true,
+    });
+
+    const newType = isActive ? "paragraph" : format;
+
+    Transforms.setNodes(editor, { type: newType });
+
+    if (!isActive && (format === "bulleted-list" || format === "numbered-list")) {
+      Transforms.wrapNodes(editor, {
+        type: format,
+        children: [],
+      });
+    }
+  },
+
   isItalicMarkActive(editor) {
     const [match] = Editor.nodes(editor, {
       match: (n) => n.italic === true,
@@ -100,6 +128,18 @@ export default function SlateEditor({
     switch (props.element.type) {
       case "paragraph":
         return <DefaultElement {...props} />;
+      case "bulleted-list":
+        return <ul {...props.attributes} style={{ paddingLeft: "20px" }}>
+          {props.children}
+        </ul>;
+
+      case "numbered-list":
+        return <ol {...props.attributes} style={{ paddingLeft: "20px" }}>
+          {props.children}
+        </ol>;
+
+      case "list-item":
+        return <li {...props.attributes}>{props.children}</li>;
       default:
         return <DefaultElement {...props} />;
     }
@@ -166,6 +206,28 @@ export default function SlateEditor({
           title="Italic (Ctrl+I)"
         >
           <FiItalic className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onMouseDown={(event) => {
+            event.preventDefault();
+            CustomEditor.toggleBlock(editor, "bulleted-list");
+          }}
+          className="p-2 rounded hover:bg-white hover:shadow-sm transition-all text-black"
+          title="Bullet List"
+        >
+          <FiList className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onMouseDown={(event) => {
+            event.preventDefault();
+            CustomEditor.toggleBlock(editor, "numbered-list");
+          }}
+          className="p-2 rounded hover:bg-white hover:shadow-sm transition-all text-gray-500"
+          title="Numbered List"
+        >
+          <FiHash className="w-4 h-4" />
         </button>
       </div>
 

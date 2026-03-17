@@ -58,15 +58,15 @@ export const getFormattedChartData = (data) => {
 }
 
 export const getFormattedSpendingChartData = (data) => {
-     // const { graph } = data;
+     const { graph } = data;
      return [
-          { month: "Mon", value: 20, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
-          { month: "Tue", value: 34, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
-          { month: "Wed", value: 50, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
-          { month: "Thurs", value: 60, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
-          { month: "Fri", value: 70, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
-          { month: "Sat", value: 90, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
-          { month: "Sun", value: 100, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
+          { month: "Mon", value: graph.monday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
+          { month: "Tue", value: graph.tuesday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
+          { month: "Wed", value: graph.wednesday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
+          { month: "Thurs", value: graph.thursday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
+          { month: "Fri", value: graph.friday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
+          { month: "Sat", value: graph.saturday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
+          { month: "Sun", value: graph.sunday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
      ]
 }
 

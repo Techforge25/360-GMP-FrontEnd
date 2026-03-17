@@ -321,21 +321,19 @@ export default function MarketplaceContent() {
                             <button
                               key={idx}
                               onClick={() => handleCountrySelect(country.name)}
-                              className={`w-full flex items-center gap-2.5 sm:gap-3 py-2 px-3 rounded-md transition-all duration-200 group ${
-                                selectedCountry === country.name
-                                  ? "bg-gray-100"
-                                  : "hover:bg-gray-50"
-                              }`}
+                              className={`w-full flex items-center gap-2.5 sm:gap-3 py-2 px-3 rounded-md transition-all duration-200 group ${selectedCountry === country.name
+                                ? "bg-gray-100"
+                                : "hover:bg-gray-50"
+                                }`}
                             >
                               <span className="text-lg text-black sm:text-xl flex-shrink-0 grayscale-0 group-hover:grayscale-0 transition-all">
                                 {country.flag}
                               </span>
                               <span
-                                className={`text-sm sm:text-sm lg:text-base flex-1 text-left ${
-                                  selectedCountry === country.name
-                                    ? "text-gray-900 font-medium"
-                                    : "text-gray-600 group-hover:text-gray-900"
-                                }`}
+                                className={`text-sm sm:text-sm lg:text-base flex-1 text-left ${selectedCountry === country.name
+                                  ? "text-gray-900 font-medium"
+                                  : "text-gray-600 group-hover:text-gray-900"
+                                  }`}
                               >
                                 {country.name}
                               </span>
@@ -503,21 +501,19 @@ export default function MarketplaceContent() {
                                   onClick={() =>
                                     handleCountrySelect(country.name)
                                   }
-                                  className={`w-full  flex items-center gap-3 py-3 px-3 rounded-lg transition-all duration-200 ${
-                                    selectedCountry === country.name
-                                      ? "bg-gray-100"
-                                      : "hover:bg-gray-50"
-                                  }`}
+                                  className={`w-full  flex items-center gap-3 py-3 px-3 rounded-lg transition-all duration-200 ${selectedCountry === country.name
+                                    ? "bg-gray-100"
+                                    : "hover:bg-gray-50"
+                                    }`}
                                 >
                                   <span className="text-xl flex-shrink-0">
                                     {country.flag}
                                   </span>
                                   <span
-                                    className={`text-base flex-1 text-left ${
-                                      selectedCountry === country.name
-                                        ? "text-gray-900 font-medium"
-                                        : "text-gray-600"
-                                    }`}
+                                    className={`text-base flex-1 text-left ${selectedCountry === country.name
+                                      ? "text-gray-900 font-medium"
+                                      : "text-gray-600"
+                                      }`}
                                   >
                                     {country.name}
                                   </span>
@@ -642,14 +638,14 @@ export default function MarketplaceContent() {
                     topRankingProducts.slice(0, 3).map((product, idx) => (
                       <div
                         key={idx}
-                        className="bg-white rounded-lg overflow-hidden"
+                        className="bg-white rounded-lg overflow-hidden cursor-pointer"
+                        onClick={() => handleProductClick(product)}
                       >
-                        <div className="bg-gray-100 h-28 sm:h-32 cursor-pointer group">
+                        <div className="bg-gray-100 h-28 sm:h-32  group">
                           <img
                             src={product.image}
                             alt={product.title}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            onClick={() => handleProductClick(product)}
                           />
                         </div>
                         <div className="p-3 sm:p-4">
@@ -704,14 +700,14 @@ export default function MarketplaceContent() {
                     newProducts.slice(0, 3).map((product, idx) => (
                       <div
                         key={idx}
-                        className="bg-white rounded-lg overflow-hidden"
+                        className="bg-white rounded-lg overflow-hidden cursor-pointer"
+                        onClick={() => handleProductClick(product)}
                       >
-                        <div className="bg-gray-100 h-32 sm:h-40 cursor-pointer group">
+                        <div className="bg-gray-100 h-32 sm:h-40 group">
                           <img
                             src={product.image}
                             alt={product.title}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            onClick={() => handleProductClick(product)}
                           />
                         </div>
                         <div className="p-3 sm:p-4">
@@ -847,6 +843,7 @@ const ProductCard = ({
   addToCart,
   router,
 }) => {
+  console.log(product, "produict")
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative bg-gray-100 h-40 sm:h-48 cursor-pointer group">
