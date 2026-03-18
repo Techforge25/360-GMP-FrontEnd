@@ -131,6 +131,7 @@ class ProductAPI {
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,
+      withCredentials: true
     });
   }
 

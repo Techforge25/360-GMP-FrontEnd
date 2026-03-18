@@ -207,6 +207,7 @@ const ProductListContent = ({
   };
 
   const handleEdit = (product, e) => {
+    console.log(product, "product")
     if (e) e.stopPropagation();
     setEditingProduct(product);
     setIsAddModalOpen(true);

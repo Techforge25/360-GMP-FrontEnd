@@ -50,6 +50,8 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     isFeatured: false,
   });
 
+  console.log(formData.previewImage, "preview image")
+
   const step1DisabledNext =
     currentStep === 1 &&
     (
@@ -100,13 +102,13 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         editProduct.tieredPricing &&
         typeof editProduct.tieredPricing === "object"
       ) {
-        tieredArray = Object.entries(editProduct.tieredPricing).map(
-          ([q, p]) => ({
-            qty: q,
-            price: Number(p),
-          })
-        );
+        tieredArray = editProduct.tieredPricing.map((item) => ({
+          qty: item.qty,
+          price: Number(item.price),
+        }));
       }
+
+      console.log(tieredArray, "tieredArray")
 
       setFormData({
         title: editProduct.title || "",
@@ -755,9 +757,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
                 fill
                 className="object-contain"
               />
-              {errors.previewImage && (
-                <p className="text-red-500 text-xs mt-1">{errors.previewImage}</p>
-              )}
             </div>
           ) : (
             <>
@@ -766,11 +765,18 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
               </div>
               <p className="text-sm text-indigo-600 font-semibold mb-1">
                 Click To Upload Img{" "}
-                <span className="text-gray-400 font-normal">
-                  • Drag & drop here
-                </span>
+                <span className="text-gray-400 font-normal">• Drag & drop here</span>
               </p>
               <p className="text-[14px] text-gray-400">JPG,PNG, Max 100 Mb</p>
+
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+              />
+              {errors.previewImage && (
+                <p className="text-red-500 text-xs mt-1">{errors.previewImage}</p>
+              )}
             </>
           )}
           <input

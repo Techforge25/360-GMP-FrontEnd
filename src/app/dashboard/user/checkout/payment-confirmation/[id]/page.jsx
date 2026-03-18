@@ -1,5 +1,6 @@
 "use client"
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { FiArrowRight, FiCheck } from "react-icons/fi";
 import { HiOutlineShieldCheck } from "react-icons/hi";
