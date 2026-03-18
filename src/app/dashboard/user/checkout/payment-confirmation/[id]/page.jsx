@@ -33,7 +33,7 @@ export default function PaymentConfirmation() {
                          {/* Order Reference */}
                          <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
                               <span className="text-gray-900 font-bold text-base">Order Reference</span>
-                              <span className="text-gray-900 font-bold text-base"># 39201</span>
+                              <span className="text-gray-900 font-bold text-base"># {orderId}</span>
                          </div>
 
                          {/* Step Features */}
