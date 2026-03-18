@@ -1187,7 +1187,9 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                       {(isDelivered || isCompleted) && (
                         <div className="mt-8 text-center">
                           <p className="text-[#139D4C] font-bold text-[13.5px] mb-6">
-                            Your payout was released on November 3, 2025.
+                            Your payout was released on  {order?.tracking?.deliveredAt
+                              ? new Date(order?.tracking?.deliveredAt).toLocaleDateString()
+                              : "—"}
                           </p>
 
                           {!isCompleted ? (

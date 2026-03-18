@@ -593,7 +593,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           checked={formData.isSingleProductAvailable}
           onChange={(e) => {
             const checked = e.target.checked;
-
             setFormData((prev) => ({
               ...prev,
               isSingleProductAvailable: checked,

@@ -28,9 +28,10 @@ export const getAnalytics = (analytics) => {
 }
 
 export const getUserAnalytics = (analytics) => {
+     console.log(analytics, "analutics")
      return [
           {
-               amount: analytics.availableBalance === 0 ? 0 : analytics.availableBalance === 0,
+               amount: analytics.availableBalance === 0 ? 0 : analytics.availableBalance,
                icon: "/assets/images/card-1.png",
                text: "Net Balance",
                text2: "Available for withdrawal"

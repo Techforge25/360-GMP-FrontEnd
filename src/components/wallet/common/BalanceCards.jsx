@@ -5,6 +5,7 @@ export default function BalanceCards({ cards, card }) {
      return (
           <div className={cardGrid}>
                {cards?.map((card, index) => {
+                    console.log(card, "card")
                     const textClass = card.text2 === "Available for withdrawal" ? "text-[#0b8806]" : card.text2 === "Held in escrow" ? "text-[#ff8d28]" : card.text2 === "Total Sales Volume" ? "text-[#185ADB]" : "text-[#768299]"
                     return (
                          <div key={index} className="bg-white rounded-xl border border-gray-200 p-5 flex justify-between items-start">

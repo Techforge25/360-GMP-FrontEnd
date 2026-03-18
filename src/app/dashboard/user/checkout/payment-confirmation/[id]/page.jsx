@@ -7,9 +7,7 @@ import { HiOutlineShieldCheck } from "react-icons/hi";
 
 export default function PaymentConfirmation() {
      const params = useParams();
-     const orderId = params?.orderId;
-
-     console.log(orderId, "order id")
+     const orderId = params?.id;
      return (
           <div className="bg-[#FAFBFD] min-h-screen flex flex-col">
                {/* Main Content Area */}
@@ -71,7 +69,7 @@ export default function PaymentConfirmation() {
                                    Back to Home
                               </Link>
                               <Link
-                                   href={`/dashboard/user/orders/${orderId}`}
+                                   href={`/dashboard/user/orders/OrderTrackingPage/${orderId}`}
                                    className="flex-1 flex items-center justify-center gap-2 bg-[#139D4C] text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-[#0f843f] transition-colors shadow-sm"
                               >
                                    Track Order <FiArrowRight className="w-4.5 h-4.5" />
