@@ -2,18 +2,46 @@
 import { Button } from "@/components/ui/Button";
 import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
 export default function FundAddCard() {
      const [amount, setAmount] = useState("");
      const [loading, setLoading] = useState(false)
+     const [profile, setProfile] = useState(null)
      const quickAmounts = [50, 100, 200, 300];
      const router = useRouter()
 
+     useEffect(() => {
+          const loggedIn = JSON.parse(localStorage.getItem("user"))
+          setProfile(loggedIn.profileData)
+     }, [])
+
      const handleQuickAmount = (val) => {
           setAmount((prev) => String((parseFloat(prev) || 0) + val));
+     };
+
+     const connectStripeAccount = async () => {
+          try {
+               const res = await api.post({
+                    url: "/wallet/connect",
+                    payload: {
+                         ownerModel: profile === "business" ? "BusinessProfile" : "UserProfile",
+                    },
+                    enableSuccessMessage: false,
+                    enableErrorMessage: false,
+                    activateLoader: false,
+               });
+
+               if (res.success) {
+                    window.open(res.data.url);
+               }
+          } catch (err) {
+               toast.error("Failed to connect Stripe account");
+          } finally {
+               setLoading(false);
+          }
      };
 
      const addFunds = async () => {
@@ -26,7 +54,11 @@ export default function FundAddCard() {
                });
 
                if (res.success) {
-                    window.open(res.data, "_blank");
+                    if (res.data === null) {
+                         connectStripeAccount()
+                    } else {
+                         window.open(res.data, "_blank");
+                    }
                }
           } catch (err) {
                toast.error(err)

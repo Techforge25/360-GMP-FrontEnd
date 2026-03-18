@@ -100,11 +100,11 @@ const BusinessOrderDetailsPage = () => {
         case "delivered":
           updated[3].date = formattedDate;
           setActiveStep(3);
-          setIsDelivered(true);
           break;
         case "completed":
           updated[4].date = formattedDate;
           setActiveStep(4);
+          setIsDelivered(true);
           setIsCompleted(true);
           setShowFinalCompletedUI(true);
           break;

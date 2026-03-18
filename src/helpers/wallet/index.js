@@ -1,25 +1,25 @@
 export const getAnalytics = (analytics) => {
      return [
           {
-               amount: analytics.availableBalance,
+               amount: analytics.availableBalance === 0 ? 0 : analytics.availableBalance,
                icon: "/assets/images/card-1.png",
                text: "Net Balance",
                text2: "Available for withdrawal"
           },
           {
-               amount: analytics.pendingBalance,
+               amount: analytics.pendingBalance === 0 ? 0 : analytics.pendingBalance,
                icon: "/assets/images/card-2.png",
                text: "Pending Settlements",
                text2: "Held in escrow"
           },
           {
-               amount: analytics.totalSalesVolume,
+               amount: analytics.totalSalesVolume === 0 ? 0 : analytics.totalSalesVolume,
                icon: "/assets/images/card-3.png",
                text: "Total Sales Volume",
                text2: "Total Sales Volume"
           },
           {
-               amount: analytics.totalPlatformFees,
+               amount: analytics.totalPlatformFees === 0 ? 0 : analytics.totalPlatformFees,
                icon: "/assets/images/card-4.png",
                text: "Platform & Service Deductions",
                text2: "Total Fee"
@@ -30,13 +30,13 @@ export const getAnalytics = (analytics) => {
 export const getUserAnalytics = (analytics) => {
      return [
           {
-               amount: analytics.availableBalance,
+               amount: analytics.availableBalance === 0 ? 0 : analytics.availableBalance === 0,
                icon: "/assets/images/card-1.png",
                text: "Net Balance",
                text2: "Available for withdrawal"
           },
           {
-               amount: analytics.totalPendingEscrow,
+               amount: analytics.totalPendingEscrow === 0 ? 0 : analytics.totalPendingEscrow,
                icon: "/assets/images/card-2.png",
                text: "Pending Settlements",
                text2: "Held in escrow"

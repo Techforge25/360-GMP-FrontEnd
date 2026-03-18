@@ -23,6 +23,10 @@ export default function ProductInfo({ product }) {
   const router = useRouter();
   const { user, setOnboardingRole } = useUserRole();
   const { addToCart } = useCart();
+  const [selectedTier, setSelectedTier] = useState({
+    qty: "",
+    price: 0
+  });
   const role = user?.role;
   const isBusinessUser = role === "business";
 
@@ -112,6 +116,8 @@ export default function ProductInfo({ product }) {
         <span className="text-[#22252b] bg-[#dfedff] px-4 py-1 rounded-md flex items-center gap-2"><Image src={"/assets/images/verified.png"} width={20} height={20} alt="verified" />verified supplier</span>
       </div>
 
+
+
       {/* Supplier Card */}
       {/* <div className="bg-gray-100 border border-gray-200 rounded-lg p-4 mb-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -152,65 +158,110 @@ export default function ProductInfo({ product }) {
       </div> */}
 
       {/* Quantity & Subtotal */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-8 gap-4">
-        <div>
-          <div className="flex items-center gap-4 mb-3">
-            <span className="text-gray-600 text-sm font-medium">
-              Quantity :
-            </span>
-            <div className="flex items-center border border-gray-200 rounded-lg bg-white overflow-hidden">
-              <button
-                onClick={() =>
-                  setQuantity(Math.max(product.minOrderQty, quantity - 1))
-                }
-                disabled={isFreeTrial}
-                className={`w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors ${isFreeTrial ? "bg-gray-50 cursor-not-allowed opacity-50" : ""}`}
-              >
-                <FaMinus className="text-[12px]" />
-              </button>
-              <input
-                type="number"
-                value={quantity}
-                readOnly={isFreeTrial}
-                onChange={(e) =>
-                  setQuantity(
-                    Math.max(product.minOrderQty, Number(e.target.value)),
-                  )
-                }
-                className={`w-12 text-center text-sm font-bold text-gray-900 border-x border-gray-200 py-1 outline-none ${isFreeTrial ? "bg-gray-50 cursor-not-allowed" : ""}`}
-              />
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                disabled={isFreeTrial}
-                className={`w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors ${isFreeTrial ? "bg-gray-50 cursor-not-allowed opacity-50" : ""}`}
-              >
-                <FaPlus className="text-[12px]" />
-              </button>
-            </div>
-          </div>
-
-          {isFreeTrial && (
-            <div className="flex flex-col gap-1.5 pl-0 sm:pl-16">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 rounded-full w-fit">
-                <FaCrown className="text-purple-600 text-[11px]" />
-                <span className="text-[11px] font-bold text-purple-600 uppercase tracking-tight">
-                  Upgrade
-                </span>
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-4">
+        {selectedTier.price === 0 && (
+          <div>
+            <div className="flex items-center gap-4 mb-3">
+              <span className="text-gray-600 text-sm font-medium">
+                Quantity :
+              </span>
+              <div className="flex items-center border border-gray-200 rounded-lg bg-white overflow-hidden">
+                <button
+                  onClick={() =>
+                    setQuantity(Math.max(product.minOrderQty, quantity - 1))
+                  }
+                  disabled={isFreeTrial}
+                  className={`w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors ${isFreeTrial ? "bg-gray-50 cursor-not-allowed opacity-50" : ""}`}
+                >
+                  <FaMinus className="text-[12px]" />
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  readOnly={isFreeTrial}
+                  onChange={(e) =>
+                    setQuantity(
+                      Math.max(product.minOrderQty, Number(e.target.value)),
+                    )
+                  }
+                  className={`w-12 text-center text-sm font-bold text-gray-900 border-x border-gray-200 py-1 outline-none ${isFreeTrial ? "bg-gray-50 cursor-not-allowed" : ""}`}
+                />
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  disabled={isFreeTrial}
+                  className={`w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors ${isFreeTrial ? "bg-gray-50 cursor-not-allowed opacity-50" : ""}`}
+                >
+                  <FaPlus className="text-[12px]" />
+                </button>
               </div>
-              <p className="text-[13px] font-medium text-slate-500">
-                Upgrade plan for bulk order
-              </p>
             </div>
-          )}
-        </div>
 
+            {isFreeTrial && (
+              <div className="flex flex-col gap-1.5 pl-0 sm:pl-16">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-100 border border-gray-200 rounded-full w-fit">
+                  <FaCrown className="text-purple-600 text-[11px]" />
+                  <span className="text-[11px] font-bold text-purple-600 uppercase tracking-tight">
+                    Upgrade
+                  </span>
+                </div>
+                <p className="text-[13px] font-medium text-slate-500">
+                  Upgrade plan for bulk order
+                </p>
+              </div>
+            )}
+          </div>
+        )}
         <div className="text-gray-600 text-sm font-medium pt-1">
           Sub Total:{" "}
-          <span className="">
-            ${(quantity * product.pricePerUnit).toLocaleString()}
-          </span>
+          {selectedTier.price === 0 ? (
+            <span className="">
+              ${(quantity * product.pricePerUnit).toLocaleString()}
+            </span>
+          ) : (
+            <span className="">
+              ${(selectedTier.price * selectedTier?.qty?.substring(selectedTier?.qty?.indexOf("-") + 1)).toLocaleString()}
+            </span>
+          )}
+
         </div>
       </div>
+
+      <div>
+        <h3 className="text-black">Tiered Pricing (Q: Price, Q: Price)</h3>
+        <div className="my-3 p-6 bg-gray-50 rounded-xl border border-gray-200 shadow-sm">
+          <div className="flex flex-wrap gap-8">
+            {product.tieredPricing.map((tier) => (
+              <label
+                key={tier.id}
+                className="flex items-center cursor-pointer group"
+              >
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="radio"
+                    name="pricing-tier"
+                    value={tier.price}
+                    checked={selectedTier.price === tier.price}
+                    onChange={() => setSelectedTier({ qty: tier.qty, price: tier.price })}
+                    className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-full checked:border-indigo-900 transition-all"
+                  />
+                  {/* Custom Inner Circle */}
+                  <div className="absolute w-2.5 h-2.5 bg-indigo-900 rounded-full scale-0 peer-checked:scale-100 transition-transform" />
+                </div>
+
+                <span className={`ml-3 text-lg transition-colors text-gray-500`}>
+                  {tier.qty}pc - <span className={`${selectedTier === tier.price ? 'text-indigo-900 font-medium' : 'text-gray-500'
+                    }`}>${tier.price.toFixed(2)}/pc</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {selectedTier.price !== 0 && (
+        <span className="text-[#240457] underline cursor-pointer" onClick={() => setSelectedTier({ qty: "", price: 0 })}>Go with Quantity Selection</span>
+      )}
+
 
       {/* Buttons */}
       <div className="flex gap-4 mb-8">

@@ -223,7 +223,7 @@ const OrderTrackingPage = ({ orderId }) => {
     };
 
     fetchOrder();
-  }, [orderId]);
+  }, [orderId, activeStep]);
 
   const handleMarkAsCompleted = async () => {
     try {

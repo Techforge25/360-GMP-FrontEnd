@@ -21,53 +21,59 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
 
+
   // Load cart from localStorage on mount
-  useEffect(() => {
-    const savedCart = localStorage.getItem("cart");
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (error) {
-        console.error("Failed to parse cart data", error);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   const savedCart = localStorage.getItem("cart");
+  //   if (savedCart) {
+  //     try {
+  //       setCartItems(JSON.parse(savedCart));
+  //     } catch (error) {
+  //       console.error("Failed to parse cart data", error);
+  //     }
+  //   }
+  // }, []);
 
   // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
+  // useEffect(() => {
+  //   localStorage.setItem("cart", JSON.stringify(cartItems));
+  // }, [cartItems]);
 
-const addToCart = (product, quantity = 1) => {
-  let message = "Added to cart!";
+  const addToCart = (product, quantity = 1) => {
+    let message = "Added to cart!";
 
-  setCartItems((prevItems) => {
-    const existingItem = prevItems.find(
-      (item) => item.productId === product._id || item.productId === product.id
-    );
-
-    if (existingItem) {
-      message = "Cart updated!";
-      return prevItems.map((item) =>
-        item.productId === (product._id || product.id)
-          ? { ...item, quantity: item.quantity + quantity }
-          : item
+    setCartItems((prevItems) => {
+      console.log(prevItems, "prev items")
+      const existingItem = prevItems.find(
+        (item) => item.productId === product._id || item.productId === product.id
       );
-    }
 
-    return [
-      ...prevItems,
-      {
-        productId: product._id || product.id,
-        quantity,
-        addedAt: new Date().toISOString(),
-      },
-    ];
-  });
+      console.log(existingItem, "exist items")
 
-  // Ab safe hai – render phase ke baad chalega
-  showSuccess(message);
-};
+      if (existingItem) {
+        message = "Cart updated!";
+        return prevItems.map((item) =>
+          item.productId === (product._id || product.id)
+            ? { ...item, quantity: quantity }
+            : item
+        );
+      }
+
+      return [
+        ...prevItems,
+        {
+          productId: product._id || product.id,
+          quantity,
+          addedAt: new Date().toISOString(),
+        },
+      ];
+    });
+
+    // Ab safe hai – render phase ke baad chalega
+    showSuccess(message);
+  };
+
+  console.log(cartItems, "cart items")
 
   const removeFromCart = (productId) => {
     setCartItems((prevItems) => {
@@ -96,6 +102,8 @@ const addToCart = (product, quantity = 1) => {
     localStorage.removeItem("cart");
     showSuccess("Cart cleared");
   };
+
+  console.log(cartItems, "cart items")
 
   const cartCount = useMemo(() => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);

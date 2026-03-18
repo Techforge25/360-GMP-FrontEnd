@@ -12,14 +12,27 @@ import { getUserAnalytics } from "@/helpers/wallet";
 
 export default function UserWalletMainComp() {
      const [analytics, setAnalytics] = useState(null)
+     const [errMsg, setErrMsg] = useState("")
      useEffect(() => {
           const fetchAnalytics = async () => {
                const response = await walletUserAPI.getWalletUserAnalytics()
-               const analyticsDashboard = getUserAnalytics(response.data)
-               setAnalytics(analyticsDashboard)
+               console.log(response.message, "responsess")
+               if (response.message === "You need to setup your wallet account") {
+                    setErrMsg(response.message)
+               } else {
+                    const analyticsDashboard = getUserAnalytics(response.data)
+                    setAnalytics(analyticsDashboard)
+               }
           }
           fetchAnalytics()
      }, [])
+
+     // useEffect(() => {
+     //      const loggedIn = JSON.parse(localStorage.getItem("user"))
+     //      setProfile(loggedIn.profileData)
+     // }, [])
+
+     console.log(errMsg, "error message")
      return (
           <>
                <AuthNavbar />
@@ -28,7 +41,14 @@ export default function UserWalletMainComp() {
                     <FundButtons />
                     <div className="grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-5">
                          <div className="">
-                              <BalanceCards cards={analytics} card="user" />
+                              {errMsg !== "" ? (
+                                   <>
+                                        <p className="text-[#240457] text-center my-3">Please setup your wallet Account to view Balance.</p>
+                                        <p>Setup Account</p>
+                                   </>
+                              ) : (
+                                   <BalanceCards cards={analytics} card="user" />
+                              )}
                               <SpendingChart />
                          </div>
                          <RecentTransactions />

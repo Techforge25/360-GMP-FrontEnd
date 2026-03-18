@@ -161,11 +161,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   };
 
   const addTier = () => {
-    if (formData.tieredPricing.length >= 4) return;
-
     setFormData((prev) => ({
       ...prev,
-      tieredPricing: [...prev.tieredPricing, { qty: "", price: 0 }],
+      tieredPricing: [
+        ...prev.tieredPricing,
+        { qty: "", price: 0 },
+      ],
     }));
   };
 
@@ -212,13 +213,14 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   };
 
   const handleNext = () => {
-    // Basic validation could go here
-    if (step1DisabledNext) {
-      setCurrentStep(1)
-    } else if (step2DisabledNext) {
-      setCurrentStep(2)
-    } else {
-      setCurrentStep(3)
+    if (currentStep === 1) {
+      if (step1DisabledNext) return;
+      setCurrentStep(2);
+    }
+
+    if (currentStep === 2) {
+      if (step2DisabledNext) return;
+      setCurrentStep(3);
     }
   };
 
@@ -523,10 +525,15 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             {/* Quantity */}
             <input
               type="text"
-              value={formData.isSingleProductAvailable && findQtySingle() ? "1" : tier.qty}
+              value={
+                formData.isSingleProductAvailable && index === 0
+                  ? "1"
+                  : tier.qty
+              }
               onChange={(e) =>
                 updateTier(index, "qty", e.target.value)
               }
+              disabled={formData.isSingleProductAvailable && index === 0} // optional lock
               placeholder="Quantity (e.g. 1-100)"
               className="flex-1 text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
@@ -584,15 +591,20 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           checked={formData.isSingleProductAvailable}
           onChange={(e) => {
             const checked = e.target.checked;
+
             setFormData((prev) => ({
               ...prev,
               isSingleProductAvailable: checked,
-              tieredPricing: [
-                {
-                  qty: checked ? "1" : "",
-                  price: prev.tieredPricing[0]?.price || 0,
-                },
-              ],
+              tieredPricing: checked
+                ? [
+                  {
+                    qty: "1",
+                    price: prev.tieredPricing[0]?.price || 0,
+                  },
+                ]
+                : prev.tieredPricing.length
+                  ? prev.tieredPricing
+                  : [{ qty: "", price: 0 }],
             }));
           }}
           className="w-4 h-4 border-2 border-gray-300 rounded-md checked:border-indigo-600 checked:bg-indigo-50 transition-all cursor-pointer"
