@@ -1,7 +1,7 @@
 "use client"
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import { useParams } from "next/navigation";
-import { FiArrowRight } from "react-icons/fi";
+import { FiArrowRight, FiCheck } from "react-icons/fi";
 import { HiOutlineShieldCheck } from "react-icons/hi";
 
 export default function PaymentConfirmation() {
