@@ -106,8 +106,7 @@ export default function BusinessWalletPage() {
             </div>
           </div>
         </div>
-      </div>
-      
+      </div>  
       <DashboardFooter />
     </div>
   );

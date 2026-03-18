@@ -327,7 +327,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       const payload = {
         title: formData.title,
         category: formData.category,
-        minOrderQty: Number(formData.minOrderQty),
+        minOrderQty: formData.isSingleProductAvailable === false ? 0 : Number(formData.minOrderQty),
         pricePerUnit: Number(formData.pricePerUnit),
         detail: formData.description,
         estimatedDeliveryDays: formData.estimatedDeliveryDays,
@@ -481,40 +481,43 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
-            Minimum Order Quantity
-          </label>
-          <input
-            type="number"
-            name="minOrderQty"
-            value={formData.minOrderQty}
-            onChange={handleStandardInputChange}
-            placeholder="e.g 100 Units"
-            className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          {errors.minOrderQty && (
-            <p className="text-red-500 text-xs mt-1">{errors.minOrderQty}</p>
-          )}
+      {!formData.isSingleProductAvailable && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Minimum Order Quantity
+            </label>
+            <input
+              type="number"
+              name="minOrderQty"
+              value={formData.minOrderQty}
+              onChange={handleStandardInputChange}
+              placeholder="e.g 100 Units"
+              className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+            {errors.minOrderQty && (
+              <p className="text-red-500 text-xs mt-1">{errors.minOrderQty}</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Pricing Model (Price Per Unit)
+            </label>
+            <input
+              type="number"
+              name="pricePerUnit"
+              value={formData.pricePerUnit}
+              onChange={handleStandardInputChange}
+              placeholder="$50 USD"
+              className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+            {errors.pricePerUnit && (
+              <p className="text-red-500 text-xs mt-1">{errors.pricePerUnit}</p>
+            )}
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1">
-            Pricing Model (Price Per Unit)
-          </label>
-          <input
-            type="number"
-            name="pricePerUnit"
-            value={formData.pricePerUnit}
-            onChange={handleStandardInputChange}
-            placeholder="$50 USD"
-            className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          />
-          {errors.pricePerUnit && (
-            <p className="text-red-500 text-xs mt-1">{errors.pricePerUnit}</p>
-          )}
-        </div>
-      </div>
+
+      )}
 
       {/* Tiered Pricing */}
       <div>
@@ -527,15 +530,10 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             {/* Quantity */}
             <input
               type="text"
-              value={
-                formData.isSingleProductAvailable && index === 0
-                  ? "1"
-                  : tier.qty
-              }
+              value={tier.qty}
               onChange={(e) =>
                 updateTier(index, "qty", e.target.value)
               }
-              disabled={formData.isSingleProductAvailable && index === 0} // optional lock
               placeholder="Quantity (e.g. 1-100)"
               className="flex-1 text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
@@ -596,16 +594,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             setFormData((prev) => ({
               ...prev,
               isSingleProductAvailable: checked,
-              tieredPricing: checked
-                ? [
-                  {
-                    qty: "1",
-                    price: prev.tieredPricing[0]?.price || 0,
-                  },
-                ]
-                : prev.tieredPricing.length
-                  ? prev.tieredPricing
-                  : [{ qty: "", price: 0 }],
             }));
           }}
           className="w-4 h-4 border-2 border-gray-300 rounded-md checked:border-indigo-600 checked:bg-indigo-50 transition-all cursor-pointer"

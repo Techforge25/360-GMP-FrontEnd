@@ -750,7 +750,7 @@ const OrderTrackingPage = ({ orderId }) => {
               )}
 
               {/* Cancel Order Button */}
-              {(activeStep === 0 || activeStep === 1) && (
+              {(activeStep === 0) && (
                 <div className="pt-2">
                   <button
                     onClick={handleCancelOrder}
