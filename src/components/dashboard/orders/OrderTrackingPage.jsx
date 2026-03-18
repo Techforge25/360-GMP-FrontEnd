@@ -28,6 +28,7 @@ import { getStatusColor } from "@/constants/index";
 const OrderTrackingPage = ({ orderId }) => {
   const router = useRouter();
   const [order, setOrder] = useState(null);
+  const [orderStatus, setOrderStatus] = useState("")
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -36,9 +37,55 @@ const OrderTrackingPage = ({ orderId }) => {
   const [isCompleting, setIsCompleting] = useState(false)
   const [cancelling, setCancelling] = useState(false);
   const [reason, setReason] = useState("")
-  // const [steps, setSteps] = useState([
-
-  // ])
+  const [steps, setSteps] = useState([
+    {
+      label: "Order Placed",
+      date: order
+        ? new Date(order.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending",
+      icon: HiOutlineDocumentText,
+    },
+    {
+      label: "Seller Preparing", date: order
+        ? new Date(order.createdAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: BiCube
+    },
+    {
+      label: "Shipped", date: order
+        ? new Date(order.tracking.shippedAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: TbTruckDelivery
+    },
+    {
+      label: "Delivered", date: order
+        ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: BsBoxSeam
+    },
+    {
+      label: "Completed", date: order
+        ? new Date(order.completedAt).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        : "Pending", icon: FiCheck
+    },
+  ])
 
   const formatDate = (date) => {
     if (!date) return "Pending";
@@ -50,78 +97,68 @@ const OrderTrackingPage = ({ orderId }) => {
     });
   };
 
-  const steps = [
-    {
-      label: "Order Placed",
-      date: formatDate(order?.createdAt),
-      icon: HiOutlineDocumentText,
-    },
-    {
-      label: "Seller Preparing",
-      date: formatDate(order?.processingAt),
-      icon: BiCube,
-    },
-    {
-      label: "Shipped",
-      date: formatDate(order?.tracking?.shippedAt),
-      icon: TbTruckDelivery,
-    },
-    {
-      label: "Delivered",
-      date: formatDate(order?.tracking?.deliveredAt),
-      icon: BsBoxSeam,
-    },
-    {
-      label: "Completed",
-      date: formatDate(order?.completedAt),
-      icon: FiCheck,
-    },
-  ];
-
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 
   useSocket("update-order-status", (data) => {
     if (!data?.status) return;
 
     const status = data.status.toLowerCase();
-    const currentDate = new Date().toISOString();
 
-    console.log(currentDate)
 
+    // Update order state
     setOrder((prev) => ({
       ...prev,
       status,
+      createdAt: prev.createdAt,
+      updatedAt: currentDate.toISOString(),
       tracking: {
-        ...prev?.tracking,
-        shippedAt: status === "shipped" ? currentDate : prev?.tracking?.shippedAt,
-        deliveredAt: status === "delivered" ? currentDate : prev?.tracking?.deliveredAt,
+        ...prev.tracking,
+        shippedAt: status === "shipped" ? currentDate.toISOString() : prev.tracking?.shippedAt,
+        deliveredAt: status === "delivered" ? currentDate.toISOString() : prev.tracking?.deliveredAt,
       },
-      completedAt: status === "completed" ? currentDate : prev?.completedAt,
+      completedAt: status === "completed" ? currentDate.toISOString() : prev.completedAt,
     }));
 
-    switch (status) {
-      case "processing":
-      case "preparing":
-        setActiveStep(1);
-        break;
+    // Update steps dynamically
+    setSteps((prevSteps) => {
+      const updated = [...prevSteps];
 
-      case "shipped":
-        setActiveStep(2);
-        break;
-
-      case "delivered":
-        setActiveStep(3);
-        break;
-
-      case "completed":
-        setActiveStep(4);
-        setIsFinalCompleted(true);
-        break;
-
-      default:
-        setActiveStep(0);
-    }
+      switch (status) {
+        case "processing":
+        case "preparing":
+          updated[1].date = formattedDate; // Seller Preparing
+          setActiveStep(1);
+          break;
+        case "shipped":
+          updated[2].date = formattedDate; // Shipped
+          setActiveStep(2);
+          break;
+        case "delivered":
+          updated[3].date = formattedDate; // Delivered
+          setActiveStep(3);
+          break;
+        case "completed":
+          updated[4].date = formattedDate; // Completed
+          setActiveStep(4);
+          setIsFinalCompleted(true);
+          break;
+        default:
+          updated[0].date = formattedDate;
+          setActiveStep(0);
+          break;
+      }
+      return updated;
+    });
   });
+
+  console.log(steps, "steps")
 
   useEffect(() => {
     if (!orderId) {
@@ -138,7 +175,36 @@ const OrderTrackingPage = ({ orderId }) => {
 
         const orderData = res.data.data;
         setOrder(orderData);
-
+        setOrderStatus(orderData.status)
+        console.log(orderData, "ordersadasds data")
+        setSteps((prevSteps) => {
+          const updated = [...prevSteps];
+          switch (orderData.status) {
+            case "processing":
+            case "preparing":
+              updated[1].date = formattedDate; // Seller Preparing
+              setActiveStep(1);
+              break;
+            case "shipped":
+              updated[2].date = formattedDate; // Shipped
+              setActiveStep(2);
+              break;
+            case "delivered":
+              updated[3].date = formattedDate; // Delivered
+              setActiveStep(3);
+              break;
+            case "completed":
+              updated[4].date = formattedDate; // Completed
+              setActiveStep(4);
+              setIsFinalCompleted(true);
+              break;
+            default:
+              updated[0].date = formattedDate;
+              setActiveStep(0);
+              break;
+          }
+          return updated;
+        });
         const status = orderData.status?.toLowerCase() || "pending";
         let step = 0;
         if (status.includes("prepar")) step = 1;
@@ -229,7 +295,7 @@ const OrderTrackingPage = ({ orderId }) => {
     }
   }
 
-  console.log(steps, "order data")
+  console.log(activeStep, "order data")
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
@@ -418,7 +484,7 @@ const OrderTrackingPage = ({ orderId }) => {
                 </div>
               </div>
 
-              {activeStep === 4 && isFinalCompleted && (
+              {orderStatus === "completed" && (
                 <div className="space-y-6">
                   {/* Timeline Card */}
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
@@ -509,8 +575,20 @@ const OrderTrackingPage = ({ orderId }) => {
                             active: ["delivered", "completed"].includes(order?.status),
                           },
                           {
-                            date: "MAR 13, 2026",
-                            time: "10:30 AM", // if you have a real date, you can format it dynamically too
+                            date: order?.tracking?.deliveredAt
+                              ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                              : "Pending",
+                            time: order?.tracking?.deliveredAt
+                              ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              : "Pending", // if you have a real date, you can format it dynamically too
                             title: "Fund Released",
                             desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
                             active: order?.status === "completed",

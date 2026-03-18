@@ -121,7 +121,7 @@ const CartPage = () => {
   const subtotal = calculateSubtotal();
   const shipping = 10;
   const shippingDiscount = 0;
-  const total = subtotal + shipping - shippingDiscount;
+  const total = subtotal;
 
   if (loading) {
     return (
@@ -351,7 +351,7 @@ const CartPage = () => {
                       className="font-bold text-gray-900 block truncate max-w-[80px] sm:max-w-none text-right"
                       title={`$${shipping.toFixed(2)}`}
                     >
-                      ${shipping.toFixed(2)}
+                      $0
                     </span>
                   </div>
                   <div className="flex justify-between text-sm sm:text-sm">

@@ -29,6 +29,7 @@ export const checkoutSchema = object({
           .nullable(),
 
      state: string()
+          .matches(/^[A-Za-z\s.,'-]+$/, "Numbers/Chars not allowed in state/province name")
           .trim()
           .max(50, "State/Province is too long")
           .required("State/Province is required"),

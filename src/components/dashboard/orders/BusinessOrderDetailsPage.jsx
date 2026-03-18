@@ -219,8 +219,6 @@ const BusinessOrderDetailsPage = () => {
     };
 
     fetchOrder();
-
-
   }, [orderId]);
 
   // Status update function
@@ -295,8 +293,6 @@ const BusinessOrderDetailsPage = () => {
     }
     router.push(`/dashboard/invoice/${order._id}`);
   };
-
-  console.log(order, "ordersss")
 
   return (
     <div className="bg-[#FAFBFD] min-h-screen flex flex-col font-sans">
@@ -536,8 +532,20 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                             active: ["delivered", "completed"].includes(order?.status),
                           },
                           {
-                            date: "MAR 13, 2026",
-                            time: "10:30 AM", // if you have a real date, you can format it dynamically too
+                            date: order?.tracking?.deliveredAt
+                              ? new Date(order.tracking.deliveredAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                              : "Pending",
+                            time: order?.tracking?.deliveredAt
+                              ? new Date(order.tracking.deliveredAt).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true,
+                              })
+                              : "Pending", // if you have a real date, you can format it dynamically too
                             title: "Fund Released",
                             desc: `Your Payout For This Transaction Was Processed And Released To Your Account (${order?.totalAmount || 0})`,
                             active: order?.status === "completed",
