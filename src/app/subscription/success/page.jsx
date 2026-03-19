@@ -6,6 +6,7 @@ import { BsCheckCircleFill } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import { useUser } from "@/context/UserContext";
+import { toast } from "react-toastify";
 
 function SubscriptionSuccessContent() {
   const searchParams = useSearchParams();
@@ -16,53 +17,69 @@ function SubscriptionSuccessContent() {
   const { user } = useUser();
 
   useEffect(() => {
-    const verifySubscription = async () => {
+    const getSubscriptionDetails = async () => {
       try {
-        const sessionId = searchParams.get("session_id");
-
-        if (!sessionId) {
-          setStatus("error");
-          setMessage("No session ID found. Please try again.");
-          return;
-        }
-
-        console.log("Loading subscription for session:", sessionId);
-
-        // Since the backend already verified and saved the subscription before redirecting,
-        // we just need to update the local storage status from "pending" to "active"
-        const storedSubscription = subscriptionAPI.getStoredSubscription();
-
-        if (storedSubscription) {
-          // Update status to active
-          const updatedSubscription = {
-            ...storedSubscription,
-            status: "active",
-          };
-
-          subscriptionAPI.storeSubscription(updatedSubscription);
-          setSubscriptionData(updatedSubscription);
-          setStatus("active");
-          setMessage("Your subscription has been activated successfully!");
-
-          console.log("Subscription updated to active:", updatedSubscription);
-        } else {
-          setStatus("error");
-          setMessage(
-            "Could not find subscription data. Please contact support.",
-          );
-        }
-      } catch (error) {
-        console.error("Subscription check error:", error);
-        setStatus("error");
-        setMessage(
-          error.message ||
-            "Failed to load subscription. Please contact support.",
-        );
+        const response = await subscriptionAPI.getMySubscriptions()
+        console.log(response.data, "response of subs")
+        subscriptionAPI.storeSubscription(response.data);
+        setStatus(response.data.status)
+        setMessage("Subscription has been activated Successfully!")
+        setSubscriptionData(response.data);
+      } catch (e) {
+        toast.error(e)
       }
-    };
+    }
+    getSubscriptionDetails()
+  }, [])
 
-    verifySubscription();
-  }, [searchParams]);
+  // useEffect(() => {
+  //   const verifySubscription = async () => {
+  //     try {
+  //       const sessionId = searchParams.get("session_id");
+
+  //       if (!sessionId) {
+  //         setStatus("error");
+  //         setMessage("No session ID found. Please try again.");
+  //         return;
+  //       }
+
+  //       console.log("Loading subscription for session:", sessionId);
+
+  //       // Since the backend already verified and saved the subscription before redirecting,
+  //       // we just need to update the local storage status from "pending" to "active"
+  //       const storedSubscription = subscriptionAPI.getStoredSubscription();
+  //       console.log(storedSubscription, "storing")
+  //       if (storedSubscription) {
+  //         // Update status to active
+  //         const updatedSubscription = {
+  //           ...storedSubscription,
+  //           status: "active",
+  //         };
+
+  //         subscriptionAPI.storeSubscription(updatedSubscription);
+  //         setSubscriptionData(updatedSubscription);
+  //         setStatus("active");
+  //         setMessage("Your subscription has been activated successfully!");
+
+  //         console.log("Subscription updated to active:", updatedSubscription);
+  //       } else {
+  //         setStatus("error");
+  //         setMessage(
+  //           "Could not find subscription data. Please contact support.",
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.error("Subscription check error:", error);
+  //       setStatus("error");
+  //       setMessage(
+  //         error.message ||
+  //         "Failed to load subscription. Please contact support.",
+  //       );
+  //     }
+  //   };
+
+  //   verifySubscription();
+  // }, [searchParams]);
 
   const handleContinue = () => {
     const storedSub = subscriptionAPI.getStoredSubscription();
@@ -122,7 +139,7 @@ function SubscriptionSuccessContent() {
               <div className="flex justify-between">
                 <span className="text-gray-600">Plan:</span>
                 <span className="font-medium text-gray-900">
-                  {subscriptionData.planName || "N/A"}
+                  {subscriptionData.plan || "N/A"}
                 </span>
               </div>
               <div className="flex justify-between">

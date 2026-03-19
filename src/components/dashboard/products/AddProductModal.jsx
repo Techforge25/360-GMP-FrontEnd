@@ -408,6 +408,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         }
         break;
 
+      case "description":
+        if (value && Number(value) > 2000) {
+          error = "Description is more then 2000. Please reduce it."
+        }
+        break
+
       case "estimatedDeliveryDays":
         if (!value) error = "Delivery time required";
         break;
@@ -651,10 +657,8 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         placeholder="Detailed job description..."
         maxLength={5000}
       />
-      {descLength >= 5000 && (
-        <p className="text-red-500 text-[12px] mt-1 italic">
-          Maximum character limit reached.
-        </p>
+      {errors.description && (
+        <p className="text-red-500 text-xs mt-1">{errors.description}</p>
       )}
     </div>
   );

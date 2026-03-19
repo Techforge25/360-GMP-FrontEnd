@@ -22,7 +22,7 @@ export default function BusinessWalletMainComp() {
      useEffect(() => {
           const fetchAnalytics = async () => {
                const response = await walletBusinessAPI.getWalletBusinessAnalytics()
-               const analyticsDashboard = getAnalytics(response.data)
+               const analyticsDashboard = getAnalytics(response.data, response.message)
                setAnalytics(analyticsDashboard)
           }
           fetchAnalytics()

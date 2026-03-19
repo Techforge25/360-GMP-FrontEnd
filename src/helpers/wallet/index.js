@@ -27,17 +27,18 @@ export const getAnalytics = (analytics) => {
      ]
 }
 
-export const getUserAnalytics = (analytics) => {
-     console.log(analytics, "analutics")
+export const getUserAnalytics = (analytics, message) => {
+     console.log(message, "analutics")
+     const messageRes = "You need to setup your wallet account"
      return [
           {
-               amount: analytics.availableBalance === 0 ? 0 : analytics.availableBalance,
+               amount: messageRes ? 0 : analytics.availableBalance,
                icon: "/assets/images/card-1.png",
                text: "Net Balance",
                text2: "Available for withdrawal"
           },
           {
-               amount: analytics.totalPendingEscrow === 0 ? 0 : analytics.totalPendingEscrow,
+               amount: messageRes ? 0 : analytics.totalPendingEscrow,
                icon: "/assets/images/card-2.png",
                text: "Pending Settlements",
                text2: "Held in escrow"

@@ -28,8 +28,8 @@ const PlanCard = ({
   features = [],
   buttonText,
   variant = "default",
-  badge,
   disabled = false,
+  badge,
   disabledMessage,
   onSelect,
 }) => {
@@ -86,7 +86,7 @@ const PlanCard = ({
         {/* CTA Button */}
         <Button
           onClick={onSelect}
-          disabled={disabled}
+          disabled={buttonText === "Not Valid For Business" || disabled}
           className={cn(
             "w-full mb-8 font-medium py-3 px-4 rounded-lg transition-colors cursor-pointer",
             variant === "purple"
@@ -345,6 +345,11 @@ function PlansList() {
         cancelUrl,
       );
 
+      if (response.message === "You already have an active subscription for this plan") {
+        successUrl
+      }
+
+
       console.log("Stripe checkout response:", response);
 
       // Robust check for checkout URL - only accept strings starting with http
@@ -368,6 +373,7 @@ function PlansList() {
           createdAt: new Date().toISOString(),
         };
 
+        console.log(response, "response")
         console.log("Storing subscription with role:", role, "profileData:", profileData);
         subscriptionAPI.storeSubscription(subscriptionData);
 

@@ -172,6 +172,15 @@ class SubscriptionAPI {
     }
   }
 
+  async getMySubscriptions() {
+    return await api.get({
+      url: `/subscription`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
   /**
    * Store subscription data in localStorage
    * @param {object} subscriptionData - Subscription data from backend

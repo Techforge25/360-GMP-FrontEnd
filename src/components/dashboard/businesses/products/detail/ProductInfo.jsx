@@ -230,9 +230,9 @@ export default function ProductInfo({ product }) {
         <h3 className="text-black">Tiered Pricing (Q: Price, Q: Price)</h3>
         <div className="my-3 p-6 bg-gray-50 rounded-xl border border-gray-200 shadow-sm">
           <div className="flex flex-wrap gap-8">
-            {product.tieredPricing.map((tier) => (
+            {product.tieredPricing.map((tier, index) => (
               <label
-                key={tier.id}
+                key={index}
                 className="flex items-center cursor-pointer group"
               >
                 <div className="relative flex items-center justify-center">
@@ -241,7 +241,10 @@ export default function ProductInfo({ product }) {
                     name="pricing-tier"
                     value={tier.price}
                     checked={selectedTier.price === tier.price}
-                    onChange={() => setSelectedTier({ qty: tier.qty, price: tier.price })}
+                    onChange={() => {
+                      setQuantity(tier.qty)
+                      setSelectedTier({ qty: tier.qty, price: tier.price })
+                    }}
                     className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-full checked:border-indigo-900 transition-all"
                   />
                   {/* Custom Inner Circle */}
@@ -259,7 +262,7 @@ export default function ProductInfo({ product }) {
       </div>
 
       {selectedTier.price !== 0 && (
-        <span className="text-[#240457] underline cursor-pointer" onClick={() => setSelectedTier({ qty: "", price: 0 })}>Go with Quantity Selection</span>
+        <p className="text-[#240457] pb-3 underline cursor-pointer" onClick={() => setSelectedTier({ qty: "", price: 0 })}>Go with Quantity Selection</p>
       )}
 
 

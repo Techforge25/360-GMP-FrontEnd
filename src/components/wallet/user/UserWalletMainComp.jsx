@@ -17,12 +17,12 @@ export default function UserWalletMainComp() {
           const fetchAnalytics = async () => {
                const response = await walletUserAPI.getWalletUserAnalytics()
                console.log(response.message, "responsess")
-               if (response.message === "You need to setup your wallet account") {
-                    setErrMsg(response.message)
-               } else {
-                    const analyticsDashboard = getUserAnalytics(response.data)
-                    setAnalytics(analyticsDashboard)
-               }
+               // if (response.message === "You need to setup your wallet account") {
+               //      setErrMsg(response.message)
+               // } else {
+               const analyticsDashboard = getUserAnalytics(response.data, response.message)
+               setAnalytics(analyticsDashboard)
+               // }
           }
           fetchAnalytics()
      }, [])
@@ -36,7 +36,7 @@ export default function UserWalletMainComp() {
      return (
           <>
                <AuthNavbar />
-               <WalletBanner activeTabs={"Welcome Back Alex"} />
+               <WalletBanner activeTabs={"Welcome Back"} />
                <div className="font-sans px-6 bg-gray-50">
                     <FundButtons />
                     <div className="grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-5">

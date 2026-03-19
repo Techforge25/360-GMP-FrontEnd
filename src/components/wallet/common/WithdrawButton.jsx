@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import api from "@/lib/axios";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdSend } from "react-icons/md";
 import { toast } from "react-toastify";
@@ -9,13 +10,15 @@ export default function WithDrawButton({ withdrawOpen, setWithdrawOpen }) {
      const [errorMessage, setErrorMessage] = useState("");
      const [loading, setLoading] = useState(false);
      const [profile, setProfile] = useState("")
+     const pathname = usePathname()
+
      useEffect(() => {
           const loggedIn = JSON.parse(localStorage.getItem("user"))
           setProfile(loggedIn.profileData)
      }, [])
 
      const [formData, setFormData] = useState({
-          businessProfile: profile,
+          businessProfile: pathname === "/wallet/user" ? "UserProfile" : "BusinessProfile",
           amount: "",
      });
 
@@ -35,7 +38,7 @@ export default function WithDrawButton({ withdrawOpen, setWithdrawOpen }) {
                const res = await api.post({
                     url: "/wallet/connect",
                     payload: {
-                         ownerModel: profile === "business" ? "BusinessProfile" : "UserProfile",
+                         ownerModel: pathname === "/wallet/user" ? "UserProfile" : "BusinessProfile",
                     },
                     enableSuccessMessage: false,
                     enableErrorMessage: false,

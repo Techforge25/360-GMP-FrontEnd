@@ -18,7 +18,7 @@ export default function RecentTransactions() {
      }, [])
 
      return (
-          <div className="bg-card rounded-xl border border-border p-5 h-full">
+          <div className="bg-white rounded-xl border border-border p-5 h-full">
                <div className="flex items-center justify-between mb-5">
                     <h2 className="text-lg font-bold text-black">Recent Transaction</h2>
                     <Link href="/wallet/user/view-all-transactions" className="text-sm text-[#185adb] font-medium text-primary hover:underline">View All</Link>

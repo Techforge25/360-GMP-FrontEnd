@@ -48,8 +48,6 @@ export const CartProvider = ({ children }) => {
         (item) => item.productId === product._id || item.productId === product.id
       );
 
-      console.log(existingItem, "exist items")
-
       if (existingItem) {
         message = "Cart updated!";
         return prevItems.map((item) =>

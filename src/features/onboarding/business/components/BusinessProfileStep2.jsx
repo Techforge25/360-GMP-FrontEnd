@@ -1,360 +1,458 @@
 "use client";
-
-import { useState } from "react";
-import Image from "next/image";
-import { FiChevronDown } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { FileUpload } from "@/components/ui/FileUpload";
-import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
-import { LocationSearch } from "@/components/ui/LocationSearch";
-import { PDFViewer } from "@/components/ui/PDFViewer";
-import { uploadToCloudinary } from "@/lib/cloudinary";
-
+import { useFieldArray } from "react-hook-form";
+import { useState } from "react";
+import { SHIPPING_OPTIONS } from "@/constants/index";
 export default function BusinessProfileStep2({
-  formData,
-  handleChange,
-  setIsUploading,
-  phoneError,
+  register,
+  control,
+  errors,
+  className
 }) {
-  const [currentCertName, setCurrentCertName] = useState("");
-  const [isCustomCert, setIsCustomCert] = useState(false);
-  const [previewCert, setPreviewCert] = useState(null);
+  const REGIONS = ["North America", "Europe", "Middle East", "Asia"];
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
+  const {
+    fields: leadershipFields,
+    append: addLeader,
+    remove: removeLeader
+  } = useFieldArray({
+    control,
+    name: "executiveLeadership"
+  });
 
-  const predefinedCerts = [
-    "ISO 9001",
-    "CE Certified",
-    "TUV SUD",
-    "FDA Approved",
-    "Ethical Sourcing",
-  ];
+  const {
+    fields: officeFields,
+    append: addOffice,
+    remove: removeOffice
+  } = useFieldArray({
+    control,
+    name: "location.internationalOffices"
+  });
 
-  const handleAddCert = (name, url) => {
-    const currentCerts = formData.certifications || [];
-    if (currentCerts.length >= 3) return;
-    handleChange("certifications", [...currentCerts, { name, url }]);
-    setCurrentCertName("");
-    setIsCustomCert(false);
-  };
+  const {
+    fields: stakeholderFields,
+    append: addStakeholder,
+    remove: removeStakeholder
+  } = useFieldArray({
+    control,
+    name: "stakeholderDisclosure"
+  });
+
+  const {
+    fields: tradeFields,
+    append: addTrade,
+    remove: removeTrade
+  } = useFieldArray({
+    control,
+    name: "tradeAffiliations"
+  });
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Company Location</h3>
+    <div className="space-y-8">
+      <div className="space-y-6">
+        <h2 className="text-lg font-bold">B2B Contact Details</h2>
 
-        <div className="space-y-2 mb-6">
-          <label className="text-base font-medium">
-            Search Location <span className="text-red-500">*</span>
-          </label>
-          <LocationSearch
-            placeholder="Search for your business location..."
-            onLocationSelect={(locationData) => {
-              handleChange("country", locationData.country);
-              handleChange("city", locationData.city);
-              handleChange("address", locationData.address);
-            }}
-          />
-          <p className="text-sm text-text-secondary">
-            Search and select your location, then edit the fields below if
-            needed
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="space-y-2">
-            <label className="text-base font-medium">
-              Country <span className="text-red-500">*</span>
-            </label>
-            <Input
-              placeholder="Country"
-              value={formData.country || ""}
-              onChange={(e) => handleChange("country", e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-base font-medium">
-              City <span className="text-red-500">*</span>
-            </label>
-            <Input
-              placeholder="Ottawa"
-              value={formData.city || ""}
-              onChange={(e) => handleChange("city", e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-base font-medium">
-              Address Line <span className="text-red-500">*</span>
-            </label>
-            <Input
-              placeholder="street address"
-              value={formData.address || ""}
-              onChange={(e) => handleChange("address", e.target.value)}
-              required
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Compliance & Certification</h3>
-
-        <div className="bg-gray-50 border border-border-light rounded-xl p-6 space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-text-primary">
-                Select or Enter Certificate Name
-              </label>
-              {!isCustomCert ? (
-                <div className="relative">
-                  <select
-                    className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
-                    value={currentCertName}
-                    onChange={(e) => {
-                      if (e.target.value === "Other") {
-                        setIsCustomCert(true);
-                        setCurrentCertName("");
-                      } else {
-                        setCurrentCertName(e.target.value);
-                      }
-                    }}
-                  >
-                    <option value="">Select Certificate</option>
-                    {predefinedCerts.map((cert) => (
-                      <option key={cert} value={cert}>
-                        {cert}
-                      </option>
-                    ))}
-                    <option value="Other">Other (Custom)</option>
-                  </select>
-                  <FiChevronDown className="absolute right-3 top-3.5 text-text-secondary pointer-events-none" />
-                </div>
-              ) : (
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Enter custom certificate name"
-                    value={currentCertName}
-                    onChange={(e) => setCurrentCertName(e.target.value)}
-                    className="flex-1"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setIsCustomCert(false);
-                      setCurrentCertName("");
-                    }}
-                    className="shrink-0"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-3">
-              <label className="text-sm font-semibold text-text-primary">
-                {currentCertName ? `Upload for ${currentCertName}` : "Upload Document"}
-              </label>
-              <FileUpload
-                label="Upload Document"
-                subLabel="JPG, PNG, PDF (Max 5MB)"
-                disabled={!currentCertName || (formData.certifications || []).length >= 3}
-                onUploadingChange={setIsUploading}
-                onUpload={(file, onProgress) => {
-                  if (!currentCertName) {
-                    alert("Please select or enter a certificate name first");
-                    return Promise.reject("No name");
-                  }
-                  return uploadToCloudinary(
-                    file,
-                    "business/certifications",
-                    onProgress,
-                  ).then((url) => {
-                    handleAddCert(currentCertName, url);
-                    return url;
-                  });
-                }}
-              />
-            </div>
-          </div>
-
-          <p className="text-sm text-text-secondary italic">
-            * Select a certificate name first, then upload the corresponding
-            image. You can add up to 3 certifications.
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <h4 className="text-base font-semibold">Added Certifications</h4>
-            <span className="text-sm text-text-secondary">
-              {(formData.certifications || []).length} / 3
-            </span>
-          </div>
-
-          {(formData.certifications || []).length === 0 ? (
-            <div className="text-center py-8 border border-dashed border-border-light rounded-xl bg-gray-50/50">
-              <p className="text-sm text-text-secondary">
-                No certifications added yet.
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {formData.certifications.map((cert, index) => {
-                const isPDF = cert.url?.toLowerCase().endsWith(".pdf");
-
-                return (
-                  <div
-                    key={index}
-                    className="relative group p-4 border border-border-light rounded-xl bg-white hover:border-brand-primary/30 transition-all shadow-sm"
-                  >
-                    <div
-                      className="relative aspect-video w-full border border-gray-100 rounded-lg overflow-hidden bg-gray-50 mb-3 cursor-pointer hover:opacity-80 transition-opacity flex items-center justify-center"
-                      onClick={() => setPreviewCert(cert)}
-                    >
-                      {isPDF ? (
-                        <div className="text-center p-4">
-                          <div className="text-5xl mb-2">📄</div>
-                          <p className="text-sm text-text-secondary truncate px-2">
-                            {cert.name}.pdf
-                          </p>
-                        </div>
-                      ) : (
-                        <Image
-                          src={cert.url}
-                          alt={cert.name}
-                          fill
-                          className="object-contain p-2"
-                        />
-                      )}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <span
-                        className="text-sm font-medium text-text-primary truncate"
-                        title={cert.name}
-                      >
-                        {cert.name}
-                      </span>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setPreviewCert(cert)}
-                          className="text-sm font-semibold text-brand-primary hover:text-brand-primary/80 flex items-center gap-1 transition-colors flex-1"
-                        >
-                          View Certificate
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const updated = formData.certifications.filter((_, i) => i !== index);
-                            handleChange("certifications", updated);
-                          }}
-                          className="text-sm font-semibold text-red-500 hover:text-red-600 flex items-center gap-1 transition-colors"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Primary B2B Contact</h3>
         <div className="grid md:grid-cols-2 gap-6">
+
+          {/* Name */}
           <div className="space-y-2">
             <label className="text-base font-medium">
-              Contact Person Name <span className="text-red-500">*</span>
+              Contact Name <span className="text-red-500">*</span>
             </label>
-            <Input
-              value={formData.contactName || ""}
-              onChange={(e) => handleChange("contactName", e.target.value)}
-              required
+            <input
+              {...register("b2bContact.name")}
+              placeholder="Sarah Thompson"
+              className={className}
             />
+            {errors?.b2bContact?.name && (
+              <p className="text-red-500">
+                {errors?.b2bContact?.name?.message}
+              </p>
+            )}
           </div>
+
+          {/* Title */}
           <div className="space-y-2">
             <label className="text-base font-medium">
               Title <span className="text-red-500">*</span>
             </label>
-            <Input
-              value={formData.contactTitle || ""}
-              onChange={(e) => handleChange("contactTitle", e.target.value)}
-              required
+            <input
+              {...register("b2bContact.title")}
+              placeholder="International Sales Manager"
+              className={className}
             />
+            {errors?.b2bContact?.title && (
+              <p className="text-red-500">
+                {errors.b2bContact.title.message}
+              </p>
+            )}
           </div>
+
+          {/* Phone */}
           <div className="space-y-2">
             <label className="text-base font-medium">
               Phone <span className="text-red-500">*</span>
             </label>
-            <PhoneInputWithCountry
-              value={formData.contactPhone || ""}
-              onChange={(value) => handleChange("contactPhone", value)}
-              required
+            <input
+              {...register("b2bContact.phone")}
+              placeholder="+14155552671"
+              className={className}
             />
-            {phoneError && (
-              <p className="text-sm text-red-500 mt-1 font-medium animate-in fade-in slide-in-from-top-1 duration-200">
-                {phoneError}
+            {errors?.b2bContact?.phone && (
+              <p className="text-red-500">
+                {errors.b2bContact.phone.message}
               </p>
             )}
           </div>
+
+          {/* Email */}
           <div className="space-y-2">
             <label className="text-base font-medium">
               Support Email <span className="text-red-500">*</span>
             </label>
-            <Input
-              value={formData.contactEmail || ""}
-              onChange={(e) => handleChange("contactEmail", e.target.value)}
-              required
+            <input
+              {...register("b2bContact.supportEmail")}
+              placeholder="sales@company.com"
+              className={className}
             />
+            {errors?.b2bContact?.supportEmail && (
+              <p className="text-red-500">
+                {errors.b2bContact.supportEmail.message}
+              </p>
+            )}
           </div>
+
         </div>
       </div>
 
-      {previewCert && (
-        <div
-          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-          onClick={() => setPreviewCert(null)}
+
+      <div className="space-y-2">
+        <label className="font-bold">Region of Operations</label>
+        <div className="flex items-center justify-between">
+          {REGIONS.map((region) => (
+            <label key={region} className="flex gap-2">
+              <input
+                type="checkbox"
+                value={region}
+                {...register("regionOfOperations")}
+              />
+              {region}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="font-bold">Stakeholders</h2>
+
+        {stakeholderFields.map((field, index) => (
+          <div key={field.id} className="grid grid-cols-2 gap-4 items-center">
+
+            <input
+              {...register(`stakeholderDisclosure.${index}.name`)}
+              placeholder="Name"
+              className={className}
+            />
+
+            <input
+              type="number"
+              {...register(`stakeholderDisclosure.${index}.ownershipPercentage`)}
+              placeholder="Ownership %"
+              className={className}
+            />
+
+            <button type="button" onClick={() => removeStakeholder(index)}>
+              ❌ Remove
+            </button>
+          </div>
+        ))}
+
+        <Button
+          type="button"
+          onClick={() => addStakeholder({ name: "", ownershipPercentage: 0 })}
         >
-          <div
-            className="relative bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 bg-white border-b border-border-light p-4 flex justify-between items-center z-10">
-              <h3 className="text-lg font-semibold">{previewCert.name}</h3>
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPreviewCert(null)}
-                  className="text-2xl text-text-secondary hover:text-text-primary transition-colors"
-                >
-                  ×
-                </button>
-              </div>
+          + Add Stakeholder
+        </Button>
+      </div>
+
+      <div className="space-y-2">
+        <label className="font-bold">Executive Leadership</label>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          {leadershipFields.map((field, index) => (
+            <div key={field.id} className="flex gap-2">
+              <input
+                {...register(`executiveLeadership.${index}`)}
+                placeholder="e.g. John Doe - CEO"
+                className={className}
+              />
+              <button type="button" onClick={() => removeLeader(index)}>
+                ❌
+              </button>
             </div>
-            <div className="p-6">
-              {previewCert.url?.toLowerCase().endsWith(".pdf") ? (
-                <PDFViewer url={previewCert.url} fileName={previewCert.name} />
-              ) : (
-                <div className="relative w-full min-h-[400px]">
-                  <Image
-                    src={previewCert.url}
-                    alt={previewCert.name}
-                    width={800}
-                    height={600}
-                    className="w-full h-auto object-contain"
-                  />
-                </div>
-              )}
+          ))}
+        </div>
+
+        <Button type="button" onClick={() => addLeader("")}>
+          + Add Leadership
+        </Button>
+      </div>
+
+      <div className="space-y-4">
+        <label className="font-bold">Trade Affiliations</label>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          {tradeFields.map((field, index) => (
+            <div key={field.id} className="flex gap-2">
+              <input
+                {...register(`tradeAffiliations.${index}`)}
+                placeholder="e.g. Trade Association"
+                className={className}
+              />
+              <button type="button" onClick={() => removeTrade(index)}>
+                ❌
+              </button>
             </div>
+          ))}
+        </div>
+
+        <Button type="button" onClick={() => addTrade("")}>
+          + Add Affiliation
+        </Button>
+      </div>
+
+      <div className="space-y-2">
+        <label className="font-bold">International Offices</label>
+        <div className="grid md:grid-cols-2 gap-4">
+          {officeFields.map((field, index) => (
+            <div key={field.id} className="flex gap-2 mb-2">
+              <input
+                {...register(`location.internationalOffices.${index}`)}
+                placeholder="e.g. Berlin, Germany"
+                className={className}
+              />
+              <button type="button" onClick={() => removeOffice(index)}>
+                ❌
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <Button type="button" onClick={() => addOffice("")}>
+          + Add Office
+        </Button>
+      </div>
+
+      <div className="space-y-4">
+        <h2 className="font-bold text-lg">Location Details</h2>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <input
+              {...register("location.country")}
+              placeholder="Country"
+              className={className}
+            />
+            {errors?.location?.country && (
+              <p className="text-red-500">{errors?.location?.country?.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <input
+              {...register("location.city")}
+              placeholder="City"
+              className={className}
+            />
+            {errors?.location?.city && (
+              <p className="text-red-500">{errors?.location?.city?.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <input
+              {...register("location.addressLine")}
+              placeholder="Address Line"
+              className={className}
+            />
+            {errors?.location?.addressLine && (
+              <p className="text-red-500">{errors?.location?.addressLine?.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <input
+              {...register("location.warehouseAddress")}
+              placeholder="Warehouse Address"
+              className={className}
+            />
+            {errors?.location?.warehouseAddress && (
+              <p className="text-red-500">{errors?.location?.warehouseAddress?.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <input
+              {...register("location.additionalWarehouseAddress")}
+              placeholder="Additional Warehouse Address"
+              className={className}
+            />
+            {errors?.location?.additionalWarehouseAddress && (
+              <p className="text-red-500">{errors?.location?.additionalWarehouseAddress?.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <input
+              {...register("location.mandatoryPickupAddress")}
+              placeholder="Mandatory Pickup Address"
+              className={className}
+            />
+            {errors?.location?.mandatoryPickupAddress && (
+              <p className="text-red-500">{errors?.location?.mandatoryPickupAddress?.message}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <input
+              {...register("location.businessRegistrationAddress")}
+              placeholder="Business Registration Address"
+              className={className}
+            />
+            {errors?.location?.businessRegistrationAddress && (
+              <p className="text-red-500">{errors?.location?.businessRegistrationAddress?.message}</p>
+            )}
           </div>
         </div>
-      )}
+      </div>
+      {/* ================= INTERNATIONAL OFFICES ================= */}
+      <div className="space-y-4">
+        <h2 className="text-lg font-bold">Shipping Details</h2>
+
+        {/* Capabilities */}
+        <div className="space-y-2">
+          <div className="grid md:grid-cols-2 gap-2">
+            {SHIPPING_OPTIONS.map((option) => (
+              <label key={option} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  value={option}
+                  {...register("shipping.capabilities")}
+                />
+                {option}
+              </label>
+            ))}
+          </div>
+
+          {errors?.shipping?.capabilities && (
+            <p className="text-red-500">
+              {errors?.shipping?.capabilities?.message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-base font-medium">
+          Logo <span className="text-red-500">*</span>
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          {...register("logo")}
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setLogoPreview(URL.createObjectURL(file));
+            }
+          }}
+          className={className}
+        />
+
+        {/* Preview */}
+        {logoPreview && (
+          <div className="mt-3 w-32 h-32 border rounded overflow-hidden">
+            <img
+              src={logoPreview}
+              alt="Logo Preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        {errors?.logo && (
+          <p className="text-red-500">{errors?.logo?.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <label className="text-base font-medium">
+          Banner <span className="text-red-500">*</span>
+        </label>
+
+        <input
+          type="file"
+          accept="image/*"
+          {...register("banner")}
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setBannerPreview(URL.createObjectURL(file));
+            }
+          }}
+          className={className}
+        />
+
+        {/* Preview */}
+        {bannerPreview && (
+          <div className="mt-3 w-full h-40 border rounded overflow-hidden">
+            <img
+              src={bannerPreview}
+              alt="Banner Preview"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
+        {errors?.banner && (
+          <p className="text-red-500">{errors?.banner?.message}</p>
+        )}
+      </div>
+
+
+
+      {/* ================= FILE UPLOADS ================= */}
+      <div className="grid md:grid-cols-2 gap-6">
+
+        <div className="space-y-2">
+          <label>Certificate of Incorporation</label>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.png"
+            {...register("certificateOfIncorporation")}
+            className={className}
+          />
+          {errors?.certificateOfIncorporation && (
+            <p className="text-red-500">{errors?.certificateOfIncorporation?.message}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <label>Tax Registration Certificate</label>
+          <input
+            type="file"
+            accept=".pdf,.jpg,.png"
+            {...register("taxRegistrationCertificate")}
+            className={className}
+          />
+          {errors?.taxRegistrationCertificate && (
+            <p className="text-red-500">{errors?.taxRegistrationCertificate?.message}</p>
+          )}
+        </div>
+
+      </div>
     </div>
   );
 }
