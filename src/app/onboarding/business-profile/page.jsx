@@ -257,7 +257,6 @@ export default function BusinessProfilePage() {
           title="Profile Complete!"
           description="Your Business Profile Has Been Successfully Saved. Waiting for admin approval (to be done in next phase) till then you can explore the login the account without approval."
           onNext={handleSuccessNext}
-          isValid={isValid}
         />
       </form>
     </div >

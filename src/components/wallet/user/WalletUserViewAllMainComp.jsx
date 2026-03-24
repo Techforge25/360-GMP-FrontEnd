@@ -13,7 +13,6 @@ export default function WalletUserViewAllMainComp() {
      useEffect(() => {
           const getName = () => {
                const name = JSON.parse(localStorage.getItem("user"))
-               console.log(name?.profilePayload?.fullName, "names")
                setUserName(name?.profilePayload?.fullName)
           }
           getName()

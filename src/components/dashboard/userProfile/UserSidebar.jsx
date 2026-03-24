@@ -838,15 +838,15 @@ const UserSidebar = () => {
                 ))}
               </div>
             ) : socialLinks.length > 0 ? (
-              <div className="space-y-2">
+              <div className="flex items-center">
                 {socialLinks.map((link, index) => {
                   const IconComponent = socialIcons[link.platformName];
                   return (
                     <div
                       key={link._id || `social-link-${index}`}
-                      className="flex items-center justify-between group"
+                      className="flex items-center justify-between"
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="">
                         <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#ECEFF6] flex items-center justify-center text-[#240457]">
                           {IconComponent ? (
                             <IconComponent />
@@ -868,17 +868,10 @@ const UserSidebar = () => {
                           </a> */}
                         </div>
                       </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button
-                          onClick={() => handleEditSocialLink(link)}
-                          className="text-gray-400 hover:text-blue-600 p-1"
-                          title="Edit"
-                        >
-                          <FiEdit2 className="w-3 h-3" />
-                        </button>
+                      <div className="flex gap-1 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleDeleteSocialLink(link._id)}
-                          className="text-gray-400 hover:text-red-600 p-1"
+                          className="text-red-600 p-1"
                           title="Delete"
                         >
                           <FiTrash2 className="w-3 h-3" />

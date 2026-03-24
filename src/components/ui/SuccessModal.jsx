@@ -10,7 +10,6 @@ export const SuccessModal = ({
   description,
   buttonText = "Next",
   onNext,
-  isValid
 }) => {
   if (!isOpen) return null;
 
@@ -32,7 +31,6 @@ export const SuccessModal = ({
 
           <Button
             onClick={onNext}
-            disabled={isValid}
             className="w-full h-11 bg-[#240457] hover:bg-indigo-800 text-white rounded-md font-medium"
           >
             {buttonText}

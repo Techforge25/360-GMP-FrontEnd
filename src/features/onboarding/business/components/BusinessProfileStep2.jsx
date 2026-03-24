@@ -165,8 +165,14 @@ export default function BusinessProfileStep2({
               className={className}
             />
 
+            {errors?.stakeholderDisclosure?.[index]?.name && (
+              <p className="text-red-500">
+                {errors?.stakeholderDisclosure[index]?.name?.message}
+              </p>
+            )}
+
             {errors?.stakeholderDisclosure?.[index]?.ownershipPercentage && (
-              <p className="text-red-500 text-xs">
+              <p className="text-red-500">
                 {errors?.stakeholderDisclosure[index]?.ownershipPercentage?.message}
               </p>
             )}

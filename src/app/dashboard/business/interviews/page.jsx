@@ -30,7 +30,7 @@ export default function InterviewsPage() {
               </div>
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Coming Soon in Phase 2
+                Coming Soon in Phase 6
               </h2>
 
               <p className="text-gray-600 text-lg mb-8 leading-relaxed">

@@ -26,6 +26,7 @@ import { MdVerified } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import { Link } from "lucide-react";
 import useSocket from "@/hooks/useSocket";
+import moment from "moment";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -1139,7 +1140,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                             Completion Date
                           </p>
                           <p className="font-bold text-gray-900 text-[15px]">
-                            October 17, 2023
+                            {moment(order?.completedAt).format("MMM DD, YYYY, hh:mm A")}
                           </p>
                         </div>
 
@@ -1148,7 +1149,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                             Transaction ID
                           </p>
                           <p className="font-bold text-gray-900 text-[15px]">
-                            {order?._id?.slice(0, 12).toUpperCase() || "ESC-XXXX-2026"}  {/* Using _id prefix as short txn ID */}
+                            {order?.tracking?.trackingId || "ESC-XXXX-2026"}  {/* Using _id prefix as short txn ID */}
                           </p>
                         </div>
                       </div>

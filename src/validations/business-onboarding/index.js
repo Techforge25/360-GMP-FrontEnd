@@ -3,6 +3,7 @@ import * as Yup from "yup";
 const alphaNumericPattern = /^[a-zA-Z0-9 -]*$/;
 const addressPattern = /^[a-zA-Z0-9 -,]*$/;
 const customPattern = /^[a-zA-Z0-9 \-.,\n\r]*$/;
+const stackHoldersNamePattern = /^[a-zA-Z]*$/;
 
 export const createBusinessProfileSchema = Yup.object({
      // Basic Info
@@ -56,7 +57,11 @@ export const createBusinessProfileSchema = Yup.object({
      operationHour: Yup.string()
           .max(50, "Operation hour cannot exceed 50 characters")
           .nullable()
-          .trim(),
+          .trim()
+          .matches(
+               /^[0-9\s\-apmAPM]+$/,
+               "Operation hour can only contain numbers, '-', spaces, and am/pm"
+          ),
 
      countryOfRegistration: Yup.string()
           .max(50, "Country of registration cannot exceed 50 characters")
@@ -164,7 +169,7 @@ export const createBusinessProfileSchema = Yup.object({
                     name: Yup.string()
                          .min(3, "Stakeholder name must be at least 3 characters")
                          .required("Stakeholder name is required")
-                         .matches(alphaNumericPattern, "Only alphanumeric characters, spaces, and hyphens are allowed")
+                         .matches(stackHoldersNamePattern, "Only letters are allowed")
                          .trim(),
 
                     ownershipPercentage: Yup.number()
@@ -194,7 +199,11 @@ export const createBusinessProfileSchema = Yup.object({
      // Financial
      annualRevenueRange: Yup.string()
           .nullable()
-          .trim(),
+          .trim()
+          .matches(
+               /^\$\d+M-\$\d+M$/,
+               "Annual revenue must be in the format $<number>M-$<number>M, e.g., $4M-$5M"
+          ),
 
      auditingAgency: Yup.string()
           .nullable()

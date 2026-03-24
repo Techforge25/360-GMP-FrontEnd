@@ -7,6 +7,7 @@ import TransactionTimeline from "@/components/wallet/business/transaction-detail
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { use } from "react";
+import TransactionDetails from "@/components/wallet/business/transaction-details/TransactionDetails";
 
 export default function TransactionDetailsPage({ params }) {
      const { id } = use(params);
@@ -61,6 +62,7 @@ export default function TransactionDetailsPage({ params }) {
                          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
                               <div className="lg:col-span-3">
                                    <TransactionTimeline data={transactionData} />
+                                   <TransactionDetails data={transactionData} />
                               </div>
 
                               <div className="lg:col-span-2">

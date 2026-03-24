@@ -46,6 +46,20 @@ export const getUserAnalytics = (analytics, message) => {
      ]
 }
 
+export const getTransactionDetails = (data) => {
+     console.log(data, "data")
+     return [
+          {
+               key: "SELLER NAME",
+               value: data?.buyerDetails?.name,
+          },
+          {
+               key: "EMAIL",
+               value: data?.buyerDetails?.email,
+          },
+     ]
+}
+
 export const getFormattedChartData = (data) => {
      const { graph } = data
      return [

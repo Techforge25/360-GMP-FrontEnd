@@ -25,7 +25,8 @@ class WalletUserAPI {
 
      // get financial performance
      async getWalletUserTransactions(params) {
-          const url = params.getCond !== "" ? `/wallet/user/purchases?type=${params}&page=${params.currentPage}&limit=${params.limit}` : `/wallet/user/purchases?page=${params.currentPage}&limit=${params.limit}`
+          console.log(params, "paramter")
+          const url = params.getCond !== "" ? `/wallet/user/purchases?type=${params.getCond}&page=${params.currentPage}&limit=${params.limit}` : `/wallet/user/purchases?page=${params.currentPage}&limit=${params.limit}`
           return await api.get({
                url,
                activateLoader: true,
