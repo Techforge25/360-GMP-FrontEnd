@@ -6,7 +6,6 @@ import { FiCalendar, FiMapPin } from "react-icons/fi";
 
 export default function Step3({ data }) {
      if (!data) return null;
-
      return (
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
 
@@ -54,12 +53,10 @@ export default function Step3({ data }) {
 
                {/* Overview / Description */}
                {data.description && (
-                    <div className="p-6 border border-border-light rounded-lg bg-white">
-                         <h3 className="font-bold mb-2">Overview</h3>
-                         <p className="text-base text-text-secondary leading-relaxed">{data.description}</p>
-                    </div>
+                    <div
+                         dangerouslySetInnerHTML={{ __html: data.description }}
+                    />
                )}
-
                {/* Business Details */}
                <div className="p-6 border border-border-light rounded-lg bg-white">
                     <h3 className="font-bold mb-4">Business Details</h3>
@@ -138,18 +135,6 @@ export default function Step3({ data }) {
                          <ul className="list-disc list-inside">
                               {data.executiveLeadership.map((leader, idx) => (
                                    <li key={idx}>{leader}</li>
-                              ))}
-                         </ul>
-                    </div>
-               )}
-
-               {/* Certifications */}
-               {data.certifications?.length > 0 && (
-                    <div className="p-6 border border-border-light rounded-lg bg-white">
-                         <h3 className="font-bold mb-4">Certifications & Compliance</h3>
-                         <ul className="list-disc list-inside">
-                              {data.certifications.map((cert, idx) => (
-                                   <li key={idx}>{cert}</li>
                               ))}
                          </ul>
                     </div>

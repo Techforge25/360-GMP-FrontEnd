@@ -1,6 +1,11 @@
 import { BUSINESS_TYPE_OPTIONS, COUNTRIES, INCOTERMS_OPTIONS } from "@/constants/index";
+import CKEditorField from "@/components/ui/CKEditor";
+import { Controller } from "react-hook-form";
+import { useState } from "react";
 
-export default function Step1({ register, errors, className }) {
+export default function Step1({ register, errors, className, control }) {
+     const [descLength, setDescLength] = useState(0)
+
      return (
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
                <div className="grid md:grid-cols-2 gap-6">
@@ -251,6 +256,43 @@ export default function Step1({ register, errors, className }) {
                               )}
                          </div>
                     </div>
+               </div>
+               <div className="flex justify-between items-center mb-1">
+                    <label className="block text-sm font-semibold text-gray-700">
+                         Description
+                    </label>
+                    <span
+                         className={`text-[12px] ${descLength >= 2000 ? "text-red-500 font-bold" : "text-gray-400"}`}
+                    >
+                         {descLength} / 2000
+                    </span>
+               </div>
+               <div className="space-y-2">
+                    <Controller
+                         name="description"
+                         control={control}
+                         defaultValue=""
+                         render={({ field }) => (
+                              <CKEditorField
+                                   value={field.value}
+                                   onChange={(val) => {
+                                        field.onChange(val);
+
+                                        const text = val.replace(/<[^>]*>/g, "");
+                                        setDescLength(text.length);
+                                   }}
+                                   onBlur={field.onBlur}
+                                   placeholder="Detailed job description..."
+                                   maxLength={5000}
+                              />
+                         )}
+                    />
+
+                    {errors?.description && (
+                         <p className="text-red-500 text-xs mt-1">
+                              {errors?.description?.message}
+                         </p>
+                    )}
                </div>
           </div>
      );

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/Button";
 import { useFieldArray } from "react-hook-form";
 import { useState } from "react";
 import { SHIPPING_OPTIONS } from "@/constants/index";
-import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 export default function BusinessProfileStep2({
   register,
@@ -51,14 +50,6 @@ export default function BusinessProfileStep2({
     control,
     name: "tradeAffiliations"
   });
-
-  const handleCertificationsChange = (e) => {
-    const files = Array.from(e.target.files);
-    const fileNames = files.map(file => file.name);
-    const existing = getValues("certifications") || [];
-    const updated = [...existing, ...fileNames];
-    setValue("certifications", updated);
-  };
 
   return (
     <div className="space-y-8">
@@ -174,11 +165,25 @@ export default function BusinessProfileStep2({
               className={className}
             />
 
+            {errors?.stakeholderDisclosure?.[index]?.ownershipPercentage && (
+              <p className="text-red-500 text-xs">
+                {errors?.stakeholderDisclosure[index]?.ownershipPercentage?.message}
+              </p>
+            )}
+
             <button type="button" onClick={() => removeStakeholder(index)}>
               ❌ Remove
             </button>
           </div>
         ))}
+
+        {errors?.stakeholderDisclosure?.length > 0 && (
+          <>
+            {errors?.stakeholderDisclosure?.map((err) => {
+              <p className="text-red-500">{err?.ownershipPercentage?.message}</p>
+            })}
+          </>
+        )}
 
         <Button
           type="button"
@@ -199,6 +204,11 @@ export default function BusinessProfileStep2({
                 placeholder="e.g. John Doe - CEO"
                 className={className}
               />
+              {errors?.executiveLeadership?.[index] && (
+                <p className="text-red-500 text-xs">
+                  {errors?.executiveLeadership[index]?.message}
+                </p>
+              )}
               <button type="button" onClick={() => removeLeader(index)}>
                 ❌
               </button>
@@ -222,6 +232,11 @@ export default function BusinessProfileStep2({
                 placeholder="e.g. Trade Association"
                 className={className}
               />
+              {errors?.tradeAffiliations?.[index] && (
+                <p className="text-red-500 text-xs">
+                  {errors?.tradeAffiliations[index]?.message}
+                </p>
+              )}
               <button type="button" onClick={() => removeTrade(index)}>
                 ❌
               </button>

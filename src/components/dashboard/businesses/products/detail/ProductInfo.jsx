@@ -107,13 +107,13 @@ export default function ProductInfo({ product }) {
         </span>
       </div>
 
-      <div className="flex items-center justify-between bg-[#e3e7ee] py-4 my-4 px-2 rounded-md">
+      <div className="flex items-center justify-between bg-[#f0f0f0] py-4 my-4 px-4 rounded-xl">
         <div className="flex items-center gap-2">
           <Image width={40} height={50} src={product.businessId.logo} alt="logo" className="rounded-md" />
           <span className="text-black">{product.businessId.companyName}</span>
         </div>
         <hr />
-        <span className="text-[#22252b] bg-[#dfedff] px-4 py-1 rounded-md flex items-center gap-2"><Image src={"/assets/images/verified.png"} width={20} height={20} alt="verified" />verified supplier</span>
+        <span className="text-[#22252b] bg-[#dfedff] px-4 py-1 border rounded-2xl flex items-center gap-2"><Image src={"/assets/images/verified.png"} width={20} height={20} alt="verified" />verified supplier</span>
       </div>
 
 

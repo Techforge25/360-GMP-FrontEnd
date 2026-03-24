@@ -37,6 +37,7 @@ export const createProductSchema = Yup.object({
                          .required("Quantity range is required"),
 
                     price: Yup.number()
+                         .transform((value, originalValue) => (originalValue === "" ? NaN : value))
                          .typeError("Price must be a number")
                          .positive("Price must be positive")
                          .required("Price is required"),

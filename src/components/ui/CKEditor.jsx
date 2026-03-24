@@ -8,7 +8,7 @@ export default function CKEditorField({
      value,
      onChange,
      onLengthChange,
-     maxLength = 5000,
+     maxLength = 2000,
      placeholder,
 }) {
      return (

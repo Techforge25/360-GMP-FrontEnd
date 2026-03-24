@@ -33,7 +33,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    minOrderQty: "",
+    minOrderQty: 1,
     pricePerUnit: "",
     isSingleProductAvailable: false,
     tieredPricing: [{
@@ -86,11 +86,13 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     (
       !formData.previewImage ||
 
-      errors.previewImage
+      errors.image
     );
 
   const mainImageInputRef = useRef(null);
   const galleryInputRef = useRef(null);
+
+  console.log(mainImageInputRef, "main image input ref")
 
   // Populate form data if editing
   React.useEffect(() => {
@@ -135,7 +137,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       setFormData({
         title: "",
         category: "",
-        minOrderQty: "",
+        minOrderQty: 1,
         pricePerUnit: "",
         tieredPricing: [{ qty: "", price: 0 }],
         description: "",
@@ -327,7 +329,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       const payload = {
         title: formData.title,
         category: formData.category,
-        minOrderQty: formData.isSingleProductAvailable === false ? 0 : Number(formData.minOrderQty),
+        minOrderQty: formData.minOrderQty,
         pricePerUnit: Number(formData.pricePerUnit),
         detail: formData.description,
         estimatedDeliveryDays: formData.estimatedDeliveryDays,
@@ -373,6 +375,8 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
   const validateField = (name, value, formData) => {
     let error = "";
+
+    console.log(name, value, "errors")
 
     switch (name) {
       case "title":
@@ -445,6 +449,8 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     const data = formData.tieredPricing.find((item) => item.qty !== "1")
     return data
   }
+
+  console.log(formData.previewImage, "formdata")
 
   const renderStep1 = () => (
     <div className="space-y-4">
@@ -631,9 +637,9 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           Description
         </label>
         <span
-          className={`text-[12px] ${descLength >= 5000 ? "text-red-500 font-bold" : "text-gray-400"}`}
+          className={`text-[12px] ${descLength >= 2000 ? "text-red-500 font-bold" : "text-gray-400"}`}
         >
-          {descLength} / 5000
+          {descLength} / 2000
         </span>
       </div>
       <CKEditorField
@@ -726,6 +732,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     </div>
   );
 
+
   const renderStep3 = () => (
     <div className="space-y-6">
       <div>
@@ -741,14 +748,17 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           className="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors bg-gray-50/50"
         >
           {formData.previewImage ? (
-            <div className="relative w-full h-48">
-              <Image
-                src={formData.previewImage}
-                alt="Preview"
-                fill
-                className="object-contain"
-              />
-            </div>
+            <>
+              <div className="relative w-full h-48">
+                <Image
+                  src={formData.previewImage}
+                  alt="Preview"
+                  fill
+                  className="object-contain"
+                />
+              </div>
+
+            </>
           ) : (
             <>
               <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center mb-2">
@@ -758,27 +768,23 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
                 Click To Upload Img{" "}
                 <span className="text-gray-400 font-normal">• Drag & drop here</span>
               </p>
-              <p className="text-[14px] text-gray-400">JPG,PNG, Max 100 Mb</p>
+              <p className="text-[14px] text-gray-400">JPG, PNG, Max 100 Mb</p>
 
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-              />
-              {errors.previewImage && (
-                <p className="text-red-500 text-xs mt-1">{errors.previewImage}</p>
-              )}
+
             </>
           )}
           <input
             type="file"
             ref={mainImageInputRef}
             onChange={handleMainImageChange}
-            accept="image/*"
-            className="hidden "
+            accept="image/png, image/jpeg, image/jpg"
+            className="hidden"
           />
         </div>
       </div>
+      {errors.image && (
+        <p className="text-red-500 text-xs mt-1">{errors.image}</p>
+      )}
 
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -883,7 +889,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           {currentStep < 3 ? (
             <button
               onClick={handleNext}
-              disabled={step1DisabledNext || step2DisabledNext || step3DisabledNext}
+              disabled={step1DisabledNext || step2DisabledNext}
               className="px-8 py-2.5 bg-[#2e1065] text-white text-sm font-bold rounded-lg hover:bg-[#1e0a45] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Next
@@ -891,7 +897,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
           ) : (
             <button
               onClick={handleSubmit}
-              disabled={loading || uploading}
+              disabled={loading || uploading || step3DisabledNext}
               className="px-8 py-2.5 bg-[#2e1065] text-white text-sm font-bold rounded-lg hover:bg-[#1e0a45] transition-colors disabled:opacity-50 flex items-center gap-2"
             >
               {loading ? "Creating..." : "Submit"}
