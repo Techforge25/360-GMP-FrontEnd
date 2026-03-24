@@ -23,7 +23,7 @@ export const createBusinessProfileSchema = Yup.object({
      foundedDate: Yup.date().nullable(),
      primaryIndustry: Yup.string().max(500, "Primary Industry cannot exceed 500 characters").nullable().trim(),
      operationHour: Yup.string().max(50, "Operation Hour cannot exceed 50 characters").nullable().trim(),
-     conutryOfRegistration: Yup.string().max(50, "Country of Registration cannot exceed 50 characters").nullable().trim(),
+     countryOfRegistration: Yup.string().max(50, "Country of Registration cannot exceed 50 characters").nullable().trim(),
 
      // Legal & Compliance
      businessRegistrationNumber: Yup.string().max(100, "Business Registration Number cannot exceed 100 characters").nullable().trim(),
@@ -108,16 +108,6 @@ export const createBusinessProfileSchema = Yup.object({
      // Website & Description
      website: Yup.string().url("Invalid URL").max(100, "Website cannot exceed 100 characters").nullable().trim(),
      description: Yup.string().max(5000, "Description cannot exceed 5000 characters").nullable().trim(),
-
-     // Media
-     logo: Yup.string()
-          .url("Must be a valid URL")
-          .matches(/\.(jpeg|jpg|gif|png|webp)$/i, "URL must be an image (jpg, jpeg, png, gif, webp)")
-          .nullable()
-          .trim(),
-     banner: Yup.string()
-          .url("Must be a valid URL")
-          .matches(/\.(jpeg|jpg|gif|png|webp)$/i, "URL must be an image (jpg, jpeg, png, gif, webp)")
-          .nullable()
-          .trim()
+     logo: Yup.string().required("Logo is required"),
+     banner: Yup.string().required("Banner is required"),
 });

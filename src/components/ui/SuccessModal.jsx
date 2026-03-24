@@ -10,6 +10,7 @@ export const SuccessModal = ({
   description,
   buttonText = "Next",
   onNext,
+  isValid
 }) => {
   if (!isOpen) return null;
 

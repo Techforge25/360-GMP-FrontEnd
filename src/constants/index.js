@@ -543,3 +543,49 @@ export const stepsOnboarding = [
   { id: 2, label: "Location Contact" },
   { id: 3, label: "Review And Submission" },
 ];
+
+export const stepFields = {
+  1: [
+    "ownerName",
+    "identificationOfBusinessOwner",
+    "companyName",
+    "tradeName",
+    "businessType",
+    "companySize",
+    "foundedDate",
+    "primaryIndustry",
+    "operationHour",
+    "countryOfRegistration",
+  ],
+  2: [
+    "certificateOfIncorporation",
+    "taxRegistrationCertificate",
+    "logo",
+    "banner",
+    "location.country",
+    "location.city",
+    "location.addressLine",
+    "website",
+    "description",
+  ],
+  3: [
+    // fields used in step 3 (optional review-only)
+  ],
+};
+
+const isStepValid = (step) => {
+  const values = getValues();
+  const errorsKeys = Object.keys(errors);
+
+  // get fields for this step
+  const fields = stepFields[step];
+
+  // if any field in this step has an error, step is invalid
+  return !fields.some((field) => {
+    // support nested fields like 'location.city'
+    const parts = field.split(".");
+    let value = values;
+    for (const part of parts) value = value?.[part];
+    return !value || errorsKeys.includes(field);
+  });
+};

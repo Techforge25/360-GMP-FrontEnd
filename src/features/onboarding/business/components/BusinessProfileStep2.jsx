@@ -3,11 +3,15 @@ import { Button } from "@/components/ui/Button";
 import { useFieldArray } from "react-hook-form";
 import { useState } from "react";
 import { SHIPPING_OPTIONS } from "@/constants/index";
+import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 export default function BusinessProfileStep2({
   register,
   control,
   errors,
-  className
+  className,
+  setValue,
+  getValues
 }) {
   const REGIONS = ["North America", "Europe", "Middle East", "Asia"];
   const [logoPreview, setLogoPreview] = useState(null);
@@ -47,6 +51,14 @@ export default function BusinessProfileStep2({
     control,
     name: "tradeAffiliations"
   });
+
+  const handleCertificationsChange = (e) => {
+    const files = Array.from(e.target.files);
+    const fileNames = files.map(file => file.name);
+    const existing = getValues("certifications") || [];
+    const updated = [...existing, ...fileNames];
+    setValue("certifications", updated);
+  };
 
   return (
     <div className="space-y-8">
@@ -360,15 +372,21 @@ export default function BusinessProfileStep2({
 
         <input
           type="file"
-          accept="image/*"
-          {...register("logo")}
-          onChange={(e) => {
+          accept="image/jpeg,image/png"
+          onChange={async (e) => {
             const file = e.target.files[0];
             if (file) {
-              setLogoPreview(URL.createObjectURL(file));
+              try {
+                const url = await uploadToCloudinary(file, "logos", (progress) => {
+                  console.log(`Logo upload progress: ${progress}%`);
+                });
+                setValue("logo", url); // save Cloudinary URL
+                setLogoPreview(URL.createObjectURL(file)); // keep preview for user
+              } catch (err) {
+                console.error("Logo upload failed", err);
+              }
             }
           }}
-          className={className}
         />
 
         {/* Preview */}
@@ -388,21 +406,54 @@ export default function BusinessProfileStep2({
       </div>
 
       <div className="space-y-2">
+        <label>Certifications</label>
+        <input
+          type="file"
+          accept=".pdf,.jpg,.png"
+          multiple
+          onChange={async (e) => {
+            const files = Array.from(e.target.files);
+            const urls = [];
+            for (const file of files) {
+              try {
+                const url = await uploadToCloudinary(file, "certifications", (progress) => {
+                  console.log(`${file.name} upload: ${progress}%`);
+                });
+                urls.push(url);
+              } catch (err) {
+                console.error(`${file.name} upload failed`, err);
+              }
+            }
+            setValue("certifications", [...(getValues("certifications") || []), ...urls]);
+          }}
+        />
+        {errors?.certifications && (
+          <p className="text-red-500">{errors?.certifications?.message}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
         <label className="text-base font-medium">
           Banner <span className="text-red-500">*</span>
         </label>
 
         <input
           type="file"
-          accept="image/*"
-          {...register("banner")}
-          onChange={(e) => {
+          accept="image/jpeg,image/png"
+          onChange={async (e) => {
             const file = e.target.files[0];
             if (file) {
-              setBannerPreview(URL.createObjectURL(file));
+              try {
+                const url = await uploadToCloudinary(file, "banners", (progress) => {
+                  console.log(`Banner upload progress: ${progress}%`);
+                });
+                setValue("banner", url); // save Cloudinary URL
+                setBannerPreview(URL.createObjectURL(file)); // keep preview for user
+              } catch (err) {
+                console.error("Banner upload failed", err);
+              }
             }
           }}
-          className={className}
         />
 
         {/* Preview */}
@@ -422,16 +473,25 @@ export default function BusinessProfileStep2({
       </div>
 
 
-
-      {/* ================= FILE UPLOADS ================= */}
       <div className="grid md:grid-cols-2 gap-6">
-
         <div className="space-y-2">
           <label>Certificate of Incorporation</label>
           <input
             type="file"
             accept=".pdf,.jpg,.png"
-            {...register("certificateOfIncorporation")}
+            onChange={async (e) => {
+              const file = e.target.files[0];
+              if (file) {
+                try {
+                  const url = await uploadToCloudinary(file, "certificates", (progress) => {
+                    console.log("Certificate upload progress:", progress, "%");
+                  });
+                  setValue("certificateOfIncorporation", url); // save Cloudinary URL
+                } catch (err) {
+                  console.error("Certificate upload failed", err);
+                }
+              }
+            }}
             className={className}
           />
           {errors?.certificateOfIncorporation && (
@@ -444,7 +504,19 @@ export default function BusinessProfileStep2({
           <input
             type="file"
             accept=".pdf,.jpg,.png"
-            {...register("taxRegistrationCertificate")}
+            onChange={async (e) => {
+              const file = e.target.files[0];
+              if (file) {
+                try {
+                  const url = await uploadToCloudinary(file, "tax_certificates", (progress) => {
+                    console.log("Tax Certificate upload progress:", progress, "%");
+                  });
+                  setValue("taxRegistrationCertificate", url); // save Cloudinary URL
+                } catch (err) {
+                  console.error("Tax Certificate upload failed", err);
+                }
+              }
+            }}
             className={className}
           />
           {errors?.taxRegistrationCertificate && (

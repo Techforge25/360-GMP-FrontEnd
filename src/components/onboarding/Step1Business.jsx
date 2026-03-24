@@ -23,6 +23,16 @@ export default function Step1({ register, errors, className }) {
                     </div>
 
                     <div className="space-y-2">
+                         <label className="text-base font-medium">
+                              Company Size <span className="text-red-500">*</span>
+                         </label>
+                         <input type="text" maxLength={200} placeholder="1-500" {...register("companySize")} className={className} />
+                         {errors.companySize && (
+                              <p className="text-red-500">{errors?.companySize?.message}</p>
+                         )}
+                    </div>
+
+                    <div className="space-y-2">
                          <label>Identification Of Business Owner</label>
                          <input maxLength={200} type="text" {...register("identificationOfBusinessOwner")} placeholder="US-PASSPORT-99887766" className={className} />
                          {errors.identificationOfBusinessOwner && (
@@ -36,6 +46,13 @@ export default function Step1({ register, errors, className }) {
                          <input placeholder="GSM Sports" {...register("tradeName")} maxLength={200} className={className} />
                          {errors.tradeName && (
                               <p className="text-red-500">{errors?.tradeName?.message}</p>
+                         )}
+                    </div>
+                    <div className="space-y-2">
+                         <label>Production Capactiy</label>
+                         <input maxLength={200} type="text" {...register("productionCapacity")} placeholder="50,000" className={className} />
+                         {errors.productionCapacity && (
+                              <p className="text-red-500">{errors?.productionCapacity?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -62,16 +79,17 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="date" placeholder="GSM Sports" {...register("foundedDate")} className={className} />
                          {errors?.foundedDate && (
-                              <p className="text-red-500">{errors?.foundedDate}</p>
+                              <p className="text-red-500">{errors?.foundedDate?.message}</p>
                          )}
                     </div>
+
                     <div className="space-y-2">
                          <label className="text-base font-medium">
                               Primary Industry<span className="text-red-500">*</span>
                          </label>
                          <input type="text" maxLength={500} placeholder="Sports Manufacturing Industry" {...register("primaryIndustry")} className={className} />
                          {errors?.primaryIndustry && (
-                              <p className="text-red-500">{errors?.primaryIndustry}</p>
+                              <p className="text-red-500">{errors?.primaryIndustry?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -80,7 +98,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="text" maxLength={50} placeholder="9:00AM - 6:00PM" {...register("operationHour")} className={className} />
                          {errors?.operationHour && (
-                              <p className="text-red-500">{errors?.operationHour}</p>
+                              <p className="text-red-500">{errors?.operationHour?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -107,7 +125,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="text" placeholder="BRN-US-458721" {...register("businessRegistrationNumber")} className={className} />
                          {errors?.businessRegistrationNumber && (
-                              <p className="text-red-500">{errors?.businessRegistrationNumber}</p>
+                              <p className="text-red-500">{errors?.businessRegistrationNumber?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -116,7 +134,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="text" placeholder="BRN-US-458721" {...register("taxIdentificationNumber")} className={className} />
                          {errors?.taxIdentificationNumber && (
-                              <p className="text-red-500">{errors?.taxIdentificationNumber}</p>
+                              <p className="text-red-500">{errors?.taxIdentificationNumber?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -125,7 +143,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="text" placeholder="BRN-US-458721" {...register("dunsNumber")} className={className} />
                          {errors?.dunsNumber && (
-                              <p className="text-red-500">{errors?.dunsNumber}</p>
+                              <p className="text-red-500">{errors?.dunsNumber?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2 flex items-center">
@@ -134,7 +152,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="checkbox" {...register("complianceScreeningStatus")} className={"flex h-5 w-full rounded-md border border-border-light bg-surface px-3 py-2 text-base ring-offset-surface file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-text-hint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"} />
                          {errors?.complianceScreeningStatus && (
-                              <p className="text-red-500">{errors?.complianceScreeningStatus}</p>
+                              <p className="text-red-500">{errors?.complianceScreeningStatus?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -161,7 +179,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="checkbox" {...register("shipping.exportExperience")} className={"flex h-5 w-full rounded-md border border-border-light bg-surface px-3 py-2 text-base ring-offset-surface file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-text-hint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"} />
                          {errors?.shipping?.exportExperience && (
-                              <p className="text-red-500">{errors?.shipping?.exportExperience}</p>
+                              <p className="text-red-500">{errors?.shipping?.exportExperience?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -170,7 +188,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="text" placeholder="$1M-$10M" {...register("annualRevenueRange")} className={className} />
                          {errors?.annualRevenueRange && (
-                              <p className="text-red-500">{errors?.annualRevenueRange}</p>
+                              <p className="text-red-500">{errors?.annualRevenueRange?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -179,7 +197,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="text" placeholder="Deloitte" {...register("auditingAgency")} className={className} />
                          {errors?.auditingAgency && (
-                              <p className="text-red-500">{errors?.auditingAgency}</p>
+                              <p className="text-red-500">{errors?.auditingAgency?.message}</p>
                          )}
                     </div>
                     <div className="space-y-2">
@@ -188,7 +206,7 @@ export default function Step1({ register, errors, className }) {
                          </label>
                          <input type="text" placeholder="https://www.example.com" {...register("website")} className={className} />
                          {errors?.website && (
-                              <p className="text-red-500">{errors?.website}</p>
+                              <p className="text-red-500">{errors?.website?.message}</p>
                          )}
                     </div>
                </div>
@@ -202,7 +220,7 @@ export default function Step1({ register, errors, className }) {
                               </label>
                               <input type="number" placeholder="0" {...register("standardProductDimensions.length")} className={className} />
                               {errors?.standardProductDimensions?.length && (
-                                   <p className="text-red-500">{errors?.standardProductDimensions?.length}</p>
+                                   <p className="text-red-500">{errors?.standardProductDimensions?.length?.message}</p>
                               )}
                          </div>
                          <div>
@@ -211,7 +229,7 @@ export default function Step1({ register, errors, className }) {
                               </label>
                               <input type="number" placeholder="0" {...register("standardProductDimensions.width")} className={className} />
                               {errors?.standardProductDimensions?.width && (
-                                   <p className="text-red-500">{errors?.standardProductDimensions?.width}</p>
+                                   <p className="text-red-500">{errors?.standardProductDimensions?.width?.message}</p>
                               )}
                          </div>
                          <div>
@@ -220,7 +238,7 @@ export default function Step1({ register, errors, className }) {
                               </label>
                               <input type="number" placeholder="0" {...register("standardProductDimensions.height")} className={className} />
                               {errors?.standardProductDimensions?.height && (
-                                   <p className="text-red-500">{errors?.standardProductDimensions?.height}</p>
+                                   <p className="text-red-500">{errors?.standardProductDimensions?.height?.message}</p>
                               )}
                          </div>
                          <div>
@@ -229,7 +247,7 @@ export default function Step1({ register, errors, className }) {
                               </label>
                               <input type="number" placeholder="0" {...register("standardProductDimensions.weight")} className={className} />
                               {errors?.standardProductDimensions?.weight && (
-                                   <p className="text-red-500">{errors?.standardProductDimensions?.weight}</p>
+                                   <p className="text-red-500">{errors?.standardProductDimensions?.weight?.message}</p>
                               )}
                          </div>
                     </div>

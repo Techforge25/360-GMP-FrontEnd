@@ -14,25 +14,28 @@ import {
 import api from "@/lib/axios";
 import { useUserRole } from "@/context/UserContext";
 import { completeOnboardingSession } from "@/lib/auth/session";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createBusinessProfileSchema } from "@/validations/business-onboarding";
 import Step1 from "@/components/onboarding/Step1Business";
 import BusinessProfileStep2 from "@/features/onboarding/business/components/BusinessProfileStep2";
 import Step3 from "@/components/onboarding/Step3Business";
-import { stepsOnboarding } from "@/constants/index";
+import { stepFields, stepsOnboarding } from "@/constants/index";
 
 export default function BusinessProfilePage() {
   const { currentStep, nextStep, prevStep } = useStepper(1, stepsOnboarding.length);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [allData, setData] = useState(null)
   const [isUploading, setIsUploading] = useState(false);
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
+    getValues,
     formState: { errors, isValid }
   } = useForm({
     resolver: yupResolver(createBusinessProfileSchema),
@@ -47,7 +50,7 @@ export default function BusinessProfilePage() {
       foundedDate: null,
       primaryIndustry: "",
       operationHour: "",
-      conutryOfRegistration: "",
+      countryOfRegistration: "",
       businessRegistrationNumber: "",
       taxIdentificationNumber: "",
       dunsNumber: "",
@@ -98,26 +101,32 @@ export default function BusinessProfilePage() {
   const [newToken, setNewToken] = useState(null);
   const { login } = useUserRole();
 
+  const isStepValid = (step) => {
+    const values = getValues();
+    const errorsKeys = Object.keys(errors);
+
+    // get fields for this step
+    const fields = stepFields[step];
+
+    // if any field in this step has an error, step is invalid
+    return !fields.some((field) => {
+      // support nested fields like 'location.city'
+      const parts = field.split(".");
+      let value = values;
+      for (const part of parts) value = value?.[part];
+      console.log(value, "cvalue")
+      return !value || errorsKeys.includes(field);
+    });
+  };
+
   const router = useRouter();
   const onSubmit = async (data) => {
+    console.log(data, "datas")
+    setData(data)
+    setIsLoading(true);
     setError("");
-    console.log(data, "datassss")
 
     try {
-      try {
-        const planId = localStorage.getItem("selectedPlanId");
-        if (planId) {
-          await api.post({
-            url: "/subscription",
-            payload: { planId: planId },
-            enableErrorMessage: false,
-            enableSuccessMessage: false,
-          });
-        }
-      } catch (subError) {
-        console.log("Subscription creation skipped:", subError.message);
-      }
-
       const response = await api.post({
         url: "/businessProfile",
         payload: data,
@@ -125,8 +134,9 @@ export default function BusinessProfilePage() {
 
       if (!response.success) {
         setError(response.message || "Signup failed");
-        return false;
+        return;
       }
+
       if (response.data) {
         setCreatedProfile(response.data);
       }
@@ -136,33 +146,25 @@ export default function BusinessProfilePage() {
         response.token ||
         response.data?.accessToken ||
         response.data?.token;
+
       if (token) {
         setNewToken(token);
-        console.log("New token captured from business profile creation");
       }
 
-      return true;
+      // ✅ SHOW SUCCESS MODAL
+      setIsSuccessModalOpen(true);
+
     } catch (err) {
       setError(err.message || "Something went wrong. Please try again.");
-      console.error(err);
-      return false;
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleNext = async () => {
+  const handleNext = () => {
     if (currentStep < stepsOnboarding.length) {
       nextStep();
-      return;
     }
-
-    setIsLoading(true);
-    await handleSubmit(async (data) => {
-      const success = await onSubmit(data);
-      if (success) {
-        setIsSuccessModalOpen(true);
-      }
-      setIsLoading(false);
-    })();
   };
 
   const handleSuccessNext = async () => {
@@ -186,7 +188,9 @@ export default function BusinessProfilePage() {
 
   return (
     <div className="min-h-screen">
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Card className="w-full sm:w-3xl lg:w-5xl max-w-5xl mx-auto mt-16 md:mt-10 flex-shrink-0 bg-white shadow-xl min-h-[800px]">
           <div className="p-8 pb-0">
             <h1 className="text-2xl font-bold text-center mb-8">
@@ -210,9 +214,11 @@ export default function BusinessProfilePage() {
                 control={control}
                 errors={errors}
                 className={className}
+                setValue={setValue}
+                getValues={getValues}
               />
             )}
-            {currentStep === 3 && <Step3 />}
+            {currentStep === 3 && <Step3 data={allData} />}
           </CardContent>
 
           <div className="p-8 border-t border-border-light flex justify-between items-center">
@@ -225,10 +231,10 @@ export default function BusinessProfilePage() {
 
             <div className="flex gap-4">
               <Button
-                onClick={handleNext}
+                type={currentStep === stepsOnboarding.length ? "submit" : "button"}
+                onClick={currentStep === stepsOnboarding.length ? undefined : handleNext}
                 isLoading={isLoading || isUploading}
-                disabled={isUploading}
-                className="min-w-[140px]"
+                disabled={isUploading || !isStepValid(currentStep, getValues)}
               >
                 {isUploading
                   ? "Uploading..."
