@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image"; // Kept for consistency if migrated later, using img for now as per instructions preference
+import Image from "next/image";
 import { FiLock, FiGlobe, FiChevronDown, FiCheck, FiArrowRight } from "react-icons/fi";
 import { HiShieldCheck, HiOutlineShieldCheck } from "react-icons/hi";
 import { RiMoneyDollarCircleLine, RiCustomerService2Line } from "react-icons/ri";
@@ -526,7 +526,7 @@ const CheckoutPage = () => {
               <div className="space-y-6 px-6">
                 <div className="flex gap-3">
                   <div className="shrink-0 mt-1">
-                    <HiShieldCheck className="w-6 h-6 text-purple-600" />
+                    <Image src={"/assets/icon/escro-1.svg"} width={20} height={24.69} alt="icon" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 text-sm mb-1">Secure payments</h3>
@@ -538,7 +538,7 @@ const CheckoutPage = () => {
 
                 <div className="flex gap-3">
                   <div className="shrink-0 mt-1">
-                    <RiMoneyDollarCircleLine className="w-6 h-6 text-purple-600" />
+                    <Image src={"/assets/icon/escro-2.svg"} width={20} height={24.69} alt="icon" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 text-sm mb-1">Money-back protection</h3>
@@ -550,7 +550,7 @@ const CheckoutPage = () => {
 
                 <div className="flex gap-3 pb-4">
                   <div className="shrink-0 mt-1">
-                    <RiCustomerService2Line className="w-6 h-6 text-purple-600" />
+                    <Image src={"/assets/icon/escro-3.svg"} width={20} height={24.69} alt="icon" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 text-sm mb-1">24/7 support</h3>

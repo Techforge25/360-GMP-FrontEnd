@@ -57,7 +57,7 @@ export default function ProductGallery({ images }) {
         <img
           src={imgList[currentImage]}
           alt="Product"
-          className="w-full h-full object-contain mix-blend-multiply p-8 cursor-pointer"
+          className="w-full h-full cursor-pointer" // full width, proportional height
           onMouseMove={handleZoomImage}
           onMouseLeave={handleLeaveImageZoom}
           onError={(e) => (e.target.style.display = "none")}

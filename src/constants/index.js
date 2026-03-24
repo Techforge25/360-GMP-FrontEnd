@@ -142,9 +142,9 @@ export const getStatusColor = (status) => {
     case "In Transit":
       return "bg-purple-100 text-purple-700";
     case "Delivered":
-      return "bg-green-200 text-green-800";
+      return "bg-blue-200 text-blue-800";
     case "delivered":
-      return "bg-green-200 text-green-800";
+      return "bg-blue-200 text-blue-800";
     case "Completed":
       return "bg-green-100 text-green-700";
     case "completed":

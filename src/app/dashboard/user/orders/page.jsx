@@ -82,7 +82,10 @@ const UserOrdersPage = () => {
     if (s.includes("transit") || s.includes("ship")) {
       return "bg-purple-100 text-purple-700";
     }
-    if (s.includes("deliv") || s === "completed") {
+    if (s.includes("deliv")) {
+      return "bg-blue-100 text-blue-700";
+    }
+    if (s === "completed") {
       return "bg-green-100 text-green-700";
     }
     if (s.includes("cancel")) {
@@ -112,26 +115,6 @@ const UserOrdersPage = () => {
             <p className="text-sm sm:text-base lg:text-base text-gray-200">
               360GMP Escrow Protection: Secure payments with guaranteed delivery confirmation.
             </p>
-            <div className="relative max-w-full sm:max-w-sm lg:max-w-xs mt-3 sm:mt-6 bg-white rounded-lg mx-auto lg:mx-0">
-              <input
-                type="text"
-                placeholder="Order Number, Seller..."
-                className="w-full px-4 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base text-gray-900 border-none focus:ring-2 focus:ring-indigo-500 pl-10"
-              />
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
           </div>
 
           <div className="hidden lg:block absolute right-0 bottom-0 top-12 h-full pointer-events-none">
@@ -146,17 +129,6 @@ const UserOrdersPage = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6 gap-3 sm:gap-4">
           <h1 className="text-xl sm:text-2xl font-medium text-gray-900">My Orders</h1>
-
-          <div className="flex flex-row items-stretch xs:items-center gap-2 sm:gap-3">
-            <button className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-base text-gray-600 hover:bg-gray-50">
-              <span>Filter By Date</span>
-              <FiCalendar className="w-4 h-4 text-black" />
-            </button>
-            <button className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm sm:text-base text-gray-600 hover:bg-gray-50">
-              <span>All Status</span>
-              <FiChevronDown className="w-4 h-4 text-black" />
-            </button>
-          </div>
         </div>
 
         {/* Tabs */}
@@ -166,11 +138,10 @@ const UserOrdersPage = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`text-sm sm:text-base font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl whitespace-nowrap transition-colors min-w-fit ${
-                  activeTab === tab
-                    ? "bg-[#240457] text-white"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`text-sm sm:text-base font-medium px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg sm:rounded-xl whitespace-nowrap transition-colors min-w-fit ${activeTab === tab
+                  ? "bg-[#240457] text-white"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
               >
                 {tab}
               </button>
@@ -292,11 +263,10 @@ const UserOrdersPage = () => {
                 <button
                   onClick={handleLoadMore}
                   disabled={loading}
-                  className={`px-6 sm:px-8 py-2 border rounded-lg text-sm sm:text-base font-medium transition-colors ${
-                    loading
-                      ? "bg-gray-100 text-gray-400 cursor-wait"
-                      : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200"
-                  }`}
+                  className={`px-6 sm:px-8 py-2 border rounded-lg text-sm sm:text-base font-medium transition-colors ${loading
+                    ? "bg-gray-100 text-gray-400 cursor-wait"
+                    : "bg-white hover:bg-gray-50 text-gray-700 border-gray-200"
+                    }`}
                 >
                   {loading ? "Loading..." : "Load more"}
                 </button>
