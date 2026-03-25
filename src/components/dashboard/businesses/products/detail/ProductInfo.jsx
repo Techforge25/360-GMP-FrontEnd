@@ -27,6 +27,7 @@ export default function ProductInfo({ product }) {
     qty: "",
     price: 0
   });
+  const [isTierSelected, setIsTierSelected] = useState(false)
   const role = user?.role;
   const isBusinessUser = role === "business";
 
@@ -42,11 +43,28 @@ export default function ProductInfo({ product }) {
 
   if (!product) return null;
 
+  console.log(isTierSelected, "is business owner")
+
   const handleAddToCart = () => {
     if (isBusinessUser) {
       setShowActionModal(true);
     } else {
-      addToCart(product, quantity);
+      let checkTieredPricingOrProductQty = {}
+      if (isTierSelected) {
+        checkTieredPricingOrProductQty = {
+          ...product,
+          isTierSelected: isTierSelected,
+          selectedTier,
+        }
+      } else {
+        checkTieredPricingOrProductQty = {
+          ...product,
+          isTierSelected: isTierSelected,
+        }
+      }
+
+      console.log(product, "check product")
+      addToCart(checkTieredPricingOrProductQty, quantity);
       router.push("/dashboard/user/cart");
     }
   };
@@ -244,6 +262,7 @@ export default function ProductInfo({ product }) {
                     onChange={() => {
                       setQuantity(tier.qty)
                       setSelectedTier({ qty: tier.qty, price: tier.price })
+                      setIsTierSelected(true)
                     }}
                     className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-full checked:border-indigo-900 transition-all"
                   />
@@ -262,7 +281,10 @@ export default function ProductInfo({ product }) {
       </div>
 
       {selectedTier.price !== 0 && (
-        <p className="text-[#240457] pb-3 underline cursor-pointer" onClick={() => setSelectedTier({ qty: "", price: 0 })}>Go with Quantity Selection</p>
+        <p className="text-[#240457] pb-3 underline cursor-pointer" onClick={() => {
+          setIsTierSelected(false)
+          setSelectedTier({ qty: "", price: 0 })
+        }}>Go with Quantity Selection</p>
       )}
 
 

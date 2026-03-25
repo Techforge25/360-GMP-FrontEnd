@@ -33,7 +33,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
   const [formData, setFormData] = useState({
     title: "",
     category: "",
-    minOrderQty: 1,
+    minOrderQty: 2,
     pricePerUnit: "",
     isSingleProductAvailable: false,
     tieredPricing: [{
@@ -57,19 +57,19 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     (
       !formData.title ||
       !formData.category ||
-      !formData.minOrderQty ||
       !formData.pricePerUnit ||
       !formData.description ||
       !formData.lowStockThreshold ||
-
+      (!formData.isSingleProductAvailable && !formData.minOrderQty) ||
       errors.title ||
       errors.category ||
-      errors.minOrderQty ||
       errors.pricePerUnit ||
       errors.tieredPricing ||
       errors.lowStockThreshold ||
       errors.description
     );
+
+  console.log(formData, "dorm data")
 
   const step2DisabledNext =
     currentStep === 2 &&
@@ -111,7 +111,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       }
 
       console.log(tieredArray, "tieredArray")
-
+      console.log(editProduct.isSingleProductAvailable, "edit product")
       setFormData({
         title: editProduct.title || "",
         category: editProduct.category || "",
@@ -137,7 +137,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       setFormData({
         title: "",
         category: "",
-        minOrderQty: 1,
+        minOrderQty: 2,
         pricePerUnit: "",
         tieredPricing: [{ qty: "", price: 0 }],
         description: "",
@@ -154,6 +154,20 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       setCurrentStep(1);
     }
   }, [editProduct, isOpen]);
+
+  React.useEffect(() => {
+    if (formData.isSingleProductAvailable) {
+      setFormData((prev) => ({
+        ...prev,
+        minOrderQty: 1,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        minOrderQty: prev.minOrderQty || 2,
+      }));
+    }
+  }, [formData.isSingleProductAvailable]);
 
   if (!isOpen) return null;
 
@@ -324,12 +338,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       }
 
       console.log(formData.tieredPricing, "tieredPricing")
-
+      console.log(formData.isSingleProductAvailable, "single product")
 
       const payload = {
         title: formData.title,
         category: formData.category,
-        minOrderQty: formData.minOrderQty,
+        minOrderQty: formData.isSingleProductAvailable ? 1 : formData.minOrderQty,
         pricePerUnit: Number(formData.pricePerUnit),
         detail: formData.description,
         estimatedDeliveryDays: formData.estimatedDeliveryDays,
@@ -396,7 +410,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
       case "minOrderQty":
         if (!value) error = "Minimum order quantity required";
-        else if (Number(value) < 1) error = "Must be at least 1";
+        else if (Number(value) < 2 && !formData.isSingleProductAvailable) error = "Must be at greater than 1";
         break;
 
       case "stockQty":
@@ -491,10 +505,31 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             <p className="text-red-500 text-xs mt-1">{errors.title}</p>
           )}
         </div>
+        <div className="flex items-start gap-3">
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            Single Product
+          </label>
+          <input
+            type="checkbox"
+            name="isSingleProductAvailable"
+            checked={formData.isSingleProductAvailable}
+            onChange={(e) => {
+              const checked = e.target.checked;
+              setFormData((prev) => ({
+                ...prev,
+                isSingleProductAvailable: checked,
+              }));
+            }}
+            className="w-4 h-4 border-2 border-gray-300 rounded-md checked:border-indigo-600 checked:bg-indigo-50 transition-all cursor-pointer"
+          />
+          {errors.isSingleProductAvailable && (
+            <p className="text-red-500 text-xs mt-1">{errors.isSingleProductAvailable}</p>
+          )}
+        </div>
       </div>
 
-      {!formData.isSingleProductAvailable && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {!formData.isSingleProductAvailable && (
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
               Minimum Order Quantity
@@ -511,25 +546,24 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
               <p className="text-red-500 text-xs mt-1">{errors.minOrderQty}</p>
             )}
           </div>
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
-              Pricing Model (Price Per Unit)
-            </label>
-            <input
-              type="number"
-              name="pricePerUnit"
-              value={formData.pricePerUnit}
-              onChange={handleStandardInputChange}
-              placeholder="$50 USD"
-              className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
-            {errors.pricePerUnit && (
-              <p className="text-red-500 text-xs mt-1">{errors.pricePerUnit}</p>
-            )}
-          </div>
+        )}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">
+            Pricing Model (Price Per Unit)
+          </label>
+          <input
+            type="number"
+            name="pricePerUnit"
+            value={formData.pricePerUnit}
+            onChange={handleStandardInputChange}
+            placeholder="$50 USD"
+            className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          />
+          {errors.pricePerUnit && (
+            <p className="text-red-500 text-xs mt-1">{errors.pricePerUnit}</p>
+          )}
         </div>
-
-      )}
+      </div>
 
       {/* Tiered Pricing */}
       <div>
@@ -593,27 +627,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       </div>
 
 
-      <div className="flex items-start gap-3">
-        <label className="block text-sm font-semibold text-gray-700 mb-1">
-          Single Product
-        </label>
-        <input
-          type="checkbox"
-          name="isSingleProductAvailable"
-          checked={formData.isSingleProductAvailable}
-          onChange={(e) => {
-            const checked = e.target.checked;
-            setFormData((prev) => ({
-              ...prev,
-              isSingleProductAvailable: checked,
-            }));
-          }}
-          className="w-4 h-4 border-2 border-gray-300 rounded-md checked:border-indigo-600 checked:bg-indigo-50 transition-all cursor-pointer"
-        />
-        {errors.isSingleProductAvailable && (
-          <p className="text-red-500 text-xs mt-1">{errors.isSingleProductAvailable}</p>
-        )}
-      </div>
+
 
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">

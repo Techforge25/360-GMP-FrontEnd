@@ -295,7 +295,7 @@ const OrderTrackingPage = ({ orderId }) => {
     }
   }
 
-  console.log(activeStep, "order data")
+  console.log(order, "order data")
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
@@ -921,63 +921,7 @@ const OrderTrackingPage = ({ orderId }) => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Seller Information Card */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                      <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                        <div className="bg-gray-50 p-2 rounded-lg">
-                          <FiUser className="w-5 h-5 text-gray-500" />
-                        </div>
-                        <h2 className="font-bold text-gray-900 text-[17px]">
-                          Seller Information
-                        </h2>
-                      </div>
-                      <div className="p-6 space-y-5">
-                        <div>
-                          <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
-                            SELLER NAME
-                          </p>
-                          <p className="font-bold text-gray-900 text-[16px]">
-                            {order?.businessProfile?.companyName || "—"}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
-                            EMAIL
-                          </p>
-                          <p className="font-bold text-gray-900 text-[16px]">
-                            {order?.businessProfile?.email || "—"}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
 
-                    {/* Pay Method Card */}
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                      <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
-                        <div className="bg-purple-50 p-2 rounded-lg">
-                          <FiCreditCard className="w-5 h-5 text-[#5C24D2]" />
-                        </div>
-                        <h2 className="font-bold text-gray-900 text-[17px]">
-                          Pay Method
-                        </h2>
-                      </div>
-                      <div className="p-6 space-y-6">
-                        <p className="text-gray-600 font-bold text-[16px] flex items-center tracking-wide">
-                          Visa{" "}
-                          <span className="text-gray-400 font-black mx-2 text-xs">
-                            ••••
-                          </span>{" "}
-                          4321
-                        </p>
-                        <div className="flex justify-between items-center">
-                          <span className="font-bold text-gray-900 text-[15px]">
-                            Escro Fee
-                          </span>
-                          <span className="font-bold text-[#1DAF61] text-[15px]">
-                            Free
-                          </span>
-                        </div>
-                      </div>
-                    </div>
                   </div>
 
                   {/* Funds Released Alert Card */}
@@ -1074,8 +1018,8 @@ const OrderTrackingPage = ({ orderId }) => {
                       </div>
                       <p className="text-[11px] font-bold text-gray-400 mt-2">
                         Paid To Seller On{" "}
-                        {new Date(order?.updatedAt).toLocaleDateString()}, At{" "}
-                        {new Date(order?.updatedAt).toLocaleTimeString()}
+                        {new Date(order?.completedAt).toLocaleDateString()}, At{" "}
+                        {new Date(order?.completedAt).toLocaleTimeString()}
                       </p>
                     </div>
                   )}
@@ -1114,6 +1058,35 @@ const OrderTrackingPage = ({ orderId }) => {
                       ? "Funds have been released to the seller. Thank you for your business."
                       : "Funds are securely held. Seller has not been paid yet."}
                   </p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+                  <div className="bg-gray-50 p-2 rounded-lg">
+                    <FiUser className="w-5 h-5 text-gray-500" />
+                  </div>
+                  <h2 className="font-bold text-gray-900 text-[17px]">
+                    Seller Information
+                  </h2>
+                </div>
+                <div className="p-6 space-y-5">
+                  <div>
+                    <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
+                      SELLER NAME
+                    </p>
+                    <p className="font-bold text-gray-900 text-[16px]">
+                      {order?.businessProfile?.companyName || "—"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
+                      EMAIL
+                    </p>
+                    <p className="font-bold text-gray-900 text-[16px]">
+                      {order?.businessProfile?.email || "—"}
+                    </p>
+                  </div>
                 </div>
               </div>
 

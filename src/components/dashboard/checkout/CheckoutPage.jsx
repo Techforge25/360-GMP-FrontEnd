@@ -45,10 +45,28 @@ const CheckoutPage = () => {
 
   const [submitting, setSubmitting] = useState(false);
 
+  const normalizedCart = cartItems.map((item) => {
+    if (item.isTierSelected && item.selectedTier) {
+      return {
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.selectedTier.price * Number(item.selectedTier.qty), // total price
+        addedAt: item.addedAt,
+      };
+    } else {
+      return {
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price * item.quantity,
+        addedAt: item.addedAt,
+      };
+    }
+  });
+  console.log(normalizedCart, "normalized art")
+  console.log(cartItems, "cart items")
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const onSubmit = async (data) => {
     if (submitting) return;
-
     setSubmitting(true);
 
     try {
@@ -65,7 +83,7 @@ const CheckoutPage = () => {
             province: data.state,
             postalCode: data.zipCode,
           },
-          items: cartItems,
+          items: normalizedCart,
         },
         { withCredentials: true }
       );
@@ -140,17 +158,16 @@ const CheckoutPage = () => {
 
     fetchCartProducts();
   }, [cartItems, productsCache]);
-
   // Calculate totals
   const calculateSubtotal = () => {
-    return products.reduce((total, product) => {
-      return total + (product.pricePerUnit * product.quantity);
+    return normalizedCart.reduce((total, product) => {
+      return total + product.price;
     }, 0);
   };
   const subtotal = calculateSubtotal();
   const shipping = 10;
   const shippingDiscount = 0;
-  const total = subtotal + shipping - shippingDiscount;
+  const total = subtotal;
 
   if (loading) {
     return (
@@ -251,7 +268,7 @@ const CheckoutPage = () => {
   //   );
   // }
 
-  console.log(errors.fullName, "full name error")
+  console.log(products, "products")
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -485,19 +502,26 @@ const CheckoutPage = () => {
 
               <div className="p-6">
                 {/* Tiny Product Preview */}
-                <div className="mb-6 relative inline-block">
-                  <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden">
-                    <img
-                      src={products[0]?.image || "/assets/images/earbuds.png"}
-                      alt="Item"
-                      className="w-full h-full object-cover"
-                      onError={(e) => { e.target.src = "https://placehold.co/50x50?text=Item" }}
-                    />
-                  </div>
-                  <span className="absolute -top-2 -right-1 bg-[#240457] text-white text-xs font-semibold w-6 h-5 flex items-center justify-center rounded-full ">
-                    {products.length}
-                  </span>
+                <div className="flex gap-3">
+                  {products?.map((product, index) => {
+                    return (
+                      <div key={index} className="mb-6 relative inline-block">
+                        <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden">
+                          <img
+                            src={product?.image || "/assets/images/earbuds.png"}
+                            alt="Item"
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.target.src = "https://placehold.co/50x50?text=Item" }}
+                          />
+                        </div>
+                        <span className="absolute -top-2 -right-1 bg-[#240457] text-white text-xs font-semibold w-6 h-5 flex items-center justify-center rounded-full ">
+                          {product.quantity}
+                        </span>
+                      </div>
+                    )
+                  })}
                 </div>
+
 
                 {/* Summary Lines */}
                 <div className="space-y-3 mb-6 border border-[#240457] rounded-xl bg-gray-100 p-4">
@@ -507,11 +531,11 @@ const CheckoutPage = () => {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="font-semibold text-gray-700">Shipping <span className="text-gray-500 font-normal">(Estimated)</span></span>
-                    <span className="font-semibold text-gray-900">${shipping.toFixed(2)}</span>
+                    <span className="font-semibold text-gray-900">$0</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="font-semibold text-gray-700">Shipping Discount <span className="text-gray-500 font-normal">(Estimagted)</span></span>
-                    <span className="font-semibold text-gray-900">${shippingDiscount.toFixed(2)}</span>
+                    <span className="font-semibold text-gray-700">Shipping Discount <span className="text-gray-500 font-normal">(Estimated)</span></span>
+                    <span className="font-semibold text-gray-900">$0.00</span>
                   </div>
                   <div className="border-t border-gray-400 pt-4">
                     <div className="flex justify-between items-center bg-blue-100 p-3 rounded-lg border border-[#185ADB]">

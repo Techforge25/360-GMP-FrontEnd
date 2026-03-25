@@ -295,6 +295,8 @@ const BusinessOrderDetailsPage = () => {
     router.push(`/dashboard/invoice/${order._id}`);
   };
 
+  console.log(order, "order")
+
   return (
     <div className="bg-[#FAFBFD] min-h-screen flex flex-col font-sans">
       <div className="grow max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-18">
@@ -1163,7 +1165,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                             Net Payout
                           </span>
                           <span className="text-gray-500 font-medium text-[15px]">
-                            $57,500
+                            ${order?.totalAmount}
                           </span>
                         </div>
 
@@ -1172,19 +1174,19 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                             Escrow Status
                           </span>
                           <span
-                            className={`px-2.5 py-1 rounded-sm text-[11px] font-bold tracking-wide ${isDelivered || isCompleted
+                            className={`px-2.5 py-1 rounded-sm text-[11px] font-bold tracking-wide ${isCompleted
                               ? "bg-[#EBFBF2] text-[#139D4C]"
                               : "bg-[#EBF1FF] text-[#2962FF]"
                               }`}
                           >
-                            {isDelivered || isCompleted
+                            {isCompleted
                               ? "Payment Released"
                               : "Payment on hold"}
                           </span>
                         </div>
                       </div>
 
-                      {(isDelivered || isCompleted) && (
+                      {(isCompleted) && (
                         <div className="mt-8 text-center">
                           <p className="text-[#139D4C] font-bold text-[13.5px] mb-6">
                             Your payout was released on  {order?.tracking?.deliveredAt
@@ -1192,7 +1194,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                               : "—"}
                           </p>
 
-                          {!isCompleted ? (
+                          {/* {!isCompleted ? (
                             !isRemainderSent ? (
                               <button
                                 onClick={handleSendRemainder}
@@ -1214,7 +1216,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                               <FiCheck className="w-4 h-4" />
                               Marked As Completed
                             </div>
-                          )}
+                          )} */}
                         </div>
                       )}
                     </>

@@ -20,21 +20,44 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
 
+  console.log(cartItems, "cart items")
+
+  // Memoized products from cache and cart items
+  // const products = useMemo(() => {
+  //   return cartItems
+  //     .map((item) => {
+  //       const cachedProduct = productsCache[item.productId];
+  //       console.log(cachedProduct, "cahced oridyct")
+  //       return cachedProduct
+  //         ? {
+  //           ...cachedProduct,
+  //           quantity: item.quantity,
+  //         }
+  //         : null;
+  //     })
+  //     .filter(Boolean);
+  // }, [cartItems, productsCache]);
+
   // Memoized products from cache and cart items
   const products = useMemo(() => {
     return cartItems
       .map((item) => {
         const cachedProduct = productsCache[item.productId];
-        console.log(cachedProduct, "cahced oridyct")
-        return cachedProduct
-          ? {
-            ...cachedProduct,
-            quantity: item.quantity,
-          }
-          : null;
+        if (!cachedProduct) return null;
+
+        // Merge cartItem properties with cached product
+        return {
+          ...cachedProduct,
+          quantity: item.quantity,
+          pricePerUnit: item.price,          // from cart context (handles tiered price)
+          isTierSelected: item.isTierSelected,
+          selectedTier: item.selectedTier,
+        };
       })
       .filter(Boolean);
   }, [cartItems, productsCache]);
+
+  console.log(products, "products all")
 
   useEffect(() => {
     const fetchMissingProducts = async () => {
@@ -113,6 +136,7 @@ const CartPage = () => {
   );
 
   const calculateSubtotal = () => {
+    console.log(products, "products total")
     return products.reduce((total, product) => {
       return total + product.pricePerUnit * product.quantity;
     }, 0);
@@ -242,8 +266,77 @@ const CartPage = () => {
                             <FiTrash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                           </button>
                         </div>
+                        {product.isTierSelected ? (
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-1 sm:mt-2">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm sm:text-sm text-gray-500 hidden sm:inline">
+                                  Qty:
+                                </span>
+                                <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 h-8 sm:h-9">
+                                  <input
+                                    type="text"
+                                    value={product.selectedTier.qty}
+                                    readOnly
+                                    className="w-8 sm:w-12 h-full text-center bg-transparent text-gray-900 font-medium text-sm sm:text-sm focus:outline-none border-x border-gray-200"
+                                  />
+                                </div>
+                              </div>
+                            </div>
 
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-1 sm:mt-2">
+                            <div className="hidden sm:flex items-center gap-1 text-gray-600">
+                              <span className="text-sm sm:text-sm">
+                                Price:
+                              </span>
+                              <span className="font-bold text-gray-900 text-sm sm:text-base">
+                                ${product.selectedTier.price * Number(product.selectedTier.qty)}
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-1 sm:mt-2">
+                            <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm sm:text-sm text-gray-500 hidden sm:inline">
+                                  Qty:
+                                </span>
+                                <div className="flex items-center border border-gray-200 rounded-lg bg-gray-50 h-8 sm:h-9">
+                                  <button
+                                    type="button"
+                                    disabled={product.minOrderQty >= product.quantity}
+                                    onClick={() => decrementQuantity(product._id)}
+                                    className="w-8 sm:w-9 h-full flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-700 rounded-l-lg transition-colors"
+                                  >
+                                    <FiMinus className="w-3 h-3 sm:w-4 sm:h-4" />
+                                  </button>
+                                  <input
+                                    type="text"
+                                    value={product.quantity}
+                                    readOnly
+                                    className="w-8 sm:w-12 h-full text-center bg-transparent text-gray-900 font-medium text-sm sm:text-sm focus:outline-none border-x border-gray-200"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => incrementQuantity(product._id)}
+                                    className="w-8 sm:w-9 h-full flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-700 rounded-r-lg transition-colors"
+                                  >
+                                    <FiPlus className="w-3 h-3 sm:w-4 sm:h-4" />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="hidden sm:flex items-center gap-1 text-gray-600">
+                              <span className="text-sm sm:text-sm">
+                                Unit Price:
+                              </span>
+                              <span className="font-bold text-gray-900 text-sm sm:text-base">
+                                ${product.pricePerUnit.toFixed(2)}
+                              </span>
+                            </div>
+                          </div>
+                        )}
+                        {/* <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-1 sm:mt-2">
                           <div className="flex items-center gap-3">
                             <div className="flex items-center gap-2">
                               <span className="text-sm sm:text-sm text-gray-500 hidden sm:inline">
@@ -283,7 +376,7 @@ const CartPage = () => {
                               ${product.pricePerUnit.toFixed(2)}
                             </span>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -362,7 +455,7 @@ const CartPage = () => {
                       </span>
                     </span>
                     <span className="font-bold text-gray-900">
-                      ${shippingDiscount.toFixed(2)}
+                      $0
                     </span>
                   </div>
                 </div>

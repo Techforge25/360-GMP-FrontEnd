@@ -33,7 +33,7 @@ export default function ProductSpecs({ product }) {
           </button>
         </div>
         <div className="my-4">
-          <Button onClick={() => router.push(`/dashboard/business/businesses/${product?.businessId?._id}`)} variant="default">
+          <Button onClick={() => router.push(`/dashboard/user/businesses/${product?.businessId?._id}`)} variant="default">
             View Company Profile
           </Button>
         </div>

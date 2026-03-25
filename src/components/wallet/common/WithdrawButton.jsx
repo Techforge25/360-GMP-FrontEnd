@@ -69,7 +69,7 @@ export default function WithDrawButton({ withdrawOpen, setWithdrawOpen }) {
                const res = await api.post({
                     url: "/wallet/withdraw",
                     payload: {
-                         ownerModel: profile === "business" ? "BusinessProfile" : "UserProfile",
+                         ownerModel: pathname === "/wallet/user" ? "UserProfile" : "BusinessProfile",
                          withdrawalAmount: Number(formData.amount)
                     },
                     enableSuccessMessage: false,

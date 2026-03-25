@@ -20,8 +20,6 @@ export const useCart = () => {
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-
-
   // Load cart from localStorage on mount
   // useEffect(() => {
   //   const savedCart = localStorage.getItem("cart");
@@ -43,16 +41,30 @@ export const CartProvider = ({ children }) => {
     let message = "Added to cart!";
 
     setCartItems((prevItems) => {
-      console.log(prevItems, "prev items")
-      const existingItem = prevItems.find(
-        (item) => item.productId === product._id || item.productId === product.id
-      );
+      const productId = product._id || product.id;
+
+      // Use selected tier only if tier is selected
+      const actualQuantity = product.isTierSelected
+        ? Number(product.selectedTier.qty)
+        : quantity;
+
+      const price = product.isTierSelected
+        ? Number(product.selectedTier.price)
+        : product.pricePerUnit;
+
+      const existingItem = prevItems.find((item) => item.productId === productId);
 
       if (existingItem) {
         message = "Cart updated!";
         return prevItems.map((item) =>
-          item.productId === (product._id || product.id)
-            ? { ...item, quantity: quantity }
+          item.productId === productId
+            ? {
+              ...item,
+              quantity: actualQuantity,
+              price,
+              isTierSelected: !!product.isTierSelected,
+              selectedTier: product.isTierSelected ? product.selectedTier : null,
+            }
             : item
         );
       }
@@ -60,19 +72,19 @@ export const CartProvider = ({ children }) => {
       return [
         ...prevItems,
         {
-          productId: product._id || product.id,
-          quantity,
+          productId,
+          quantity: actualQuantity,
+          price,
+          isTierSelected: !!product.isTierSelected,
+          selectedTier: product.isTierSelected ? product.selectedTier : null,
           addedAt: new Date().toISOString(),
         },
       ];
     });
 
-    // Ab safe hai – render phase ke baad chalega
     showSuccess(message);
   };
-
-  console.log(cartItems, "cart items")
-
+  
   const removeFromCart = (productId) => {
     setCartItems((prevItems) => {
       const filteredItems = prevItems.filter(
