@@ -24,7 +24,7 @@ export default function ProductInfo({ product }) {
   const { user, setOnboardingRole } = useUserRole();
   const { addToCart } = useCart();
   const [selectedTier, setSelectedTier] = useState({
-    qty: "",
+    qty: 0,
     price: 0
   });
   const [isTierSelected, setIsTierSelected] = useState(false)
@@ -84,6 +84,8 @@ export default function ProductInfo({ product }) {
       console.error("Failed to switch profile:", error);
     }
   };
+
+  console.log(quantity, "quantit")
 
   return (
     <div className="w-full">
@@ -205,7 +207,7 @@ export default function ProductInfo({ product }) {
                   className={`w-12 text-center text-sm font-bold text-gray-900 border-x border-gray-200 py-1 outline-none ${isFreeTrial ? "bg-gray-50 cursor-not-allowed" : ""}`}
                 />
                 <button
-                  onClick={() => setQuantity(quantity + 1)}
+                  onClick={() => setQuantity(Number(quantity) + 1)}
                   disabled={isFreeTrial}
                   className={`w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors ${isFreeTrial ? "bg-gray-50 cursor-not-allowed opacity-50" : ""}`}
                 >
@@ -237,7 +239,7 @@ export default function ProductInfo({ product }) {
             </span>
           ) : (
             <span className="">
-              ${(selectedTier.price * selectedTier?.qty?.substring(selectedTier?.qty?.indexOf("-") + 1)).toLocaleString()}
+              ${(selectedTier.price * Number(selectedTier?.qty)).toLocaleString()}
             </span>
           )}
 
@@ -261,7 +263,7 @@ export default function ProductInfo({ product }) {
                     checked={selectedTier.price === tier.price}
                     onChange={() => {
                       setQuantity(tier.qty)
-                      setSelectedTier({ qty: tier.qty, price: tier.price })
+                      setSelectedTier({ qty: Number(tier.qty), price: tier.price })
                       setIsTierSelected(true)
                     }}
                     className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-full checked:border-indigo-900 transition-all"
@@ -271,7 +273,7 @@ export default function ProductInfo({ product }) {
                 </div>
 
                 <span className={`ml-3 text-lg transition-colors text-gray-500`}>
-                  {tier.qty}pc - <span className={`${selectedTier === tier.price ? 'text-indigo-900 font-medium' : 'text-gray-500'
+                  {tier.qty}pcs - <span className={`${selectedTier === tier.price ? 'text-indigo-900 font-medium' : 'text-gray-500'
                     }`}>${tier.price.toFixed(2)}/pc</span>
                 </span>
               </label>
@@ -283,7 +285,7 @@ export default function ProductInfo({ product }) {
       {selectedTier.price !== 0 && (
         <p className="text-[#240457] pb-3 underline cursor-pointer" onClick={() => {
           setIsTierSelected(false)
-          setSelectedTier({ qty: "", price: 0 })
+          setSelectedTier({ qty: 0, price: 0 })
         }}>Go with Quantity Selection</p>
       )}
 

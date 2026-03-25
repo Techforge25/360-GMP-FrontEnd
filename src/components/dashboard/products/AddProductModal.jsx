@@ -37,7 +37,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     pricePerUnit: "",
     isSingleProductAvailable: false,
     tieredPricing: [{
-      qty: "",
+      qty: 0,
       price: 0
     }],
     description: "",
@@ -105,7 +105,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         typeof editProduct.tieredPricing === "object"
       ) {
         tieredArray = editProduct.tieredPricing.map((item) => ({
-          qty: item.qty,
+          qty: Number(item.qty),
           price: Number(item.price),
         }));
       }
@@ -139,7 +139,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         category: "",
         minOrderQty: 2,
         pricePerUnit: "",
-        tieredPricing: [{ qty: "", price: 0 }],
+        tieredPricing: [{ qty: 0, price: 0 }],
         description: "",
         isSingleProductAvailable: false,
         estimatedDeliveryDays: "",
@@ -183,7 +183,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       ...prev,
       tieredPricing: [
         ...prev.tieredPricing,
-        { qty: "", price: 0 },
+        { qty: 0, price: 0 },
       ],
     }));
   };

@@ -1002,7 +1002,8 @@ function TopDealsSection({
                         addToCart(deal, deal.minOrderQty || 1);
                         router.push("/dashboard/user/cart");
                       }}
-                      className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm hover:bg-[#240457] hover:text-white transition-colors"
+                      disabled={deal.isOwner}
+                      className="py-2 border border-[#240457] text-[#240457] rounded-lg text-sm hover:bg-[#240457] hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Add To Cart
                     </button>
@@ -1014,7 +1015,8 @@ function TopDealsSection({
                             : "/dashboard/user/messages",
                         )
                       }
-                      className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors"
+                      disabled={deal.isOwner}
+                      className="py-2 border border-[#240457] text-[#fff] rounded-lg text-sm bg-[#240457] hover:bg-[#fff] hover:text-[#240457] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       Chat Now
                     </button>

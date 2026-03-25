@@ -56,10 +56,16 @@ export default function BusinessProfileStep2({
   });
 
   useEffect(() => {
-    const getLogo = getValues()
-    console.log(getValues, "get values")
-    // setLogoPreview()
-  }, [])
+    const currentLogo = getValues("logo");
+    const currentBanner = getValues("banner");
+    const currentCert = getValues("certificateOfIncorporation");
+    const currentTaxCert = getValues("taxRegistrationCertificate");
+
+    if (currentLogo) setLogoPreview(currentLogo);
+    if (currentBanner) setBannerPreview(currentBanner);
+    if (currentCert) setValue("certificateOfIncorporation", currentCert);
+    if (currentTaxCert) setValue("taxRegistrationCertificate", currentTaxCert);
+  }, []);
 
   return (
     <div className="space-y-8">
