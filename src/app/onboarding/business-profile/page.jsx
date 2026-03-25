@@ -36,6 +36,7 @@ export default function BusinessProfilePage() {
     trigger,
     setValue,
     getValues,
+    watch,
     formState: { errors, isValid }
   } = useForm({
     resolver: yupResolver(createBusinessProfileSchema),
@@ -162,7 +163,6 @@ export default function BusinessProfilePage() {
 
   const handleBack = () => {
     const changed = prevStep();
-    console.log(changed, "changed")
     if (!changed) {
       router.push("/onboarding/plans");
     }
@@ -212,6 +212,7 @@ export default function BusinessProfilePage() {
                 className={className}
                 setValue={setValue}
                 getValues={getValues}
+                watch={watch}
               />
             )}
             {currentStep === 3 && <Step3 data={allData} />}

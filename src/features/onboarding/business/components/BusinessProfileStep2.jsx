@@ -1,18 +1,22 @@
 "use client";
 import { Button } from "@/components/ui/Button";
 import { useFieldArray } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SHIPPING_OPTIONS } from "@/constants/index";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 export default function BusinessProfileStep2({
   register,
   control,
   errors,
+  watch,
   className,
   setValue,
   getValues
 }) {
   const REGIONS = ["North America", "Europe", "Middle East", "Asia"];
+  const logo = watch("logo")
+  const banner = watch("banner")
+  const taxCertificate = watch("taxRegistrationCertificate")
   const [logoPreview, setLogoPreview] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
   const {
@@ -50,6 +54,12 @@ export default function BusinessProfileStep2({
     control,
     name: "tradeAffiliations"
   });
+
+  useEffect(() => {
+    const getLogo = getValues()
+    console.log(getValues, "get values")
+    // setLogoPreview()
+  }, [])
 
   return (
     <div className="space-y-8">
@@ -401,8 +411,8 @@ export default function BusinessProfileStep2({
                 const url = await uploadToCloudinary(file, "logos", (progress) => {
                   console.log(`Logo upload progress: ${progress}%`);
                 });
-                setValue("logo", url); // save Cloudinary URL
-                setLogoPreview(URL.createObjectURL(file)); // keep preview for user
+                setValue("logo", url);
+                setLogoPreview(URL.createObjectURL(file));
               } catch (err) {
                 console.error("Logo upload failed", err);
               }
@@ -411,10 +421,10 @@ export default function BusinessProfileStep2({
         />
 
         {/* Preview */}
-        {logoPreview && (
+        {logo && (
           <div className="mt-3 w-32 h-32 border rounded overflow-hidden">
             <img
-              src={logoPreview}
+              src={logo}
               alt="Logo Preview"
               className="w-full h-full object-cover"
             />
@@ -468,8 +478,8 @@ export default function BusinessProfileStep2({
                 const url = await uploadToCloudinary(file, "banners", (progress) => {
                   console.log(`Banner upload progress: ${progress}%`);
                 });
-                setValue("banner", url); // save Cloudinary URL
-                setBannerPreview(URL.createObjectURL(file)); // keep preview for user
+                setValue("banner", url);
+                setBannerPreview(URL.createObjectURL(file));
               } catch (err) {
                 console.error("Banner upload failed", err);
               }
@@ -478,10 +488,10 @@ export default function BusinessProfileStep2({
         />
 
         {/* Preview */}
-        {bannerPreview && (
+        {banner && (
           <div className="mt-3 w-full h-40 border rounded overflow-hidden">
             <img
-              src={bannerPreview}
+              src={banner}
               alt="Banner Preview"
               className="w-full h-full object-cover"
             />
@@ -527,16 +537,16 @@ export default function BusinessProfileStep2({
             accept=".pdf,.jpg,.png"
             onChange={async (e) => {
               const file = e.target.files[0];
-              if (file) {
-                try {
-                  const url = await uploadToCloudinary(file, "tax_certificates", (progress) => {
-                    console.log("Tax Certificate upload progress:", progress, "%");
-                  });
-                  setValue("taxRegistrationCertificate", url); // save Cloudinary URL
-                } catch (err) {
-                  console.error("Tax Certificate upload failed", err);
-                }
+              // if (file) {
+              try {
+                const url = await uploadToCloudinary(file, "tax_certificates", (progress) => {
+                  console.log("Tax Certificate upload progress:", progress, "%");
+                });
+                setValue("taxRegistrationCertificate", url);
+              } catch (err) {
+                console.error("Tax Certificate upload failed", err);
               }
+              // }
             }}
             className={className}
           />

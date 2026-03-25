@@ -1,6 +1,5 @@
 import { useWallet } from "@/context/WalletContext";
 import { useState } from "react";
-import { FiDownload } from "react-icons/fi";
 
 export default function TablesHeaderUser({ tablesCommon }) {
      const [transactionTab, setTransactionTab] = useState("All")

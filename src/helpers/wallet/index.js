@@ -27,18 +27,16 @@ export const getAnalytics = (analytics) => {
      ]
 }
 
-export const getUserAnalytics = (analytics, message) => {
-     console.log(message, "analutics")
-     const messageRes = "You need to setup your wallet account"
+export const getUserAnalytics = (analytics) => {
      return [
           {
-               amount: messageRes ? 0 : analytics.availableBalance,
+               amount: analytics.availableBalance,
                icon: "/assets/images/card-1.png",
                text: "Net Balance",
                text2: "Available for withdrawal"
           },
           {
-               amount: messageRes ? 0 : analytics.totalPendingEscrow,
+               amount: analytics.totalPendingEscrow,
                icon: "/assets/images/card-2.png",
                text: "Pending Settlements",
                text2: "Held in escrow"
@@ -85,17 +83,6 @@ export const getFormattedSpendingChartData = (data) => {
           { month: "Sun", value: graph.sunday, totalSpend: data.totalSpend, totalRefund: data.totalRefund },
      ]
 }
-
-// export const getEvents = (data) => {
-
-//      console.log(data, "data")
-//      return [
-//           { date: "OCT 25, 2025,", time: "10:30 AM", title: "Order Placed", description: "Order Created." },
-//           { date: "OCT 26, 2025,", time: "10:30 AM", title: "Shipped At", description: "Business has Shipped the product." },
-//           { date: "OCT 27, 2025,", time: "06:15 AM", title: "Delivery Confirmed", description: "Buyer Confirmed Receipt Of Goods." },
-//           { date: "OCT 28, 2025,", time: "12:15 AM", title: "Completed At", description: "Payout Successfully Transferred To Seller Wallet", isLast: true },
-//      ]
-// }
 
 export const formatEventDate = (date) => {
      if (!date) return { date: "", time: "" }

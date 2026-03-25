@@ -15,9 +15,9 @@ class WalletBusinessAPI {
      }
 
      // get business recent transactions
-     async getWalletBusinessTransactions(params = {}) {
-          const queryParams = new URLSearchParams(params).toString();
-          const url = queryParams ? `/wallet/business/recent-transaction?${queryParams}` : "/wallet/business/recent-transaction"
+     async getWalletBusinessTransactions(params) {
+          const { type } = params
+          const url = type === "All" ? `/wallet/business/recent-transaction` : `/wallet/business/recent-transaction?type=${type.toLowerCase()}`
           return await api.get({
                url,
                activateLoader: true,

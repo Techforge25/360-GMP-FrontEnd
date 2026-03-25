@@ -24,9 +24,7 @@ export default function TablesUser({ tablesTabHeader }) {
      const limit = 10
 
      const fetchTransactions = async (currentPage = 1, reset = false) => {
-
           setLoading(true)
-
           console.log(userTransactionTab, "transaction tabs")
 
           const getCond =

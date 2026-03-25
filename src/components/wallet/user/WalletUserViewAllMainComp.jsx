@@ -3,7 +3,6 @@ import AuthNavbar from "@/components/dashboard/AuthNavbar";
 import WalletBanner from "@/components/wallet/common/WalletBanner";
 import { walletTransactionTabs } from "@/constants/index";
 import { WalletProvider } from "@/context/WalletContext";
-import walletUserAPI from "@/services/walletUserAPI";
 import { useEffect, useState } from "react";
 import TablesUser from "@/components/wallet/user/TableUser";
 

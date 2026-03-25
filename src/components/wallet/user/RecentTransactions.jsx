@@ -1,4 +1,4 @@
-import { getStatusColor, transactionsUserWallet } from "@/constants/index";
+import { getStatusColor } from "@/constants/index";
 import walletUserAPI from "@/services/walletUserAPI";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -25,27 +25,58 @@ export default function RecentTransactions() {
                </div>
 
                <div className="space-y-1">
-                    {transactions?.slice(0, 5).map((tx) => (
-                         <div key={tx.orderId} className="flex items-center gap-3 py-3 border-b border-border last:border-0">
-                              {/* Details */}
-                              <div className="flex-1 min-w-0">
-                                   <div className="text-[13px] font-medium text-black">
-                                        {tx?.orderId
-                                             ? tx.orderId.slice(0, -5).replace(/./g, "*") + tx.orderId.slice(-5)
-                                             : "N/A"}
+                    {transactions?.length > 0 ? (
+                         <>
+                              {transactions.slice(0, 5).map((tx) => (
+                                   <div
+                                        key={tx.orderId}
+                                        className="flex items-center gap-3 py-3 border-b border-border last:border-0"
+                                   >
+                                        {/* Details */}
+                                        <div className="flex-1 min-w-0">
+                                             <div className="text-[13px] font-medium text-black">
+                                                  {tx?.orderId
+                                                       ? tx.orderId.slice(0, -5).replace(/./g, "*") +
+                                                       tx.orderId.slice(-5)
+                                                       : "N/A"}
+                                             </div>
+                                             <p className="text-[11px] text-[#768299] mt-0.5">
+                                                  {tx.createdAt}
+                                             </p>
+                                        </div>
+
+                                        {/* Amount & Status */}
+                                        <div className="text-right shrink-0">
+                                             <p className="text-sm font-semibold text-black">
+                                                  ${tx.amount}
+                                             </p>
+                                             <span
+                                                  className={`inline-block mt-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full ${getStatusColor(
+                                                       tx.status
+                                                  )}`}
+                                             >
+                                                  {tx.status}
+                                             </span>
+                                        </div>
                                    </div>
-                                   <p className="text-[11px] text-[#768299] mt-0.5">{tx.createdAt}</p>
+                              ))}
+                         </>
+                    ) : (
+                         <div className="flex flex-col items-center justify-center py-10 text-center">
+                              {/* Icon */}
+                              <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 mb-3">
+                                   📭
                               </div>
 
-                              {/* Amount & Status */}
-                              <div className="text-right shrink-0">
-                                   <p className="text-sm font-semibold text-black">${tx.amount}</p>
-                                   <span className={`inline-block mt-1 text-[11px] font-medium px-2.5 py-0.5 rounded-full ${getStatusColor(tx.status)}`}>
-                                        {tx.status}
-                                   </span>
-                              </div>
+                              {/* Text */}
+                              <p className="text-sm font-medium text-gray-700">
+                                   No transactions yet
+                              </p>
+                              <p className="text-xs text-gray-500 mt-1">
+                                   Your recent activity will appear here
+                              </p>
                          </div>
-                    ))}
+                    )}
                </div>
           </div>
      );

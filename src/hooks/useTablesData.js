@@ -1,18 +1,19 @@
+import { useWallet } from "@/context/WalletContext"
 import walletBusinessAPI from "@/services/walletBusinessAPI"
 import { useEffect, useState } from "react"
 
 export const useTablesData = (activeTabs) => {
-
      const [tablesData, setTablesData] = useState(null)
-
+     const { userTransactionTab } = useWallet()
      useEffect(() => {
-
           const fetchRecentTransactions = async () => {
                try {
                     let data = null
 
                     if (activeTabs === "My Wallet") {
-                         const response = await walletBusinessAPI.getWalletBusinessTransactions()
+                         const response = await walletBusinessAPI.getWalletBusinessTransactions({
+                              type: userTransactionTab
+                         })
                          data = response.data.docs
                     }
                     else if (activeTabs === "Earnings") {
@@ -25,8 +26,6 @@ export const useTablesData = (activeTabs) => {
                     }
 
                     setTablesData(data)
-                    console.log(data, "tables format")
-
                } catch (error) {
                     console.error("Error fetching tables data", error)
                }
@@ -34,7 +33,7 @@ export const useTablesData = (activeTabs) => {
 
           fetchRecentTransactions()
 
-     }, [activeTabs])
+     }, [activeTabs, userTransactionTab])
 
      return tablesData
 }

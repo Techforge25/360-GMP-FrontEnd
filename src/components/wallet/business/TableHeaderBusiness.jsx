@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export default function TablesHeaderBusiness({ tablesCommon }) {
      const [activeTab, setActiveTab] = useState("All");
-     const { activeTabs } = useWallet()
+     const { activeTabs, setUserTransactionTab } = useWallet()
      const myWalletCond = activeTabs === "My Wallet"
      const earningsCond = activeTabs === "Earnings"
      const transactionCond = activeTabs === "Transactions"
@@ -24,7 +24,10 @@ export default function TablesHeaderBusiness({ tablesCommon }) {
                                         {tablesCommon.map((tab) => (
                                              <button
                                                   key={tab}
-                                                  onClick={() => setActiveTab(tab)}
+                                                  onClick={() => {
+                                                       setActiveTab(tab)
+                                                       setUserTransactionTab(tab)
+                                                  }}
                                                   className={`px-4 py-2 text-md rounded-lg transition-colors ${activeTab === tab
                                                        ? "bg-brand-primary text-primary-foreground font-inter font-normal text-sm leading-6 tracking-normal text-center align-middle capitalize"
                                                        : "text-[#444953] hover:text-foreground font-inter font-normal text-sm leading-6 tracking-normal text-center align-middle capitalize"
