@@ -65,9 +65,8 @@ const UserOrdersPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [activeTab]);
+  }, [activeTab, pageByTab]);
 
-  // Load first page when tab changes (or if tab data doesn't exist yet)
   useEffect(() => {
     if (!(activeTab in ordersByTab)) {
       fetchOrders(true);
@@ -212,7 +211,7 @@ const UserOrdersPage = () => {
                         </td>
                         <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
                           <span className="text-sm sm:text-base text-gray-600 truncate block max-w-[180px]">
-                            {sellerName}
+                            {order.sellerBusinessId.companyName}
                           </span>
                         </td>
                         <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
