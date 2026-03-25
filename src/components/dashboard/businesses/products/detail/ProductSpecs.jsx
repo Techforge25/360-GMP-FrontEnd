@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import SlateRenderer from "@/components/ui/SlateRenderer";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function ProductSpecs({ product }) {
   const [activeTab, setActiveTab] = useState("specs");
   const router = useRouter()
   console.log(product, "product")
+
+  const pathname = usePathname()
+  const businessPathname = pathname.includes("/dashboard/business/products")
 
   if (!product) return null;
 
@@ -32,11 +35,14 @@ export default function ProductSpecs({ product }) {
             Product Specifications
           </button>
         </div>
-        <div className="my-4">
-          <Button onClick={() => router.push(`/dashboard/user/businesses/${product?.businessId?._id}`)} variant="default">
-            View Company Profile
-          </Button>
-        </div>
+        {!product.isOwner && (
+          <div className="my-4">
+            <Button onClick={() => router.push(businessPathname ? `/dashboard/business/businesses/${product?.businessId?._id}` : `/dashboard/user/businesses/${product?.businessId?._id}`)} variant="default">
+              View Company Profile
+            </Button>
+          </div>
+        )}
+
       </div>
 
       {/* Content */}
@@ -77,6 +83,6 @@ export default function ProductSpecs({ product }) {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 }

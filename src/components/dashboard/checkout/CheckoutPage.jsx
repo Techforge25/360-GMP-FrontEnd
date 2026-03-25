@@ -56,8 +56,8 @@ const CheckoutPage = () => {
     } else {
       return {
         productId: item.productId,
-        quantity: item.quantity,
-        price: item.price * item.quantity,
+        quantity: Number(item.quantity),
+        price: item.price * Number(item.quantity),
         addedAt: item.addedAt,
       };
     }
@@ -114,7 +114,7 @@ const CheckoutPage = () => {
       const cachedProduct = productsCache[item.productId];
       return cachedProduct ? {
         ...cachedProduct,
-        quantity: item.quantity
+        quantity: Number(item.quantity)
       } : null;
     }).filter(Boolean);
   }, [cartItems, productsCache]);

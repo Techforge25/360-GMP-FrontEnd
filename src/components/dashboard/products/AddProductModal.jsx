@@ -15,6 +15,7 @@ import { uploadToCloudinary } from "@/lib/cloudinary";
 import productAPI from "@/services/productAPI";
 import React, { useRef, useState } from "react";
 import CKEditorField from "@/components/ui/CKEditor";
+import { digitsDecimalOnly, digitsOnly } from "@/constants/index";
 // import CKEditorField from "@/components/CKEditorField";
 
 // const CKEditor = dynamic(
@@ -535,10 +536,13 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
               Minimum Order Quantity
             </label>
             <input
-              type="number"
+              type="text"
               name="minOrderQty"
               value={formData.minOrderQty}
-              onChange={handleStandardInputChange}
+              onChange={(e) => {
+                const sanitized = digitsOnly(e.target.value);
+                handleStandardInputChange({ target: { name: "minOrderQty", value: sanitized } });
+              }}
               placeholder="e.g 100 Units"
               className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
@@ -552,10 +556,13 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             Pricing Model (Price Per Unit)
           </label>
           <input
-            type="number"
+            type="text"
             name="pricePerUnit"
             value={formData.pricePerUnit}
-            onChange={handleStandardInputChange}
+            onChange={(e) => {
+              const sanitized = digitsDecimalOnly(e.target.value);
+              handleStandardInputChange({ target: { name: "pricePerUnit", value: sanitized } });
+            }}
             placeholder="$50 USD"
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
@@ -572,47 +579,55 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         </label>
 
         {formData.tieredPricing.map((tier, index) => (
-          <div key={index} className="flex gap-3 mb-3">
+          <div
+            key={index}
+            className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 mb-3 bg-white shadow-sm border border-gray-200 rounded-lg hover:shadow-md transition-shadow duration-200"
+          >
             {/* Quantity */}
-            <input
-              type="text"
-              value={tier.qty}
-              onChange={(e) =>
-                updateTier(index, "qty", e.target.value)
-              }
-              placeholder="Quantity (e.g. 1-100)"
-              className="flex-1 text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
+            <div className="flex flex-col flex-1">
+              <label htmlFor={`quantity-${index}`} className="text-sm font-semibold text-gray-700 mb-1">
+                Quantity
+              </label>
+              <input
+                id={`quantity-${index}`}
+                type="text"
+                value={tier.qty}
+                onChange={(e) => updateTier(index, "qty", digitsOnly(e.target.value))}
+                placeholder="Quantity (e.g. 100)"
+                className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
 
             {/* Price */}
-            <input
-              type="number"
-              step="0.01"
-              value={tier.price}
-              onChange={(e) =>
-                updateTier(index, "price", Number(e.target.value))
-              }
-              placeholder="Price"
-              className="flex-1 text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            />
-
+            <div className="flex flex-col flex-1">
+              <label htmlFor={`price-${index}`} className="text-sm font-semibold text-gray-700 mb-1">
+                Price
+              </label>
+              <input
+                id={`price-${index}`}
+                type="text"
+                value={tier.price}
+                onChange={(e) => updateTier(index, "price", digitsDecimalOnly(e.target.value))}
+                placeholder="Price"
+                className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
 
             {/* Remove */}
             {formData.tieredPricing.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeTier(index)}
-                className="px-3 text-red-500 hover:text-red-700"
-              >
-                <FiTrash2 />
-              </button>
+              <div className="mt-2 md:mt-0 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => removeTier(index)}
+                  className="flex items-center justify-center w-10 h-10 bg-red-50 hover:bg-red-100 text-red-600 rounded-full transition-colors duration-200"
+                  title="Remove Tier"
+                >
+                  <FiTrash2 className="w-5 h-5" />
+                </button>
+              </div>
             )}
-
           </div>
         ))}
-        {errors.tieredPricing && (
-          <p className="text-red-500 text-xs my-3">{errors.tieredPricing}</p>
-        )}
 
         {/* Add Button */}
         {formData.tieredPricing.length < 4 && (
@@ -626,18 +641,19 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         )}
       </div>
 
-
-
-
+      {/* Low Stock Threshold */}
       <div>
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Low Stock Threshold
         </label>
         <input
-          type="number"
+          type="text"
           name="lowStockThreshold"
           value={formData.lowStockThreshold}
-          onChange={handleStandardInputChange}
+          onChange={(e) => {
+            const sanitized = digitsOnly(e.target.value);
+            handleStandardInputChange({ target: { name: "lowStockThreshold", value: sanitized } });
+          }}
           placeholder="10 units"
           className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
         />
@@ -745,7 +761,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       </div>
     </div>
   );
-
 
   const renderStep3 = () => (
     <div className="space-y-6">

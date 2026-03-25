@@ -55,18 +55,6 @@ export default function BusinessProfileStep2({
     name: "tradeAffiliations"
   });
 
-  useEffect(() => {
-    const currentLogo = getValues("logo");
-    const currentBanner = getValues("banner");
-    const currentCert = getValues("certificateOfIncorporation");
-    const currentTaxCert = getValues("taxRegistrationCertificate");
-
-    if (currentLogo) setLogoPreview(currentLogo);
-    if (currentBanner) setBannerPreview(currentBanner);
-    if (currentCert) setValue("certificateOfIncorporation", currentCert);
-    if (currentTaxCert) setValue("taxRegistrationCertificate", currentTaxCert);
-  }, []);
-
   return (
     <div className="space-y-8">
       <div className="space-y-6">
@@ -461,7 +449,14 @@ export default function BusinessProfileStep2({
                 console.error(`${file.name} upload failed`, err);
               }
             }
-            setValue("certifications", [...(getValues("certifications") || []), ...urls]);
+            setValue(
+              "certifications",
+              [...(getValues("certifications") || []), ...urls],
+              {
+                shouldValidate: true,
+                shouldDirty: true,
+              }
+            );
           }}
         />
         {errors?.certifications && (
@@ -523,7 +518,10 @@ export default function BusinessProfileStep2({
                   const url = await uploadToCloudinary(file, "certificates", (progress) => {
                     console.log("Certificate upload progress:", progress, "%");
                   });
-                  setValue("certificateOfIncorporation", url); // save Cloudinary URL
+                  setValue("certificateOfIncorporation", url, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  });
                 } catch (err) {
                   console.error("Certificate upload failed", err);
                 }
@@ -548,7 +546,10 @@ export default function BusinessProfileStep2({
                 const url = await uploadToCloudinary(file, "tax_certificates", (progress) => {
                   console.log("Tax Certificate upload progress:", progress, "%");
                 });
-                setValue("taxRegistrationCertificate", url);
+                setValue("taxRegistrationCertificate", url, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
               } catch (err) {
                 console.error("Tax Certificate upload failed", err);
               }

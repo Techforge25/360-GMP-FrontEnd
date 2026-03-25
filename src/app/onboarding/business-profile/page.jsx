@@ -220,6 +220,7 @@ export default function BusinessProfilePage() {
 
           <div className="p-8 border-t border-border-light flex justify-between items-center">
             <button
+              type="button"
               onClick={handleBack}
               className="flex items-center gap-2 text-text-secondary hover:text-brand-primary font-medium"
             >

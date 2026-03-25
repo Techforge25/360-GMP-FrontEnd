@@ -46,7 +46,7 @@ export const CartProvider = ({ children }) => {
       // Use selected tier only if tier is selected
       const actualQuantity = product.isTierSelected
         ? Number(product.selectedTier.qty)
-        : quantity;
+        : Number(quantity);
 
       const price = product.isTierSelected
         ? Number(product.selectedTier.price)
@@ -60,7 +60,7 @@ export const CartProvider = ({ children }) => {
           item.productId === productId
             ? {
               ...item,
-              quantity: actualQuantity,
+              quantity: Number(actualQuantity),
               price,
               isTierSelected: !!product.isTierSelected,
               selectedTier: product.isTierSelected ? product.selectedTier : null,
@@ -73,7 +73,7 @@ export const CartProvider = ({ children }) => {
         ...prevItems,
         {
           productId,
-          quantity: actualQuantity,
+          quantity: Number(actualQuantity),
           price,
           isTierSelected: !!product.isTierSelected,
           selectedTier: product.isTierSelected ? product.selectedTier : null,
@@ -84,7 +84,7 @@ export const CartProvider = ({ children }) => {
 
     showSuccess(message);
   };
-  
+
   const removeFromCart = (productId) => {
     setCartItems((prevItems) => {
       const filteredItems = prevItems.filter(
@@ -99,10 +99,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (productId, quantity) => {
-    if (quantity < 1) return;
+    if (Number(quantity) < 1) return;
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item.productId === productId ? { ...item, quantity } : item,
+        item.productId === productId ? { ...item, quantity: Number(quantity) } : item,
       ),
     );
   };

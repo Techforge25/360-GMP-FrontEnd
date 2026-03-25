@@ -616,3 +616,6 @@ const isStepValid = (step) => {
     return !value || errorsKeys.includes(field);
   });
 };
+
+export const digitsOnly = (value) => value.replace(/[^0-9]/g, "");
+export const digitsDecimalOnly = (value) => value.replace(/[^0-9.]/g, ""); // allow decimal for price

@@ -12,6 +12,7 @@ export function useStepper(initialStep = 1, totalSteps) {
   };
 
   const prevStep = () => {
+    console.log(currentStep, "current step")
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
       return true;

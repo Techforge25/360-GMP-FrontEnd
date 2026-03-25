@@ -5,6 +5,7 @@ import ProductInfo from "./detail/ProductInfo";
 import ProductSpecs from "./detail/ProductSpecs";
 import RelatedProducts from "./detail/RelatedProducts";
 import productAPI from "@/services/productAPI";
+import { usePathname } from "next/navigation";
 
 export default function ProductDetailContent({ productId, businessId }) {
   const [product, setProduct] = useState(null);

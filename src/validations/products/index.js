@@ -1,5 +1,7 @@
 import * as Yup from "yup";
 
+const noPlusMinusPattern = /^[^+-]*$/; // regex to disallow + or - anywhere
+
 export const createProductSchema = Yup.object({
      title: Yup.string()
           .trim()
@@ -34,6 +36,7 @@ export const createProductSchema = Yup.object({
                Yup.object({
                     qty: Yup.string()
                          .trim()
+                         .matches(noPlusMinusPattern, "Quantity range cannot contain + or -")
                          .required("Quantity range is required"),
 
                     price: Yup.number()
@@ -49,6 +52,11 @@ export const createProductSchema = Yup.object({
           .typeError("Minimum order quantity must be a number")
           .integer("Minimum order quantity must be an integer")
           .min(1, "Minimum order quantity must be at least 1")
+          .test(
+               "no-plus-minus",
+               "Minimum order quantity cannot contain + or -",
+               (value) => value !== undefined && !value.toString().includes("+") && !value.toString().includes("-")
+          )
           .required("Minimum order quantity is required"),
 
      stockQty: Yup.number()
@@ -64,6 +72,11 @@ export const createProductSchema = Yup.object({
           .typeError("Low stock threshold must be a number")
           .integer("Low stock threshold must be an integer")
           .min(1, "Low stock threshold must be at least 1")
+          .test(
+               "no-plus-minus",
+               "Low stock threshold cannot contain + or -",
+               (value) => value === undefined || (!value.toString().includes("+") && !value.toString().includes("-"))
+          )
           .nullable(),
 
      shippingCost: Yup.number()
