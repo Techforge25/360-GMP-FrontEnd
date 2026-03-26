@@ -295,7 +295,7 @@ const OrderTrackingPage = ({ orderId }) => {
     }
   }
 
-  console.log(order, "order data")
+  console.log(activeStep, "active step")
 
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
@@ -1038,7 +1038,7 @@ const OrderTrackingPage = ({ orderId }) => {
                   <div className="w-full h-2.5 bg-[#B7EFCD] rounded-full mb-3 overflow-hidden flex">
                     <div
                       className="h-full bg-[#1DAF61] rounded-full transition-all duration-500"
-                      style={{ width: activeStep === 4 ? "100%" : "35%" }}
+                      style={{ width: activeStep === 0 ? "0%" : activeStep === 1 ? "25%" : activeStep === 2 ? "50%" : activeStep === 3 ? "75%" : "100%" }}
                     ></div>
                   </div>
 

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { ImCross } from "react-icons/im";
 
 const ConfirmModal = ({
   isOpen,
@@ -67,10 +68,11 @@ const ConfirmModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-
       <div className="max-w-md mx-auto mt-10 p-8 bg-white rounded-2xl shadow-lg border border-gray-200">
+        <div className="flex justify-end mb-3 cursor-pointer" onClick={() => setShowCancelModal(false)}>
+          <ImCross color="red" />
+        </div>
         <div className="flex flex-col space-y-6">
-
           {/* Heading */}
           <h2 className="text-2xl font-bold text-gray-900 text-center">
             Please Specify The Reason For Cancelling

@@ -20,8 +20,6 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
 
-  console.log(cartItems, "cart items")
-
   // Memoized products from cache and cart items
   // const products = useMemo(() => {
   //   return cartItems
@@ -56,8 +54,6 @@ const CartPage = () => {
       })
       .filter(Boolean);
   }, [cartItems, productsCache]);
-
-  console.log(products, "products all")
 
   useEffect(() => {
     const fetchMissingProducts = async () => {

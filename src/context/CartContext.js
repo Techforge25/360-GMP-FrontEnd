@@ -91,11 +91,10 @@ export const CartProvider = ({ children }) => {
         (item) => item.productId !== productId,
       );
       // Only show success message if item was actually removed
-      if (filteredItems.length < prevItems.length) {
-        showSuccess("Removed from cart");
-      }
+
       return filteredItems;
     });
+    showSuccess("Removed from cart");
   };
 
   const updateQuantity = (productId, quantity) => {

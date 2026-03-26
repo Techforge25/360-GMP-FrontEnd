@@ -37,6 +37,8 @@ export default function ProductInfo({ product }) {
     user?.subscription?.planName?.toLowerCase()?.includes("trial") ||
     user?.subscription?.plan?.name?.toLowerCase()?.includes("trial");
 
+  // console.log(isFreeTrial, "is free trial")
+
   const [quantity, setQuantity] = useState(product?.minOrderQty || 1);
   const [showActionModal, setShowActionModal] = useState(false);
   const [showSwitchModal, setShowSwitchModal] = useState(false);
@@ -198,7 +200,7 @@ export default function ProductInfo({ product }) {
                 <input
                   type="number"
                   value={quantity}
-                  readOnly={isFreeTrial}
+                  // readOnly={isFreeTrial}
                   onChange={(e) =>
                     setQuantity(
                       Math.max(product.minOrderQty, Number(e.target.value)),

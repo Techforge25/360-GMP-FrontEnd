@@ -16,6 +16,7 @@ import productAPI from "@/services/productAPI";
 import React, { useRef, useState } from "react";
 import CKEditorField from "@/components/ui/CKEditor";
 import { digitsDecimalOnly, digitsOnly } from "@/constants/index";
+import { toast } from "react-toastify";
 // import CKEditorField from "@/components/CKEditorField";
 
 // const CKEditor = dynamic(
@@ -375,8 +376,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         onClose();
       }
     } catch (error) {
-      console.error("Failed to save product:", error);
-      alert("Failed to save product. Check console for details.");
+      toast.error(error);
     } finally {
       setLoading(false);
       setUploading(false);

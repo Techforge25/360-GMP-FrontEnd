@@ -295,10 +295,6 @@ const CheckoutPage = () => {
               {/* Header */}
               <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-[#F8F9FB]">
                 <h2 className="text-lg font-bold text-gray-900">Shipping Address</h2>
-                <button className="text-blue-600 text-sm font-medium hover:underline flex items-center gap-2">
-                  Use My Current Location
-                  <FiGlobe className="w-4 h-4" />
-                </button>
               </div>
 
               <div className="p-6">
@@ -454,26 +450,6 @@ const CheckoutPage = () => {
                     </div>
                   </div>
 
-                  {/* Checkbox */}
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex items-center">
-                      <input
-                        type="checkbox"
-                        {...register("isDefault")}
-                        id="default-address"
-                        className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 bg-white checked:bg-[#004D99] checked:border-[#004D99] transition-all"
-                      />
-
-                      <FiCheck className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white opacity-0 peer-checked:opacity-100 w-3.5 h-3.5" />
-                    </div>
-
-                    <label
-                      htmlFor="default-address"
-                      className="text-sm text-gray-500 cursor-pointer"
-                    >
-                      Set As Default Shipping Address
-                    </label>
-                  </div>
                   <button
                     type="submit"
                     disabled={submitting || loading || !isValid}
