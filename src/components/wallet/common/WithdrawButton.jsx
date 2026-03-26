@@ -82,7 +82,6 @@ export default function WithDrawButton({ withdrawOpen, setWithdrawOpen }) {
                }
 
                if (res.data?.onboardingRequired) {
-                    connectStripeAccount()
                     setErrorMessage("Stripe account setup required.");
                     setErrorModalOpen(true);
                }
