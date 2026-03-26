@@ -231,12 +231,13 @@ const ConfirmationModal = ({
             )}
           </div>
 
-          <h2 className="text-xl font-bold mb-2">{isError ? "Purchase Failed!" : "Confirmed!"}</h2>
+          <h2 className="text-xl font-bold mb-2">Subscription{isError ? "Purchase Failed!" : "Confirmed!"}</h2>
           <p className="text-base text-text-secondary mb-6">{message}</p>
 
           <div className="border border-indigo-100 rounded-lg p-4 bg-indigo-50/30 mb-6">
+          
             <div className="text-base font-medium mb-4 pb-2 border-b border-indigo-100">
-              Featured Activated
+              {isError ? "Featured Not Activated" : "Featured Activated"}
             </div>
 
             {isError ? (
