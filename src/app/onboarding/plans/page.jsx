@@ -231,7 +231,7 @@ const ConfirmationModal = ({
             )}
           </div>
 
-          <h2 className="text-xl font-bold mb-2">Subscription{isError ? "Purchase Failed!" : "Confirmed!"}</h2>
+          <h2 className="text-xl font-bold mb-2">Subscription {isError ? "Purchase Failed!" : "Confirmed!"}</h2>
           <p className="text-base text-text-secondary mb-6">{message}</p>
 
           <div className="border border-indigo-100 rounded-lg p-4 bg-indigo-50/30 mb-6">
@@ -242,10 +242,10 @@ const ConfirmationModal = ({
 
             {isError ? (
               <div className="flex items-center justify-center gap-3 text-base text-text-secondary py-4">
-                <FiX className="text-red-500 font-bold" />
+                {/* <FiX className="text-red-500 font-bold" />
                 <span className="max-w-[200px] leading-tight">
                   Business account cannot be created during trial.
-                </span>
+                </span> */}
               </div>
             ) : (
               <div className="space-y-3 text-left pl-4">

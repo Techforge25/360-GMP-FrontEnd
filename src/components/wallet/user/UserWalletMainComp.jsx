@@ -36,7 +36,6 @@ export default function UserWalletMainComp() {
                          <RecentTransactions />
                     </div>
                </div>
-               <DashboardFooter />
           </>
      );
 }

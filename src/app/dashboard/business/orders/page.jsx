@@ -87,12 +87,11 @@ const BusinessOrdersPage = () => {
     [activeTab],
   );
 
-  // Reset & load first page when tab changes
   useEffect(() => {
     setOrdersByTab((prev) => ({ ...prev, [activeTab]: [] }));
     setHasMoreByTab((prev) => ({ ...prev, [activeTab]: true }));
 
-    fetchOrders(1, true); // always page 1
+    fetchOrders(1, true); 
   }, [activeTab]);
 
   const getStatusColor = (status = "") => {
@@ -104,7 +103,7 @@ const BusinessOrdersPage = () => {
     if (s.includes("deliv")) {
       return "bg-blue-100 text-blue-800";
     }
-    if (s.includes("deliv") || s === "completed")
+    if (s === "completed")
       return "bg-green-100 text-green-800";
     if (s.includes("cancel")) return "bg-red-100 text-red-800";
     return "bg-gray-100 text-gray-700";
