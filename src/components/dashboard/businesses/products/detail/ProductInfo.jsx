@@ -250,7 +250,7 @@ export default function ProductInfo({ product }) {
         <h3 className="text-black">Tiered Pricing (Q: Price, Q: Price)</h3>
         <div className="my-3 p-6 bg-gray-50 rounded-xl border border-gray-200 shadow-sm">
           <div className="flex flex-wrap gap-8">
-            {product.tieredPricing.map((tier, index) => (
+            {product.tieredPricing.filter((tier) => tier.price !== 0 && tier.quantity !== 0).map((tier, index) => (
               <label
                 key={index}
                 className="flex items-center cursor-pointer group"

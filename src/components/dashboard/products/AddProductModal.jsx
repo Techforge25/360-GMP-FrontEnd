@@ -70,8 +70,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       errors.description
     );
 
-  console.log(formData, "dorm data")
-
   const step2DisabledNext =
     currentStep === 2 &&
     (
@@ -338,9 +336,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         });
       }
 
-      console.log(formData.tieredPricing, "tieredPricing")
-      console.log(formData.isSingleProductAvailable, "single product")
-
       const payload = {
         title: formData.title,
         category: formData.category,
@@ -444,7 +439,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     return error;
   };
 
-  console.log(errors, "errors")
 
   const renderStepIndicator = () => (
     <div className="flex justify-between items-center mb-6">
@@ -615,7 +609,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
             {/* Remove */}
             {formData.tieredPricing.length > 1 && (
-              <div className="mt-2 md:mt-0 flex-shrink-0">
+              <div className="mt-2 md:mt-0 flex-shrink-0 mt-5">
                 <button
                   type="button"
                   onClick={() => removeTier(index)}
