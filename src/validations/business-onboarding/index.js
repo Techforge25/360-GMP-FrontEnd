@@ -46,7 +46,8 @@ export const createBusinessProfileSchema = Yup.object({
 
      foundedDate: Yup.date()
           .nullable()
-          .typeError("Founded date must be a valid date"),
+          .typeError("Founded date must be a valid date")
+          .max(new Date(), "Founded date cannot be today or in the future"),
 
      primaryIndustry: Yup.string()
           .max(500, "Primary industry cannot exceed 500 characters")
@@ -260,10 +261,13 @@ export const createBusinessProfileSchema = Yup.object({
 
      // Website & Description
      website: Yup.string()
-          .url("Invalid URL")
-          .max(100, "Website cannot exceed 100 characters")
           .nullable()
-          .trim(),
+          .trim()
+          .max(100, "Website cannot exceed 100 characters")
+          .matches(
+               /^(https?:\/\/)(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/\S*)?$/,
+               "Enter a valid website URL (must include http:// or https://)"
+          ),
 
      description: Yup.string()
           .max(5000, "Description cannot exceed 5000 characters")

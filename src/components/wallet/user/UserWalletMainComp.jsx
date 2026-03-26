@@ -9,6 +9,7 @@ import RecentTransactions from "./RecentTransactions";
 import { useEffect, useState } from "react";
 import walletUserAPI from "@/services/walletUserAPI";
 import { getUserAnalytics } from "@/helpers/wallet";
+import DashboardFooter from "@/components/dashboard/DashboardFooter";
 
 export default function UserWalletMainComp() {
      const [analytics, setAnalytics] = useState(null)
@@ -35,6 +36,7 @@ export default function UserWalletMainComp() {
                          <RecentTransactions />
                     </div>
                </div>
+               <DashboardFooter />
           </>
      );
 }

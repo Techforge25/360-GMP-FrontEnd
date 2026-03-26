@@ -3,37 +3,74 @@ import walletBusinessAPI from "@/services/walletBusinessAPI"
 import { useEffect, useState } from "react"
 
 export const useTablesData = (activeTabs) => {
-     const [tablesData, setTablesData] = useState(null)
+     const [tablesData, setTablesData] = useState([])
+     const [page, setPage] = useState(1)
+     const [hasMore, setHasMore] = useState(true)
+     const [loading, setLoading] = useState(false)
+
      const { userTransactionTab } = useWallet()
-     useEffect(() => {
-          const fetchRecentTransactions = async () => {
-               try {
-                    let data = null
 
-                    if (activeTabs === "My Wallet") {
-                         const response = await walletBusinessAPI.getWalletBusinessTransactions({
-                              type: userTransactionTab
-                         })
-                         data = response.data.docs
-                    }
-                    else if (activeTabs === "Earnings") {
-                         const response = await walletBusinessAPI.getBusinessEarnings()
-                         data = response.data.docs
-                    }
-                    else {
-                         const response = await walletBusinessAPI.getWithdrawalsEarning()
-                         data = response.data.docs
-                    }
+     const fetchRecentTransactions = async (pageNumber = 1, isLoadMore = false) => {
+          try {
+               setLoading(true)
+               let response
 
-                    setTablesData(data)
-               } catch (error) {
-                    console.error("Error fetching tables data", error)
+               if (activeTabs === "My Wallet") {
+                    response = await walletBusinessAPI.getWalletBusinessTransactions({
+                         type: userTransactionTab,
+                         page: pageNumber,
+                         limit: 10
+                    })
                }
+               else if (activeTabs === "Earnings") {
+                    response = await walletBusinessAPI.getBusinessEarnings({
+                         page: pageNumber,
+                         limit: 10
+                    })
+               }
+               else {
+                    response = await walletBusinessAPI.getWithdrawalsEarning({
+                         page: pageNumber,
+                         limit: 10
+                    })
+               }
+
+               const newData = response.data.docs || []
+
+               setTablesData(prev =>
+                    isLoadMore ? [...prev, ...newData] : newData
+               )
+
+               const currentPage = response.data.page || pageNumber
+               const totalPages = response.data.totalPages || 1
+
+               setHasMore(currentPage < totalPages)
+               setPage(currentPage)
+
+          } catch (error) {
+               console.error("Error fetching tables data", error)
+          } finally {
+               setLoading(false)
           }
+     }
 
-          fetchRecentTransactions()
+     const loadMore = () => {
+          if (!loading && hasMore) {
+               fetchRecentTransactions(page + 1, true)
+          }
+     }
 
+     useEffect(() => {
+          setTablesData([])
+          setPage(1)
+          setHasMore(true)
+          fetchRecentTransactions(1, false)
      }, [activeTabs, userTransactionTab])
 
-     return tablesData
+     return {
+          data: tablesData,
+          loadMore,
+          hasMore,
+          loading
+     }
 }

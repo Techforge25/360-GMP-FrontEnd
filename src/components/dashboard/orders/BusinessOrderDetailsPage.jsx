@@ -1019,7 +1019,7 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
 
                         <div className="flex justify-between items-center text-sm text-red-500 font-medium">
                           <span>Shipping</span>
-                          <span>{order?.shippingCost}</span>
+                          <span>$0</span>
                         </div>
 
                         <div className="flex justify-between items-center text-sm text-[#1DAF61] font-medium">
@@ -1109,14 +1109,6 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                       </p>
 
                       <div className="flex items-center gap-3 mb-8">
-                        <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-gray-100">
-                          <img
-                            src="https://i.pravatar.cc/150?u=aftab"  // dynamic user-based placeholder
-                            alt={order?.userProfile?.fullName || "Buyer"}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-
                         <div>
                           <h3 className="font-bold text-gray-900 text-[15px]">
                             {order?.userProfile?.fullName || "Buyer"}
@@ -1126,12 +1118,12 @@ ${(isActive || isPreparingActive) && !showFinalCompletedUI
                             (Contact: {order?.shippingAddress?.phone || "Not available"})
                           </p>
 
-                          <div className="flex items-center gap-1.5 mt-1">
+                          {/* <div className="flex items-center gap-1.5 mt-1">
                             <MdVerified className="w-4 h-4 text-[#2962FF]" />
                             <span className="text-[#2962FF] text-[11px] font-bold">
                               Verified Profile
                             </span>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
 

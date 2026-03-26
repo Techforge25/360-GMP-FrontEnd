@@ -12,12 +12,20 @@ import { useEffect, useState } from "react";
 import { getAnalytics } from "@/helpers/wallet";
 import { useTablesData } from "@/hooks/useTablesData";
 import TablesBusiness from "@/components/wallet/business/TablesBusiness";
+import DashboardFooter from "@/components/dashboard/DashboardFooter";
 
 export default function BusinessWalletMainComp() {
      const { activeTabs } = useWallet()
      const [analytics, setAnalytics] = useState(null)
-     const tablesTabHeader = activeTabs === "Transactions" ? walletTransactionTabs : activeTabs === "My Wallet" ? walletMyWalletsTabs : walletEarningsTabs
-     const tablesData = useTablesData(activeTabs)
+
+     const tablesTabHeader =
+          activeTabs === "Transactions"
+               ? walletTransactionTabs
+               : activeTabs === "My Wallet"
+                    ? walletMyWalletsTabs
+                    : walletEarningsTabs
+
+     const { data, loadMore, hasMore, loading } = useTablesData(activeTabs)
 
      useEffect(() => {
           const fetchAnalytics = async () => {
@@ -32,22 +40,32 @@ export default function BusinessWalletMainComp() {
           <>
                <AuthNavbar />
                <WalletBanner activeTabs={activeTabs} />
+
                <div className="font-sans px-6 bg-gray-50 min-h-screen">
                     <BusinessWalletTabs />
+
                     {activeTabs === "My Wallet" && (
-                         <>
-                              <BalanceCards cards={analytics} card="business" />
-                         </>
+                         <BalanceCards cards={analytics} card="business" />
                     )}
+
                     {activeTabs === "Earnings" && (
                          <>
                               <BalanceCards cards={analytics} card="business" />
                               <Chart />
                          </>
                     )}
-                    <TablesBusiness tableData={tablesData} tablesTabHeader={tablesTabHeader} />
+
+                    <TablesBusiness
+                         tableData={data}
+                         tablesTabHeader={tablesTabHeader}
+                         loadMore={loadMore}
+                         hasMore={hasMore}
+                         loading={loading}
+                    />
+
                     {activeTabs === "My Wallet" && <NeedHelp />}
                </div>
+               <DashboardFooter />
           </>
-     );
+     )
 }

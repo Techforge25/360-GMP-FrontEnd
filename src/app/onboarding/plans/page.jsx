@@ -231,7 +231,7 @@ const ConfirmationModal = ({
             )}
           </div>
 
-          <h2 className="text-xl font-bold mb-2">Subscription Confirmed!</h2>
+          <h2 className="text-xl font-bold mb-2">{isError ? "Purchase Failed!" : "Confirmed!"}</h2>
           <p className="text-base text-text-secondary mb-6">{message}</p>
 
           <div className="border border-indigo-100 rounded-lg p-4 bg-indigo-50/30 mb-6">

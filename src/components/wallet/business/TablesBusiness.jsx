@@ -4,7 +4,7 @@ import { MdKeyboardArrowRight } from "react-icons/md";
 import { useWallet } from "@/context/WalletContext";
 import TablesHeaderBusiness from "./TableHeaderBusiness";
 
-export default function TablesBusiness({ tableData, tablesTabHeader }) {
+export default function TablesBusiness({ tableData, hasMore, loadMore, loading, tablesTabHeader }) {
      const { activeTabs } = useWallet()
      const transactionTabsBusinessOrUser = activeTabs === "My Wallet" && tabsTransactionBusinessWallet
      return (
@@ -142,6 +142,19 @@ export default function TablesBusiness({ tableData, tablesTabHeader }) {
                          ) : null}
                     </tbody>
                </table>
+               <div className="py-6 flex justify-center">
+                    {hasMore ? (
+                         <button
+                              onClick={loadMore}
+                              disabled={loading}
+                              className="px-6 py-2 bg-[#240457] text-white rounded-lg"
+                         >
+                              {loading ? "Loading..." : "Load More"}
+                         </button>
+                    ) : (
+                         <p className="text-gray-400 text-sm">No more data</p>
+                    )}
+               </div>
           </div>
      )
 }
