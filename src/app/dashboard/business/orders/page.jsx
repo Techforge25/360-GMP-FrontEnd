@@ -101,6 +101,9 @@ const BusinessOrdersPage = () => {
       return "bg-amber-100 text-amber-800";
     if (s.includes("transit") || s.includes("ship"))
       return "bg-purple-100 text-purple-800";
+    if (s.includes("deliv")) {
+      return "bg-blue-100 text-blue-800";
+    }
     if (s.includes("deliv") || s === "completed")
       return "bg-green-100 text-green-800";
     if (s.includes("cancel")) return "bg-red-100 text-red-800";
