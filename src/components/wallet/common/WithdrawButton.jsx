@@ -78,7 +78,7 @@ export default function WithDrawButton({ withdrawOpen, setWithdrawOpen }) {
                });
 
                if (res.message === "Funds sent successfully") {
-                    toast.success("Funds sent Successfully!");
+                    toast.success("Funds Withdrawed Successfully!");
                }
 
                if (res.data?.onboardingRequired) {
