@@ -383,12 +383,6 @@ const UserSubscriptionsPage = () => {
                   <span>Manage Plan</span>
                   <FiArrowRight />
                 </button>
-                <button
-                  onClick={() => setShowPlans(true)}
-                  className="px-4 sm:px-6 py-2.5 sm:py-3 bg-white border border-red-500 text-red-500 rounded-lg text-sm sm:text-base font-medium hover:bg-red-50 transition-colors"
-                >
-                  Cancel Recent Plan
-                </button>
               </div>
             </div>
           </div>

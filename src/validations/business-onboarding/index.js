@@ -41,7 +41,20 @@ export const createBusinessProfileSchema = Yup.object({
 
      companySize: Yup.string()
           .nullable()
-          .matches(alphaNumericPattern, "Only alphanumeric characters, spaces, and hyphens are allowed")
+          .matches(
+               /^\d+\s*-\s*\d+$/,
+               "Enter a valid range like 10-500"
+          )
+          .test(
+               "valid-range",
+               "Minimum must be less than maximum",
+               (value) => {
+                    if (!value) return true;
+
+                    const [min, max] = value.split("-").map(v => Number(v.trim()));
+                    return min < max;
+               }
+          )
           .trim(),
 
      foundedDate: Yup.date()

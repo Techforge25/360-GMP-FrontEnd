@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import api from "@/lib/axios";
 export default function ForgotPasswordForm() {
      const router = useRouter();
      const [error, setError] = useState("");
@@ -24,7 +25,7 @@ export default function ForgotPasswordForm() {
      const onSubmit = async (data) => {
           setLoading(true);
           setError("");
-
+          console.log(data, "data")
           try {
                const res = await api.post({
                     url: `/auth/forgotPassword`,
@@ -36,12 +37,13 @@ export default function ForgotPasswordForm() {
 
                if (res.success) {
                     router.push(
-                         `/otp-verification?email=${encodeURIComponent(email)}&type=password-reset`,
+                         `/otp-verification?email=${encodeURIComponent(data.email)}&type=password-reset`,
                     );
                } else {
                     setError(res.message || "Request failed");
                }
           } catch (err) {
+               console.log(err, "errror")
                setError(err.message || "Something went wrong.");
           } finally {
                setLoading(false);
