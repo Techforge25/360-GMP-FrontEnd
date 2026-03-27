@@ -2,13 +2,13 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { FiDownload, FiPrinter, FiShare2 } from "react-icons/fi";
 import axios from "axios";
 import Image from "next/image"; // For product images if needed
 import { format } from "date-fns"; // For advanced date formatting (npm install date-fns)
 import { enGB } from "date-fns/locale"; // For PK locale
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -47,69 +47,72 @@ export default function InvoicePage() {
     fetchOrder();
   }, [fetchOrder]);
 
-const handleDownload = useCallback(async () => {
-  if (!order || !invoiceRef.current) {
-    toast.error("Invoice Not Ready");
-    return;
-  }
 
-  try {
-    const element = invoiceRef.current;
 
-    // Extra wait for images/fonts to load
-    await new Promise(resolve => setTimeout(resolve, 500));
+  const handleDownload = async () => {
+    if (!order) return;
+    console.log(order, "order")
 
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: true, // ← Yeh on karo debug ke liye (console mein logs dega)
-      allowTaint: true,
-      backgroundColor: "#ffffff",
-      windowWidth: element.scrollWidth, // Actual content width
-      windowHeight: element.scrollHeight, // Actual content height
-      x: 0,
-      y: 0,
-      scrollX: 0,
-      scrollY: -window.scrollY,
-      onclone: (clonedDoc) => {
-        // Optional: cloned document mein extra style add kar sakte ho
-        clonedDoc.body.style.fontFamily = "Arial, sans-serif";
-      }
+    const { default: jsPDF } = await import("jspdf");
+    const autoTable = (await import("jspdf-autotable")).default;
+
+    const pdf = new jsPDF();
+
+    const themeColor = "#240457";
+
+    pdf.setFillColor(themeColor);
+    pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 30, "F");
+    pdf.setFontSize(20);
+    pdf.setTextColor("#ffffff");
+    pdf.text("INVOICE", pdf.internal.pageSize.getWidth() / 2, 20, { align: "center" });
+
+    pdf.setFontSize(12);
+    pdf.setTextColor("#000000");
+    pdf.text(`Order ID: ${order._id}`, 14, 40);
+    pdf.text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, 14, 48);
+    pdf.text(`Customer: ${order.userProfile.fullName}`, 14, 56);
+    pdf.setDrawColor(200);
+    pdf.line(14, 60, pdf.internal.pageSize.getWidth() - 14, 60);
+    autoTable(pdf, {
+      startY: 65,
+      head: [["Item", "Category", "Price"]],
+      body: order.products.map((item) => [
+        item.title,
+        item.category,
+        `$${item.pricePerUnit}`
+      ]),
+      headStyles: {
+        fillColor: themeColor,
+        textColor: "#ffffff",
+        halign: "center",
+        fontStyle: "bold"
+      },
+      bodyStyles: {
+        halign: "center"
+      },
+      alternateRowStyles: { fillColor: "#f3f3f3" },
+      margin: { left: 14, right: 14 }
     });
 
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-      compress: true, // jsPDF v2+ mein 'compress' use hota hai
-    });
+    const finalY = pdf.lastAutoTable?.finalY || 65;
+    pdf.setDrawColor(200);
+    pdf.line(14, finalY + 5, pdf.internal.pageSize.getWidth() - 14, finalY + 5);
 
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 10;
-    const imgWidth = pageWidth - margin * 2;
-    let imgHeight = (canvas.height * imgWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    let positionY = margin;
+    pdf.setFontSize(14);
+    pdf.setFont(undefined, "bold");
+    pdf.text(`Total: $${order.totalAmount}`, 14, finalY + 15);
 
-    pdf.addImage(imgData, "PNG", margin, positionY, imgWidth, imgHeight);
-    heightLeft -= pageHeight - margin * 2;
+    pdf.setFontSize(10);
+    pdf.setTextColor("#666666");
+    pdf.text(
+      "Thank you for your purchase!",
+      pdf.internal.pageSize.getWidth() / 2,
+      pdf.internal.pageSize.getHeight() - 10,
+      { align: "center" }
+    );
 
-    while (heightLeft >= 0) {
-      pdf.addPage();
-      positionY = heightLeft - imgHeight;
-      pdf.addImage(imgData, "PNG", margin, positionY, imgWidth, imgHeight);
-      heightLeft -= pageHeight - margin * 2;
-    }
-
-    pdf.save(`invoice-${order._id || "order"}.pdf`);
-    toast.success("Invoice downloaded ");
-  } catch (err) {
-    console.error("PDF generation failed:", err);
-    toast.error("PDF not generate: " + (err.message || "Unknown error"));
-  }
-}, [order]);
+    pdf.save(`invoice-${order._id}.pdf`);
+  };
 
   // Print handler (browser print)
   const handlePrint = useCallback(() => {
@@ -167,66 +170,66 @@ const handleDownload = useCallback(async () => {
           </p>
         </div>
 
-<div ref={invoiceRef} className="p-8 print:p-4">
-  <div className="flex flex-col md:flex-row justify-between mb-10 print:mb-6">
-    <div className="mb-6 md:mb-0">
-      <h2 className="font-bold text-lg print:text-base text-black">Seller Details</h2>
-      <p className="text-black">{order.businessProfile?.companyName || "Stwayne Manufacturer"}</p>
-    </div>
-    <div className="text-left md:text-right">
-      <h2 className="font-bold text-lg print:text-base text-black">Buyer Details</h2>
-      <p className="text-black">{order.shippingAddress?.name || ""}</p>
-      <p className="text-black">{order.shippingAddress?.phone || ""}</p>
-      <p className="text-black">
-        {order.shippingAddress?.lineAddress?.join(", ") || "Johar Town, Johar Town"},
-        {order.shippingAddress?.province || "Sindh"}, {order.shippingAddress?.postalCode || "45321"}
-      </p>
-    </div>
-  </div>
+        <div ref={invoiceRef} className="p-8 print:p-4">
+          <div className="flex flex-col md:flex-row justify-between mb-10 print:mb-6">
+            <div className="mb-6 md:mb-0">
+              <h2 className="font-bold text-lg print:text-base text-black">Seller Details</h2>
+              <p className="text-black">{order.businessProfile?.companyName || "Stwayne Manufacturer"}</p>
+            </div>
+            <div className="text-left md:text-right">
+              <h2 className="font-bold text-lg print:text-base text-black">Buyer Details</h2>
+              <p className="text-black">{order.shippingAddress?.name || ""}</p>
+              <p className="text-black">{order.shippingAddress?.phone || ""}</p>
+              <p className="text-black">
+                {order.shippingAddress?.lineAddress?.join(", ") || "Johar Town, Johar Town"},
+                {order.shippingAddress?.province || "Sindh"}, {order.shippingAddress?.postalCode || "45321"}
+              </p>
+            </div>
+          </div>
 
-  <div className="mb-8 print:mb-4">
-    <p className="text-sm text-gray-600 print:text-xs">
-      Invoice Date: {format(new Date(order.createdAt), "PPP", { locale: enGB })}
-    </p>
-    <p className="text-sm text-gray-600 print:text-xs">
-      Category: {order.products[0]?.category || "Electronics"}
-    </p>
-  </div>
+          <div className="mb-8 print:mb-4">
+            <p className="text-sm text-gray-600 print:text-xs">
+              Invoice Date: {format(new Date(order.createdAt), "PPP", { locale: enGB })}
+            </p>
+            <p className="text-sm text-gray-600 print:text-xs">
+              Category: {order.products[0]?.category || "Electronics"}
+            </p>
+          </div>
 
-  {/* Responsive Table – header text fix */}
-  <div className="overflow-x-auto">
-    <table className="w-full border-collapse mb-8 print:mb-4">
-      <thead>
-        <tr className="bg-gray-100 print:bg-gray-200">
-          <th className="border p-3 text-left print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
-            Product
-          </th>
-          {/* <th className="border p-3 text-center print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+          {/* Responsive Table – header text fix */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse mb-8 print:mb-4">
+              <thead>
+                <tr className="bg-gray-100 print:bg-gray-200">
+                  <th className="border p-3 text-left print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+                    Product
+                  </th>
+                  {/* <th className="border p-3 text-center print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
             Image
           </th> */}
-          <th className="border p-3 text-center print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
-            Qty
-          </th>
-          <th className="border p-3 text-right print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
-            Unit Price
-          </th>
-          <th className="border p-3 text-right print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
-            Total
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {order.items.map((item, idx) => {
-          const prod = order.products?.[idx] || {};
-          return (
-            <tr key={idx}>
-              <td className="border text-black p-3 print:p-2 print:text-sm">
-                {prod.title || ""}
-                {/* <p className="text-xs text-black print:hidden">
+                  <th className="border p-3 text-center print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+                    Qty
+                  </th>
+                  <th className="border p-3 text-right print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+                    Unit Price
+                  </th>
+                  <th className="border p-3 text-right print:p-2 print:text-sm text-gray-900 print:text-black font-bold">
+                    Total
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {order.items.map((item, idx) => {
+                  const prod = order.products?.[idx] || {};
+                  return (
+                    <tr key={idx}>
+                      <td className="border text-black p-3 print:p-2 print:text-sm">
+                        {prod.title || ""}
+                        {/* <p className="text-xs text-black print:hidden">
                   {prod.detail ? JSON.parse(prod.detail)[0]?.children?.[0]?.text || "" : ""}...
                 </p> */}
-              </td>
-              {/* <td className="border p-3 text-center print:p-2">
+                      </td>
+                      {/* <td className="border p-3 text-center print:p-2">
                 {prod.image ? (
                   <Image
                     src={prod.image}
@@ -240,28 +243,28 @@ const handleDownload = useCallback(async () => {
                   "N/A"
                 )}
               </td> */}
-              <td className="border p-3 text-center text-black print:p-2 print:text-sm">{item.quantity}</td>
-              <td className="border p-3 text-right print:p-2 text-black print:text-sm">
-                ${item.priceAtPurchase.toFixed(2)}
-              </td>
-              <td className="border p-3 text-right print:p-2 text-black print:text-sm">
-                ${(item.quantity * item.priceAtPurchase).toFixed(2)}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </div>
+                      <td className="border p-3 text-center text-black print:p-2 print:text-sm">{item.quantity}</td>
+                      <td className="border p-3 text-right print:p-2 text-black print:text-sm">
+                        ${item.priceAtPurchase.toFixed(2)}
+                      </td>
+                      <td className="border p-3 text-right print:p-2 text-black print:text-sm">
+                        ${(item.quantity * item.priceAtPurchase).toFixed(2)}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
 
-  <div className="text-right text-xl font-bold text-black print:text-lg print:mb-4">
-    Grand Total: ${order.totalAmount.toFixed(2)}
-  </div>
+          <div className="text-right text-xl font-bold text-black print:text-lg print:mb-4">
+            Grand Total: ${order.totalAmount.toFixed(2)}
+          </div>
 
-  {/* <div className="mt-12 text-center text-gray-500 text-sm print:mt-6 print:text-xs print:mb-0">
+          {/* <div className="mt-12 text-center text-gray-500 text-sm print:mt-6 print:text-xs print:mb-0">
     Thank you for your business! | Generated in Karachi, PK
   </div> */}
-</div>
+        </div>
 
         {/* Actions Footer */}
         <div className="p-6 border-t bg-gray-50 flex flex-wrap gap-4 justify-center print:hidden">

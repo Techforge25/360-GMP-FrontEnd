@@ -7,6 +7,7 @@ import {
   FiArrowRight,
   FiCheck,
   FiCreditCard,
+  FiDownload,
   FiLock,
   FiMessageSquare,
   FiStar,
@@ -294,6 +295,14 @@ const OrderTrackingPage = ({ orderId }) => {
       setLoading(false)
     }
   }
+
+  const goToInvoice = () => {
+    if (!order?._id) {
+      toast.error("Order ID nahi mila");
+      return;
+    }
+    router.push(`/dashboard/invoice/${order._id}`);
+  };
 
   console.log(activeStep, "active step")
 
@@ -886,65 +895,67 @@ const OrderTrackingPage = ({ orderId }) => {
               )} */}
 
               {activeStep === 4 && isFinalCompleted && (
-                <div className="space-y-6">
-                  {/* Shipping Details Card */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-[17px]">
-                      Shipping Details
-                    </h2>
-                    <div className="p-6">
-                      <div className="space-y-2">
-                        <p className="text-[#8c9ca8] font-medium text-sm">
-                          Name:{" "}
-                          <span className="text-gray-900 font-semibold">
-                            {order?.shippingAddress?.name || "—"}
-                          </span>
-                        </p>
-                        <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
-                          Location:{" "}
-                          <span className="text-gray-900 font-semibold">
-                            {order?.shippingAddress?.lineAddress?.join(", ") ||
-                              "—"}
-                            , {order?.shippingAddress?.province || "—"},{" "}
-                            {order?.shippingAddress?.postalCode || "—"}
-                          </span>
-                        </p>
-                        <p className="text-[#8c9ca8] font-medium text-sm">
-                          Phone:{" "}
-                          <span className="text-gray-900 font-semibold">
-                            {order?.shippingAddress?.phone || "—"}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Seller Information Card */}
-
-                  </div>
-
-                  {/* Funds Released Alert Card */}
-                  <div className="bg-[#EBFBF2] rounded-xl border border-[#D5F3D1] p-6 sm:p-8">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
-                        <FiCheck className="w-4 h-4 text-white stroke-[3]" />
-                      </div>
-                      <h2 className="font-bold text-[#139D4C] text-[17px]">
-                        Funds Successfully Released
+                <>
+                  <div className="space-y-6">
+                    {/* Shipping Details Card */}
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                      <h2 className="px-6 py-4 font-bold text-gray-900 border-b border-gray-100 text-[17px]">
+                        Shipping Details
                       </h2>
+                      <div className="p-6">
+                        <div className="space-y-2">
+                          <p className="text-[#8c9ca8] font-medium text-sm">
+                            Name:{" "}
+                            <span className="text-gray-900 font-semibold">
+                              {order?.shippingAddress?.name || "—"}
+                            </span>
+                          </p>
+                          <p className="text-[#8c9ca8] font-medium text-sm leading-relaxed">
+                            Location:{" "}
+                            <span className="text-gray-900 font-semibold">
+                              {order?.shippingAddress?.lineAddress?.join(", ") ||
+                                "—"}
+                              , {order?.shippingAddress?.province || "—"},{" "}
+                              {order?.shippingAddress?.postalCode || "—"}
+                            </span>
+                          </p>
+                          <p className="text-[#8c9ca8] font-medium text-sm">
+                            Phone:{" "}
+                            <span className="text-gray-900 font-semibold">
+                              {order?.shippingAddress?.phone || "—"}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-[#139D4C] font-medium leading-[1.6] text-[15px] mb-8">
-                      The transaction is complete. Funds have been securely
-                      released to{" "}
-                      <span className="font-bold">Camera Pro Outlet</span>. Thank
-                      you for using our escrow service for a secure purchase.
-                    </p>
-                    <button className="w-full bg-[#1E0B4B] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#140733] transition-colors text-[16px]">
-                      Leave Feedback <FiStar className="w-4 h-4 fill-white" />
-                    </button>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Seller Information Card */}
+
+                    </div>
+
+                    {/* Funds Released Alert Card */}
+                    <div className="bg-[#EBFBF2] rounded-xl border border-[#D5F3D1] p-6 sm:p-8">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-6 h-6 rounded-full bg-[#139D4C] flex items-center justify-center shrink-0">
+                          <FiCheck className="w-4 h-4 text-white stroke-[3]" />
+                        </div>
+                        <h2 className="font-bold text-[#139D4C] text-[17px]">
+                          Funds Successfully Released
+                        </h2>
+                      </div>
+                      <p className="text-[#139D4C] font-medium leading-[1.6] text-[15px] mb-8">
+                        The transaction is complete. Funds have been securely
+                        released to{" "}
+                        <span className="font-bold">Camera Pro Outlet</span>. Thank
+                        you for using our escrow service for a secure purchase.
+                      </p>
+                      <button className="w-full bg-[#1E0B4B] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#140733] transition-colors text-[16px]">
+                        Leave Feedback <FiStar className="w-4 h-4 fill-white" />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
 
@@ -1021,6 +1032,13 @@ const OrderTrackingPage = ({ orderId }) => {
                         {new Date(order?.completedAt).toLocaleDateString()}, At{" "}
                         {new Date(order?.completedAt).toLocaleTimeString()}
                       </p>
+                      <button
+                        onClick={goToInvoice}
+                        className="w-full bg-[#1DAF61] text-white my-3 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#189b53] transition-colors text-[15px]"
+                        disabled={!order?._id} // optional: disable agar order nahi hai
+                      >
+                        <FiDownload className="w-5 h-5" /> Download Invoice
+                      </button>
                     </div>
                   )}
                 </div>

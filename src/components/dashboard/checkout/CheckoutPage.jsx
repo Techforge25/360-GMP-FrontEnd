@@ -294,7 +294,7 @@ const CheckoutPage = () => {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               {/* Header */}
               <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-[#F8F9FB]">
-                <h2 className="text-lg font-bold text-gray-900">Shipping Address</h2>
+                <h2 className="text-lg font-bold text-gray-900">Shipping Address</h2>Action Required : Switch Profile Context
               </div>
 
               <div className="p-6">

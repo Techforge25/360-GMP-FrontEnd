@@ -11,7 +11,7 @@ import {
 import { MdVerified } from "react-icons/md";
 import { BsShieldCheck, BsCashCoin, BsHeadset } from "react-icons/bs";
 import { useCart } from "@/context/CartContext";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import ActionRequiredModal from "./ProfileSwitchModal";
 import ProfileSwitchModal from "@/components/dashboard/ProfileSwitchModal";
@@ -30,6 +30,9 @@ export default function ProductInfo({ product }) {
   const [isTierSelected, setIsTierSelected] = useState(false)
   const role = user?.role;
   const isBusinessUser = role === "business";
+  const pathname = usePathname()
+
+  console.log(pathname, "pathname")
 
   // Robust check for free trial (role or subscription plan)
   const isFreeTrial =
@@ -81,7 +84,11 @@ export default function ProductInfo({ product }) {
       await setOnboardingRole("user");
       setShowSwitchModal(false);
       addToCart(product, quantity);
-      router.push("/dashboard/user/cart");
+      if (pathname.includes("/dashboard/business/businesses")) {
+        router.push(`/dashboard/user/businesses/${product.businessId._id}/products/${product._id}`);
+      } else {
+        router.push("/dashboard/user/cart")
+      }
     } catch (error) {
       console.error("Failed to switch profile:", error);
     }

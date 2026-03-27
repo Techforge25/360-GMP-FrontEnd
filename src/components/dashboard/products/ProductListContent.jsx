@@ -419,17 +419,6 @@ const ProductListContent = ({
         <div className="bg-white shadow-sm overflow-hidden mb-6 sm:mb-8">
           {/* Desktop Table Header - Hidden on mobile */}
           <div className="hidden lg:grid grid-cols-12 gap-4 px-4 sm:px-6 py-3 sm:py-4 bg-[#F0F0F0] border-b border-gray-100 text-sm sm:text-sm font-semibold text-gray-500">
-            <div className="col-span-1 flex items-center">
-              <input
-                type="checkbox"
-                className="rounded border-gray-300 text-indigo-600 focus:ring-0"
-                onChange={handleSelectAll}
-                checked={
-                  products.length > 0 &&
-                  selectedProductIds.length === products.length
-                }
-              />
-            </div>
             <div className="col-span-3 text-black">Products</div>
             <div className="col-span-2 text-black">MOQ & Price Range</div>
             <div className="col-span-2 text-black">Status</div>
@@ -456,15 +445,6 @@ const ProductListContent = ({
                 {/* Mobile Card Layout */}
                 <div className="lg:hidden p-4">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="pt-1">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300 text-indigo-600 focus:ring-0"
-                        checked={selectedProductIds.includes(product._id)}
-                        onChange={(e) => handleSelectProduct(product._id, e)}
-                        onClick={(e) => e.stopPropagation()}
-                      />
-                    </div>
                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200 relative">
                       {product.image ? (
                         <Image
@@ -572,7 +552,7 @@ const ProductListContent = ({
 
                 {/* Desktop Table Row */}
                 < div className="hidden lg:grid grid-cols-12 gap-4 px-4 sm:px-6 py-3 sm:py-4 items-center" >
-                  <div className="col-span-1 flex items-center">
+                  {/* <div className="col-span-1 flex items-center">
                     <input
                       type="checkbox"
                       className="rounded border-gray-300 text-indigo-600 focus:ring-0"
@@ -580,7 +560,7 @@ const ProductListContent = ({
                       onChange={(e) => handleSelectProduct(product._id, e)}
                       onClick={(e) => e.stopPropagation()}
                     />
-                  </div>
+                  </div> */}
                   {/* Product Info */}
                   < div className="col-span-3 flex items-start gap-3" >
                     <div className="w-10 h-10 xl:w-12 xl:h-12 bg-gray-100 rounded-md flex-shrink-0 overflow-hidden flex items-center justify-center border border-gray-200 relative">

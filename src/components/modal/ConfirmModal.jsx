@@ -60,7 +60,8 @@ const ConfirmModal = ({
       }
     } catch (err) {
       console.error(err);
-      toast.error("Error cancelling order");
+      toast.error(err.response.data.message);
+      setShowCancelModal(false);
     } finally {
       setCancelling(false);
     }

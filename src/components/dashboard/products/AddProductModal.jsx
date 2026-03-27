@@ -271,11 +271,10 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
       const remainingSlots = 3 - formData.galleryImages.length;
-      if (remainingSlots <= 0) {
-        alert("You can only upload up to 3 gallery images.");
-        return;
-      }
-
+      // if (remainingSlots <= 0) {
+      //   alert("You can only upload up to 3 gallery images.");
+      //   return;
+      // }
       const filesToAdd = files.slice(0, remainingSlots);
       const newImages = filesToAdd.map((file) => ({
         file,
@@ -287,11 +286,11 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
         galleryImages: [...prev.galleryImages, ...newImages],
       }));
 
-      if (files.length > remainingSlots) {
-        alert(
-          `Only the first ${remainingSlots} images were added (max 3 total).`,
-        );
-      }
+      // if (files.length > remainingSlots) {
+      //   alert(
+      //     `Only the first ${remainingSlots} images were added (max 3 total).`,
+      //   );
+      // }
     }
   };
 
@@ -843,6 +842,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
           <button
             onClick={() => galleryInputRef.current?.click()}
+            disabled={formData.galleryImages.length === 3}
             className="w-20 h-20 flex-shrink-0 border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-50 transition-colors"
           >
             <FiPlus className="w-5 h-5 text-gray-400" />

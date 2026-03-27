@@ -4,6 +4,7 @@ import { useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { SHIPPING_OPTIONS } from "@/constants/index";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { UploadField } from "@/components/ui/UploadField";
 export default function BusinessProfileStep2({
   register,
   control,
@@ -15,6 +16,7 @@ export default function BusinessProfileStep2({
 }) {
   const REGIONS = ["North America", "Europe", "Middle East", "Asia"];
   const logo = watch("logo")
+  const [uploading, setUploading] = useState(null);
   const banner = watch("banner")
   const taxCertificate = watch("taxRegistrationCertificate")
   const [logoPreview, setLogoPreview] = useState(null);
@@ -154,21 +156,24 @@ export default function BusinessProfileStep2({
         <h2 className="font-bold">Stakeholders</h2>
 
         {stakeholderFields.map((field, index) => (
-          <div key={field.id} className="grid grid-cols-2 gap-4 items-center">
+          <>
+            <div key={field.id} className="grid grid-cols-3 gap-4 items-center">
+              <input
+                {...register(`stakeholderDisclosure.${index}.name`)}
+                placeholder="Name"
+                className={className}
+              />
 
-            <input
-              {...register(`stakeholderDisclosure.${index}.name`)}
-              placeholder="Name"
-              className={className}
-            />
-
-            <input
-              type="number"
-              {...register(`stakeholderDisclosure.${index}.ownershipPercentage`)}
-              placeholder="Ownership %"
-              className={className}
-            />
-
+              <input
+                type="number"
+                {...register(`stakeholderDisclosure.${index}.ownershipPercentage`)}
+                placeholder="Ownership %"
+                className={className}
+              />
+              <button type="button" onClick={() => removeStakeholder(index)}>
+                ❌ Remove
+              </button>
+            </div>
             {errors?.stakeholderDisclosure?.[index]?.name && (
               <p className="text-red-500">
                 {errors?.stakeholderDisclosure[index]?.name?.message}
@@ -180,11 +185,7 @@ export default function BusinessProfileStep2({
                 {errors?.stakeholderDisclosure[index]?.ownershipPercentage?.message}
               </p>
             )}
-
-            <button type="button" onClick={() => removeStakeholder(index)}>
-              ❌ Remove
-            </button>
-          </div>
+          </>
         ))}
 
         {errors?.stakeholderDisclosure?.length > 0 && (
@@ -391,113 +392,105 @@ export default function BusinessProfileStep2({
       </div>
 
       <div className="space-y-2">
-        <label className="text-base font-medium">
-          Logo <span className="text-red-500">*</span>
-        </label>
-
-        <input
-          type="file"
-          accept="image/jpeg,image/png"
-          onChange={async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              try {
-                const url = await uploadToCloudinary(file, "logos", (progress) => {
-                  console.log(`Logo upload progress: ${progress}%`);
-                });
-                setValue("logo", url);
-                setLogoPreview(URL.createObjectURL(file));
-              } catch (err) {
-                console.error("Logo upload failed", err);
-              }
+        <UploadField
+          label="Business Logo"
+          value={logo}
+          loading={uploading === "logo"}
+          onUpload={async (file) => {
+            try {
+              setUploading("logo");
+              const url = await uploadToCloudinary(file, "logos");
+              setValue("logo", url);
+            } catch (err) {
+              console.error(err);
+            } finally {
+              setUploading(null);
             }
           }}
+          onRemove={() => setValue("logo", null)}
         />
 
-        {/* Preview */}
-        {logo && (
-          <div className="mt-3 w-32 h-32 border rounded overflow-hidden">
-            <img
-              src={logo}
-              alt="Logo Preview"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-
         {errors?.logo && (
-          <p className="text-red-500">{errors?.logo?.message}</p>
+          <p className="text-red-500">{errors.logo.message}</p>
         )}
       </div>
 
       <div className="space-y-2">
-        <label>Certifications</label>
+        <label className="font-semibold">Certifications</label>
+
         <input
           type="file"
-          accept=".pdf,.jpg,.png"
           multiple
+          className="hidden"
+          id="cert-upload"
           onChange={async (e) => {
             const files = Array.from(e.target.files);
             const urls = [];
+
+            setUploading("certifications");
+
             for (const file of files) {
               try {
-                const url = await uploadToCloudinary(file, "certifications", (progress) => {
-                  console.log(`${file.name} upload: ${progress}%`);
-                });
+                const url = await uploadToCloudinary(file, "certifications");
                 urls.push(url);
               } catch (err) {
-                console.error(`${file.name} upload failed`, err);
+                console.error(err);
               }
             }
-            setValue(
-              "certifications",
-              [...(getValues("certifications") || []), ...urls],
-              {
-                shouldValidate: true,
-                shouldDirty: true,
-              }
-            );
+
+            setValue("certifications", [
+              ...(getValues("certifications") || []),
+              ...urls,
+            ]);
+
+            setUploading(null);
           }}
         />
-        {errors?.certifications && (
-          <p className="text-red-500">{errors?.certifications?.message}</p>
-        )}
+
+        <label
+          htmlFor="cert-upload"
+          className="border-2 border-dashed p-6 rounded-xl flex justify-center cursor-pointer"
+        >
+          {uploading === "certifications" ? "Uploading..." : "Upload Certifications"}
+        </label>
+
+        <div className="grid grid-cols-3 gap-3 mt-3">
+          {(watch("certifications") || []).map((url, i) => (
+            <div key={i} className="relative">
+              <img src={url} className="h-20 w-full object-cover rounded" />
+              <button
+                type="button"
+                onClick={() => {
+                  const updated = watch("certifications").filter((_, idx) => idx !== i);
+                  setValue("certifications", updated);
+                }}
+                className="absolute top-1 right-1 bg-white p-1 rounded"
+              >
+                ❌
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="space-y-2">
-        <label className="text-base font-medium">
-          Banner <span className="text-red-500">*</span>
-        </label>
-
-        <input
-          type="file"
-          accept="image/jpeg,image/png"
-          onChange={async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-              try {
-                const url = await uploadToCloudinary(file, "banners", (progress) => {
-                  console.log(`Banner upload progress: ${progress}%`);
-                });
-                setValue("banner", url);
-                setBannerPreview(URL.createObjectURL(file));
-              } catch (err) {
-                console.error("Banner upload failed", err);
-              }
+        <UploadField
+          label="Banner"
+          value={banner}
+          loading={uploading === "banner"}
+          onUpload={async (file) => {
+            try {
+              setUploading("banner");
+              const url = await uploadToCloudinary(file, "banners");
+              setValue("banner", url);
+            } catch (err) {
+              console.error(err);
+            } finally {
+              setUploading(null);
             }
           }}
+          onRemove={() => setValue("banner", null)}
         />
-
-        {/* Preview */}
-        {banner && (
-          <div className="mt-3 w-full h-40 border rounded overflow-hidden">
-            <img
-              src={banner}
-              alt="Banner Preview"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
 
         {errors?.banner && (
           <p className="text-red-500">{errors?.banner?.message}</p>
@@ -507,27 +500,23 @@ export default function BusinessProfileStep2({
 
       <div className="grid md:grid-cols-2 gap-6">
         <div className="space-y-2">
-          <label>Certificate of Incorporation</label>
-          <input
-            type="file"
-            accept=".pdf,.jpg,.png"
-            onChange={async (e) => {
-              const file = e.target.files[0];
-              if (file) {
-                try {
-                  const url = await uploadToCloudinary(file, "certificates", (progress) => {
-                    console.log("Certificate upload progress:", progress, "%");
-                  });
-                  setValue("certificateOfIncorporation", url, {
-                    shouldValidate: true,
-                    shouldDirty: true,
-                  });
-                } catch (err) {
-                  console.error("Certificate upload failed", err);
-                }
+          <UploadField
+            label="Certificate of Incorporation"
+            isImage={false}
+            value={watch("certificateOfIncorporation")}
+            loading={uploading === "incorporation"}
+            onUpload={async (file) => {
+              try {
+                setUploading("incorporation");
+                const url = await uploadToCloudinary(file, "certificates");
+                setValue("certificateOfIncorporation", url);
+              } catch (err) {
+                console.error(err);
+              } finally {
+                setUploading(null);
               }
             }}
-            className={className}
+            onRemove={() => setValue("certificateOfIncorporation", null)}
           />
           {errors?.certificateOfIncorporation && (
             <p className="text-red-500">{errors?.certificateOfIncorporation?.message}</p>
@@ -535,27 +524,25 @@ export default function BusinessProfileStep2({
         </div>
 
         <div className="space-y-2">
-          <label>Tax Registration Certificate</label>
-          <input
-            type="file"
-            accept=".pdf,.jpg,.png"
-            onChange={async (e) => {
-              const file = e.target.files[0];
-              // if (file) {
+          <UploadField
+            label="Tax Registration Certificate"
+            value={taxCertificate}
+            isImage={false}
+            loading={uploading === "tax"}
+            onUpload={async (file) => {
               try {
-                const url = await uploadToCloudinary(file, "tax_certificates", (progress) => {
-                  console.log("Tax Certificate upload progress:", progress, "%");
-                });
+                setUploading("tax");
+                const url = await uploadToCloudinary(file, "tax_certificates");
                 setValue("taxRegistrationCertificate", url, {
                   shouldValidate: true,
-                  shouldDirty: true,
                 });
               } catch (err) {
-                console.error("Tax Certificate upload failed", err);
+                console.error(err);
+              } finally {
+                setUploading(null);
               }
-              // }
             }}
-            className={className}
+            onRemove={() => setValue("taxRegistrationCertificate", null)}
           />
           {errors?.taxRegistrationCertificate && (
             <p className="text-red-500">{errors?.taxRegistrationCertificate?.message}</p>
