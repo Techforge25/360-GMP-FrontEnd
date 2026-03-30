@@ -13,6 +13,7 @@ import CreatePostModal from "./CreatePostModal";
 import ShareDocumentModal from "./ShareDocumentModal";
 import CreateEventModal from "./CreateEventModal";
 import CreatePollModal from "./CreatePollModal";
+import { useUser } from "@/context/UserContext";
 
 const FeedInput = ({
   communityId,
@@ -30,6 +31,8 @@ const FeedInput = ({
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
   const [isPollModalOpen, setIsPollModalOpen] = useState(false);
   const fileInputRef = React.useRef(null);
+  const { user } = useUser();
+  console.log("FeedInput user:", user);
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -153,7 +156,7 @@ const FeedInput = ({
         communityId={communityId}
       />
 
-      {!canPost && (
+      {!canPost && user.role !== "business" && (
         <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
           <p className="text-sm text-yellow-800">
             {!isMember
@@ -161,6 +164,14 @@ const FeedInput = ({
               : membershipStatus === "pending"
                 ? "Your membership request is pending approval."
                 : "You need approval to post in this community."}
+          </p>
+        </div>
+      )}
+
+      {user.role === "business" && (
+        <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <p className="text-sm text-yellow-800">
+            As a business user, you cannot join in this community.
           </p>
         </div>
       )}
@@ -226,11 +237,10 @@ const FeedInput = ({
           <button
             disabled={!canPost}
             onClick={() => setIsModalOpen(true)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              canPost
-                ? "hover:bg-gray-50 text-gray-600"
-                : "text-gray-400 cursor-not-allowed"
-            }`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${canPost
+              ? "hover:bg-gray-50 text-gray-600"
+              : "text-gray-400 cursor-not-allowed"
+              }`}
           >
             <FiImage className="w-4 h-4" />
             <span>Photo</span>
@@ -239,11 +249,10 @@ const FeedInput = ({
           <button
             disabled={!canPost}
             onClick={() => setIsDocumentModalOpen(true)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              canPost
-                ? "hover:bg-gray-50 text-gray-600"
-                : "text-gray-400 cursor-not-allowed"
-            }`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${canPost
+              ? "hover:bg-gray-50 text-gray-600"
+              : "text-gray-400 cursor-not-allowed"
+              }`}
           >
             <FiFileText className="w-4 h-4" />
             <span>Document</span>
@@ -251,11 +260,10 @@ const FeedInput = ({
           <button
             disabled={!canPost}
             onClick={() => setIsEventModalOpen(true)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              canPost
-                ? "hover:bg-gray-50 text-gray-600"
-                : "text-gray-400 cursor-not-allowed"
-            }`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${canPost
+              ? "hover:bg-gray-50 text-gray-600"
+              : "text-gray-400 cursor-not-allowed"
+              }`}
           >
             <FiCalendar className="w-4 h-4" />
             <span>Event</span>
@@ -263,11 +271,10 @@ const FeedInput = ({
           <button
             disabled={!canPost}
             onClick={() => setIsPollModalOpen(true)}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              canPost
-                ? "hover:bg-gray-50 text-gray-600"
-                : "text-gray-400 cursor-not-allowed"
-            }`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${canPost
+              ? "hover:bg-gray-50 text-gray-600"
+              : "text-gray-400 cursor-not-allowed"
+              }`}
           >
             <FiHelpCircle className="w-4 h-4" />
             <span>Poll</span>

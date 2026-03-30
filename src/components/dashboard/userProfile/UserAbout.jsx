@@ -35,9 +35,6 @@ const UserAbout = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-5 lg:p-6 mb-6 sm:mb-8 relative group">
       <div className="flex justify-between items-start mb-3 sm:mb-4">
         <h2 className="text-lg sm:text-xl font-bold text-gray-900">About</h2>
-        <button className="p-1 sm:p-1.5 hover:bg-gray-50 rounded transition-colors text-gray-400 hover:text-gray-600">
-          <FiEdit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        </button>
       </div>
 
       {isLoading ? (

@@ -114,6 +114,7 @@ const BusinessAboutTab = ({ businessId }) => {
           await businessProfileAPI.viewBusinessProfile(targetBusinessId);
 
         if (response.success && response.data) {
+          console.log(response.data, "response data")
           setProfileData(response.data);
         } else {
           console.error("Fetch profile failed:", response.message);

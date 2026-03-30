@@ -150,6 +150,8 @@ const ProfilePerformanceSection = () => {
     fetchAnalytics();
   }, []);
 
+  console.log(data, "data")
+
   // Metrics data using API values
   const metricsData = [
     {
@@ -242,23 +244,6 @@ const ProfilePerformanceSection = () => {
               <div className={`${metric.iconBg} rounded-lg p-2.5 text-white`}>
                 <metric.icon className="w-5 h-5" />
               </div>
-            </div>
-            <div className="flex items-center gap-1.5 text-sm">
-              {metric.trend === "up" ? (
-                <FiTrendingUp className="w-3.5 h-3.5 text-green-600" />
-              ) : (
-                <FiTrendingDown className="w-3.5 h-3.5 text-red-600" />
-              )}
-              <span
-                className={
-                  metric.trend === "up"
-                    ? "text-green-600 font-semibold"
-                    : "text-red-600 font-semibold"
-                }
-              >
-                {metric.change}
-              </span>
-              <span className="text-gray-500">{metric.period}</span>
             </div>
           </div>
         ))}

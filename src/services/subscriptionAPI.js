@@ -172,6 +172,19 @@ class SubscriptionAPI {
     }
   }
 
+  async getAllMySubscriptions(params) {
+    const { status, page } = params;
+    console.log(status, "status")
+    return await api.get({
+      url: status === "all status"
+        ? `/subscription/all?page=${page}&limit=10`
+        : `/subscription/all?page=${page}&limit=10&status=${status}`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
   async getMySubscriptions() {
     return await api.get({
       url: `/subscription`,

@@ -147,6 +147,8 @@ export const getStatusColor = (status) => {
       return "bg-blue-200 text-blue-800";
     case "Completed":
       return "bg-green-100 text-green-700";
+    case "paid":
+      return "bg-green-100 text-green-700";
     case "completed":
       return "bg-green-100 text-green-700";
     case "released":
@@ -619,3 +621,4 @@ const isStepValid = (step) => {
 
 export const digitsOnly = (value) => value.replace(/[^0-9]/g, "");
 export const digitsDecimalOnly = (value) => value.replace(/[^0-9.]/g, ""); // allow decimal for price
+export const subscriptionTableHeaders = ["Date", "Invoice ID", "Plans", "Amount", "Status"];
