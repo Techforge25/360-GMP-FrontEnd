@@ -1,19 +1,22 @@
 "use client";
 import React, { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import subscriptionAPI from "@/services/subscriptionAPI";
 import { BsCheckCircleFill } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
-import { useUser } from "@/context/UserContext";
+import { useUser, useUserRole } from "@/context/UserContext";
 import { toast } from "react-toastify";
 
 function SubscriptionSuccessContent() {
-  const searchParams = useSearchParams();
   const router = useRouter();
-  const [status, setStatus] = useState("pending"); // verifying, success, error
+  const [status, setStatus] = useState("pending");
   const [message, setMessage] = useState("Verifying your subscription...");
   const [subscriptionData, setSubscriptionData] = useState(null);
+  const [checkSubscriptionUpdate, setCheckSubscriptionUpdate] = useState({
+    planUpdate: false,
+    planUpdateRoute: ""
+  });
   const { user } = useUser();
 
   useEffect(() => {
@@ -25,6 +28,12 @@ function SubscriptionSuccessContent() {
         setStatus(response.data.status)
         setMessage("Subscription has been activated Successfully!")
         setSubscriptionData(response.data);
+        const planUpdate = localStorage.getItem("planUpdate");
+        const planUpdateRoute = localStorage.getItem("planUpdateRoute");
+        setCheckSubscriptionUpdate({
+          planUpdate: planUpdate,
+          planUpdateRoute: planUpdateRoute
+        })
       } catch (e) {
         toast.error(e)
       }
@@ -32,67 +41,21 @@ function SubscriptionSuccessContent() {
     getSubscriptionDetails()
   }, [])
 
-  // useEffect(() => {
-  //   const verifySubscription = async () => {
-  //     try {
-  //       const sessionId = searchParams.get("session_id");
-
-  //       if (!sessionId) {
-  //         setStatus("error");
-  //         setMessage("No session ID found. Please try again.");
-  //         return;
-  //       }
-
-  //       console.log("Loading subscription for session:", sessionId);
-
-  //       // Since the backend already verified and saved the subscription before redirecting,
-  //       // we just need to update the local storage status from "pending" to "active"
-  //       const storedSubscription = subscriptionAPI.getStoredSubscription();
-  //       console.log(storedSubscription, "storing")
-  //       if (storedSubscription) {
-  //         // Update status to active
-  //         const updatedSubscription = {
-  //           ...storedSubscription,
-  //           status: "active",
-  //         };
-
-  //         subscriptionAPI.storeSubscription(updatedSubscription);
-  //         setSubscriptionData(updatedSubscription);
-  //         setStatus("active");
-  //         setMessage("Your subscription has been activated successfully!");
-
-  //         console.log("Subscription updated to active:", updatedSubscription);
-  //       } else {
-  //         setStatus("error");
-  //         setMessage(
-  //           "Could not find subscription data. Please contact support.",
-  //         );
-  //       }
-  //     } catch (error) {
-  //       console.error("Subscription check error:", error);
-  //       setStatus("error");
-  //       setMessage(
-  //         error.message ||
-  //         "Failed to load subscription. Please contact support.",
-  //       );
-  //     }
-  //   };
-
-  //   verifySubscription();
-  // }, [searchParams]);
-
   const handleContinue = () => {
     const storedSub = subscriptionAPI.getStoredSubscription();
+    console.log(subscriptionData, "subscription data")
     const role = storedSub?.role || user?.role || "user";
     const isNew = user?.isNewToPlatform ?? true;
 
+    if (checkSubscriptionUpdate.planUpdate) {
+      return router.push(checkSubscriptionUpdate.planUpdateRoute)
+    }
+
     if (isNew) {
-      // Flow for new users: Plans → Stripe → Profile Creation
       role === "user"
         ? router.push("/onboarding/user-profile")
         : router.push("/onboarding/business-profile");
     } else {
-      // Flow for existing users (Upgrades/Downgrades): Back to Dashboard
       role === "user"
         ? router.push("/dashboard/user")
         : router.push("/dashboard/business");

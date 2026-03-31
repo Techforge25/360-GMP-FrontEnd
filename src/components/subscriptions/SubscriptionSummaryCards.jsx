@@ -61,7 +61,7 @@ export default function SubscriptionSummaryCards({ formatDate, formatCurrency, p
                               </span>
                          </div>
                          <p className="text-xl sm:text-2xl font-medium text-gray-900">
-                              {formatCurrency(totalSpent)}
+                              ${totalSpent}
                          </p>
                     </div>
                </div>

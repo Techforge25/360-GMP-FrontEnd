@@ -1,10 +1,11 @@
 import { getStatusColor, subscriptionTableHeaders } from "@/constants/index";
+import { formatDate } from "@/helpers";
 import subscriptionAPI from "@/services/subscriptionAPI"
 import { useEffect, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import ReactPaginate from "react-paginate";
 
-export default function SubscriptionTable({ formatDate }) {
+export default function SubscriptionTable() {
      const [subscription, setSubscription] = useState(null);
      const [status, setStatus] = useState("All Status");
      const [page, setPage] = useState(1);
@@ -19,7 +20,7 @@ export default function SubscriptionTable({ formatDate }) {
      }, [page, status])
 
      const handlePageClick = (data) => {
-          setPage(data.selected)
+          setPage(data.selected + 1)
      }
 
      return (
@@ -123,30 +124,38 @@ export default function SubscriptionTable({ formatDate }) {
                               </tbody>
                          </table>
                     </div>
-
                </div >
-               {subscription?.totalPages > 1 && (
-                    <ReactPaginate
-                         breakLabel="..."
-                         nextLabel="Next ›"
-                         previousLabel="‹ Back"
-                         onPageChange={handlePageClick}
-                         pageRangeDisplayed={2}
-                         pageCount={subscription?.totalPages || 0}
-                         renderOnZeroPageCount={null}
-                         containerClassName="flex items-center justify-center gap-2 mt-6"
-                         pageClassName=""
-                         pageLinkClassName="px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100"
-                         activeClassName=""
-                         activeLinkClassName="bg-gray-200 text-black font-semibold"
-                         previousClassName=""
-                         previousLinkClassName="px-4 py-2 border rounded-md text-gray-400 bg-gray-100 cursor-not-allowed"
-                         nextClassName=""
-                         nextLinkClassName="px-4 py-2 rounded-md bg-[#240457] text-white"
-                         breakClassName=""
-                         breakLinkClassName="px-3 py-2 text-gray-500"
-                    />
-               )}
+               <div className="flex items-center justify-between">
+                    {subscription?.totalPages > 1 && (
+                         <>
+                              <div>
+                                   <p className="text-black"> <span className="font-bold">Showing</span> {page} of {subscription?.totalPages}</p>
+                              </div>
+                              <ReactPaginate
+                                   breakLabel="..."
+                                   nextLabel="Next ›"
+                                   previousLabel="‹ Back"
+                                   onPageChange={handlePageClick}
+                                   pageRangeDisplayed={2}
+                                   pageCount={subscription?.totalPages || 0}
+                                   renderOnZeroPageCount={null}
+                                   containerClassName="flex items-center justify-center gap-2 mt-6"
+                                   pageClassName=""
+                                   pageLinkClassName="px-4 py-2 border border-black-400 bg-white text-gray-700 hover:bg-gray-100 hover:cursor-pointer"
+                                   activeClassName=""
+                                   activeLinkClassName="bg-gray-200 text-black font-semibold hover:cursor-pointer"
+                                   previousClassName=""
+                                   previousLinkClassName="px-4 py-2 border text-gray-400 bg-gray-100 cursor-not-allowed"
+                                   nextClassName=""
+                                   nextLinkClassName="px-4 py-2 bg-[#240457] text-white"
+                                   breakClassName=""
+                                   breakLinkClassName="px-3 py-2 text-gray-500"
+                              />
+                         </>
+                    )}
+
+               </div>
+
           </div>
      )
 }

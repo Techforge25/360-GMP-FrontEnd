@@ -11,6 +11,8 @@ const SignOutModal = ({ isOpen, onClose, onConfirm }) => {
     // For example: clear localStorage, redirect to login, etc.
     if (onConfirm) {
       onConfirm();
+      localStorage.removeItem("planUpdate");
+      localStorage.removeItem("planUpdateRoute");
     } else {
       logoutToLogin();
     }

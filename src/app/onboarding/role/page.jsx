@@ -16,7 +16,7 @@ import { useUserRole } from "@/context/UserContext";
 export default function RoleSelectionPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState("business");
-  const { setOnboardingRole, user } = useUserRole();
+  const { setOnboardingRole } = useUserRole();
 
   // Note: Removed auto-redirect useEffect to prevent conflicts with manual navigation
   // The handleContinue function below handles all redirects based on isNewToPlatform flag

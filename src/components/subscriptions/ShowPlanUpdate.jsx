@@ -8,8 +8,12 @@ import {
 } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/Button";
+import { usePathname } from "next/navigation";
+import { formatCurrency, formatDate } from "@/helpers";
 
-export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurrency, totalSpent, loading, showPlans, handleSelectPlan, formatDate, planName, planPrice, renewalDate, statusLabel, status, subscription, setShowPlans, plans, loadingPlans }) {
+export default function ShowPlanUpdate({ totalSpent, loading, showPlans, handleSelectPlan, planName, planPrice, renewalDate, statusLabel, status, subscription, setShowPlans, plans, loadingPlans }) {
+     const pathname = usePathname()
+     console.log(status, "status")
      return (
           <>
                {showPlans ? (
@@ -129,7 +133,7 @@ export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurren
 
                                    <div className="flex items-baseline gap-1 mb-2">
                                         <span className="text-2xl sm:text-3xl lg:text-4xl font-medium text-[#240457]">
-                                             {formatCurrency(planPrice)}
+                                             ${planPrice}
                                         </span>
                                         <span className="text-[#240457] text-base sm:text-lg">
                                              /Month
@@ -142,7 +146,11 @@ export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurren
 
                                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                                         <button
-                                             onClick={() => setShowPlans(true)}
+                                             onClick={() => {
+                                                  localStorage.setItem("planUpdate", true)
+                                                  localStorage.setItem("planUpdateRoute", pathname)
+                                                  setShowPlans(true)
+                                             }}
                                              className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#240457] text-white rounded-lg text-sm sm:text-base font-medium hover:bg-gray-900 transition-colors"
                                         >
                                              <span>Update Plan</span>
@@ -153,88 +161,7 @@ export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurren
                          </div>
 
                          {/* Lower Grid Section */}
-                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                              {/* Usage Limits Card */}
-                              <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
-                                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 gap-2">
-                                        <h3 className="text-base sm:text-lg font-medium text-black">
-                                             Usage Limits
-                                        </h3>
-                                        <button className="text-sm sm:text-base text-blue-600 hover:underline font-medium self-start sm:self-auto">
-                                             View Details
-                                        </button>
-                                   </div>
-
-                                   <div className="space-y-4 sm:space-y-6">
-                                        {/* Product Listings */}
-                                        <div className="space-y-2">
-                                             <div className="flex justify-between text-sm sm:text-base font-medium text-gray-700">
-                                                  <span>Product Listings</span>
-                                                  <div>
-                                                       <span className="text-gray-900">
-                                                            {businessUsage.products}{" "}
-                                                       </span>
-                                                       <span className="text-gray-500">
-                                                            / {planLimits.products}
-                                                       </span>
-                                                  </div>
-                                             </div>
-                                             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                                  <div
-                                                       className="h-full bg-[#240457] rounded-full"
-                                                       style={{
-                                                            width: `${Math.min((businessUsage.products / planLimits.products) * 100, 100)}%`,
-                                                       }}
-                                                  />
-                                             </div>
-                                        </div>
-
-                                        {/* Active Job Posts */}
-                                        <div className="space-y-2">
-                                             <div className="flex justify-between text-sm sm:text-base font-medium text-gray-700">
-                                                  <span>Active Job Posts</span>
-                                                  <div>
-                                                       <span className="text-gray-900">
-                                                            {businessUsage.jobs}{" "}
-                                                       </span>
-                                                       <span className="text-gray-500">/ {planLimits.jobs}</span>
-                                                  </div>
-                                             </div>
-                                             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                                  <div
-                                                       className="h-full bg-[#240457] rounded-full"
-                                                       style={{
-                                                            width: `${Math.min((businessUsage.jobs / planLimits.jobs) * 100, 100)}%`,
-                                                       }}
-                                                  />
-                                             </div>
-                                        </div>
-
-                                        {/* Communities */}
-                                        <div className="space-y-2">
-                                             <div className="flex justify-between text-sm sm:text-base font-medium text-gray-700">
-                                                  <span>Communities</span>
-                                                  <div>
-                                                       <span className="text-gray-900">
-                                                            {businessUsage.communities}{" "}
-                                                       </span>
-                                                       <span className="text-gray-500">
-                                                            / {planLimits.communities}
-                                                       </span>
-                                                  </div>
-                                             </div>
-                                             <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                                  <div
-                                                       className="h-full bg-[#240457] rounded-full"
-                                                       style={{
-                                                            width: `${Math.min((businessUsage.communities / planLimits.communities) * 100, 100)}%`,
-                                                       }}
-                                                  />
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div>
-
+                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                               {/* Billing Cycle Card */}
                               <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
                                    <h3 className="text-base sm:text-lg font-medium text-black mb-4 sm:mb-6">
@@ -276,9 +203,6 @@ export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurren
                                         <h3 className="text-base sm:text-lg font-medium text-black">
                                              Payment Method
                                         </h3>
-                                        <button className="text-sm sm:text-base text-blue-600 hover:underline font-medium self-start sm:self-auto">
-                                             Update
-                                        </button>
                                    </div>
 
                                    <div className="bg-gray-50 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4 flex items-center justify-between">
@@ -312,7 +236,6 @@ export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurren
                                         <br className="hidden sm:block" /> For Global Manufacturing Co.
                                    </p>
                               </div>
-
                               {/* Summary Cards */}
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                                    <div className="bg-white p-4 sm:p-6 rounded-xl border border-gray-100 shadow-sm">
@@ -349,7 +272,7 @@ export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurren
                                              {formatDate(renewalDate)}
                                         </p>
                                         <p className="text-sm sm:text-sm text-gray-500 mt-1">
-                                             Amount: {formatCurrency(planPrice)}
+                                             Amount: ${planPrice}
                                         </p>
                                    </div>
 
@@ -365,13 +288,11 @@ export default function ShowPlanUpdate({ planLimits, businessUsage, formatCurren
                                              </span>
                                         </div>
                                         <p className="text-xl sm:text-2xl font-medium text-gray-900">
-                                             {formatCurrency(totalSpent)}
+                                             ${totalSpent}
                                         </p>
                                    </div>
                               </div>
-
-                              {/* Invoices Table Container */}
-                              <SubscriptionTable loading={loading} formatCurrency={formatCurrency} formatDate={formatDate} />
+                              <SubscriptionTable />
                          </div>
                     </div>
                )

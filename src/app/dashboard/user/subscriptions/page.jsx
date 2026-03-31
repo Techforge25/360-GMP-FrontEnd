@@ -1,101 +1,22 @@
 "use client";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
-import { ChevronLeft } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import {
-  FiArrowRight,
-  FiInfo,
-} from "react-icons/fi";
-import { RiVisaLine } from "react-icons/ri";
-import { SiStripe } from "react-icons/si";
 import subscriptionAPI from "@/services/subscriptionAPI";
-import api from "@/lib/axios";
-import { useRouter } from "next/navigation";
-import { FiCheck } from "react-icons/fi";
-import { Button } from "@/components/ui/Button";
-import {
-  Card as UICard,
-  CardContent as UICardContent,
-} from "@/components/ui/Card";
-import { cn } from "@/lib/utils";
-import SubscriptionTable from "@/components/subscriptions/SubscriptionTable";
-import SubscriptionSummaryCards from "@/components/subscriptions/SubscriptionSummaryCards";
-import BillingAndPaymentMethod from "@/components/subscriptions/BillingAndPaymentMethod";
 import SubscriptionHeader from "@/components/subscriptions/SubscriptionHeader";
+import ShowPlanUpdate from "@/components/subscriptions/ShowPlanUpdate";
+import SubscriptionCard from "@/components/subscriptions/SubscriptionCard";
+import PaymentPlans from "@/components/subscriptions/PaymentPlans";
+import useSubscriptionPlan from "@/hooks/useSubscriptionPlan";
+import api from "@/lib/axios";
 
-// Custom IoMdInformationCircleOutline component as fallback if not in react-icons
-const InformationIcon = ({ className, size }) => (
-  <svg
-    stroke="currentColor"
-    fill="currentColor"
-    strokeWidth="0"
-    viewBox="0 0 512 512"
-    className={className}
-    height={size}
-    width={size}
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path d="M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm0 400c-105.87 0-192-86.13-192-192S150.13 64 256 64s192 86.13 192 192-86.13 192-192 192z"></path>
-    <path d="M272 240H240a16 16 0 0 0-16 16v112a16 16 0 0 0 16 16h32a16 16 0 0 0 16-16V256a16 16 0 0 0-16-16zM256 160a24 24 0 1 0 24 24 24 24 0 0 0-24-24z"></path>
-  </svg>
-);
-
-const UserSubscriptionsPage = () => {
-  const [subscription, setSubscription] = useState(null);
-  const [totalSpent, setTotalSpent] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [showPlans, setShowPlans] = useState(false);
-  const [plans, setPlans] = useState([]);
-  const [loadingPlans, setLoadingPlans] = useState(false);
+const UserSubscriptionPage = () => {
   const [paymentPlan, setPaymentPlan] = useState(null);
   const [checkStatusDetail, setCheckStatusDetail] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [subsData, setSubsData] = useState("");
-  const router = useRouter();
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const fetchSubscriptionData = async () => {
-      try {
-        const [subResponse, totalSpentResponse] = await Promise.all([
-          subscriptionAPI.getMySubscription(),
-          subscriptionAPI.getTotalSpent(),
-        ]);
-
-        const subData = Array.isArray(subResponse?.data)
-          ? subResponse.data[0]
-          : subResponse?.data;
-
-        let finalSubscription = subData || null;
-
-        if (!finalSubscription) {
-          const stored = subscriptionAPI.getStoredSubscription();
-          if (stored?.planName) {
-            finalSubscription = {
-              ...stored,
-              plan: { name: stored.planName, price: stored.price },
-            };
-          }
-        }
-
-        if (isMounted) {
-          setSubscription(finalSubscription);
-          setTotalSpent(totalSpentResponse?.data ?? 0);
-        }
-      } catch (error) {
-        console.error("Failed to fetch subscription data", error);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    };
-
-    fetchSubscriptionData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const [showPlans, setShowPlans] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const [loadingPlans, setLoadingPlans] = useState(false);
+  const { subscription, totalSpent, loading, planName, planPrice, statusLabel, renewalDate, status } = useSubscriptionPlan()
 
   const fetchPlans = async () => {
     setLoadingPlans(true);
@@ -112,9 +33,7 @@ const UserSubscriptionsPage = () => {
   };
 
   useEffect(() => {
-    if (showPlans && plans.length === 0) {
-      fetchPlans();
-    }
+    fetchPlans();
   }, [showPlans]);
 
   const handleSelectPlan = async (plan) => {
@@ -141,7 +60,6 @@ const UserSubscriptionsPage = () => {
             price: plan.price,
           });
         } else {
-          // New subscription or trial
           setPaymentPlan({ id: plan._id, name: plan.name, price: plan.price });
         }
       }
@@ -158,36 +76,14 @@ const UserSubscriptionsPage = () => {
 
     try {
       const successUrl = `${window.location.origin}/subscription/success?session_id={CHECKOUT_SESSION_ID}`;
-      const cancelUrl = `${window.location.origin}/dashboard/user/subscriptions`;
-
+      const cancelUrl = `${window.location.origin}/dashboard/business/subscriptions`;
       const response = await subscriptionAPI.createStripeCheckout(
         plan.id || plan.planId,
-        "user", // profile="user" here
+        "business",
         successUrl,
         cancelUrl,
       );
-
-      const isUrl = (str) =>
-        typeof str === "string" &&
-        (str.startsWith("http://") || str.startsWith("https://"));
-      const checkoutUrl = isUrl(response.data)
-        ? response.data
-        : isUrl(response.data?.url)
-          ? response.data.url
-          : null;
-
-      if (response.success && checkoutUrl) {
-        // Store plan info before redirecting
-        const subscriptionData = {
-          planId: plan.id || plan.planId,
-          planName: plan.name || plan.planName,
-          role: "user",
-          status: "pending",
-          createdAt: new Date().toISOString(),
-        };
-        subscriptionAPI.storeSubscription(subscriptionData);
-        window.location.href = checkoutUrl;
-      }
+      window.location.href = response?.data;
     } catch (error) {
       console.error("Failed to create Stripe checkout:", error);
     } finally {
@@ -195,314 +91,17 @@ const UserSubscriptionsPage = () => {
     }
   };
 
-  console.log(subscription, "subs")
-
-  const planName =
-    subscription?.plan?.name || subscription?.planName || "Current Plan";
-  const planPriceRaw = subscription?.plan?.price ?? subscription?.price ?? 0;
-  const planPrice =
-    typeof planPriceRaw === "number" ? planPriceRaw : Number(planPriceRaw) || 0;
-  console.log(planPrice, "plan price")
-  const status = subscription?.status || "active";
-  const statusLabel =
-    status === "active"
-      ? "Active Plan"
-      : status === "canceled"
-        ? "Canceled"
-        : "Expired";
-  const renewalDate = subscription?.endDate || subscription?.nextBillingDate;
-
-  const formatCurrency = (value) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(value || 0);
-
-  const formatDate = (value) => {
-    if (!value) return "N/A";
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return "N/A";
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   return (
-    <div className=" bg-gray-50">
-      {/* Header */}
+    <div className="bg-gray-50">
       <SubscriptionHeader showPlans={showPlans} />
-      {/* <div className="bg-emerald-50/50 py-6 sm:py-8 lg:py-12 border-b border-gray-200 mb-4 sm:mb-6 lg:mb-8">
-        <div className="max-w-4xl mx-auto text-center space-y-2 px-4 sm:px-6">
-          <h1 className="text-2xl sm:text-3xl lg:text-3xl font-bold text-gray-900">
-            {showPlans
-              ? "Available Subscription Plans"
-              : "Current Plan Overview"}
-          </h1>
-          <p className="text-sm sm:text-base text-gray-800">
-            {showPlans
-              ? "Upgrade or Change Your Membership Plan Below."
-              : "Manage Your Subscription, Billing Details, And Usage Limits."}
-          </p>
-        </div>
-      </div> */}
-
-      {showPlans ? (
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-          <div className="flex justify-between items-center mb-8">
-            <button
-              onClick={() => setShowPlans(false)}
-              className="inline-flex items-center gap-2 text-[#240457] font-semibold hover:underline"
-            >
-              <ChevronLeft className="w-5 h-5" />
-              <span>Back to Overview</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-center">
-            {loadingPlans ? (
-              <div className="col-span-full py-20 text-center text-gray-500">
-                Loading plans...
-              </div>
-            ) : (
-              plans.map((plan) => {
-                const planKey = plan.name?.toLowerCase() || "";
-                const isPremium =
-                  planKey.includes("premium") || planKey.includes("gold");
-                const isSilver = planKey.includes("silver");
-
-                return (
-                  <UICard
-                    key={plan._id}
-                    className={cn(
-                      "flex flex-col transition-all duration-300 bg-white shadow-md hover:shadow-lg border",
-                      isPremium
-                        ? "scale-105 shadow-xl ring-1 ring-purple-100 border-purple-200"
-                        : "border-gray-200",
-                    )}
-                  >
-                    <UICardContent className="p-8 flex-1 flex flex-col">
-                      <div className="text-center mb-6">
-                        <span
-                          className={cn(
-                            "px-4 py-1.5 rounded-full text-sm font-medium",
-                            isPremium
-                              ? "bg-purple-100 text-purple-700"
-                              : isSilver
-                                ? "bg-orange-100 text-orange-700"
-                                : "bg-green-100 text-green-700",
-                          )}
-                        >
-                          {plan.name}
-                        </span>
-                      </div>
-
-                      <div className="text-center mb-2">
-                        <span className="text-5xl font-semibold text-gray-900">
-                          ${plan.price}
-                        </span>
-                        <span className="text-gray-500 ml-1">/month</span>
-                      </div>
-
-                      <p className="text-center text-gray-600 mb-8 text-sm">
-                        {plan.description}
-                      </p>
-
-                      <Button
-                        onClick={() => handleSelectPlan(plan)}
-                        className={cn(
-                          "w-full mb-8 font-medium",
-                          isPremium
-                            ? "bg-[#240457] text-white hover:bg-indigo-800"
-                            : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50",
-                        )}
-                      >
-                        {String(
-                          subscription?.planId || subscription?.plan?._id,
-                        ) === String(plan._id)
-                          ? "Current Plan"
-                          : "Choose Plan"}
-                      </Button>
-
-                      <div className="space-y-4 mb-4">
-                        {plan.features?.map((feature, i) => (
-                          <div key={i} className="flex items-start gap-3">
-                            <FiCheck className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                            <span className="text-sm text-gray-700">
-                              {feature}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </UICardContent>
-                  </UICard>
-                );
-              })
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 xl:px-8 space-y-4 sm:space-y-6">
-          {/* Active Plan Card */}
-          <div className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm border border-gray-100 relative overflow-hidden">
-            {/* Gradient Background Effect */}
-            <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-purple-50 via-white to-white pointer-events-none opacity-50" />
-
-            <div className="relative z-10">
-              <span
-                className={`inline-block px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-sm sm:text-sm font-semibold mb-4 sm:mb-6 ${status === "active"
-                  ? "bg-[#E6F6E9] border border-[#0B8806] text-[#0B8806]"
-                  : "bg-red-50 border border-red-500 text-red-600"
-                  }`}
-              >
-                {statusLabel}
-              </span>
-
-              <h2 className="text-xl sm:text-2xl lg:text-3xl font-medium text-gray-900 mb-2">
-                {loading ? "Loading plan..." : planName}
-              </h2>
-
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="text-2xl sm:text-3xl lg:text-4xl font-medium text-[#240457]">
-                  {formatCurrency(planPrice)}
-                </span>
-                <span className="text-[#240457] text-base sm:text-lg">
-                  /Month
-                </span>
-              </div>
-
-              <p className="text-sm sm:text-base text-gray-700 mb-6 sm:mb-8">
-                Renews Automatically On {formatDate(renewalDate)}
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <button
-                  onClick={() => setShowPlans(true)}
-                  className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-[#240457] text-white rounded-lg text-sm sm:text-base font-medium hover:bg-gray-900 transition-colors"
-                >
-                  <span>Update Plan</span>
-                  <FiArrowRight />
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Lower Grid Section */}
-          <BillingAndPaymentMethod formatDate={formatDate} formatCurrency={formatCurrency} renewalDate={renewalDate} planPrice={planPrice} />
-
-          {/* Subscription History & Invoices Section */}
-          <div className="pt-8 sm:pt-10 lg:pt-12">
-            {/* Summary Cards */}
-            <SubscriptionSummaryCards formatCurrency={formatCurrency} formatDate={formatDate} planName={planName} statusLabel={statusLabel} renewalDate={renewalDate} planPrice={planPrice} totalSpent={totalSpent} />
-            {/* Invoices Table Container */}
-            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-              <SubscriptionTable formatDate={formatDate} subsData={subsData} />
-            </div>
-          </div>
-        </div>
-      )}
+      <ShowPlanUpdate handlePaymentConfirm={handlePaymentConfirm} totalSpent={totalSpent} loading={loading} showPlans={showPlans} handleSelectPlan={handleSelectPlan} planName={planName} planPrice={planPrice} renewalDate={renewalDate} statusLabel={statusLabel} status={status} subscription={subscription} setShowPlans={setShowPlans} plans={plans} loadingPlans={loadingPlans} />
       <div className="pt-4 sm:pt-6 lg:pt-8">
         <DashboardFooter />
       </div>
-
-      {/* Payment and Status Modals */}
-      {paymentPlan && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <UICard className="w-full max-w-lg bg-white shadow-2xl">
-            <UICardContent className="p-8 text-center pt-10">
-              <h2 className="text-xl font-medium mb-1">
-                Get Ready To{" "}
-                <span className="text-brand-primary">
-                  Unlock {paymentPlan.name}
-                </span>
-              </h2>
-              <p className="text-base text-text-secondary mb-8">
-                Select Payment Method
-              </p>
-
-              <div className="flex gap-4 justify-center mb-8">
-                <button className="flex-1 h-14 border rounded-md flex items-center justify-center gap-2 border-brand-primary ring-1 ring-brand-primary bg-brand-primary/5">
-                  <span className="font-bold text-indigo-600 flex items-center gap-1">
-                    <div className="w-4 h-4 rounded-full border-4 border-indigo-600 mr-1"></div>{" "}
-                    stripe
-                  </span>
-                </button>
-              </div>
-
-              <div className="flex gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setPaymentPlan(null)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => handlePaymentConfirm()}
-                  isLoading={isProcessing}
-                  className="flex-1 bg-[#240457] text-white"
-                >
-                  Confirm
-                </Button>
-              </div>
-            </UICardContent>
-          </UICard>
-        </div>
-      )}
-
-      {checkStatusDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <UICard className="w-full max-w-md bg-white shadow-2xl">
-            <UICardContent className="p-8 text-center pt-10">
-              <div
-                className={cn(
-                  "mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4",
-                  checkStatusDetail.type === "same"
-                    ? "bg-blue-50"
-                    : "bg-amber-50",
-                )}
-              >
-                {checkStatusDetail.type === "same" ? (
-                  <FiInfo className="w-8 h-8 text-blue-500" />
-                ) : (
-                  <InformationIcon className="w-8 h-8 text-amber-500" />
-                )}
-              </div>
-              <h2 className="text-xl font-bold mb-2">
-                {checkStatusDetail.type === "same"
-                  ? "Already Subscribed"
-                  : "Change Subscription"}
-              </h2>
-              <p className="text-sm text-text-secondary mb-6 leading-relaxed">
-                {checkStatusDetail.message}
-              </p>
-
-              <div className="flex gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setCheckStatusDetail(null)}
-                  className="flex-1"
-                >
-                  {checkStatusDetail.type === "same" ? "Close" : "Cancel"}
-                </Button>
-                {checkStatusDetail.type !== "same" && (
-                  <Button
-                    onClick={() => handlePaymentConfirm(checkStatusDetail)}
-                    isLoading={isProcessing}
-                    className="flex-1 bg-[#240457] text-white"
-                  >
-                    Confirm & Proceed
-                  </Button>
-                )}
-              </div>
-            </UICardContent>
-          </UICard>
-        </div>
-      )}
+      <PaymentPlans setPaymentPlan={setPaymentPlan} paymentPlan={paymentPlan} isProcessing={isProcessing} handlePaymentConfirm={handlePaymentConfirm} />
+      <SubscriptionCard checkStatusDetail={checkStatusDetail} setCheckStatusDetail={setCheckStatusDetail} handlePaymentConfirm={handlePaymentConfirm} isProcessing={isProcessing} />
     </div>
   );
 };
 
-export default UserSubscriptionsPage;
+export default UserSubscriptionPage;

@@ -7,9 +7,8 @@ export default function RoleGuard({ children, allowedRoles }) {
   const { user } = useUserRole();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
-
   useEffect(() => {
-    if (user === undefined) return; // Wait for context
+    if (user === undefined) return;
 
     if (!user) {
       router.push("/login");
@@ -18,6 +17,8 @@ export default function RoleGuard({ children, allowedRoles }) {
 
     const userRole = user.role;
     const isAuthorized = allowedRoles.includes(userRole);
+
+    console.log(userRole, "user role")
 
     if (!isAuthorized) {
       // Redirect to unauthorized or their own dashboard

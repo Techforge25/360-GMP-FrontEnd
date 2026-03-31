@@ -16,8 +16,13 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   // Full User State
   const [user, setUserState] = useState(undefined);
+  const [subscriptionPlan, setSubscriptionPlan] = useState({
+    planUpdated: false,
+    route: "/dashboard/business/subscriptions"
+  });
 
   useEffect(() => {
+
     // 1. Initial Load from localStorage
     let currentUser = getStoredUser();
 
@@ -76,13 +81,11 @@ export const UserProvider = ({ children }) => {
     };
 
     const initialize = async () => {
-      if(currentUser)
-      {
+      if (currentUser) {
         const verifiedUser = await verifySession(currentUser);
         setUserState(verifiedUser || null);
       }
-      else
-      {
+      else {
         setUserState(null);
       }
     };
@@ -233,6 +236,8 @@ export const UserProvider = ({ children }) => {
         setOnboardingRole,
         onboardingRole: user?.role,
         onboardingProfileData: user?.profileData,
+        subscriptionPlan,
+        setSubscriptionPlan
       }}
     >
       {children}

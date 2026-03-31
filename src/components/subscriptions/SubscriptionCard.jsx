@@ -33,7 +33,7 @@ export default function SubscriptionCard({ handlePaymentConfirm, checkStatusDeta
                                              : "Change Subscription"}
                                    </h2>
                                    <p className="text-sm text-text-secondary mb-6 leading-relaxed">
-                                        {checkStatusDetail.message}
+                                        {checkStatusDetail.message}asdasd
                                    </p>
 
                                    <div className="flex gap-4">
