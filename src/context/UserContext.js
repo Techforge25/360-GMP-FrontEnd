@@ -16,10 +16,6 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   // Full User State
   const [user, setUserState] = useState(undefined);
-  const [subscriptionPlan, setSubscriptionPlan] = useState({
-    planUpdated: false,
-    route: "/dashboard/business/subscriptions"
-  });
 
   useEffect(() => {
 
@@ -236,8 +232,6 @@ export const UserProvider = ({ children }) => {
         setOnboardingRole,
         onboardingRole: user?.role,
         onboardingProfileData: user?.profileData,
-        subscriptionPlan,
-        setSubscriptionPlan
       }}
     >
       {children}

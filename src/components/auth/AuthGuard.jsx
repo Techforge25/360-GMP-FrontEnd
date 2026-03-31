@@ -18,15 +18,17 @@ export default function AuthGuard({ children }) {
 
     const checkAuth = async () => {
       if (user === undefined) return; // Wait for context to initialize
-
-      console.log(user, "user in auth guard")
-
+      console.log("auth roles")
       const response = await api.get({
         url: `/auth/user/me`,
         enableErrorMessage: false,
         enableSuccessMessage: false,
         activateLoader: false,
       });
+
+      if (response.data.role && pathname === "/onboarding/plans") {
+        return router.push("/onboarding/role")
+      }
 
       if (!user || response.statusCode !== 200) {
         // Not logged in, redirect to login

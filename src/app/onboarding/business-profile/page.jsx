@@ -1,6 +1,5 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Stepper } from "@/components/ui/Stepper";
@@ -102,9 +101,7 @@ export default function BusinessProfilePage() {
   const [createdProfile, setCreatedProfile] = useState(null);
   const [newToken, setNewToken] = useState(null);
   const { login } = useUserRole();
-  const router = useRouter();
   const onSubmit = async (data) => {
-    console.log(data, "datas")
     setData(data)
     setIsLoading(true);
     setError("");
@@ -161,13 +158,6 @@ export default function BusinessProfilePage() {
     });
   };
 
-  const handleBack = () => {
-    const changed = prevStep();
-    if (!changed) {
-      router.push("/onboarding/plans");
-    }
-  };
-
   useEffect(() => {
     if (currentStep === 3) {
       trigger();
@@ -221,8 +211,9 @@ export default function BusinessProfilePage() {
           <div className="p-8 border-t border-border-light flex justify-between items-center">
             <button
               type="button"
-              onClick={handleBack}
-              className="flex items-center gap-2 text-text-secondary hover:text-brand-primary font-medium"
+              disabled={currentStep === 1}
+              onClick={prevStep}
+              className="flex items-center gap-2 text-text-secondary hover:text-brand-primary font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <FiArrowLeft /> Back
             </button>

@@ -15,6 +15,8 @@ export default function RoleGuard({ children, allowedRoles }) {
       return;
     }
 
+    console.log("role guard")
+
     const userRole = user.role;
     const isAuthorized = allowedRoles.includes(userRole);
 

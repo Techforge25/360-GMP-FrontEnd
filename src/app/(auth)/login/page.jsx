@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect, Suspense } from "react";
-import CryptoJS from "crypto-js";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
@@ -27,7 +26,6 @@ function LoginPageContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const keyPrefix = "ABC"
 
   const { login } = useUserRole();
   const router = useRouter();

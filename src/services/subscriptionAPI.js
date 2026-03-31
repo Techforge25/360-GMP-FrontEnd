@@ -91,6 +91,15 @@ class SubscriptionAPI {
     });
   }
 
+  async checkSubscriptionExistence() {
+    return await api.get({
+      url: `/subscription/exists`,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
   /**
    * Check subscription status for a specific plan
    * @param {string} planId - The plan ID from backend

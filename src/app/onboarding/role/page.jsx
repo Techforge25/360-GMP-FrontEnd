@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -12,11 +12,14 @@ import {
 import { RoleSelectionCard } from "@/components/ui/RoleSelectionCard";
 
 import { useUserRole } from "@/context/UserContext";
+import subscriptionAPI from "@/services/subscriptionAPI";
 
 export default function RoleSelectionPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState("business");
-  const { setOnboardingRole } = useUserRole();
+  const { user, role, setOnboardingRole } = useUserRole();
+
+  console.log(role, "rolesssss", user, "userssss")
 
   // Note: Removed auto-redirect useEffect to prevent conflicts with manual navigation
   // The handleContinue function below handles all redirects based on isNewToPlatform flag
@@ -25,13 +28,18 @@ export default function RoleSelectionPage() {
     try {
       console.log(selectedRole);
       // Get the updated user object directly from the sync call to avoid stale closure issues
-      const updatedUser = await setOnboardingRole(selectedRole);
-
-      console.log("Navigation check - updatedUser:", updatedUser);
+      // const updatedUser = await setOnboardingRole(selectedRole);
+      const checkUserExistence = await subscriptionAPI.checkSubscriptionExistence()
 
       // If user is new, send to plans. Otherwise, send to dashboard.
-      if (updatedUser?.isNewToPlatform) {
+      if (user?.isNewToPlatform && !checkUserExistence.data.subscriptionStatus) {
         router.push(`/onboarding/plans`);
+      } else if (user?.isNewToPlatform) {
+        if (selectedRole === "business") {
+          router.push("/onboarding/business-profile")
+        } else {
+          router.push("/onboarding/user-profile")
+        }
       } else {
         const dashboardUrl =
           selectedRole === "business"
