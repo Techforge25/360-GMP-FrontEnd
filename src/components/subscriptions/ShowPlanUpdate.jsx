@@ -13,7 +13,6 @@ import { formatCurrency, formatDate } from "@/helpers";
 
 export default function ShowPlanUpdate({ totalSpent, loading, showPlans, handleSelectPlan, planName, planPrice, renewalDate, statusLabel, status, subscription, setShowPlans, plans, loadingPlans }) {
      const pathname = usePathname()
-     console.log(status, "status")
      return (
           <>
                {showPlans ? (

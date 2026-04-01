@@ -3,7 +3,7 @@ import * as Yup from "yup";
 const alphaNumericPattern = /^[a-zA-Z0-9 -]*$/;
 const addressPattern = /^[a-zA-Z0-9 -,]*$/;
 const customPattern = /^[a-zA-Z0-9 \-.,\n\r]*$/;
-const stackHoldersNamePattern = /^[a-zA-Z]*$/;
+const stackHoldersNamePattern = /^[a-zA-Z ]*$/;
 
 export const createBusinessProfileSchema = Yup.object({
      // Basic Info
@@ -122,31 +122,26 @@ export const createBusinessProfileSchema = Yup.object({
           addressLine: Yup.string()
                .max(1000, "Address Line cannot exceed 1000 characters")
                .required("Address Line is required")
-               .matches(alphaNumericPattern, "Only alphanumeric characters, spaces, commas, and hyphens are allowed")
                .trim(),
 
           warehouseAddress: Yup.string()
                .max(1000, "Warehouse address cannot exceed 1000 characters")
                .nullable()
-               .matches(addressPattern, "Only alphanumeric characters, spaces, commas, and hyphens are allowed")
                .trim(),
 
           additionalWarehouseAddress: Yup.string()
                .max(1000, "Additional warehouse address cannot exceed 1000 characters")
                .nullable()
-               .matches(addressPattern, "Only alphanumeric characters, spaces, commas, and hyphens are allowed")
                .trim(),
 
           mandatoryPickupAddress: Yup.string()
                .max(1000, "Mandatory pickup address cannot exceed 1000 characters")
                .required("Mandatory Pickup Address is required")
-               .matches(addressPattern, "Only alphanumeric characters, spaces, commas, and hyphens are allowed")
                .trim(),
 
           businessRegistrationAddress: Yup.string()
                .max(1000, "Business registration address cannot exceed 1000 characters")
                .required("Business Registration Address is required")
-               .matches(addressPattern, "Only alphanumeric characters, spaces, commas, and hyphens are allowed")
                .trim(),
 
           internationalOffices: Yup.array()

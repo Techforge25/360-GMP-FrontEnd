@@ -24,6 +24,10 @@ export default function RoleGuard({ children, allowedRoles }) {
 
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
 
+      if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
+        return router.push("/onboarding-role")
+      }
+
       if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
         return router.push("/onboarding/role")
       }

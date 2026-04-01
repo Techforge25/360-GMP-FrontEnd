@@ -418,6 +418,8 @@ export default function BusinessProfileStep2({
         <input
           type="file"
           multiple
+          accept="image/*,application/pdf"
+          disabled={watch("certifications").length === 3}
           className="hidden"
           id="cert-upload"
           onChange={async (e) => {
@@ -452,21 +454,40 @@ export default function BusinessProfileStep2({
         </label>
 
         <div className="grid grid-cols-3 gap-3 mt-3">
-          {(watch("certifications") || []).map((url, i) => (
-            <div key={i} className="relative">
-              <img src={url} className="h-20 w-full object-cover rounded" />
-              <button
-                type="button"
-                onClick={() => {
-                  const updated = watch("certifications").filter((_, idx) => idx !== i);
-                  setValue("certifications", updated);
-                }}
-                className="absolute top-1 right-1 bg-white p-1 rounded"
-              >
-                ❌
-              </button>
-            </div>
-          ))}
+          {(watch("certifications") || []).map((url, i) => {
+            const isPDF = url.toLowerCase().endsWith(".pdf");
+
+            return (
+              <div key={i} className="relative bg-gray-50 rounded overflow-hidden">
+
+                {/* Preview */}
+                {isPDF ? (
+                  <iframe
+                    src={url}
+                    className="h-20 w-full"
+                    title={`pdf-${i}`}
+                  />
+                ) : (
+                  <img
+                    src={url}
+                    className="h-20 w-full object-cover"
+                  />
+                )}
+
+                {/* Remove Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const updated = watch("certifications").filter((_, idx) => idx !== i);
+                    setValue("certifications", updated);
+                  }}
+                  className="absolute top-1 right-1 bg-white p-1 rounded shadow"
+                >
+                  ❌
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 

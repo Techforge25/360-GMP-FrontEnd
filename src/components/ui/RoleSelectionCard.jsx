@@ -2,14 +2,19 @@ import React from "react";
 import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 import { FiBriefcase, FiUser } from "react-icons/fi";
+import { useUserRole } from "@/context/UserContext";
 
-const RoleSelectionCard = ({ type = "business", selected, onSelect }) => {
+const RoleSelectionCard = ({ type, selected, onSelect }) => {
   const isBusiness = type === "business";
   const isSelected = selected === type;
+  const { setRoleSelection } = useUserRole();
 
   return (
     <Card
-      onClick={() => onSelect && onSelect(type)}
+      onClick={() => {
+        onSelect && onSelect(type)
+        setRoleSelection(type)
+      }}
       className={cn(
         "cursor-pointer transition-all duration-200 hover:border-brand-primary/50",
         isSelected

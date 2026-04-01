@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -17,22 +17,40 @@ import subscriptionAPI from "@/services/subscriptionAPI";
 export default function RoleSelectionPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState("business");
-  const { user, role, setOnboardingRole } = useUserRole();
-
-  console.log(role, "rolesssss", user, "userssss")
+  const [checkSubsExistence, setCheckSubsExistence] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const { user } = useUserRole();
 
   // Note: Removed auto-redirect useEffect to prevent conflicts with manual navigation
   // The handleContinue function below handles all redirects based on isNewToPlatform flag
+
+  useEffect(() => {
+    const fetchUserExistence = async () => {
+      try {
+        const res = await subscriptionAPI.checkSubscriptionExistence();
+        setCheckSubsExistence(res);
+
+        if (!res?.data?.subscriptionStatus) {
+          setSelectedRole("user");
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserExistence();
+  }, []);
 
   const handleContinue = async () => {
     try {
       console.log(selectedRole);
       // Get the updated user object directly from the sync call to avoid stale closure issues
       // const updatedUser = await setOnboardingRole(selectedRole);
-      const checkUserExistence = await subscriptionAPI.checkSubscriptionExistence()
 
       // If user is new, send to plans. Otherwise, send to dashboard.
-      if (user?.isNewToPlatform && !checkUserExistence.data.subscriptionStatus) {
+      if (user?.isNewToPlatform && !checkSubsExistence.data.subscriptionStatus) {
         router.push(`/onboarding/plans`);
       } else if (user?.isNewToPlatform) {
         if (selectedRole === "business") {
@@ -75,11 +93,14 @@ export default function RoleSelectionPage() {
 
         <CardContent className="space-y-3 xs:space-y-4 sm:space-y-6 px-4 xs:px-6 pb-4 xs:pb-6 sm:pb-8 pt-2 xs:pt-4 sm:pt-6">
           <div className="space-y-2 xs:space-y-3 sm:space-y-4">
-            <RoleSelectionCard
-              type="business"
-              selected={selectedRole}
-              onSelect={setSelectedRole}
-            />
+            {checkSubsExistence?.data?.planName === "TRIAL" && checkSubsExistence?.data?.subscriptionStatus || !checkSubsExistence?.subscriptionStatus && (
+              <RoleSelectionCard
+                type="business"
+                selected={selectedRole}
+                onSelect={setSelectedRole}
+              />
+            )}
+
             <RoleSelectionCard
               type="user"
               selected={selectedRole}

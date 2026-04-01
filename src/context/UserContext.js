@@ -16,6 +16,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   // Full User State
   const [user, setUserState] = useState(undefined);
+  const [roleSelection, setRoleSelection] = useState("business")
 
   useEffect(() => {
 
@@ -232,6 +233,8 @@ export const UserProvider = ({ children }) => {
         setOnboardingRole,
         onboardingRole: user?.role,
         onboardingProfileData: user?.profileData,
+        setRoleSelection,
+        roleSelection
       }}
     >
       {children}
