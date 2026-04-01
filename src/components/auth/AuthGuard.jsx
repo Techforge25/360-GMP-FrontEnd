@@ -24,12 +24,6 @@ export default function AuthGuard({ children }) {
         enableSuccessMessage: false,
         activateLoader: false,
       });
-      
-      console.log("cond")
-
-      if (response.data.role && pathname === "/onboarding/plans") {
-        return router.push("/onboarding/role")
-      }
 
       if (!user || response.statusCode !== 200) {
         // Not logged in, redirect to login

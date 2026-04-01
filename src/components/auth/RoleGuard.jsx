@@ -20,6 +20,8 @@ export default function RoleGuard({ children, allowedRoles }) {
     const userRole = user.role;
     const isAuthorized = allowedRoles.includes(userRole);
 
+    console.log(userRole, "user role")
+
     if (!isAuthorized) {
       // Redirect to unauthorized or their own dashboard
       if (userRole === "business") {
