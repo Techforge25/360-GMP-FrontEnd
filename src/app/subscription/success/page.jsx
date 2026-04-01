@@ -41,6 +41,8 @@ function SubscriptionSuccessContent() {
     getSubscriptionDetails()
   }, [])
 
+  console.log(checkSubscriptionUpdate, "updates")
+
   const handleContinue = () => {
     const storedSub = subscriptionAPI.getStoredSubscription();
     console.log(subscriptionData, "subscription data")

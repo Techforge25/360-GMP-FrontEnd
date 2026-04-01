@@ -1,43 +1,53 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
+import subscriptionAPI from "@/services/subscriptionAPI";
 
 export default function RoleGuard({ children, allowedRoles }) {
   const { user } = useUserRole();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
+  const pathname = usePathname();
+
   useEffect(() => {
-    if (user === undefined) return;
+    const checkRoleGuard = async () => {
+      if (user === undefined) return;
 
-    if (!user) {
-      router.push("/login");
-      return;
-    }
-
-    console.log(user, "user rolesssssss")
-
-    const userRole = user.role;
-    const isAuthorized = allowedRoles.includes(userRole);
-
-    console.log(userRole, "user role")
-
-    if (!isAuthorized) {
-      // Redirect to unauthorized or their own dashboard
-      if (userRole === "business") {
-        router.push("/dashboard/business");
-      } else if (
-        userRole === "user" ||
-        userRole === "paid_user" ||
-        userRole === "free_trial"
-      ) {
-        router.push("/dashboard/user");
-      } else {
-        router.push("/unauthorized");
+      if (!user) {
+        router.push("/login");
+        return;
       }
-    } else {
-      setAuthorized(true);
+
+      const userRole = user.role;
+      const isAuthorized = allowedRoles.includes(userRole);
+
+      const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
+
+      if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
+        return router.push("/onboarding/role")
+      }
+
+      if (!isAuthorized) {
+        // Redirect to unauthorized or their own dashboard
+        if (userRole === "business") {
+          router.push("/dashboard/business");
+        } else if (
+          userRole === "user" ||
+          userRole === "paid_user" ||
+          userRole === "free_trial"
+        ) {
+          router.push("/dashboard/user");
+        } else {
+          router.push("/unauthorized");
+        }
+      } else {
+        setAuthorized(true);
+      }
     }
+
+    checkRoleGuard()
+
   }, [user, allowedRoles, router]);
 
   if (!authorized) {

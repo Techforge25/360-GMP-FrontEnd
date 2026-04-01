@@ -4,6 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import api from "@/lib/axios";
 import { connectSocket } from "@/services/socket";
+import subscriptionAPI from "@/services/subscriptionAPI";
 
 export default function AuthGuard({ children }) {
   const { user } = useUserRole();
@@ -24,6 +25,12 @@ export default function AuthGuard({ children }) {
         enableSuccessMessage: false,
         activateLoader: false,
       });
+
+      const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
+
+      if (!response?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
+        return router.push("/onboarding/role")
+      }
 
       if (!user || response.statusCode !== 200) {
         // Not logged in, redirect to login

@@ -19,8 +19,6 @@ export default function BusinessProfileStep2({
   const [uploading, setUploading] = useState(null);
   const banner = watch("banner")
   const taxCertificate = watch("taxRegistrationCertificate")
-  const [logoPreview, setLogoPreview] = useState(null);
-  const [bannerPreview, setBannerPreview] = useState(null);
   const {
     fields: leadershipFields,
     append: addLeader,
@@ -154,7 +152,6 @@ export default function BusinessProfileStep2({
 
       <div className="space-y-4">
         <h2 className="font-bold">Stakeholders</h2>
-
         {stakeholderFields.map((field, index) => (
           <>
             <div key={field.id} className="grid grid-cols-3 gap-4 items-center">
