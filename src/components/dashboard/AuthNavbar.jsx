@@ -41,7 +41,7 @@ const AuthNavbar = () => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
   const [businessProfile, setBusinessProfile] = useState(null);
-  const { user } = useUserRole();
+  const { user, setIsSwitchProfile } = useUserRole();
   const { cartCount } = useCart();
   const pathname = usePathname();
 
@@ -94,6 +94,7 @@ const AuthNavbar = () => {
 
   const handleSwitch = async () => {
     const targetRole = user?.role === "business" ? "user" : "business";
+    console.log(targetRole, "target role")
 
     try {
       const response = await refreshRoleSession(targetRole, user);
@@ -106,7 +107,10 @@ const AuthNavbar = () => {
           profileData: getProfileDataForRole(targetRole),
           isNewToPlatform: false, // User switching roles from dashboard is not new
         };
-
+        setIsSwitchProfile({
+          profile: targetRole,
+          isInActivated: false
+        })
         persistUser(updatedUser);
         window.location.href = getDashboardPathForRole(targetRole);
       }
@@ -166,8 +170,8 @@ const AuthNavbar = () => {
                       key={link.label}
                       href={link.href}
                       className={`text-base font-medium transition-colors relative pb-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-0.5 after:bg-[#240457] after:transition-all ${isActive
-                          ? "text-[#240457] text-[18px] after:w-full"
-                          : "text-gray-700 text-[18px] hover:text-[#240457] after:w-0"
+                        ? "text-[#240457] text-[18px] after:w-full"
+                        : "text-gray-700 text-[18px] hover:text-[#240457] after:w-0"
                         }`}
                     >
                       {link.label}
@@ -340,8 +344,8 @@ const AuthNavbar = () => {
                         key={link.label}
                         href={link.href}
                         className={`block text-base font-medium px-4 py-3 rounded-xl transition-all duration-200 ${isActive
-                            ? "text-white bg-gradient-to-r from-[#240457] to-[#3B1A78] shadow-lg transform scale-[0.98]"
-                            : "text-gray-700 hover:text-[#240457] hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md"
+                          ? "text-white bg-gradient-to-r from-[#240457] to-[#3B1A78] shadow-lg transform scale-[0.98]"
+                          : "text-gray-700 hover:text-[#240457] hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50 hover:shadow-md"
                           }`}
                         onClick={toggleMenu}
                       >
@@ -395,10 +399,9 @@ const AuthNavbar = () => {
                     return (
                       <button
                         key={action.key}
-                        className={`w-full flex items-center gap-3 text-base font-medium px-4 py-3 rounded-xl hover:shadow-md transition-all duration-200 text-left ${
-                          action.mobileTextClassName ||
+                        className={`w-full flex items-center gap-3 text-base font-medium px-4 py-3 rounded-xl hover:shadow-md transition-all duration-200 text-left ${action.mobileTextClassName ||
                           "text-gray-700 hover:text-[#240457] hover:bg-gradient-to-r hover:from-gray-50 hover:to-indigo-50"
-                        }`}
+                          }`}
                         onClick={onClick}
                       >
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${action.mobileIconClassName}`}>

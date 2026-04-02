@@ -5,7 +5,7 @@ import { useUserRole } from "@/context/UserContext";
 import subscriptionAPI from "@/services/subscriptionAPI";
 
 export default function RoleGuard({ children, allowedRoles }) {
-  const { user, isRoleSelected } = useUserRole();
+  const { user, isRoleSelected, isSwitchProfile } = useUserRole();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
   const pathname = usePathname();
@@ -23,14 +23,9 @@ export default function RoleGuard({ children, allowedRoles }) {
       const isAuthorized = allowedRoles.includes(userRole);
 
 
-
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
 
-      if (!isRoleSelected && pathname === "/onboarding/business-profile" || !isRoleSelected && pathname === "/onboarding/user-profile" || !isRoleSelected && pathname === "/onboarding/plans") {
-        return router.push("/onboarding/role")
-      }
-
-      if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
+      if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile" && !isSwitchProfile.isInActiveProfile) {
         return router.push("/onboarding-role")
       }
 

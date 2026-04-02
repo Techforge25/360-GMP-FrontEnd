@@ -18,6 +18,10 @@ export const UserProvider = ({ children }) => {
   const [user, setUserState] = useState(undefined);
   const [roleSelection, setRoleSelection] = useState("business")
   const [isRoleSelected, setIsRoleSelected] = useState(false)
+  const [isSwitchProfile, setIsSwitchProfile] = useState({
+    profile: "",
+    isInActivated: true
+  })
 
   useEffect(() => {
 
@@ -237,7 +241,9 @@ export const UserProvider = ({ children }) => {
         setRoleSelection,
         roleSelection,
         setIsRoleSelected,
-        isRoleSelected
+        isRoleSelected,
+        setIsSwitchProfile,
+        isSwitchProfile
       }}
     >
       {children}
