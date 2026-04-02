@@ -17,6 +17,7 @@ export const UserProvider = ({ children }) => {
   // Full User State
   const [user, setUserState] = useState(undefined);
   const [roleSelection, setRoleSelection] = useState("business")
+  const [isRoleSelected, setIsRoleSelected] = useState(false)
 
   useEffect(() => {
 
@@ -234,7 +235,9 @@ export const UserProvider = ({ children }) => {
         onboardingRole: user?.role,
         onboardingProfileData: user?.profileData,
         setRoleSelection,
-        roleSelection
+        roleSelection,
+        setIsRoleSelected,
+        isRoleSelected
       }}
     >
       {children}

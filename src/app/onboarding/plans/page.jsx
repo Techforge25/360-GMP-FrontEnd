@@ -235,7 +235,7 @@ const ConfirmationModal = ({
           <p className="text-base text-text-secondary mb-6">{message}</p>
 
           <div className="border border-indigo-100 rounded-lg p-4 bg-indigo-50/30 mb-6">
-          
+
             <div className="text-base font-medium mb-4 pb-2 border-b border-indigo-100">
               {isError ? "Featured Not Activated" : "Featured Activated"}
             </div>
@@ -282,7 +282,7 @@ function PlansList() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const { onboardingRole, onboardingProfileData } = useUserRole();
+  const { onboardingRole, onboardingProfileData, roleSelection } = useUserRole();
 
   // Prefer context role, fallback to query param, default to "user"
   const role = onboardingRole || searchParams.get("role") || "user";
@@ -462,7 +462,7 @@ function PlansList() {
       id: "trial",
       variant: "default",
       color: "gray",
-      buttonText: isBusiness
+      buttonText: roleSelection === "business"
         ? "Not Valid For Business"
         : "Start Your 14 Day Trial",
     },

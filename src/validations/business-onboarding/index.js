@@ -182,13 +182,37 @@ export const createBusinessProfileSchema = Yup.object({
                          .trim(),
 
                     ownershipPercentage: Yup.number()
+                         .transform((value, originalValue) =>
+                              originalValue === "" ? undefined : value
+                         )
                          .min(0, "Ownership % cannot be less than 0")
                          .max(100, "Ownership % cannot exceed 100")
                          .required("Ownership % is required"),
                })
           )
           .min(1, "At least 1 stakeholder is required")
-          .required("Stakeholder disclosure is required"),
+          .required("Stakeholder disclosure is required")
+          .test(
+               "total-ownership",
+               "Total ownership must be exactly 100%",
+               (value) => {
+                    if (!value || value.length === 0) return false;
+                    const hasIncomplete = value.some(
+                         (item) =>
+                              item.ownershipPercentage === "" ||
+                              item.ownershipPercentage === undefined ||
+                              isNaN(item.ownershipPercentage)
+                    );
+
+                    if (hasIncomplete) return true;
+                    const total = value.reduce(
+                         (sum, item) => sum + Number(item.ownershipPercentage),
+                         0
+                    );
+
+                    return total === 100;
+               }
+          ),
 
      // Operations
      regionOfOperations: Yup.array().of(
@@ -230,10 +254,10 @@ export const createBusinessProfileSchema = Yup.object({
 
      // Dimensions
      standardProductDimensions: Yup.object({
-          length: Yup.number().min(0, "Length must be at least 0").default(0),
-          width: Yup.number().min(0, "Width must be at least 0").default(0),
-          height: Yup.number().min(0, "Height must be at least 0").default(0),
-          weight: Yup.number().min(0, "Weight must be at least 0").default(0),
+          length: Yup.number().min(0, "Length should be at least 0").default(0),
+          width: Yup.number().min(0, "Width should be at least 0").default(0),
+          height: Yup.number().min(0, "Height should be at least 0").default(0),
+          weight: Yup.number().min(0, "Weight should be at least 0").default(0),
      }),
 
      // Certifications

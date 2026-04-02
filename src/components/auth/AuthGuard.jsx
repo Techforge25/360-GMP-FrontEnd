@@ -7,7 +7,7 @@ import { connectSocket } from "@/services/socket";
 import subscriptionAPI from "@/services/subscriptionAPI";
 
 export default function AuthGuard({ children }) {
-  const { user } = useUserRole();
+  const { user, isRoleSelected } = useUserRole();
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
@@ -27,6 +27,10 @@ export default function AuthGuard({ children }) {
       });
 
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
+
+      if (!isRoleSelected && pathname === "/onboarding/business-profile" || !isRoleSelected && pathname === "/onboarding/user-profile" || !isRoleSelected && pathname === "/onboarding/plans") {
+        return router.push("/onboarding/role")
+      }
 
       if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
         return router.push("/onboarding/role")

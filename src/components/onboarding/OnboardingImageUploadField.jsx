@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { FileUpload } from "@/components/ui/FileUpload";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { useState } from "react";
 
 export default function OnboardingImageUploadField({
   label,
@@ -25,8 +26,17 @@ export default function OnboardingImageUploadField({
   removeLabel = "Remove",
   showRemove = true,
 }) {
-  const runUpload = async (file, onProgress = () => {}) => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const runUpload = async (file, onProgress = () => { }) => {
     if (!file) return value;
+
+    const acceptedTypes = accept.split(",").map((t) => t.trim().toLowerCase());
+    const fileExt = "." + file.name.split(".").pop().toLowerCase();
+
+    if (!acceptedTypes.includes(fileExt)) {
+      throw new Error(`File type not allowed. Allowed types: ${acceptedTypes.join(", ")}`);
+    }
 
     if (file.size > maxSizeMb * 1024 * 1024) {
       throw new Error(`File must be under ${maxSizeMb}MB`);
@@ -51,10 +61,12 @@ export default function OnboardingImageUploadField({
     if (!file) return;
 
     try {
+      setErrorMessage("");
       onUploadingChange?.(true);
       await runUpload(file);
     } catch (error) {
       console.error("Image upload failed", error);
+      setErrorMessage(error.message || "Upload failed");
     } finally {
       onUploadingChange?.(false);
     }
@@ -95,15 +107,23 @@ export default function OnboardingImageUploadField({
                 </button>
               )}
             </div>
+            {errorMessage && (
+              <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+            )}
           </div>
         </div>
       ) : (
-        <FileUpload
-          label={label}
-          subLabel={subLabel}
-          onUploadingChange={onUploadingChange}
-          onUpload={runUpload}
-        />
+        <div>
+          <FileUpload
+            label={label}
+            subLabel={subLabel}
+            onUploadingChange={onUploadingChange}
+            onUpload={runUpload}
+          />
+          {errorMessage && (
+            <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
+          )}
+        </div>
       )}
     </div>
   );

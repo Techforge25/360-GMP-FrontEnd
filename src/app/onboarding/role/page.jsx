@@ -17,12 +17,9 @@ import subscriptionAPI from "@/services/subscriptionAPI";
 export default function RoleSelectionPage() {
   const router = useRouter();
   const [selectedRole, setSelectedRole] = useState("business");
-  const [checkSubsExistence, setCheckSubsExistence] = useState(null)
+  const [checkSubsExistence, setCheckSubsExistence] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useUserRole();
-
-  // Note: Removed auto-redirect useEffect to prevent conflicts with manual navigation
-  // The handleContinue function below handles all redirects based on isNewToPlatform flag
+  const { user, setIsRoleSelected } = useUserRole();
 
   useEffect(() => {
     const fetchUserExistence = async () => {
@@ -30,9 +27,10 @@ export default function RoleSelectionPage() {
         const res = await subscriptionAPI.checkSubscriptionExistence();
         setCheckSubsExistence(res);
 
-        if (!res?.data?.subscriptionStatus) {
+        if (res?.data?.subscriptionStatus) {
           setSelectedRole("user");
         }
+        setLoading(false);
       } catch (err) {
         console.error(err);
       } finally {
@@ -46,17 +44,16 @@ export default function RoleSelectionPage() {
   const handleContinue = async () => {
     try {
       console.log(selectedRole);
-      // Get the updated user object directly from the sync call to avoid stale closure issues
-      // const updatedUser = await setOnboardingRole(selectedRole);
-
-      // If user is new, send to plans. Otherwise, send to dashboard.
-      if (user?.isNewToPlatform && !checkSubsExistence.data.subscriptionStatus) {
+      if (
+        user?.isNewToPlatform &&
+        !checkSubsExistence?.data?.subscriptionStatus
+      ) {
         router.push(`/onboarding/plans`);
       } else if (user?.isNewToPlatform) {
         if (selectedRole === "business") {
-          router.push("/onboarding/business-profile")
+          router.push("/onboarding/business-profile");
         } else {
-          router.push("/onboarding/user-profile")
+          router.push("/onboarding/user-profile");
         }
       } else {
         const dashboardUrl =
@@ -65,10 +62,13 @@ export default function RoleSelectionPage() {
             : "/dashboard/user";
         router.push(dashboardUrl);
       }
+      setIsRoleSelected(true)
     } catch (e) {
       console.error("Navigation halted due to role sync error");
     }
   };
+
+  const renderBusinessSelection = (checkSubsExistence?.data?.planName !== "TRIAL" && checkSubsExistence?.data?.subscriptionStatus) || !checkSubsExistence?.data?.subscriptionStatus
 
   return (
     <div className="flex w-full items-center justify-center p-3 xs:p-4 sm:p-6">
@@ -93,19 +93,31 @@ export default function RoleSelectionPage() {
 
         <CardContent className="space-y-3 xs:space-y-4 sm:space-y-6 px-4 xs:px-6 pb-4 xs:pb-6 sm:pb-8 pt-2 xs:pt-4 sm:pt-6">
           <div className="space-y-2 xs:space-y-3 sm:space-y-4">
-            {checkSubsExistence?.data?.planName === "TRIAL" && checkSubsExistence?.data?.subscriptionStatus || !checkSubsExistence?.subscriptionStatus && (
-              <RoleSelectionCard
-                type="business"
-                selected={selectedRole}
-                onSelect={setSelectedRole}
-              />
-            )}
+            {loading ? (
+              <div className="space-y-4 animate-pulse">
+                <div className="h-20 rounded-xl bg-gray-200" />
+                <div className="h-20 rounded-xl bg-gray-200" />
+                <div className="h-10 rounded-lg bg-gray-200 mt-4" />
+              </div>
+            ) : (
+              <>
+                {(
+                  renderBusinessSelection
+                ) && (
+                    <RoleSelectionCard
+                      type="business"
+                      selected={selectedRole}
+                      onSelect={setSelectedRole}
+                    />
+                  )}
 
-            <RoleSelectionCard
-              type="user"
-              selected={selectedRole}
-              onSelect={setSelectedRole}
-            />
+                <RoleSelectionCard
+                  type="user"
+                  selected={selectedRole}
+                  onSelect={setSelectedRole}
+                />
+              </>
+            )}
           </div>
 
           <button
