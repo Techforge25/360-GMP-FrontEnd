@@ -78,18 +78,19 @@ export default function ShowPlanUpdate({ totalSpent, loading, showPlans, handleS
 
                                                        <Button
                                                             onClick={() => handleSelectPlan(plan)}
+                                                            disabled={pathname.includes("business") && plan?.name === "TRIAL"}
                                                             className={cn(
                                                                  "w-full mb-8 font-medium",
                                                                  isPremium
                                                                       ? "bg-[#240457] text-white hover:bg-indigo-800"
-                                                                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50",
+                                                                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed",
                                                             )}
                                                        >
                                                             {String(
                                                                  subscription?.planId || subscription?.plan?._id,
                                                             ) === String(plan._id)
                                                                  ? "Current Plan"
-                                                                 : "Choose Plan"}
+                                                                 : pathname.includes("business") && plan?.name === "TRIAL" ? "Not Valid For Business" : "Choose Plan"}
                                                        </Button>
 
                                                        <div className="space-y-4 mb-4">

@@ -27,14 +27,19 @@ export default function AuthGuard({ children }) {
       });
 
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
+      const userRole = user.role;
 
-      if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
-        return router.push("/onboarding/role")
+
+      if (!userRole) {
+        if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
+          return router.push("/onboarding/role")
+        }
+
+        if (!response?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
+          return router.push("/onboarding/role")
+        }
       }
 
-      if (!response?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
-        return router.push("/onboarding/role")
-      }
 
       if (!user || response.statusCode !== 200) {
         // Not logged in, redirect to login

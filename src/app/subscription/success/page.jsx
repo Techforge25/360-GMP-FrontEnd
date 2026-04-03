@@ -43,11 +43,8 @@ function SubscriptionSuccessContent() {
 
   const handleContinue = () => {
     const storedSub = subscriptionAPI.getStoredSubscription();
-    console.log(subscriptionData, "subscription data")
     const role = storedSub?.role || user?.role || "user";
     const isNew = user?.isNewToPlatform ?? true;
-
-    console.log(isNew, user, "is new")
 
     if (checkSubscriptionUpdate.planUpdate) {
       return router.push(checkSubscriptionUpdate.planUpdateRoute)

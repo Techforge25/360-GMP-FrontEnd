@@ -21,17 +21,19 @@ export default function RoleGuard({ children, allowedRoles }) {
 
       const userRole = user.role;
       const isAuthorized = allowedRoles.includes(userRole);
-
-
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
 
-      if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile" && !isSwitchProfile.isInActiveProfile) {
-        return router.push("/onboarding-role")
+      if (!userRole) {
+        if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile" && !isSwitchProfile.isInActiveProfile) {
+          return router.push("/onboarding-role")
+        }
+
+        if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
+          return router.push("/onboarding/role")
+        }
+
       }
 
-      if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
-        return router.push("/onboarding/role")
-      }
 
       if (!isAuthorized) {
         // Redirect to unauthorized or their own dashboard
