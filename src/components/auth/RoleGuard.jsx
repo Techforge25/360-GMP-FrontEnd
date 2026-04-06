@@ -19,9 +19,16 @@ export default function RoleGuard({ children, allowedRoles }) {
         router.push("/login");
         return;
       }
-
       const userRole = user.role;
+
       const isAuthorized = allowedRoles.includes(userRole);
+
+      if (isAuthorized) {
+        if (pathname === "/sign-up" || pathname === "/login" || pathname === "/forgot-password" || pathname === "/otp-verification" || pathname === "/reset-password") {
+          return router.push(`/dashboard/${user?.role}`)
+        }
+      }
+
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
       if (isAuthorized) {
         const isCancelled =

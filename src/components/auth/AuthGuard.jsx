@@ -27,7 +27,13 @@ export default function AuthGuard({ children }) {
       const isAuthorized = response?.userId;
 
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
-      const userRole = user.role;
+      const userRole = user?.role;
+
+      if (isAuthorized) {
+        if (pathname === "/sign-up" || pathname === "/login" || pathname === "/forgot-password" || pathname === "/otp-verification" || pathname === "/reset-password") {
+          return router.push(`/dashboard/${user?.role}`)
+        }
+      }
 
       if (isAuthorized) {
         const isCancelled =
