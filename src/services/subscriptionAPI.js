@@ -58,7 +58,7 @@ class SubscriptionAPI {
    */
   async cancelSubscription(params) {
     const { password } = params
-    return await api.delete({
+    return await api.post({
       url: `/subscription/stripe/cancel-subscription`,
       payload: {
         password: password,

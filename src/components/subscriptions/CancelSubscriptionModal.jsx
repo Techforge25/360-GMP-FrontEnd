@@ -18,7 +18,7 @@ export default function CancelSubscriptionModal({ setDeletePlanModal, setConfirm
 
                console.log(password,)
 
-               const res = await api.delete({
+               const res = await api.post({
                     url: `/subscription/stripe/cancel-subscription`,
                     payload: {
                          password: password,
