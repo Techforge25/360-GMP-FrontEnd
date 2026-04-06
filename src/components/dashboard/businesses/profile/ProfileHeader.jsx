@@ -152,7 +152,7 @@ export default function ProfileHeader({ business }) {
         <div className="absolute -top-12 left-1/2 transform -translate-x-1/2">
           <div className="w-24 h-24 bg-white rounded-xl shadow-lg p-2 flex items-center justify-center">
             <div className="w-full h-full border border-cyan-100 rounded-lg flex items-center justify-center">
-              <img src={logo} alt="Logo" className="w-16 h-16 object-contain" />
+              <Image src={logo} alt="Logo" height={100} width={100} className="w-16 h-16 object-contain" />
             </div>
           </div>
         </div>

@@ -25,7 +25,7 @@ export default function Home() {
         <Capabilities />
         <Zones />
 
-        <section className="bg-gradient-to-r from-brand-primary to-brand-primary-light py-20 text-center">
+        <section className="bg-gradient-to-l from-brand-primary to-brand-primary-light py-20 text-center">
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-3xl md:text-5xl font-semibold text-white mb-6">
               Unlock Unlimited Potential
@@ -77,19 +77,19 @@ export default function Home() {
                   </ul>
                 </div>
                 <div className="flex flex-col md:flex-row justify-center items-center sm:items-start gap-4 mt-8">
-                  <Link href="/landing/pricing">
+                  <Link href="/signup">
                     <Button variant="default" className=" px-6">
-                      Become a Premium Member <FaArrowRight className="ml-2" />
+                      Become a Member <FaArrowRight className="ml-2" />
                     </Button>
                   </Link>
-                  <Link href="/landing/pricing">
+                  {/* <Link href="/landing/pricing">
                     <Button
                       variant="outline"
                       className=" px-6 border border-gray-900"
                     >
                       Start your 14 free trial <FaArrowRight className="ml-2" />
                     </Button>
-                  </Link>
+                  </Link> */}
                 </div>
               </div>
             </div>

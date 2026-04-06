@@ -68,7 +68,7 @@ export default function ProductDetailContent({ productId, businessId }) {
             product.supplierName ||
             "Business"}{" "}
           <span className="mx-1">&gt;</span> Product List{" "}
-          <span className="mx-1 font-bold text-[#240457]">
+          <span className="mx-1 font-bold text-brand-primary">
             &gt; Product Detail
           </span>
         </div>

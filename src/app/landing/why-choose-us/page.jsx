@@ -4,9 +4,12 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import UnlockPotentialCTA from "@/components/landing/UnlockPotentialCTA";
 import { Button } from "@/components/ui/Button";
-import { FaCheckCircle, FaRegDotCircle } from "react-icons/fa";
+import { FaCheckCircle } from "react-icons/fa";
+import { HiMiniChevronDoubleDown } from "react-icons/hi2";
 import { LuCircleDot } from "react-icons/lu";
 import Link from "next/link";
+import Image from "next/image";
+import { CiCircleCheck } from "react-icons/ci";
 
 const WhyChooseUsPage = () => {
   return (
@@ -34,17 +37,24 @@ const WhyChooseUsPage = () => {
             Connectivity
           </h2>
           <p className="text-gray-600 text-base md:text-xl leading-relaxed mb-12">
-            360 Global Marketplace isn&apos;t just another platform. It is a complete
-            digital ecosystem built to empower businesses, corporations,
-            suppliers, and entrepreneurs worldwide. Here&apos;s why thousands of
-            professionals choose us as their global business gateway.
+            360 Global Marketplace isn&apos;t just another platform. It is a
+            complete digital ecosystem built to empower businesses,
+            corporations, suppliers, and entrepreneurs worldwide. Here&apos;s
+            why thousands of professionals choose us as their global business
+            gateway.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
             <div className="flex gap-4">
               <div className="mt-1 flex-shrink-0">
-                <div className="p-1 rounded-full border border-purple-200">
-                  <LuCircleDot className="text-purple-600 w-5 h-5" />
+                <div className="">
+                  <Image
+                    src={"/assets/images/arrowicon.svg"}
+                    alt="arrowicon"
+                    width={50}
+                    height={50}
+                    className="w-[24px]"
+                  />
                 </div>
               </div>
               <div>
@@ -60,8 +70,14 @@ const WhyChooseUsPage = () => {
 
             <div className="flex gap-4">
               <div className="mt-1 flex-shrink-0">
-                <div className="p-1 rounded-full border border-purple-200">
-                  <LuCircleDot className="text-purple-600 w-5 h-5" />
+                <div className="">
+                  <Image
+                    src={"/assets/images/arrowicon.svg"}
+                    alt="arrowicon"
+                    width={50}
+                    height={50}
+                    className="w-[24px]"
+                  />
                 </div>
               </div>
               <div>
@@ -80,7 +96,15 @@ const WhyChooseUsPage = () => {
         {/* Ecosystem Section */}
         <div className="mb-20 bg-white border border-gray-100 rounded-3xl p-6 md:p-10 shadow-sm">
           <div className="flex items-start gap-4 mb-8">
-            <LuCircleDot className="text-purple-600 w-6 h-6 mt-1 flex-shrink-0" />
+            <div className="">
+              <Image
+                src={"/assets/images/arrowicon.svg"}
+                alt="arrowicon"
+                width={50}
+                height={50}
+                className="w-[24px]"
+              />
+            </div>
             <div>
               <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
                 A True All-In-One Business Ecosystem
@@ -91,8 +115,8 @@ const WhyChooseUsPage = () => {
             </div>
           </div>
 
-          <div className="bg-[#E9F5EB] border border-[#22C55E]/30 rounded-2xl p-6 md:p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-12">
+          <div className="bg-green/10 border border-green rounded-2xl p-6 md:p-8">
+            <div className="flex items-center md:justify-center flex-wrap md:gap-[20px] gap-[10px]">
               {[
                 "Marketplace",
                 "Supplier Access",
@@ -104,8 +128,11 @@ const WhyChooseUsPage = () => {
                 "Analytics & Insights",
               ].map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <FaCheckCircle className="text-[#22C55E] text-lg flex-shrink-0" />
-                  <span className="text-gray-700 font-medium text-base md:text-xl whitespace-nowrap">
+                  <CiCircleCheck
+                    size={24}
+                    className="text-green w-[24px] h-[24px] text-lg flex-shrink-0"
+                  />
+                  <span className="text-text-primary  text-[16px] md:text-[18px] whitespace-nowrap">
                     {feature}
                   </span>
                 </div>
@@ -128,7 +155,15 @@ const WhyChooseUsPage = () => {
         {/* Escrow Section */}
         <div className="mb-20 bg-white border border-gray-100 rounded-3xl p-6 md:p-10 shadow-sm">
           <div className="flex items-start gap-4 mb-8">
-            <LuCircleDot className="text-purple-600 w-6 h-6 mt-1 flex-shrink-0" />
+            <div className="">
+              <Image
+                src={"/assets/images/arrowicon.svg"}
+                alt="arrowicon"
+                width={50}
+                height={50}
+                className="w-[24px]"
+              />
+            </div>
             <div>
               <h3 className="text-xl md:text-2xl font-medium text-gray-900 mb-2">
                 Escrow-Based Payments For Trusted Transactions
@@ -141,8 +176,8 @@ const WhyChooseUsPage = () => {
             </div>
           </div>
 
-          <div className="bg-[#E9F3FF] border border-[#3B82F6]/30 rounded-2xl p-6 md:p-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="bg-[#E9F3FF] border border-blue-dark rounded-2xl p-6 md:p-8">
+            <div className="flex items-center md:justify-center flex-wrap md:gap-[20px] gap-[10px]">
               {[
                 "Funds are held safely by 360GMP",
                 "Seller delivers product or service",
@@ -150,8 +185,8 @@ const WhyChooseUsPage = () => {
                 "Payment is released only after confirmation",
               ].map((step, idx) => (
                 <div key={idx} className="flex items-center gap-3">
-                  <FaCheckCircle className="text-[#3B82F6] text-lg flex-shrink-0" />
-                  <span className="text-gray-700 font-medium text-base md:text-xl leading-tight">
+                  <CiCircleCheck size={24} className="text-blue-dark text-lg flex-shrink-0" />
+                  <span className="text-text-primary font-normal text-[16px] md:text-[18px] leading-tight">
                     {step}
                   </span>
                 </div>
@@ -162,7 +197,7 @@ const WhyChooseUsPage = () => {
 
         <div className="flex justify-center mt-12 pb-20">
           <Link href="/landing/contact-us">
-            <Button className="bg-[#240457] hover:bg-[#1a0340] text-white px-10 py-4 rounded-xl font-semibold transition-all shadow-lg text-lg flex items-center gap-2">
+            <Button className="bg-brand-primary hover:bg-brand-primary text-white px-10 py-4 rounded-xl font-semibold transition-all shadow-lg text-lg flex items-center gap-2">
               Get Started →
             </Button>
           </Link>

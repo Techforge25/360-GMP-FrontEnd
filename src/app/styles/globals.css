@@ -7,6 +7,7 @@
   --color-brand-primary: #240457;
   --color-brand-primary-light: #9747ff;
   --color-brand-secondary: #e8eef6;
+  --color-brand-secondary-dark: #0B192C;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
@@ -22,10 +23,15 @@
   --color-text-inverse: #ffffff;
   --color-text-link: #2497cd;
   --color-text-gray-more: #768299;
+  --color-text-light-gray-more: #474747;
+  --color-text-orange:#CC6A21;
 
   /* ===== Borders ===== */
   --color-border-light: #d3d6de;
   --color-border-dark: rgba(51, 51, 51, 0.6);
+  --color-border-orange:#CC6A21;
+  --color-border-primary-light: #9747ff;
+  --color-border-gray-light: #D1D7E3;
 
   /* ===== Status / Accent ===== */
   --color-accent-success: #22c55e;
@@ -82,6 +88,7 @@
   --color-brand-primary: #240457;
   --color-brand-primary-light: #9747ff;
   --color-brand-secondary: #e8eef6;
+  --color-brand-tertiary: #FF99C3;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
@@ -101,6 +108,8 @@
   /* ===== Borders ===== */
   --color-border-light: #d3d6de;
   --color-border-dark: rgba(51, 51, 51, 0.6);
+  --color-border-green: #0B8806;
+
 
   /* ===== Status / Accent ===== */
   --color-accent-success: #22c55e;

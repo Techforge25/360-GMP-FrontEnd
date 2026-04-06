@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { useUserRole } from "@/context/UserContext";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import Image from "next/image";
 
 const BusinessCard = ({ business, onContactClick }) => {
   const { user } = useUserRole();
@@ -130,9 +131,11 @@ const BusinessCard = ({ business, onContactClick }) => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row gap-4 mb-4 ">
         <div className="w-16 h-16 rounded-full border border-gray-100 shadow-sm flex items-center justify-center p-2 bg-white flex-shrink-0">
-          <img
+          <Image
             src={logo}
             alt={name}
+            height={100}
+            width={100}
             className="w-full h-full object-contain"
             onError={(e) => {
               e.target.style.display = "none";

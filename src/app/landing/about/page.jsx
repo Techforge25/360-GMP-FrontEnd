@@ -15,10 +15,12 @@ const AboutPage = () => {
 
       {/* Header Section */}
       <div className="relative mt-20 h-80 md:h-[450px] w-full overflow-hidden rounded-xl">
-        <div className="absolute inset-0 bg-[#240457] opacity-50 z-10" />
-        <img
+        <div className="absolute inset-0 bg-brand-primary opacity-50 z-10" />
+        <Image
           src="/assets/images/aboutUsMain.png"
           alt="About Us Hero"
+          height={1000}
+          width={1000}
           className="absolute  inset-0 w-full h-full"
         />
 
@@ -29,7 +31,7 @@ const AboutPage = () => {
 
       <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         {/* Intro Text */}
-        <div className="max-w-5xl mx-auto text-left md:text-center mb-16 text-base md:text-[15px]">
+        <div className="max-w-5xl mx-auto text-left md:text-start mb-16 text-base md:text-[15px]">
           <p className="text-black/80 leading-relaxed mb-6">
             360 Global Marketplace is dedicated to revolutionizing the way
             businesses connect with suppliers and customers. Our platform
@@ -38,9 +40,9 @@ const AboutPage = () => {
             involved.
           </p>
           <p className="text-black/80 leading-relaxed">
-            By joining 360 Global Marketplace LLC, you&apos;re taking a significant
-            step towards empowering businesses and creating a more equitable and
-            connected global business community.
+            By joining 360 Global Marketplace LLC, you&apos;re taking a
+            significant step towards empowering businesses and creating a more
+            equitable and connected global business community.
           </p>
         </div>
 
@@ -64,17 +66,19 @@ const AboutPage = () => {
 
         {/* Large Skyscrapers Image */}
         <div className="relative w-full overflow-hidden mb-24 rounded-4xl shadow-sm">
-          <img
+          <Image
             src="/assets/images/aboutPagebanner.png"
             alt="Modern Skyscrapers"
             className="w-full h-auto object-cover"
+            height={1000}
+            width={1000}
             onError={(e) => {
               e.target.style.display = "none";
               e.target.parentElement.style.backgroundColor = "#ccc";
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#240457]/80 via-transparent to-transparent flex items-end justify-center pb-8 md:pb-16">
-            <Link href="/landing/contact-us">
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/80 via-transparent to-transparent flex items-end justify-center pb-8 md:pb-16">
+            <Link href="/signup">
               <Button className="bg-white text-black hover:bg-gray-100 px-10 py-4 rounded-xl font-semibold text-base shadow-lg">
                 Join Us Now →
               </Button>
@@ -95,9 +99,11 @@ const AboutPage = () => {
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="w-full md:w-1/2">
             <div className="relative rounded-2xl overflow-hidden shadow-lg max-w-md">
-              <img
+              <Image
                 src="/assets/images/vision.png"
                 alt="Vision"
+                width={1000}
+                height={1000}
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -126,9 +132,11 @@ const AboutPage = () => {
         <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12">
           <div className="w-full md:w-1/2">
             <div className="relative rounded-2xl overflow-hidden shadow-lg max-w-md md:ml-auto">
-              <img
+              <Image
                 src="/assets/images/mission.png"
                 alt="Mission"
+                width={1000}
+                height={1000}
                 className="w-full h-auto object-cover"
               />
             </div>
@@ -144,15 +152,15 @@ const AboutPage = () => {
               realize their full potential.
             </p>
             <p className="text-base md:text-xl text-gray-700 leading-relaxed">
-              <span className="font-bold text-[#240457]">OUR MISSION</span> is
+              <span className="font-bold text-brand-primary">OUR MISSION</span> is
               to provide expert guidance and support to the small business
               owners as well as large corporations. We Bring Your Vision To The
               Global Marketplace. We strive to be the ultimate resource hub for
               business owners and entrepreneurs worldwide
             </p>
-            <Link href="/landing/pricing">
-              <button className="bg-[#240457] mt-4 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
-                Start Your 14 Day Free Trial
+            <Link href="/signup">
+              <button className="bg-brand-primary mt-4 text-white px-6 py-2.5 rounded-lg text-base font-medium transition-colors flex items-center gap-2">
+                Start Your 14 Day Free User Trial
                 <FiArrowRight />
               </button>
             </Link>

@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React from "react";
 import { FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
 import {
@@ -158,25 +159,65 @@ const Capabilities = () => {
           </div>
 
           <div className="bg-[#F8FAFC] rounded-2xl p-8 md:p-12 border border-gray-100">
-            <div className="flex flex-col gap-6 items-center text-base md:text-xl text-gray-600">
+            <div className="flex flex-col md:gap-6 gap-3 items-center text-base md:text-xl text-gray-600">
               {/* Row 1 */}
-              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 text-center">
-                <span>Buyer pays</span>
-                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
-                <span>Funds held securely</span>
-                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
-                <span>Provider delivers service/goods</span>
-                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
-                <span>Buyer approves</span>
-                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+              <div className="flex flex-wrap items-center justify-center gap-[6px] md:gap-[12px] text-center">
+                <span className="text-[14px] ">Buyer pays</span>
+                <Image
+                  src={"assets/images/arrowRight.svg"}
+                  width={100}
+                  height={100}
+                  alt="arrowLeft"
+                  className="w-[28px] h-[28px]"
+                />
+                <span className="text-[14px] ">Funds held securely</span>
+                <Image
+                  src={"assets/images/arrowRight.svg"}
+                  width={100}
+                  height={100}
+                  alt="arrowLeft"
+                  className="w-[28px] h-[28px]"
+                />
+                <span className="text-[14px] ">
+                  Provider delivers service/goods
+                </span>
+                <Image
+                  src={"assets/images/arrowRight.svg"}
+                  width={100}
+                  height={100}
+                  alt="arrowLeft"
+                  className="w-[28px] h-[28px]"
+                />
+                <span className="text-[14px] ">Buyer approves</span>
+                <Image
+                  src={"assets/images/arrowRight.svg"}
+                  width={100}
+                  height={100}
+                  alt="arrowLeft"
+                  className="w-[28px] h-[28px]"
+                />
               </div>
 
               {/* Row 2 */}
-              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 text-center">
-                <span>Satisfaction</span>
-                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
-                <span>Payment released to provider</span>
-                <HiOutlineArrowNarrowRight className="text-[#240457] text-lg md:text-2xl" />
+              <div className="flex flex-wrap items-center justify-center gap-[6px] md:gap-[12px] text-center">
+                <span className="text-[14px]">Satisfaction</span>
+                <Image
+                  src={"assets/images/arrowRight.svg"}
+                  width={100}
+                  height={100}
+                  alt="arrowLeft"
+                  className="w-[28px] h-[28px]"
+                />
+                <span className="text-[14px]">
+                  Payment released to provider
+                </span>
+                <Image
+                  src={"assets/images/arrowRight.svg"}
+                  width={100}
+                  height={100}
+                  alt="arrowLeft"
+                  className="w-[28px] h-[28px]"
+                />
               </div>
             </div>
           </div>

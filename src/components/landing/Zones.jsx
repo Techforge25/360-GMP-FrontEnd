@@ -2,6 +2,7 @@
 import React from "react";
 import { BsHouseAdd } from "react-icons/bs";
 import { FiGlobe, FiBriefcase, FiUsers, FiMessageCircle } from "react-icons/fi";
+import { MdOutlineAddBusiness } from "react-icons/md";
 
 const Zones = () => {
   const zones = [
@@ -70,20 +71,27 @@ const Zones = () => {
             {[
               {
                 title: "Global Supplier Matching",
-                icon: <FiGlobe className="w-6 h-6 text-brand-primary" />,
-                desc: "lorem ipsum dolor sit amet consectetur adipisicing elit.",
+                icon: (
+                  <MdOutlineAddBusiness
+                    size={24}
+                    className="w-6 h-6 text-accent-success"
+                  />
+                ),
+                desc: "Connect with verified global manufacturers and suppliers in seconds.",
                 bg: "bg-highlight-green border-green",
               },
               {
                 title: "New Business Opportunities",
-                icon: <FiBriefcase className="w-6 h-6 text-brand-primary" />,
-                desc: "lorem ipsum dolor sit amet consectetur adipisicing elit.",
+                icon: (
+                  <MdOutlineAddBusiness className="w-6 h-6 text-accent-info" />
+                ),
+                desc: "Access new markets, partnerships, and corporate buyers.",
                 bg: "bg-highlight-blue border-blue-dark",
               },
               {
                 title: "Community Engagement",
-                iconColor: "text-brown",
-                desc: "lorem ipsum dolor sit amet consectetur adipisicing elit.",
+                icon: <MdOutlineAddBusiness className="w-6 h-6 text-brown" />,
+                desc: "Join business communities, forums, and industry networks to build visibility and trust.",
                 bg: "bg-highlight-yellow border-brown",
               },
             ].map((feature, i) => (
@@ -92,7 +100,7 @@ const Zones = () => {
                 className={`${feature.bg} p-8 pt-6 pl-6 rounded-lg border transition-all duration-300 hover:shadow-lg flex flex-col gap-4`}
               >
                 <h4 className="font-bold text-text-primary mb-2 flex items-center gap-2">
-                  <BsHouseAdd className={`w-6 h-6 ${feature.iconColor}`} />
+                  {feature.icon}
                   {feature.title}
                 </h4>
 

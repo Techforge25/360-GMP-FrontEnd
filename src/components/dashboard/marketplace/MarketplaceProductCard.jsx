@@ -1,6 +1,7 @@
 "use client";
 
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import Image from "next/image";
 
 export default function MarketplaceProductCard({
   product,
@@ -12,11 +13,13 @@ export default function MarketplaceProductCard({
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative bg-gray-100 h-40 sm:h-48 cursor-pointer group">
-        <img
+        <Image
           src={product.image}
           alt={product.title}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           onClick={() => handleProductClick(product)}
+          width={100}
+          height={100}
         />
         <div className="absolute top-2 right-2 flex gap-1">
           <div className="w-6 h-6 rounded-full flex items-center justify-center shadow bg-white">

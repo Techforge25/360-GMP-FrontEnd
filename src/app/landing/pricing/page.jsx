@@ -5,6 +5,8 @@ import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/Button";
 import { FiCheck, FiX, FiInfo } from "react-icons/fi";
 import { MdStars } from "react-icons/md";
+import Image from "next/image";
+import { FaCrown } from "react-icons/fa";
 
 const PricingPage = () => {
   const plans = [
@@ -109,10 +111,12 @@ const PricingPage = () => {
 
       {/* Header Section */}
       <div className="relative mt-20 h-80 md:h-[450px] w-full overflow-hidden rounded-xl mx-auto max-w-[95%]">
-        <div className="absolute inset-0 bg-[#240457] opacity-50 z-10" />
-        <img
+        <div className="absolute inset-0 bg-brand-primary opacity-50 z-10" />
+        <Image
           src="/assets/images/ChooseYourPlanMain.png"
           alt="Choose Your Plan"
+          width={1000}
+          height={1000}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="relative z-20 h-full flex flex-col items-center justify-center text-white text-center px-4">
@@ -141,10 +145,11 @@ const PricingPage = () => {
                 className="absolute inset-0 flex items-center"
                 aria-hidden="true"
               >
-                <div className="w-full border-t border-purple-200"></div>
+                {/* <div className="w-[1040px] mx-auto border-t-[2px]  border-purple-200" /> */}
+                <div className="w-[1040px] mx-auto h-[2px] bg-gradient-to-r from-brand-primary-light to-[#FF99C3]" />
               </div>
               <div className="relative">
-                <span className="bg-[#240457] text-white px-8 py-2 rounded-full text-sm font-semibold">
+                <span className="bg-gradient-to-r from-brand-primary-light to-brand-primary text-white px-8 py-2 rounded-full text-sm font-semibold">
                   For {section.role}
                 </span>
               </div>
@@ -156,27 +161,30 @@ const PricingPage = () => {
                 <div
                   key={pIdx}
                   className={`relative bg-white rounded-2xl border ${
-                    plan.accent
-                      ? "shadow-xl border-purple-400"
-                      : "border-gray-200"
-                  } p-8 flex flex-col h-full transition-all hover:shadow-md`}
+                    plan.name === "Silver"
+                      ? "shadow-xl border-border-orange"
+                      : plan.name === "Premium"? "border-border-primary-light":"border-gray-light"
+                    } 
+                      p-8 flex flex-col h-full transition-all hover:shadow-md`}
                 >
                   <div className="text-center mb-8 flex flex-col items-center flex-1">
                     {/* Badge */}
                     <div className="h-8 mb-4">
                       {plan.name === "14 Day Trial" && (
-                        <span className="bg-gray-100 text-gray-400 px-4 py-1 rounded-full text-sm font-medium">
+                        <span
+                          className={`${section.role === "User" ? "bg-green/20 text-green" : "bg-gray-100 "} text-gray-400 px-4 py-1 rounded-full text-sm font-medium`}
+                        >
                           14 Day Trial
                         </span>
                       )}
                       {plan.name === "Silver" && (
-                        <span className="bg-[#FFF8E6] text-[#F3A531] px-4 py-1 rounded-full text-sm font-medium">
+                        <span className="bg-border-orange/10 text-text-orange px-4 py-1 rounded-full text-sm font-medium">
                           Silver
                         </span>
                       )}
                       {plan.badge === "Premium" && (
-                        <span className="bg-[#F3E8FF] text-[#A855F7] px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                          <MdStars className="text-base" /> Premium
+                        <span className="bg-brand-primary-light/20 text-brand-primary-light px-4 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                          <FaCrown size={20} className="text-base" /> Premium
                         </span>
                       )}
                     </div>
@@ -193,19 +201,19 @@ const PricingPage = () => {
                       {plan.description}
                     </p>
 
-                    <Button
+                    {/* <Button
                       variant={plan.ctaVariant}
                       disabled={plan.disabled}
                       className={`w-full py-6 rounded-lg font-medium text-base transition-all ${
                         plan.accent
-                          ? "bg-[#240457] hover:bg-[#1a0340] text-white"
+                          ? "bg-gradient-to-l from-brand-primary to-brand-primary-light text-white"
                           : plan.disabled
                             ? "bg-gray-200 text-gray-400 cursor-not-allowed border-none"
                             : "bg-white text-gray-900 border-gray-200 hover:border-purple-600"
                       }`}
                     >
                       {plan.cta}
-                    </Button>
+                    </Button> */}
                   </div>
 
                   <div className="border-t border-gray-100 pt-8 flex-1">

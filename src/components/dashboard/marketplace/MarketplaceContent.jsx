@@ -28,6 +28,7 @@ import {
   getMarketplaceProductPath,
 } from "@/features/dashboard/marketplace/helpers";
 import { useMarketplaceProducts } from "@/features/dashboard/marketplace/useMarketplaceProducts";
+import Image from "next/image";
 
 export default function MarketplaceContent() {
   const router = useRouter();
@@ -620,7 +621,7 @@ export default function MarketplaceContent() {
               )}
 
               {/* Top Ranking */}
-              <div className="mb-6 sm:mb-8 bg-[#9747FF] rounded-lg p-4 sm:p-6 text-white">
+              <div className="mb-6 sm:mb-8 bg-brand-primary-light rounded-lg p-4 sm:p-6 text-white">
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
                   <h2 className="text-lg sm:text-xl font-bold">Top Ranking</h2>
                   <button
@@ -641,10 +642,12 @@ export default function MarketplaceContent() {
                         className="bg-white rounded-lg overflow-hidden cursor-pointer"
                         onClick={() => handleProductClick(product)}
                       >
-                        <div className="bg-gray-100 h-28 sm:h-32  group">
-                          <img
+                        <div className="bg-gray-100 h-40 sm:h-48 group">
+                          <Image
                             src={product.image}
                             alt={product.title}
+                            height={100}
+                            width={100}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
                         </div>
@@ -703,10 +706,12 @@ export default function MarketplaceContent() {
                         className="bg-white rounded-lg overflow-hidden cursor-pointer"
                         onClick={() => handleProductClick(product)}
                       >
-                        <div className="bg-gray-100 h-32 sm:h-40 group">
-                          <img
+                        <div className="bg-gray-100 h-40 sm:h-48 group">
+                          <Image
                             src={product.image}
                             alt={product.title}
+                            width={100}
+                            height={100}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                           />
                         </div>

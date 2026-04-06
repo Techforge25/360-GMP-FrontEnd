@@ -43,9 +43,9 @@ const ContactUsPage = () => {
 
       {/* Header Section */}
       <div className="relative mt-20 h-80 md:h-[450px] w-full overflow-hidden rounded-xl mx-auto max-w-[95%]">
-        <div className="absolute inset-0 bg-[#240457] opacity-60 z-10" />
+        <div className="absolute inset-0 bg-brand-primary opacity-60 z-10" />
         <img
-          src="/assets/images/whyChooseUsMain.png"
+          src="/assets/images/contactus.png"
           alt="Contact Us"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -77,31 +77,31 @@ const ContactUsPage = () => {
                 <div className="space-y-8">
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-sm bg-gray-200 flex items-center justify-center flex-shrink-0">
-                      <FiPhone className="text-indigo-900" />
+                      <FiPhone size={24} className="text-brand-primary" />
                     </div>
                     <div>
                       <h4 className="font-medium text-base">Call</h4>
-                      <p className="text-sm text-black/70">+123456797-1</p>
+                      <p className="text-sm text-text-light-gray-more">+123456797-1</p>
                     </div>
                   </div>
 
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-sm bg-gray-200 flex items-center justify-center flex-shrink-0">
-                      <FiMail className="text-indigo-900" />
+                      <FiMail size={24} className="text-brand-primary" />
                     </div>
                     <div>
                       <h4 className="font-medium text-base">Message</h4>
-                      <p className="text-sm text-black/70">info@gmail.com</p>
+                      <p className="text-sm text-text-light-gray-more">info@gmail.com</p>
                     </div>
                   </div>
 
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-sm bg-gray-200 flex items-center justify-center flex-shrink-0">
-                      <FiMapPin className="text-indigo-900" />
+                      <FiMapPin size={24} className="text-brand-primary" />
                     </div>
                     <div>
                       <h4 className="font-medium text-base">Location</h4>
-                      <p className="text-sm text-black/70 leading-relaxed">
+                      <p className="text-sm text-text-light-gray-more leading-relaxed">
                         70 Washington Square South, New York, NY 10012, United
                         States
                       </p>
@@ -117,7 +117,7 @@ const ContactUsPage = () => {
             <form className="space-y-4">
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-text-light-gray-more">
                     First Name
                   </label>
                   <Input
@@ -126,7 +126,7 @@ const ContactUsPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-text-light-gray-more">
                     Last Name
                   </label>
                   <Input
@@ -138,7 +138,7 @@ const ContactUsPage = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-text-light-gray-more">
                     Email
                   </label>
                   <Input
@@ -148,7 +148,7 @@ const ContactUsPage = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">
+                  <label className="text-sm font-semibold text-text-light-gray-more">
                     Phone
                   </label>
                   <Input
@@ -159,7 +159,7 @@ const ContactUsPage = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-gray-700">
+                <label className="text-sm font-semibold text-text-light-gray-more">
                   Position
                 </label>
                 <Input
@@ -179,7 +179,7 @@ const ContactUsPage = () => {
                 />
               </div>
 
-              <Button className="w-full bg-[#240457] hover:bg-[#1a0340] text-white py-4 rounded-xl font-semibold text-base transition-all shadow-lg">
+              <Button className="w-full bg-brand-primary hover:bg-brand-primary-dark text-white py-4 rounded-xl font-semibold text-base transition-all shadow-lg">
                 Submit
               </Button>
             </form>

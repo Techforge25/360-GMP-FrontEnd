@@ -102,6 +102,8 @@ const AboutVision = () => {
             </div>
           </div>
 
+          <div className="md:h-[700] h-[80] w-[1px] md:mr-20 bg-border-light" />
+
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4">
               Vision
@@ -129,6 +131,8 @@ const AboutVision = () => {
           </div>
         </div>
 
+        <div className="h-[1px] w-full md:mr-20 bg-border-light md:-mt-20" />
+
         {/* Mission Section */}
         <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-12">
           <div className="w-full md:w-1/2 flex justify-center md:justify-end">
@@ -141,6 +145,8 @@ const AboutVision = () => {
             </div>
           </div>
 
+          <div className="md:h-[700] h-[80] w-[1px] md:mr-20 bg-border-light md:-mt-20" />
+
           <div className="w-full md:w-1/2 text-center md:text-left">
             <h3 className="text-xl md:text-4xl font-bold text-black mb-4">
               Mission
@@ -151,15 +157,15 @@ const AboutVision = () => {
               realize their full potential.
             </p>
             <p className="text-base  text-gray-700 leading-relaxed">
-              <span className="font-bold text-[#240457]">OUR MISSION</span> is
-              to provide expert guidance and support to the small business
+              <span className="font-bold text-brand-primary">OUR MISSION</span>{" "}
+              is to provide expert guidance and support to the small business
               owners as well as large corporations. We Bring Your Vision To The
               Global Marketplace. We strive to be the ultimate resource hub for
               business owners and entrepreneurs worldwide
             </p>
             <div className="flex justify-center md:justify-start mt-8">
               <Link href="/landing/about">
-                <button className="bg-[#240457] text-white px-8 py-3 rounded-xl text-base font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 whitespace-nowrap">
+                <button className="bg-brand-primary text-white px-8 py-3 rounded-xl text-base font-semibold transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 whitespace-nowrap">
                   Learn More
                   <FiArrowRight />
                 </button>

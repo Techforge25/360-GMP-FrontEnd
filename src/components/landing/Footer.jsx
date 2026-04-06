@@ -12,7 +12,7 @@ import Image from "next/image";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#0B192C] text-white pt-16 pb-8">
+    <footer className="bg-brand-secondary-dark text-white pt-16 pb-8">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="space-y-6">
@@ -28,7 +28,7 @@ const Footer = () => {
                 />
               </div>
             </Link>
-            <p className="text-[#FFFFFF99] text-base leading-relaxed max-w-[400px]">
+            <p className="text-scaffold-background text-base leading-relaxed max-w-[400px]">
               Our mission is to make global trade easier, faster, safer, and
               more accessible for every buyer, seller, and job seeker,
               eliminating friction through a unified digital platform.
@@ -120,7 +120,7 @@ const Footer = () => {
             <ul className="space-y-4 text-white text-base">
               <li className="">
                 <Link
-                  href="/dashboard/business/businesses"
+                  href="mailto:info360@gmail.com"
                   className="hover:text-white transition-colors"
                 >
                   Email: <br />
@@ -128,32 +128,29 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/business/marketplace"
-                  className="hover:text-white transition-colors"
-                >
+                <h3 className="font-medium text-white text-lg mb-6 capitalize">
                   Follow Us:
-                </Link>
+                </h3>
               </li>
               <div className="flex gap-2">
-                <a
+                <Link
                   href="#"
-                  className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
+                  className="w-10 h-10 rounded-full bg-brand-primary-light flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
                 >
                   <FaLinkedinIn className="text-white w-4 h-4" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
-                  className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
+                  className="w-10 h-10 rounded-full bg-brand-primary-light flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
                 >
                   <FaFacebookF className="text-white w-4 h-4" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="#"
-                  className="w-10 h-10 rounded-full bg-[#9747FF] flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
+                  className="w-10 h-10 rounded-full bg-brand-primary-light flex items-center justify-center hover:bg-brand-primary transition-colors text-white"
                 >
                   <FaInstagram className="text-white w-4 h-4" />
-                </a>
+                </Link>
               </div>
             </ul>
           </div>

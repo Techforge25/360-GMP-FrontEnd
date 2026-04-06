@@ -58,19 +58,19 @@ const UnlockPotentialCTA = () => {
               </ul>
             </div>
             <div className="flex flex-col md:flex-row justify-center gap-4 mt-8">
-              <Link href="/landing/pricing">
+              <Link href="/signup">
                 <Button variant="default" className=" px-6">
-                  Become a Premium Member <FaArrowRight className="ml-2" />
+                  Become a Member <FaArrowRight className="ml-2" />
                 </Button>
               </Link>
-              <Link href="#">
+              {/* <Link href="#">
                 <Button
                   variant="outline"
                   className=" px-6 border border-gray-900"
                 >
                   Start your 14 free trial <FaArrowRight className="ml-2" />
                 </Button>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
