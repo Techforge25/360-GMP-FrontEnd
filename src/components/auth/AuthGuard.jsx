@@ -5,6 +5,7 @@ import { useUserRole } from "@/context/UserContext";
 import api from "@/lib/axios";
 import { connectSocket } from "@/services/socket";
 import subscriptionAPI from "@/services/subscriptionAPI";
+import { routesSubscriptionCancelled } from "@/constants/index";
 
 export default function AuthGuard({ children }) {
   const { user, isSwitchProfile, isRoleSelected } = useUserRole();
@@ -13,12 +14,9 @@ export default function AuthGuard({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
-    // UserContext loads from localStorage on mount, so we might need a small delay
-    // or rely on the state being null initially.
 
     const checkAuth = async () => {
-      if (user === undefined) return; // Wait for context to initialize
+      if (user === undefined) return;
       const response = await api.get({
         url: `/auth/user/me`,
         enableErrorMessage: false,
@@ -26,20 +24,33 @@ export default function AuthGuard({ children }) {
         activateLoader: false,
       });
 
+      const isAuthorized = response?.userId;
+
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
       const userRole = user.role;
 
+      if (isAuthorized) {
+        const isCancelled =
+          checkSubscriptionPurchased?.data?.subscriptionStatus === "canceled";
+        const isRestrictedRoute =
+          routesSubscriptionCancelled.includes(pathname) ||
+          pathname.startsWith("/dashboard/business") ||
+          pathname.startsWith("/dashboard/user");
 
-      if (!userRole) {
-        if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
-          return router.push("/onboarding/role")
-        }
-
-        if (!response?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
-          return router.push("/onboarding/role")
+        if (isCancelled && isRestrictedRoute) {
+          return router.push("/onboarding/plans");
         }
       }
 
+      if (!userRole) {
+        if (checkSubscriptionPurchased?.data?.subscriptionStatus === "active" && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
+          return router.push("/onboarding/role")
+        }
+
+        if (!response?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus === "active") {
+          return router.push("/onboarding/role")
+        }
+      }
 
       if (!user || response.statusCode !== 200) {
         // Not logged in, redirect to login

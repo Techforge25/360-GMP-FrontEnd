@@ -31,7 +31,7 @@ export default function SignupPage() {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm({
     resolver: yupResolver(signupSchema),
     mode: "onChange",
@@ -214,10 +214,7 @@ export default function SignupPage() {
             type="submit"
             isLoading={loading}
             className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white h-9 xs:h-10 sm:h-11 text-sm xs:text-sm sm:text-base mt-1 xs:mt-2 shadow-lg shadow-brand-primary/20"
-            disabled={error || firstError ||
-              !watch("email") ||
-              !watch("password") ||
-              !watch("confirmPassword")
+            disabled={error || firstError || isValid
             }
           >
             Sign Up

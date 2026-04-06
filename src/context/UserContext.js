@@ -71,6 +71,7 @@ export const UserProvider = ({ children }) => {
       if (userId && (userToVerify?.token || userToVerify?.accessToken)) {
         console.log("🔍 Verifying session for user:", userId);
         const exists = await checkUserExistence(userId);
+        console.log(exists, "exists")
         if (!exists) {
           console.error("❌ Session invalid or user not found. Logging out.");
           logout();

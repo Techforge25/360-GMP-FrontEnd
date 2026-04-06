@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import subscriptionAPI from "@/services/subscriptionAPI";
+import { routesSubscriptionCancelled } from "@/constants/index";
 
 export default function RoleGuard({ children, allowedRoles }) {
   const { user, isRoleSelected, isSwitchProfile } = useUserRole();
@@ -22,13 +23,25 @@ export default function RoleGuard({ children, allowedRoles }) {
       const userRole = user.role;
       const isAuthorized = allowedRoles.includes(userRole);
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
+      if (isAuthorized) {
+        const isCancelled =
+          checkSubscriptionPurchased?.data?.subscriptionStatus === "canceled";
+        const isRestrictedRoute =
+          routesSubscriptionCancelled.includes(pathname) ||
+          pathname.startsWith("/dashboard/business") ||
+          pathname.startsWith("/dashboard/user");
+
+        if (isCancelled && isRestrictedRoute) {
+          return router.push("/onboarding/plans");
+        }
+      }
 
       if (!userRole) {
-        if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile" && !isSwitchProfile.isInActiveProfile) {
+        if (checkSubscriptionPurchased?.data?.subscriptionStatus === "active" && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile" && !isSwitchProfile.isInActiveProfile) {
           return router.push("/onboarding-role")
         }
 
-        if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
+        if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus === "active") {
           return router.push("/onboarding/role")
         }
 
@@ -55,7 +68,7 @@ export default function RoleGuard({ children, allowedRoles }) {
 
     checkRoleGuard()
 
-  }, [user, allowedRoles, router]);
+  }, [user, allowedRoles, router, pathname]);
 
   if (!authorized) {
     return (

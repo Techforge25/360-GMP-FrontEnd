@@ -1,6 +1,5 @@
 import api from "@/lib/axios";
 
-// Helper function to get business profile ID
 const getBusinessProfileId = async () => {
   try {
     const response = await api.get({
@@ -24,7 +23,7 @@ class SubscriptionAPI {
    */
   async createStripeCheckout(
     planId,
-    profile = "business",
+    profile,
     successUrl,
     cancelUrl,
   ) {
@@ -57,9 +56,13 @@ class SubscriptionAPI {
    * Cancel subscription
    * @param {string} subscriptionId - The subscription ID
    */
-  async cancelSubscription(subscriptionId) {
-    return await api.post({
-      url: `/subscription/${subscriptionId}/cancel`,
+  async cancelSubscription(params) {
+    const { password } = params
+    return await api.delete({
+      url: `/subscription/stripe/cancel-subscription`,
+      payload: {
+        password: password,
+      },
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,

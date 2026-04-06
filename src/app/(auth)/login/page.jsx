@@ -18,6 +18,7 @@ import { useUserRole } from "@/context/UserContext";
 import { backendURL } from "@/constants";
 import { decodePassword, encodePassword } from "@/helpers";
 import { connectSocket } from "@/services/socket";
+import subscriptionAPI from "@/services/subscriptionAPI";
 
 function LoginPageContent() {
   const [email, setEmail] = useState("");
@@ -89,6 +90,15 @@ function LoginPageContent() {
         } else {
           localStorage.removeItem("rememberEmail");
           localStorage.removeItem("rememberPassword");
+        }
+
+        try {
+          const checkSubscriptionStatus = await subscriptionAPI.checkSubscriptionExistence()
+          if (checkSubscriptionStatus.status === "canceled") {
+            router.push("/onboarding/plans")
+          }
+        } catch (e) {
+          console.error(e)
         }
 
         if (finalUserData.isNewToPlatform) {
