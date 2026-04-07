@@ -347,6 +347,7 @@ const ActivitySidebar = ({ onUpdateInventory }) => {
   };
 
   const getFullAddress = (location) => {
+    console.log(location, "location")
     if (!location) return "No location provided";
     const parts = [
       location.addressLine,

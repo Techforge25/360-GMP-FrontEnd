@@ -196,12 +196,7 @@ class ApiRequest {
     if (activateLoader) startSaving();
     try {
       let response;
-      console.log(payload, "payload")
-      if (payload.password) {
-        response = await client.delete(url, payload);
-      } else {
-        response = await client.delete(url);
-      }
+      response = await client.delete(url);
       if (enableSuccessMessage) showSuccess(response.message);
       return response;
     } catch (error) {

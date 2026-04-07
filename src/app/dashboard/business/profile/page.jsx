@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProfileHeader from "@/components/dashboard/profile/ProfileHeader";
 import AnalyticsSection from "@/components/dashboard/profile/AnalyticsSection";
 import FeatureProduct from "@/components/dashboard/profile/FeatureProduct";
@@ -12,13 +12,21 @@ import BusinessAboutTab from "@/components/dashboard/profile/BusinessAboutTab";
 import BusinessCommunitiesTab from "@/components/dashboard/profile/BusinessCommunitiesTab";
 
 export default function BusinessProfilePage() {
-  const [activeTab, setActiveTab] = React.useState("Home");
-  const [inventoryFilter, setInventoryFilter] = React.useState("");
+  const [activeTab, setActiveTab] = useState("Home");
+  const [inventoryFilter, setInventoryFilter] = useState("");
+  const [userData, setUserData] = useState(null)
 
   const handleInventoryUpdate = () => {
     setInventoryFilter("Low Stock");
     setActiveTab("Product");
   };
+
+  useEffect(() => {
+    const user = localStorage.getItem("user")
+    setUserData(user?.profilePayload)
+  }, [])
+
+  console.log(userData, "user data")
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -56,7 +64,7 @@ export default function BusinessProfilePage() {
           </div>
         ) : activeTab === "About" ? (
           <div className="w-full">
-            <BusinessAboutTab />
+            <BusinessAboutTab businessId={userData?._id} />
           </div>
         ) : // Disabled
           // : activeTab === "Orders" ? (

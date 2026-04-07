@@ -215,6 +215,7 @@ const ProductListContent = ({
 
   const handleDelete = async (productId, e) => {
     if (e) e.stopPropagation();
+    console.log(productId, "product id")
     if (confirm("Are you sure you want to delete this product?")) {
       try {
         await productAPI.delete(productId);

@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { FiMapPin, FiClock } from "react-icons/fi";
 import { BsBagCheck } from "react-icons/bs";
-import { Button } from "@/components/ui/Button";
 import jobAPI from "@/services/jobAPI";
-import { Router } from "next/router";
 import { useRouter } from "next/navigation";
 
 export default function ProfileJobs({ jobs, businessId }) {

@@ -3,11 +3,9 @@ import React from "react";
 import Link from "next/link";
 import {
   FaLinkedinIn,
-  FaTwitter,
   FaFacebookF,
   FaInstagram,
 } from "react-icons/fa";
-import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 
 const Footer = () => {

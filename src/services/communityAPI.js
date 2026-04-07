@@ -159,6 +159,16 @@ class CommunityAPI {
       enableErrorMessage: false,
     });
   }
+
+  // Leave Community
+  async leaveCommunity(communityId) {
+    return await api.get({
+      url: `/community/${communityId}/leave`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
 }
 
 const communityAPI = new CommunityAPI();

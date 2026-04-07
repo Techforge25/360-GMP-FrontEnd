@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { BsGlobe } from "react-icons/bs";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import communityAPI from "@/services/communityAPI";
-import { cn, getSlateText } from "@/lib/utils";
+import { getSlateText } from "@/lib/utils";
 
 export default function ProfileCommunities({ businessId }) {
   const [communities, setCommunities] = useState([]);

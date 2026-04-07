@@ -27,10 +27,11 @@ const BusinessAboutTab = ({ businessId }) => {
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [isViewAlbumModalOpen, setIsViewAlbumModalOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
-  const [gallery, setGallery] = useState([]);
+  const [gallery, setGallery] = useState(null);
   const [profileData, setProfileData] = useState(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true);
   const { role, user } = useUserRole();
+
   // Helper to decode JWT (internal or from utils)
   const getProfileIdFromToken = (token) => {
     if (!token) return null;
@@ -59,16 +60,10 @@ const BusinessAboutTab = ({ businessId }) => {
     user?.accessToken || user?.token,
   );
 
-  // Use the ID from props or current user's profile or token
-  const derivedBusinessId =
-    user?.profiles?.businessProfileId || tokenBusinessId;
-  const targetBusinessId = businessId || derivedBusinessId;
-
   console.log("Debug IDs:", {
     propBusinessId: businessId,
     userProfileId: user?.profiles?.businessProfileId,
     tokenBusinessId,
-    finalTargetId: targetBusinessId,
   });
 
   // const isOwner =
@@ -88,30 +83,12 @@ const BusinessAboutTab = ({ businessId }) => {
     { name: "Other", value: 10, color: "#6B7280" },
   ]);
 
-  const [certifications] = useState([
-    {
-      id: 1,
-      name: "ISO 9001:2025",
-      description: "Quality Management",
-      icon: "🏅",
-    },
-    {
-      id: 2,
-      name: "CE Certified",
-      description: "European Conformity",
-      icon: "✓",
-    },
-  ]);
-
   // Fetch Profile data
   const fetchProfile = async () => {
-    if (targetBusinessId) {
+    if (businessId) {
       try {
-        setIsLoadingProfile(true);
-        // If viewing own profile from dashboard, we might want to use getMyProfile
-        // but since we have targetBusinessId, viewBusinessProfile is more versatile
         const response =
-          await businessProfileAPI.viewBusinessProfile(targetBusinessId);
+          await businessProfileAPI.viewBusinessProfile(businessId);
 
         if (response.success && response.data) {
           console.log(response.data, "response data")
@@ -122,36 +99,21 @@ const BusinessAboutTab = ({ businessId }) => {
       } catch (error) {
         console.error("Failed to fetch business profile:", error);
       } finally {
-        setIsLoadingProfile(false);
       }
     }
   };
 
   // Fetch albums on component mount
   const fetchAlbums = async () => {
-    if (targetBusinessId) {
+    if (businessId) {
       try {
-        console.log("Fetching albums for:", targetBusinessId);
-        const response = await galleryAPI.fetchAlbums(targetBusinessId);
+        console.log("Fetching albums for:", businessId);
+        const response = await galleryAPI.fetchAlbums(businessId);
         console.log("Fetch albums FULL response:", response);
-
+        console.log("abcdef")
         if (response.success) {
-          // Handle various possible response structures:
-          // 1. Direct array: response.data = [...]
-          // 2. Paginated: response.data.docs = [...]
-          // 3. Profile object: response.data.gallery = [...]
-
-          let galleryData = [];
-          if (Array.isArray(response.data)) {
-            galleryData = response.data;
-          } else if (Array.isArray(response.data?.docs)) {
-            galleryData = response.data.docs;
-          } else if (Array.isArray(response.data?.gallery)) {
-            galleryData = response.data.gallery;
-          }
-
           console.log("Extracted gallery data:", galleryData);
-          setGallery(galleryData);
+          setGallery(response.data.images);
         } else {
           console.error("Fetch albums failed:", response.message);
         }
@@ -164,7 +126,7 @@ const BusinessAboutTab = ({ businessId }) => {
   React.useEffect(() => {
     fetchAlbums();
     fetchProfile();
-  }, [targetBusinessId]);
+  }, [businessId, isViewAlbumModalOpen, isGalleryModalOpen]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
@@ -176,13 +138,6 @@ const BusinessAboutTab = ({ businessId }) => {
             <h2 className="text-base sm:text-lg font-bold text-gray-900">
               Company Mission And Bio
             </h2>
-            {/* {isOwner && ( */}
-            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
-              {/* <span className="hidden sm:inline">Edit About Section</span> */}
-              {/* <span className="sm:hidden">Edit</span> */}
-              {/* <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> */}
-            </button>
-            {/* )} */}
           </div>
 
           <div className="text-sm sm:text-sm text-gray-600 leading-relaxed min-h-[100px]">
@@ -202,71 +157,6 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
         </div>
 
-        {/* Export Market Distribution */}
-        <div className="bg-white rounded-xl border border-gray-200 p-3 sm:p-4 lg:p-5 xl:p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
-            <h2 className="text-base sm:text-lg font-bold text-gray-900">
-              Export Market Distribution
-            </h2>
-            {/* {isOwner && ( */}
-            <button className="flex items-center gap-1.5 sm:gap-2 text-[#240457] text-sm sm:text-sm font-semibold hover:underline">
-              {/* <span className="hidden sm:inline">Manage Featured Products</span> */}
-              {/* <span className="sm:hidden">Manage</span> */}
-              {/* <FiExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> */}
-            </button>
-            {/* )} */}
-          </div>
-
-          {/* Chart */}
-          <div className="flex flex-col items-center">
-            <div className="w-full max-w-[250px] sm:max-w-[300px] h-[200px] sm:h-[250px] relative">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={exportData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
-                    className="sm:innerRadius-[60] sm:outerRadius-[100]"
-                  >
-                    {exportData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-
-              {/* Center Label */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center bg-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg shadow-sm border border-gray-100">
-                <p className="text-sm sm:text-sm text-gray-500">
-                  European Union
-                </p>
-                <p className="text-base sm:text-lg font-bold text-orange-500">
-                  0
-                </p>
-              </div>
-            </div>
-
-            {/* Legend */}
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-3 lg:gap-4 mt-3 sm:mt-4">
-              {exportData.map((item, index) => (
-                <div key={index} className="flex items-center gap-1.5 sm:gap-2">
-                  <div
-                    className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full"
-                    style={{ backgroundColor: item.color }}
-                  />
-                  <span className="text-sm sm:text-sm text-gray-600">
-                    {item.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
         {/* Gallery */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
@@ -286,9 +176,9 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
 
           {/* Gallery Grid */}
-          {gallery.length > 0 ? (
+          {gallery?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {gallery.map((album) => (
+              {gallery?.images?.map((album) => (
                 <div
                   key={album._id || album.id}
                   onClick={() => {
@@ -301,15 +191,10 @@ const BusinessAboutTab = ({ businessId }) => {
                   <div className="absolute inset-0 bg-gray-200">
                     <img
                       src={
-                        album.images?.[0] || "/assets/images/placeholder.png"
+                        album
                       }
-                      alt={album.albumName || album.title}
+                      alt={album || album}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                        e.target.parentElement.style.background =
-                          "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-                      }}
                     />
                   </div>
 

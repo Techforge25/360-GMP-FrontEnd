@@ -149,7 +149,6 @@ export const UserProvider = ({ children }) => {
   const setOnboardingRole = async (role) => {
     try {
       const response = await refreshRoleSession(role, user);
-
       console.log("setOnboardingRole response:", response);
 
       if (response.success) {
