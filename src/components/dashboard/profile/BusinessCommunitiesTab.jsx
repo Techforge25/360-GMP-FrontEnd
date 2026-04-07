@@ -12,12 +12,17 @@ import communityAPI from "@/services/communityAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import userSearchAPI from "@/services/userSearchAPI";
 import { cn, getSlateText } from "@/lib/utils";
+import { toast } from "react-toastify";
 
 const BusinessCommunitiesTab = () => {
   const [ownedCommunities, setOwnedCommunities] = useState([]);
   const [suggestedCommunities, setSuggestedCommunities] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Track community to delete
+  const [communityToDelete, setCommunityToDelete] = useState(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
 
   useEffect(() => {
     fetchCommunities();
@@ -26,35 +31,20 @@ const BusinessCommunitiesTab = () => {
   const fetchCommunities = async () => {
     try {
       setLoading(true);
-
-      // Fetch business profile to get businessId
       const businessResponse = await businessProfileAPI.getMyProfile();
       const businessId = businessResponse?.data?._id;
 
-      // Fetch owned communities
       if (businessId) {
-        const ownedResponse =
-          await communityAPI.getOwnedCommunities(businessId);
-        if (ownedResponse?.success && ownedResponse?.data) {
-          const communities = ownedResponse.data.docs || ownedResponse.data;
-          setOwnedCommunities(Array.isArray(communities) ? communities : []);
-        }
+        const ownedResponse = await communityAPI.getOwnedCommunities(businessId);
+        const communities = ownedResponse?.data?.docs || ownedResponse?.data || [];
+        setOwnedCommunities(Array.isArray(communities) ? communities : []);
       }
 
-      // Fetch suggested communities
       const suggestedResponse = await communityAPI.getSuggestedCommunities();
-      if (suggestedResponse?.success && suggestedResponse?.data) {
-        const suggestions = Array.isArray(suggestedResponse.data)
-          ? suggestedResponse.data
-          : [];
-        setSuggestedCommunities(suggestions);
-      }
+      setSuggestedCommunities(Array.isArray(suggestedResponse?.data) ? suggestedResponse.data : []);
 
-      // Fetch recent searches
       const searchResponse = await userSearchAPI.fetchMySearches({ limit: 5 });
-      if (searchResponse?.success && searchResponse?.data?.docs) {
-        setRecentSearches(searchResponse.data.docs);
-      }
+      setRecentSearches(searchResponse?.data?.docs || []);
     } catch (error) {
       console.error("Failed to fetch communities:", error);
       setOwnedCommunities([]);
@@ -64,30 +54,33 @@ const BusinessCommunitiesTab = () => {
     }
   };
 
-  const handleDeleteCommunity = async (communityId) => {
-    if (
-      !confirm(
-        "Are you sure you want to delete this community? This action cannot be undone.",
-      )
-    ) {
-      return;
-    }
+  // Open popup instead of directly deleting
+  const confirmDeleteCommunity = (community) => {
+    setCommunityToDelete(community);
+    setShowDeletePopup(true);
+  };
 
+  // Delete API call after confirmation
+  const handleDeleteCommunity = async () => {
+    if (!communityToDelete) return;
     try {
-      // API call to delete community
-      // await api.delete({ url: `/community/${communityId}` });
-      setOwnedCommunities((prev) => prev.filter((c) => c._id !== communityId));
+      await communityAPI.deleteCommunity(communityToDelete._id);
+      toast.success("Community deleted successfully!");
+      // Remove deleted community from state
+      setOwnedCommunities((prev) =>
+        prev.filter((c) => c._id !== communityToDelete._id)
+      );
     } catch (error) {
       console.error("Failed to delete community:", error);
+      toast.error("Failed to delete community");
+    } finally {
+      setShowDeletePopup(false);
+      setCommunityToDelete(null);
     }
   };
 
-  const formatMemberCount = (count) => {
-    if (count >= 1000) {
-      return (count / 1000).toFixed(1) + "k";
-    }
-    return count?.toString() || "0";
-  };
+  const formatMemberCount = (count) =>
+    count >= 1000 ? (count / 1000).toFixed(1) + "k" : (count || 0).toString();
 
   if (loading) {
     return (
@@ -99,14 +92,9 @@ const BusinessCommunitiesTab = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
-      {/* Main Content - Owned Communities */}
+      {/* Owned Communities */}
       <div className="flex-1">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-            Owned Communities
-          </h2>
-        </div>
-
+        <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Owned Communities</h2>
         <div className="space-y-3 sm:space-y-4">
           {ownedCommunities.length === 0 ? (
             <div className="bg-white rounded-xl border border-gray-200 p-6 sm:p-8 text-center">
@@ -115,8 +103,7 @@ const BusinessCommunitiesTab = () => {
                 No Communities Created
               </h3>
               <p className="text-sm sm:text-base text-gray-500 mb-3 sm:mb-4">
-                You have not created any communities yet. Create one to connect
-                with others.
+                You have not created any communities yet. Create one to connect with others.
               </p>
               <Link href="/dashboard/business/create-community">
                 <button className="px-4 sm:px-6 py-2 sm:py-2.5 bg-[#240457] text-white rounded-lg text-sm sm:text-base font-medium hover:bg-[#1a0340] transition-colors">
@@ -129,7 +116,8 @@ const BusinessCommunitiesTab = () => {
               <OwnedCommunityCard
                 key={community._id}
                 community={community}
-                onDelete={handleDeleteCommunity}
+                setShowDeletePopup={setShowDeletePopup}
+                onDelete={() => confirmDeleteCommunity(community)}
                 formatMemberCount={formatMemberCount}
               />
             ))
@@ -137,67 +125,41 @@ const BusinessCommunitiesTab = () => {
         </div>
       </div>
 
-      {/* Right Sidebar - Suggested Communities */}
+      {/* Right Sidebar */}
       <div className="w-full lg:w-[320px] xl:w-[350px]">
-        <div className="mb-4 flex justify-between items-center">
-          <Link href="/dashboard/business/create-community">
-            <button className="flex items-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-[#240457] text-white rounded-lg font-semibold hover:bg-[#1a0340] transition-colors text-sm">
-              <span className="hidden sm:inline">Create a Community</span>
-              <span className="sm:hidden">Create</span>
-              <FiPlus className="w-4 h-4" />
-            </button>
-          </Link>
-        </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5">
-          {/* {recentSearches.length > 0 && (
-            <div className="mb-6">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">
-                Recent Searches
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {recentSearches.map((search) => (
-                  <Link
-                    key={search._id}
-                    href={`/dashboard/business/communities?search=${encodeURIComponent(search.searchedContent)}`}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 rounded-full text-sm sm:text-sm text-gray-600 transition-colors border border-gray-100"
-                  >
-                    <FiSearch className="text-gray-400" />
-                    {search.searchedContent}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )} */}
-
-          <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-3 sm:mb-4">
-            Suggested Communities
-          </h3>
-
-          <div className="space-y-1">
-            {suggestedCommunities.map((community) => (
-              <SuggestedCommunityItem
-                key={community._id}
-                community={community}
-                formatMemberCount={formatMemberCount}
-              />
-            ))}
-          </div>
-
-          <Link
-            href="/dashboard/business/communities"
-            className="flex items-center justify-start gap-1 text-[#240457] font-semibold text-sm mt-4 sm:mt-5 hover:underline"
-          >
-            Explore Communities
-            <FiChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
+        {/* Suggested Communities & Create Button */}
       </div>
+
+      {showDeletePopup && (
+        <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-80 sm:w-96 shadow-lg text-center">
+            <h3 className="text-lg text-black font-semibold mb-4">Delete Community?</h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete <strong>{communityToDelete?.name}</strong>? This action cannot be undone.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleDeleteCommunity}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setShowDeletePopup(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 // Owned Community Card Component
-const OwnedCommunityCard = ({ community, onDelete, formatMemberCount }) => {
+const OwnedCommunityCard = ({ community, onDelete, formatMemberCount, setShowDeletePopup }) => {
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 sm:p-5 hover:shadow-md transition-shadow">
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -289,7 +251,10 @@ const OwnedCommunityCard = ({ community, onDelete, formatMemberCount }) => {
 
         <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
           <button
-            onClick={() => onDelete(community._id)}
+            onClick={() => {
+              onDelete(community._id)
+              setShowDeletePopup(true)
+            }}
             className="w-full sm:w-auto px-3 sm:px-4 py-2 border-2 border-red-400 text-red-500 rounded-lg text-sm font-semibold hover:bg-red-50 transition-colors whitespace-nowrap"
           >
             Delete Community

@@ -169,6 +169,15 @@ class CommunityAPI {
       enableErrorMessage: false,
     });
   }
+
+  async deleteCommunity(communityId) {
+    return await api.delete({
+      url: `/community/${communityId}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
 }
 
 const communityAPI = new CommunityAPI();

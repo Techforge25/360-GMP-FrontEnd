@@ -6,6 +6,7 @@ import productAPI from "@/services/productAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import { useRouter, usePathname } from "next/navigation";
 import { getSlateText } from "@/lib/utils";
+import DOMPurify from "dompurify";
 
 const FeatureProduct = ({ onManageClick }) => {
   const router = useRouter();
@@ -153,16 +154,6 @@ const FeatureProduct = ({ onManageClick }) => {
                 Stock {product.stock}
               </div>
 
-              {/* Action Buttons */}
-              <div className="absolute bottom-2 sm:bottom-3 left-2 sm:left-3 flex gap-1 bg-[#00000033] p-1 rounded-full opacity-100 transition-opacity">
-                <button className="p-1 sm:p-1.5 bg-white rounded-full shadow text-gray-500">
-                  <FiEdit2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                </button>
-                <button className="p-1 sm:p-1.5 bg-white rounded-full shadow text-red-600">
-                  <FiTrash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                </button>
-              </div>
-
               <img
                 src={product.image}
                 alt={product.name}
@@ -177,9 +168,12 @@ const FeatureProduct = ({ onManageClick }) => {
               <h3 className="font-semibold text-gray-900 text-sm sm:text-base mb-1">
                 {product.name}
               </h3>
-              <p className="text-sm sm:text-sm text-gray-500 line-clamp-2 mb-2 sm:mb-3">
-                {product.desc}
-              </p>
+              <p
+                className="text-sm sm:text-sm text-gray-500 line-clamp-2 mb-2 sm:mb-3"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(product.desc),
+                }}
+              />
 
               <div className="flex items-center justify-between text-sm sm:text-sm mb-3 sm:mb-4">
                 <span className="text-gray-500">MOQ: {product.moq}</span>

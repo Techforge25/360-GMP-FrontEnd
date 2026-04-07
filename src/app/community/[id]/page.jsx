@@ -55,38 +55,33 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
         };
         queryParams.type = typeMapping[filterType] || filterType;
       }
+      const response = await postsAPI.getCommunityPosts(params.id, queryParams);
+      if (response.success) {
+        const postsData = response.data.posts || [];
 
+        // Temporary fix: Check if current user liked posts client-side
+        const processedPosts = postsData.map((post) => {
+          if (!post.likedByUser && user && post.likes) {
+            const currentUserId =
+              user.profilePayload?._id || user.id || user._id;
 
-      if (user?.role !== "business") {
-        const response = await postsAPI.getCommunityPosts(params.id, queryParams);
-        if (response.success) {
-          const postsData = response.data.posts || [];
-
-          // Temporary fix: Check if current user liked posts client-side
-          const processedPosts = postsData.map((post) => {
-            if (!post.likedByUser && user && post.likes) {
-              const currentUserId =
-                user.profilePayload?._id || user.id || user._id;
-
-              if (currentUserId) {
-                post.likedByUser = post.likes.some((like) => {
-                  const likeUserId = like.userId?._id || like.userId || like;
-                  return String(likeUserId) === String(currentUserId);
-                });
-              }
+            if (currentUserId) {
+              post.likedByUser = post.likes.some((like) => {
+                const likeUserId = like.userId?._id || like.userId || like;
+                return String(likeUserId) === String(currentUserId);
+              });
             }
-            return post;
-          });
-
-          if (page === 1) {
-            setPosts(processedPosts);
-          } else {
-            setPosts((prev) => [...prev, ...processedPosts]);
           }
-          setPagination(response.data.pagination);
-        }
-      }
+          return post;
+        });
 
+        if (page === 1) {
+          setPosts(processedPosts);
+        } else {
+          setPosts((prev) => [...prev, ...processedPosts]);
+        }
+        setPagination(response.data.pagination);
+      }
 
     } catch (error) {
       console.error("Error fetching community posts:", error);
@@ -431,6 +426,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
                           onUpdate={handlePostUpdate}
                           onDelete={handlePostDelete}
                           currentUser={user}
+                          isOwner={isOwner}
                         />
                       ))}
 

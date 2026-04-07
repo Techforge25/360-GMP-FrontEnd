@@ -18,7 +18,7 @@ import { AiFillLike } from "react-icons/ai";
 import postsAPI from "@/services/postsAPI";
 import Swal from 'sweetalert2'
 
-const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
+const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   // Debug logging to check if post has proper _id
   React.useEffect(() => {
     if (!post?._id) {
@@ -232,7 +232,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
       console.error("Error updating post:", error);
       alert(
         "Failed to update post: " +
-          (error.response?.data?.message || error.message),
+        (error.response?.data?.message || error.message),
       );
     } finally {
       setIsUpdating(false);
@@ -776,13 +776,12 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
                 key={index}
                 onClick={() => handleVote(index)}
                 disabled={hasVoted || isPollExpired}
-                className={`w-full text-left relative overflow-hidden rounded-lg border-2 transition-all ${
-                  hasVoted
-                    ? isSelected
-                      ? "border-[#240457] bg-purple-50"
-                      : "border-gray-200 bg-gray-50"
-                    : "border-gray-200 hover:border-[#240457] hover:bg-purple-50"
-                } ${isPollExpired ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
+                className={`w-full text-left relative overflow-hidden rounded-lg border-2 transition-all ${hasVoted
+                  ? isSelected
+                    ? "border-[#240457] bg-purple-50"
+                    : "border-gray-200 bg-gray-50"
+                  : "border-gray-200 hover:border-[#240457] hover:bg-purple-50"
+                  } ${isPollExpired ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
               >
                 {/* Progress Bar */}
                 {hasVoted && (
@@ -1264,9 +1263,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser }) => {
                   <div className="flex-1">
                     <div className="bg-gray-50 rounded-lg px-3 py-2">
                       <h5 className="text-sm font-semibold text-gray-900 mb-1">
-                        {comment.userId?.fullName ||
-                          comment.userId?.companyName ||
-                          "Anonymous User"}
+                        {comment.userId?.fullName ? comment.userId?.fullName : comment?.userId?.ownerName}
                       </h5>
                       <p className="text-sm text-gray-700">{comment.content}</p>
                     </div>

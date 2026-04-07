@@ -9,6 +9,7 @@ import communityAPI from "@/services/communityAPI";
 import { useUser } from "@/context/UserContext";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import dynamic from "next/dynamic";
+import CKEditorField from "@/components/ui/CKEditor";
 
 const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ssr: false,
@@ -30,19 +31,9 @@ export default function CreateCommunityPage() {
     industry: "",
     category: "",
     shortDescription: "",
-    purpose: JSON.stringify([
-      {
-        type: "paragraph",
-        children: [{ text: "" }],
-      },
-    ]),
+    purpose: "",
     tags: [],
-    rules: JSON.stringify([
-      {
-        type: "paragraph",
-        children: [{ text: "" }],
-      },
-    ]),
+    rules: "",
     privacyType: "public",
     postingPermissions: "all",
     coverImage: null,
@@ -209,8 +200,8 @@ export default function CreateCommunityPage() {
       // Show user-friendly error
       alert(
         error?.response?.data?.message ||
-          error?.message ||
-          "Failed to create community. Please try again.",
+        error?.message ||
+        "Failed to create community. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -220,24 +211,24 @@ export default function CreateCommunityPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-          {/* Breadcrumb */}
-          <div className="flex max-w-[1400px] mx-auto items-center gap-2 text-sm text-black px-6 pt-6 mb-6">
-            <Link
-              href="/dashboard/business/communities"
-              className="hover:text-black flex items-center gap-1"
-            >
-              <IoChevronBack className="w-4 h-4" />
-              Back
-            </Link>
-            <p
-              
-              className="text-gray-600 "
-            >
-              Home
-            </p>
-            <span className="text-[#240457]">›</span>
-            <span className="text-[#240457] font-medium">Create Community</span>
-          </div>
+      {/* Breadcrumb */}
+      <div className="flex max-w-[1400px] mx-auto items-center gap-2 text-sm text-black px-6 pt-6 mb-6">
+        <Link
+          href="/dashboard/business/communities"
+          className="hover:text-black flex items-center gap-1"
+        >
+          <IoChevronBack className="w-4 h-4" />
+          Back
+        </Link>
+        <p
+
+          className="text-gray-600 "
+        >
+          Home
+        </p>
+        <span className="text-[#240457]">›</span>
+        <span className="text-[#240457] font-medium">Create Community</span>
+      </div>
       <div className="relative bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0 bg-[url('/assets/images/community-hero.png')] bg-cover bg-center"></div>
@@ -416,19 +407,14 @@ export default function CreateCommunityPage() {
                   <label className="block text-sm font-medium text-gray-900">
                     Community Purpose <span className="text-red-500">*</span>
                   </label>
-                  <span
-                    className={`text-sm ${purposeLength >= 5000 ? "text-red-500 font-medium" : "text-gray-500"}`}
-                  >
-                    {purposeLength}/5000 characters
-                  </span>
                 </div>
-                <SlateEditor
+                <CKEditorField
                   value={formData.purpose}
-                  onChange={(val) => handleInputChange("purpose", val)}
-                  onLengthChange={(len) => setPurposeLength(len)}
-                  placeholder="Why does this community exists? Who is it for? What value does it provide?"
-                  maxLength={5000}
-                  className="text-black"
+                  onChange={(val) => {
+                    handleInputChange("purpose", val);
+                  }}
+                  placeholder="Detailed job description..."
+                  maxLength={2000}
                 />
                 <p className="text-sm text-gray-500 mt-1">
                   Minimum 10 characters required
@@ -529,19 +515,14 @@ export default function CreateCommunityPage() {
                   <label className="block text-sm font-medium text-gray-900">
                     Rules & Guidelines <span className="text-red-500">*</span>
                   </label>
-                  <span
-                    className={`text-sm ${rulesLength >= 5000 ? "text-red-500 font-medium" : "text-gray-500"}`}
-                  >
-                    {rulesLength}/5000 characters
-                  </span>
                 </div>
-                <SlateEditor
+                <CKEditorField
                   value={formData.rules}
-                  onChange={(val) => handleInputChange("rules", val)}
-                  onLengthChange={(len) => setRulesLength(len)}
-                  placeholder="Set clear expectation for community behavior and content..."
-                  maxLength={5000}
-                  className="text-black"
+                  onChange={(val) => {
+                    handleInputChange("rules", val);
+                  }}
+                  placeholder="Rules description..."
+                  maxLength={2000}
                 />
                 <div className="mt-1">
                   <p className="text-sm text-gray-500">
@@ -757,22 +738,6 @@ export default function CreateCommunityPage() {
               {/* Form Actions */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-red-600">
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    <span className="text-sm font-medium">
-                      Fill in all required fields
-                    </span>
-                  </div>
                   <div className="flex gap-3">
                     <Link
                       href="/dashboard/business/communities"
@@ -824,33 +789,6 @@ export default function CreateCommunityPage() {
                 </div>
               </div>
             </form>
-          </div>
-
-          {/* Sidebar - Example Communities */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 top-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Example Communities
-              </h3>
-              <div className="space-y-4">
-                {exampleCommunities.map((community, index) => (
-                  <div
-                    key={index}
-                    className="pb-4 border-b border-gray-200 last:border-0 last:pb-0"
-                  >
-                    <h4 className="font-semibold text-gray-700 mb-1">
-                      {community.name}
-                    </h4>
-                    <p className="text-sm text-gray-600 italic mb-2">
-                      {community.industry}
-                    </p>
-                    <p className="text-[13px] text-gray-600">
-                      {community.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>

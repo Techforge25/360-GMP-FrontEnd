@@ -22,11 +22,12 @@ export default function BusinessProfilePage() {
   };
 
   useEffect(() => {
-    const user = localStorage.getItem("user")
-    setUserData(user?.profilePayload)
-  }, [])
-
-  console.log(userData, "user data")
+    const user = localStorage.getItem("user");
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setUserData(parsedUser.profilePayload);
+    }
+  }, []);
 
   return (
     <div className="bg-gray-50 min-h-screen">

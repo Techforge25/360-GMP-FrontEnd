@@ -509,12 +509,6 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
             onClick={() => onTabChange("Product")}
           />
           <TabButton
-            label="Orders"
-            src="/assets/images/orderIcon.png"
-            active={activeTab === "Orders"}
-            onClick={() => onTabChange("Orders")}
-          />
-          <TabButton
             label="Jobs"
             src="/assets/images/jobIcon.png"
             active={activeTab === "Jobs"}

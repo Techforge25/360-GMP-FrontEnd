@@ -22,6 +22,7 @@ import galleryAPI from "@/services/galleryAPI";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import { useUserRole } from "@/context/UserContext";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import Image from "next/image";
 
 const BusinessAboutTab = ({ businessId }) => {
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
@@ -111,23 +112,20 @@ const BusinessAboutTab = ({ businessId }) => {
         const response = await galleryAPI.fetchAlbums(businessId);
         console.log("Fetch albums FULL response:", response);
         console.log("abcdef")
-        if (response.success) {
-          console.log("Extracted gallery data:", galleryData);
-          setGallery(response.data.images);
-        } else {
-          console.error("Fetch albums failed:", response.message);
-        }
+        setGallery(response.data.docs);
       } catch (error) {
         console.error("Failed to fetch gallery:", error);
       }
     }
   };
 
+
   React.useEffect(() => {
     fetchAlbums();
     fetchProfile();
   }, [businessId, isViewAlbumModalOpen, isGalleryModalOpen]);
 
+  console.log(gallery, "galleries")
   return (
     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
       {/* Main Content */}
@@ -141,12 +139,7 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
 
           <div className="text-sm sm:text-sm text-gray-600 leading-relaxed min-h-[100px]">
-            {isLoadingProfile ? (
-              <span className="flex items-center gap-2 text-gray-400">
-                <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin"></div>
-                Loading description...
-              </span>
-            ) : profileData?.description ? (
+            {profileData?.description ? (
               <SlateRenderer
                 content={profileData.description}
                 className="text-sm sm:text-sm text-gray-600 leading-relaxed"
@@ -178,7 +171,7 @@ const BusinessAboutTab = ({ businessId }) => {
           {/* Gallery Grid */}
           {gallery?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {gallery?.images?.map((album) => (
+              {gallery?.map((album) => (
                 <div
                   key={album._id || album.id}
                   onClick={() => {
@@ -188,15 +181,21 @@ const BusinessAboutTab = ({ businessId }) => {
                   className="relative rounded-xl overflow-hidden group aspect-[4/3] cursor-pointer"
                 >
                   {/* Image */}
-                  <div className="absolute inset-0 bg-gray-200">
-                    <img
-                      src={
-                        album
-                      }
-                      alt={album || album}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  </div>
+                  {album?.images?.map((image) => {
+                    return (
+                      <div className="absolute inset-0 bg-gray-200">
+                        <Image
+                          src={
+                            image
+                          }
+                          fill
+                          alt={"gallery image"}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      </div>
+                    )
+                  })}
+
 
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:via-black/40" />
@@ -270,11 +269,7 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
 
           <div className="space-y-3">
-            {isLoadingProfile ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="w-8 h-8 border-4 border-[#240457]/10 border-t-[#240457] rounded-full animate-spin"></div>
-              </div>
-            ) : profileData?.certifications &&
+            {profileData?.certifications &&
               profileData.certifications.length > 0 ? (
               profileData.certifications
                 .map((cert, index) => {
@@ -340,7 +335,7 @@ const BusinessAboutTab = ({ businessId }) => {
         </div>
       </div>
 
-      <UploadGalleryModal
+      <UploadGalleryModal 
         isOpen={isGalleryModalOpen}
         onClose={() => setIsGalleryModalOpen(false)}
         onUploadSuccess={fetchAlbums}

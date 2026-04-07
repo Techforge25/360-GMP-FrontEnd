@@ -198,20 +198,6 @@ export default function BusinessJobsTab() {
               <h3 className="text-sm sm:text-base font-semibold text-gray-900">
                 Hiring Funnel State
               </h3>
-              <div className="flex items-center gap-2">
-                <span className="text-sm sm:text-sm text-gray-600">
-                  Sort By
-                </span>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="text-sm sm:text-sm bg-white border border-gray-300 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 text-gray-900 focus:ring-2 focus:ring-[#240457] focus:border-[#240457] outline-none cursor-pointer"
-                >
-                  <option value="Last 30 Day's">Last 30 Day's</option>
-                  <option value="Last 7 Days">Last 7 Days</option>
-                  <option value="Last 90 Days">Last 90 Days</option>
-                </select>
-              </div>
             </div>
 
             {/* Stats Cards */}
@@ -261,17 +247,6 @@ export default function BusinessJobsTab() {
                 <table className="min-w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="py-3 text-left">
-                        <input
-                          type="checkbox"
-                          onChange={handleSelectAll}
-                          checked={
-                            jobs.length > 0 &&
-                            selectedJobIds.length === jobs.length
-                          }
-                          className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-[#240457] cursor-pointer"
-                        />
-                      </th>
                       <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
                         Jobs Title
                       </th>
@@ -316,15 +291,6 @@ export default function BusinessJobsTab() {
                           className="hover:bg-gray-50 cursor-pointer"
                           onClick={() => handleViewCandidates(job)}
                         >
-                          <td className="py-4">
-                            <input
-                              type="checkbox"
-                              checked={selectedJobIds.includes(job._id)}
-                              onChange={(e) => toggleSelectJob(job._id, e)}
-                              onClick={(e) => e.stopPropagation()} // Extra safety for some browsers
-                              className="w-4 h-4 rounded border-gray-300 text-[#240457] focus:ring-[#240457] cursor-pointer"
-                            />
-                          </td>
                           <td className="py-4 px-4">
                             <div className="font-medium text-gray-900">
                               {job.jobTitle}
@@ -375,22 +341,20 @@ export default function BusinessJobsTab() {
                                 className="flex items-center gap-2 hover:bg-gray-50 p-1 rounded transition-colors"
                               >
                                 <span
-                                  className={`inline-flex items-center gap-1 text-sm font-medium ${
-                                    job.status === "open"
+                                  className={`inline-flex items-center gap-1 text-sm font-medium ${job.status === "open"
                                       ? "text-green-700"
                                       : job.status === "paused"
                                         ? "text-yellow-700"
                                         : "text-gray-700"
-                                  }`}
+                                    }`}
                                 >
                                   <span
-                                    className={`w-2 h-2 rounded-full ${
-                                      job.status === "open"
+                                    className={`w-2 h-2 rounded-full ${job.status === "open"
                                         ? "bg-green-500"
                                         : job.status === "paused"
                                           ? "bg-yellow-500"
                                           : "bg-gray-500"
-                                    }`}
+                                      }`}
                                   ></span>
                                   {job.status.charAt(0).toUpperCase() +
                                     job.status.slice(1)}
