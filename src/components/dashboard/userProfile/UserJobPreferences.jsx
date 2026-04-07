@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { FiEdit2 } from "react-icons/fi";
 import userProfileAPI from "@/services/userProfileAPI";
 import JobPreferencesModal from "./JobPreferencesModal";
+import { toast } from "react-toastify";
 
 const UserJobPreferences = () => {
   const [profileData, setProfileData] = useState(null);
@@ -37,6 +38,7 @@ const UserJobPreferences = () => {
       if (response?.data) {
         setProfileData(response.data);
       }
+      toast.success()
       setShowJobPreferencesModal(false);
     } catch (error) {
       console.error('Failed to save job preferences:', error);
@@ -51,12 +53,12 @@ const UserJobPreferences = () => {
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 flex items-center gap-2">
             <span className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-purple-100/50 flex items-center justify-center text-purple-600">
               <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M14 6V4h-4v2h4zM4 8v11h16V8H4zm16-2c1.11 0 2 .89 2 2v11c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2V8c0-1.11.89-2 2-2h6V4c0-1.11.89-2 2-2h4c1.11 0 2 .89 2 2v2h6z"/>
+                <path d="M14 6V4h-4v2h4zM4 8v11h16V8H4zm16-2c1.11 0 2 .89 2 2v11c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2V8c0-1.11.89-2 2-2h6V4c0-1.11.89-2 2-2h4c1.11 0 2 .89 2 2v2h6z" />
               </svg>
             </span>
             Jobs Preferences
           </h2>
-          <button 
+          <button
             onClick={handleEditJobPreferences}
             className="text-gray-400 hover:text-blue-500 p-1.5 bg-gray-50 rounded-md transition-colors"
           >
@@ -85,7 +87,7 @@ const UserJobPreferences = () => {
               <h3 className="text-sm font-semibold text-gray-700 mb-3">Title</h3>
               <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
                 <p className="text-sm sm:text-base text-gray-900 font-medium">
-                  {profileData?.title || "Not specified"}
+                  {profileData?.targetJob || "Not specified"}
                 </p>
               </div>
             </div>

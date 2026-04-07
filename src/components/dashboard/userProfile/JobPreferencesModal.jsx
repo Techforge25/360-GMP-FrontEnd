@@ -101,8 +101,8 @@ const JobPreferencesModal = ({ isOpen, onClose, onSave, currentPreferences = nul
             </label>
             <input
               type="text"
-              value={formData.title}
-              onChange={(e) => handleInputChange("title", e.target.value)}
+              value={formData.targetJob}
+              onChange={(e) => handleInputChange("targetJob", e.target.value)}
               placeholder="e.g. Supply Chain Analyst"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-[#240457] text-gray-600"
               required

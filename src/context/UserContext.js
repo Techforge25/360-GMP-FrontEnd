@@ -38,8 +38,6 @@ export const UserProvider = ({ children }) => {
       hashParams.get("token") ||
       hashParams.get("accessToken");
 
-    console.log(urlToken, "url token")
-
     // if (urlToken) {
     //   if (pathname === "/otp-verification" || pathname === "/sign-up" || pathname === "/reset-password" || pathname === "/login" || pathname === "/forgot-password") {
     //     return router.push(`/dashboard/${currentUser.role}`)

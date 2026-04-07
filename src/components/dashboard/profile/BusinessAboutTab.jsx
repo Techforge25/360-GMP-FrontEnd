@@ -269,61 +269,60 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
 
           <div className="space-y-3">
-            {profileData?.certifications &&
+            {Array.isArray(profileData?.certifications) &&
               profileData.certifications.length > 0 ? (
-              profileData.certifications
-                .map((cert, index) => {
-                  const isPiped =
-                    typeof cert === "string" && cert.includes("|");
-                  const name = isPiped ? cert.split("|")[0] : cert;
-                  const url = isPiped ? cert.split("|")[1] : null;
+              profileData.certifications.map((url, index) => {
 
-                  // Skip raw URLs (legacy format we don't want as titles)
-                  if (
-                    typeof cert === "string" &&
-                    cert.startsWith("http") &&
-                    !isPiped
-                  )
-                    return null;
+                // 🔥 Detect file type
+                const getFileType = (url) => {
+                  const ext = url.split(".").pop().toLowerCase();
+                  if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
+                  if (ext === "pdf") return "pdf";
+                  if (["doc", "docx"].includes(ext)) return "word";
+                  return "other";
+                };
 
-                  return (
-                    <div
-                      key={index}
-                      className="flex items-start gap-3 p-4 bg-[#F8F5FF] rounded-xl group relative"
-                    >
-                      <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
-                        <div className="w-6 h-6 bg-[#240457] rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm">✓</span>
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h4
-                          className="text-sm font-bold text-gray-900 truncate pr-6"
+                const fileType = getFileType(url);
+                // 🧠 Auto name (optional)
+                const name = `Certification ${index + 1}`;
+
+                return (
+                  <div
+                    key={index}
+                    className="p-4 bg-[#F8F5FF] rounded-xl space-y-3"
+                  >
+                    <div className="rounded-lg overflow-hidden border bg-white">
+                      {fileType === "image" && (
+                        <Image
+                          src={url}
+                          alt={name}
+                          width={300}
+                          height={400}
+                          className="w-full max-h-60 object-contain"
+                        />
+                      )}
+
+                      {fileType === "pdf" && (
+                        <iframe
+                          src={url}
                           title={name}
-                        >
-                          {name}
-                        </h4>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-sm text-gray-500">
-                            Verified Certification
-                          </span>
-                          {url && (
-                            <a
-                              href={url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm font-semibold text-[#240457] hover:underline flex items-center gap-1"
-                            >
-                              <FiExternalLink className="w-3 h-3" />
-                              View
-                            </a>
-                          )}
-                        </div>
-                      </div>
+                          className="w-full h-64"
+                        />
+                      )}
+
+                      {fileType === "word" && (
+                        <iframe
+                          src={`https://docs.google.com/gview?url=${encodeURIComponent(
+                            optimizedUrl
+                          )}&embedded=true`}
+                          title={name}
+                          className="w-full h-64"
+                        />
+                      )}
                     </div>
-                  );
-                })
-                .filter(Boolean)
+                  </div>
+                );
+              })
             ) : (
               <div className="text-center py-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
                 <p className="text-sm text-gray-500">
@@ -335,7 +334,7 @@ const BusinessAboutTab = ({ businessId }) => {
         </div>
       </div>
 
-      <UploadGalleryModal 
+      <UploadGalleryModal
         isOpen={isGalleryModalOpen}
         onClose={() => setIsGalleryModalOpen(false)}
         onUploadSuccess={fetchAlbums}
