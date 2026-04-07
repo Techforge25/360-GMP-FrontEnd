@@ -8,6 +8,7 @@ import SubscriptionCard from "@/components/subscriptions/SubscriptionCard";
 import PaymentPlans from "@/components/subscriptions/PaymentPlans";
 import useSubscriptionPlan from "@/hooks/useSubscriptionPlan";
 import api from "@/lib/axios";
+import { useUserRole } from "@/context/UserContext";
 
 const UserSubscriptionPage = () => {
   const [paymentPlan, setPaymentPlan] = useState(null);
@@ -17,6 +18,8 @@ const UserSubscriptionPage = () => {
   const [plans, setPlans] = useState([]);
   const [loadingPlans, setLoadingPlans] = useState(false);
   const { subscription, totalSpent, loading, planName, planPrice, statusLabel, renewalDate, status } = useSubscriptionPlan()
+  const { user } = useUserRole()
+  console.log(user?.role, "user role subs")
 
   const fetchPlans = async () => {
     setLoadingPlans(true);
@@ -79,7 +82,7 @@ const UserSubscriptionPage = () => {
       const cancelUrl = `${window.location.origin}/dashboard/business/subscriptions`;
       const response = await subscriptionAPI.createStripeCheckout(
         plan.id || plan.planId,
-        "business",
+        user?.role,
         successUrl,
         cancelUrl,
       );

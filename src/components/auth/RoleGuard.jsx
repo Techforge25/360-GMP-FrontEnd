@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import subscriptionAPI from "@/services/subscriptionAPI";
+import { routesSubscriptionCancelled } from "@/constants/index";
 
 export default function RoleGuard({ children, allowedRoles }) {
-  const { user } = useUserRole();
+  const { user, isRoleSelected, isSwitchProfile } = useUserRole();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
   const pathname = usePathname();
@@ -18,19 +19,41 @@ export default function RoleGuard({ children, allowedRoles }) {
         router.push("/login");
         return;
       }
-
       const userRole = user.role;
+
       const isAuthorized = allowedRoles.includes(userRole);
 
+      if (isAuthorized) {
+        if (pathname === "/sign-up" || pathname === "/login" || pathname === "/forgot-password" || pathname === "/otp-verification" || pathname === "/reset-password") {
+          return router.push(`/dashboard/${user?.role}`)
+        }
+      }
+
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
+      if (isAuthorized) {
+        const isCancelled =
+          checkSubscriptionPurchased?.data?.subscriptionStatus === "canceled";
+        const isRestrictedRoute =
+          routesSubscriptionCancelled.includes(pathname) ||
+          pathname.startsWith("/dashboard/business") ||
+          pathname.startsWith("/dashboard/user");
 
-      if (checkSubscriptionPurchased?.data?.subscriptionStatus && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile") {
-        return router.push("/onboarding-role")
+        if (isCancelled && isRestrictedRoute) {
+          return router.push("/onboarding/plans");
+        }
       }
 
-      if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus) {
-        return router.push("/onboarding/role")
+      if (!userRole) {
+        if (checkSubscriptionPurchased?.data?.subscriptionStatus === "active" && checkSubscriptionPurchased?.data?.planName === "TRIAL" && pathname === "/onboarding/business-profile" && !isSwitchProfile.isInActiveProfile) {
+          return router.push("/onboarding-role")
+        }
+
+        if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus === "active") {
+          return router.push("/onboarding/role")
+        }
+
       }
+
 
       if (!isAuthorized) {
         // Redirect to unauthorized or their own dashboard
@@ -52,7 +75,7 @@ export default function RoleGuard({ children, allowedRoles }) {
 
     checkRoleGuard()
 
-  }, [user, allowedRoles, router]);
+  }, [user, allowedRoles, router, pathname]);
 
   if (!authorized) {
     return (

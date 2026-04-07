@@ -153,6 +153,8 @@ export const getStatusColor = (status) => {
       return "bg-green-100 text-green-700";
     case "released":
       return "bg-green-100 text-green-700";
+    case "deleted":
+      return "bg-red-100 text-red-700";
     case "cancelled":
       return "bg-red-100 text-red-700";
     case "Cancelled":
@@ -622,3 +624,4 @@ const isStepValid = (step) => {
 export const digitsOnly = (value) => value.replace(/[^0-9]/g, "");
 export const digitsDecimalOnly = (value) => value.replace(/[^0-9.]/g, ""); // allow decimal for price
 export const subscriptionTableHeaders = ["Date", "Invoice ID", "Plans", "Amount", "Status"];
+export const routesSubscriptionCancelled = ["/onboarding/business-profile/", "/onboarding/user-profile/", "/onboarding/role", "reset-password", "forgot-password", "otp-verification", "signup"]

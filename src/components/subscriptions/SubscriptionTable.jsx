@@ -78,8 +78,8 @@ export default function SubscriptionTable() {
                                              </td>
                                         </tr>
                                    ) : (
-                                        subscription?.docs?.map((subs) => (
-                                             <tr key={subs.invoiceId} className="hover:bg-gray-50">
+                                        subscription?.docs?.map((subs, index) => (
+                                             <tr key={index} className="hover:bg-gray-50">
 
                                                   <td className="px-3 sm:px-4 lg:px-6 py-4">
                                                        <div className="text-sm font-medium text-gray-900">

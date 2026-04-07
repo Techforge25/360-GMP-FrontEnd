@@ -166,7 +166,7 @@ export default function UserProfileStep2({
         />
         <div className="flex flex-wrap gap-2 mt-2">
           <span className="text-sm text-text-hint w-full mb-1">Suggestions:</span>
-          {skillSuggestions.map((skill) => (
+          {skillSuggestions?.map((skill) => (
             <button
               key={skill}
               type="button"
@@ -306,8 +306,7 @@ export default function UserProfileStep2({
               </div>
               <div className="flex-1 space-y-1">
                 <label className="text-sm font-medium text-text-secondary">
-                  {educationDraft.isCurrent ? "End Date" : "End Date"}{" "}
-                  <span className="text-red-500">*</span>
+                  End Date <span className="text-red-500">*</span>
                 </label>
                 <Input
                   type="date"
@@ -321,7 +320,16 @@ export default function UserProfileStep2({
                     }))
                   }
                   required={!educationDraft.isCurrent}
+                  min={educationDraft.startDate || undefined} 
                 />
+                {/* Validation message */}
+                {educationDraft.endDate &&
+                  !educationDraft.isCurrent &&
+                  educationDraft.endDate < educationDraft.startDate && (
+                    <p className="text-sm text-red-500 font-medium">
+                      End date cannot be earlier than start date
+                    </p>
+                  )}
               </div>
             </div>
             <label className="flex items-center gap-2 text-base">

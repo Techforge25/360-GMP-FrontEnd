@@ -1,5 +1,5 @@
 import { ChevronLeft } from "lucide-react";
-import { FiArrowRight, FiCheck, FiInfo } from "react-icons/fi";
+import { FiArrowRight, FiCheck, FiInfo, FiX } from "react-icons/fi";
 import { SiStripe } from "react-icons/si";
 import SubscriptionTable from "./SubscriptionTable";
 import {
@@ -10,9 +10,19 @@ import { cn } from "@/lib/utils";
 import { Button } from "../ui/Button";
 import { usePathname } from "next/navigation";
 import { formatCurrency, formatDate } from "@/helpers";
+import { useState } from "react";
+import CancelSubscriptionModal from "./CancelSubscriptionModal";
 
 export default function ShowPlanUpdate({ totalSpent, loading, showPlans, handleSelectPlan, planName, planPrice, renewalDate, statusLabel, status, subscription, setShowPlans, plans, loadingPlans }) {
+     const [deletePlanModal, setDeletePlanModal] = useState(false);
+     const [confirmDelete, setConfirmDelete] = useState(false)
      const pathname = usePathname()
+     const openDeleteModal = () => {
+          setDeletePlanModal(true);
+     };
+
+
+
      return (
           <>
                {showPlans ? (
@@ -78,18 +88,19 @@ export default function ShowPlanUpdate({ totalSpent, loading, showPlans, handleS
 
                                                        <Button
                                                             onClick={() => handleSelectPlan(plan)}
+                                                            disabled={pathname.includes("business") && plan?.name === "TRIAL" || pathname.includes("user") && subscription?.plan?.name !== "TRIAL" && plan?.name === "TRIAL"}
                                                             className={cn(
                                                                  "w-full mb-8 font-medium",
                                                                  isPremium
                                                                       ? "bg-[#240457] text-white hover:bg-indigo-800"
-                                                                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50",
+                                                                      : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed",
                                                             )}
                                                        >
                                                             {String(
                                                                  subscription?.planId || subscription?.plan?._id,
                                                             ) === String(plan._id)
                                                                  ? "Current Plan"
-                                                                 : "Choose Plan"}
+                                                                 : pathname.includes("business") && plan?.name === "TRIAL" ? "Not Valid For Business" : pathname.includes("user") && subscription?.plan?.name !== "TRIAL" && plan?.name === "TRIAL" ? "Trial Plan cannot be purchased" : "Choose Plan"}
                                                        </Button>
 
                                                        <div className="space-y-4 mb-4">
@@ -154,6 +165,13 @@ export default function ShowPlanUpdate({ totalSpent, loading, showPlans, handleS
                                         >
                                              <span>Update Plan</span>
                                              <FiArrowRight />
+                                        </button>
+                                        <button
+                                             onClick={openDeleteModal}
+                                             className="flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-transparent text-red-500 border rounded-lg text-sm sm:text-base font-medium hover:bg-red-500 hover:text-white transition-colors"
+                                        >
+                                             <span>Delete Plan</span>
+                                             <FiX />
                                         </button>
                                    </div>
                               </div>
@@ -293,6 +311,10 @@ export default function ShowPlanUpdate({ totalSpent, loading, showPlans, handleS
                               </div>
                               <SubscriptionTable />
                          </div>
+
+                         {deletePlanModal && (
+                              <CancelSubscriptionModal setDeletePlanModal={setDeletePlanModal} setConfirmDelete={setConfirmDelete} />
+                         )}
                     </div>
                )
                }

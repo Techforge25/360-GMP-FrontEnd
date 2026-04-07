@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { cn, getImageDimensions } from "@/lib/utils";
 import { Input } from "@/components/ui/Input";
-import { PhoneInputWithCountry } from "@/components/ui/PhoneInputWithCountry";
 import OnboardingImageUploadField from "@/components/onboarding/OnboardingImageUploadField";
 
 export default function BusinessProfileStep1({

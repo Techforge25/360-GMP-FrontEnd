@@ -15,6 +15,10 @@ const RoleSelectionCard = ({ type, selected, onSelect }) => {
         onSelect && onSelect(type)
         setRoleSelection(type)
       }}
+      onKeyDown={(e) => {
+        e.preventDefault();
+      }}
+      tabIndex={-1}
       className={cn(
         "cursor-pointer transition-all duration-200 hover:border-brand-primary/50",
         isSelected

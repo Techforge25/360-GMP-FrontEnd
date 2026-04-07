@@ -10,6 +10,7 @@ import {
   redirectTo,
   refreshRoleSession,
 } from "@/lib/auth/session";
+import { usePathname, useRouter } from "next/navigation";
 
 const UserContext = createContext();
 
@@ -17,22 +18,35 @@ export const UserProvider = ({ children }) => {
   // Full User State
   const [user, setUserState] = useState(undefined);
   const [roleSelection, setRoleSelection] = useState("business")
+  const [isRoleSelected, setIsRoleSelected] = useState(false)
+  const [isSwitchProfile, setIsSwitchProfile] = useState({
+    profile: "",
+    isInActivated: true
+  })
+
 
   useEffect(() => {
-
     // 1. Initial Load from localStorage
     let currentUser = getStoredUser();
+    console.log(currentUser, "current user")
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
 
+    const urlToken =
+      searchParams.get("token") ||
+      searchParams.get("accessToken") ||
+      hashParams.get("token") ||
+      hashParams.get("accessToken");
+
+    console.log(urlToken, "url token")
+
+    // if (urlToken) {
+    //   if (pathname === "/otp-verification" || pathname === "/sign-up" || pathname === "/reset-password" || pathname === "/login" || pathname === "/forgot-password") {
+    //     return router.push(`/dashboard/${currentUser.role}`)
+    //   }
+    // }
     // 2. URL/Hash Token Capture (Priority for Google OAuth/Production redirects)
     if (typeof window !== "undefined") {
-      const searchParams = new URLSearchParams(window.location.search);
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-
-      const urlToken =
-        searchParams.get("token") ||
-        searchParams.get("accessToken") ||
-        hashParams.get("token") ||
-        hashParams.get("accessToken");
 
       if (urlToken) {
         console.log("🎟️ Found token in URL/Hash, initializing session...");
@@ -51,7 +65,6 @@ export const UserProvider = ({ children }) => {
         // Save and update state
         login(userData);
         currentUser = userData;
-
         // CRITICAL: Clean URL to remove token for security - prevents leaking auth via shared links
         const cleanURL =
           window.location.pathname + window.location.hash.split("?")[0];
@@ -66,6 +79,7 @@ export const UserProvider = ({ children }) => {
       if (userId && (userToVerify?.token || userToVerify?.accessToken)) {
         console.log("🔍 Verifying session for user:", userId);
         const exists = await checkUserExistence(userId);
+        console.log(exists, "exists")
         if (!exists) {
           console.error("❌ Session invalid or user not found. Logging out.");
           logout();
@@ -234,7 +248,11 @@ export const UserProvider = ({ children }) => {
         onboardingRole: user?.role,
         onboardingProfileData: user?.profileData,
         setRoleSelection,
-        roleSelection
+        roleSelection,
+        setIsRoleSelected,
+        isRoleSelected,
+        setIsSwitchProfile,
+        isSwitchProfile
       }}
     >
       {children}

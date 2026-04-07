@@ -188,13 +188,20 @@ class ApiRequest {
   // Delete request
   async delete({
     url,
+    payload,
     activateLoader = true,
     enableSuccessMessage = true,
     enableErrorMessage = true,
   }) {
     if (activateLoader) startSaving();
     try {
-      const response = await client.delete(url);
+      let response;
+      console.log(payload, "payload")
+      if (payload.password) {
+        response = await client.delete(url, payload);
+      } else {
+        response = await client.delete(url);
+      }
       if (enableSuccessMessage) showSuccess(response.message);
       return response;
     } catch (error) {

@@ -55,6 +55,8 @@ export default function BusinessProfileStep2({
     name: "tradeAffiliations"
   });
 
+  console.log(errors?.stakeholderDisclosure, "error stake hodler")
+
   return (
     <div className="space-y-8">
       <div className="space-y-6">
@@ -180,6 +182,12 @@ export default function BusinessProfileStep2({
             {errors?.stakeholderDisclosure?.[index]?.ownershipPercentage && (
               <p className="text-red-500">
                 {errors?.stakeholderDisclosure[index]?.ownershipPercentage?.message}
+              </p>
+            )}
+
+            {typeof errors?.stakeholderDisclosure === "string" && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors.stakeholderDisclosure}
               </p>
             )}
           </>

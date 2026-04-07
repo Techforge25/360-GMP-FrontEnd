@@ -17,7 +17,7 @@ function SubscriptionSuccessContent() {
     planUpdate: false,
     planUpdateRoute: ""
   });
-  const { user } = useUser();
+  const { user, roleSelection } = useUser();
 
   useEffect(() => {
     const getSubscriptionDetails = async () => {
@@ -41,11 +41,8 @@ function SubscriptionSuccessContent() {
     getSubscriptionDetails()
   }, [])
 
-  console.log(checkSubscriptionUpdate, "updates")
-
   const handleContinue = () => {
     const storedSub = subscriptionAPI.getStoredSubscription();
-    console.log(subscriptionData, "subscription data")
     const role = storedSub?.role || user?.role || "user";
     const isNew = user?.isNewToPlatform ?? true;
 
@@ -54,11 +51,11 @@ function SubscriptionSuccessContent() {
     }
 
     if (isNew) {
-      role === "user"
+      roleSelection === "user"
         ? router.push("/onboarding/user-profile")
         : router.push("/onboarding/business-profile");
     } else {
-      role === "user"
+      roleSelection === "user"
         ? router.push("/dashboard/user")
         : router.push("/dashboard/business");
     }
