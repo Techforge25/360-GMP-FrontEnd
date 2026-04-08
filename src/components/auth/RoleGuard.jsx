@@ -6,11 +6,10 @@ import subscriptionAPI from "@/services/subscriptionAPI";
 import { routesSubscriptionCancelled } from "@/constants/index";
 
 export default function RoleGuard({ children, allowedRoles }) {
-  const { user, isRoleSelected, isSwitchProfile } = useUserRole();
+  const { user, role, isRoleSelected, isSwitchProfile } = useUserRole();
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
   const pathname = usePathname();
-
   useEffect(() => {
     const checkRoleGuard = async () => {
       if (user === undefined) return;
@@ -51,9 +50,7 @@ export default function RoleGuard({ children, allowedRoles }) {
         if (!userRole?.role && pathname === "/onboarding/plans" && checkSubscriptionPurchased?.data?.subscriptionStatus === "active") {
           return router.push("/onboarding/role")
         }
-
       }
-
 
       if (!isAuthorized) {
         // Redirect to unauthorized or their own dashboard

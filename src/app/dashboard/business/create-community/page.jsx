@@ -11,19 +11,10 @@ import { uploadToCloudinary } from "@/lib/cloudinary";
 import dynamic from "next/dynamic";
 import CKEditorField from "@/components/ui/CKEditor";
 
-const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-[150px] bg-gray-50 animate-pulse rounded-md border" />
-  ),
-});
-
 export default function CreateCommunityPage() {
   const router = useRouter();
   const { user } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [purposeLength, setPurposeLength] = useState(0);
-  const [rulesLength, setRulesLength] = useState(0);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -53,26 +44,6 @@ export default function CreateCommunityPage() {
     "Industry News",
     "Best Practices",
     "Technology",
-  ];
-
-  const exampleCommunities = [
-    {
-      name: "Automotive Manufacturing Network",
-      industry: "Auto Parts & Manufacturing",
-      description:
-        "Connect with automotive professionals and suppliers worldwide",
-    },
-    {
-      name: "Precision Engineering Community",
-      industry: "Engineering",
-      description:
-        "Share technical insights and innovations in precision engineering",
-    },
-    {
-      name: "Logistics & Supply Chain Hub",
-      industry: "Logistics",
-      description: "Optimize your supply chain with industry experts",
-    },
   ];
 
   const handleInputChange = (field, value) => {
@@ -131,13 +102,6 @@ export default function CreateCommunityPage() {
     setIsSubmitting(true);
 
     try {
-      // Creator = business profile (not user). Send businessProfileId so backend can set owner correctly.
-      const businessProfileId =
-        user?.businessId ||
-        user?.profilePayload?._id ||
-        user?.profiles?.businessProfileId ||
-        user?.id;
-
       let payload = {
         name: formData.name,
         type: formData.privacyType,
@@ -174,19 +138,12 @@ export default function CreateCommunityPage() {
           "communities/profiles",
         );
         payload.profileImage = profileImageUrl;
-        console.log("✅ Profile image uploaded:", profileImageUrl);
       }
-
-      console.log("📤 Creating community with payload:", payload);
 
       // Call API
       const response = await communityAPI.create(payload);
 
-      console.log("📥 API Response:", response);
-      console.log("📥 Response data:", response?.data);
-
       if (response.success) {
-        console.log("✅ Community created successfully:", response.data);
         // Navigate to communities page or the new community page
         router.push("/dashboard/business/communities");
       } else {

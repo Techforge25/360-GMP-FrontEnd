@@ -18,6 +18,7 @@ export const UserProvider = ({ children }) => {
   // Full User State
   const [user, setUserState] = useState(undefined);
   const [roleSelection, setRoleSelection] = useState("business")
+  const [userId, setUserId] = useState("")
   const [isRoleSelected, setIsRoleSelected] = useState(false)
   const [isSwitchProfile, setIsSwitchProfile] = useState({
     profile: "",
@@ -109,6 +110,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const login = (userData) => {
+    console.log(userData, "user data in login")
     // Prevent passing just a string (like role) which would corrupt the state
     let finalizedData = userData;
     if (typeof userData === "string") {
@@ -163,6 +165,8 @@ export const UserProvider = ({ children }) => {
             response.user?.isNewToPlatform ??
             true,
         };
+
+        console.log(updatedUser, "user updated")
 
         login(updatedUser);
         return updatedUser;
@@ -231,7 +235,6 @@ export const UserProvider = ({ children }) => {
 
   useSocket("notification", (data) => {
     console.log("Received notification:", data);
-    // Here you can implement logic to show notifications in the UI
   });
 
   return (
@@ -249,7 +252,9 @@ export const UserProvider = ({ children }) => {
         setIsRoleSelected,
         isRoleSelected,
         setIsSwitchProfile,
-        isSwitchProfile
+        isSwitchProfile,
+        setUserId,
+        userId
       }}
     >
       {children}

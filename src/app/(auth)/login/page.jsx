@@ -105,9 +105,8 @@ function LoginPageContent() {
           router.push("/onboarding/role");
         } else {
           const role = res.data.role;
-          console.log(role, "rolesss after logging in")
-          if (role) router.push("/dashboard/user");
-          // else if (role === "user") router.push("/dashboard/user");
+          if (role === "business") router.push("/dashboard/business");
+          else if (role === "user") router.push("/dashboard/user");
           else router.push("/dashboard");
         }
       } else {

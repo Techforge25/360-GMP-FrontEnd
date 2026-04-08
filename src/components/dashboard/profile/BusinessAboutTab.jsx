@@ -181,9 +181,9 @@ const BusinessAboutTab = ({ businessId }) => {
                   className="relative rounded-xl overflow-hidden group aspect-[4/3] cursor-pointer"
                 >
                   {/* Image */}
-                  {album?.images?.map((image) => {
+                  {album?.images?.map((image, index) => {
                     return (
-                      <div className="absolute inset-0 bg-gray-200">
+                      <div key={index} className="absolute inset-0 bg-gray-200">
                         <Image
                           src={
                             image
@@ -273,7 +273,6 @@ const BusinessAboutTab = ({ businessId }) => {
               profileData.certifications.length > 0 ? (
               profileData.certifications.map((url, index) => {
 
-                // 🔥 Detect file type
                 const getFileType = (url) => {
                   const ext = url.split(".").pop().toLowerCase();
                   if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
@@ -283,7 +282,6 @@ const BusinessAboutTab = ({ businessId }) => {
                 };
 
                 const fileType = getFileType(url);
-                // 🧠 Auto name (optional)
                 const name = `Certification ${index + 1}`;
 
                 return (

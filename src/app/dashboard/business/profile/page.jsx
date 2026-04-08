@@ -10,24 +10,20 @@ import BusinessJobsTab from "@/components/dashboard/profile/BusinessJobsTab";
 import BusinessAboutTab from "@/components/dashboard/profile/BusinessAboutTab";
 // import BusinessOrdersTab from "@/components/dashboard/profile/BusinessOrdersTab";
 import BusinessCommunitiesTab from "@/components/dashboard/profile/BusinessCommunitiesTab";
+import { useUserRole } from "@/context/UserContext";
 
 export default function BusinessProfilePage() {
   const [activeTab, setActiveTab] = useState("Home");
   const [inventoryFilter, setInventoryFilter] = useState("");
   const [userData, setUserData] = useState(null)
+  const { userId } = useUserRole()
+
+  console.log(userId, "user id in business")
 
   const handleInventoryUpdate = () => {
     setInventoryFilter("Low Stock");
     setActiveTab("Product");
   };
-
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      const parsedUser = JSON.parse(user);
-      setUserData(parsedUser.profilePayload);
-    }
-  }, []);
 
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -65,7 +61,7 @@ export default function BusinessProfilePage() {
           </div>
         ) : activeTab === "About" ? (
           <div className="w-full">
-            <BusinessAboutTab businessId={userData?._id} />
+            <BusinessAboutTab businessId={userId} />
           </div>
         ) : // Disabled
           // : activeTab === "Orders" ? (

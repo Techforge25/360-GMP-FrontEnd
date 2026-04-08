@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import jobAPI from "@/services/jobAPI";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import dynamic from "next/dynamic";
+import CKEditorField from "@/components/ui/CKEditor";
 
 const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ssr: false,
@@ -68,12 +69,7 @@ export default function CreateJobModal({
       period: "Month",
     },
     postingDuration: "30 Days",
-    description: JSON.stringify([
-      {
-        type: "paragraph",
-        children: [{ text: "" }],
-      },
-    ]),
+    description: "",
   });
 
   if (!isOpen) return null;
@@ -494,24 +490,23 @@ export default function CreateJobModal({
               </label>
               <span
                 className={cn(
-                  "text-sm font-medium",
-                  descLength >= 5000 ? "text-red-500" : "text-gray-400",
+                  "text-sm font-medium text-gray-400",
                 )}
               >
-                {descLength}/5000
+                {descLength}/2000
               </span>
             </div>
-            <SlateEditor
+            <CKEditorField
               value={formData.description}
-              onChange={(val) => handleInputChange("description", val)}
-              onLengthChange={(len) => setDescLength(len)}
+              onChange={(val) => {
+                handleInputChange("description", val);
+              }} onLengthChange={(len) => setDescLength(len)}
               placeholder="Detailed job description..."
-              maxLength={5000}
-              className="text-black"
+              maxLength={2000}
             />
-            {descLength > 5000 && (
+            {descLength > 2000 && (
               <p className="text-sm text-red-500 mt-1">
-                Description cannot exceed 5000 characters
+                Description cannot exceed 2000 characters
               </p>
             )}
           </div>

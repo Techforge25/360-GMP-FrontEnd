@@ -8,7 +8,7 @@ import subscriptionAPI from "@/services/subscriptionAPI";
 import { routesSubscriptionCancelled } from "@/constants/index";
 
 export default function AuthGuard({ children }) {
-  const { user, isSwitchProfile, isRoleSelected } = useUserRole();
+  const { user, isSwitchProfile, isRoleSelected, userId, setUserId } = useUserRole();
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,9 @@ export default function AuthGuard({ children }) {
         activateLoader: false,
       });
 
-      const isAuthorized = response?.userId;
+      const isAuthorized = response?.data?.userId;
+      const businessId = response?.data?.businessProfileId
+      setUserId(businessId)
 
       const checkSubscriptionPurchased = await subscriptionAPI.checkSubscriptionExistence()
       const userRole = user?.role;

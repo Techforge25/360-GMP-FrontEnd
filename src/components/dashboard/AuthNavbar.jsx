@@ -94,8 +94,6 @@ const AuthNavbar = () => {
 
   const handleSwitch = async () => {
     const targetRole = user?.role === "business" ? "user" : "business";
-    console.log(targetRole, "target role")
-
     try {
       const response = await refreshRoleSession(targetRole, user);
 
