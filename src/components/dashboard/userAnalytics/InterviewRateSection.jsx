@@ -55,9 +55,9 @@ const InterviewRateSection = () => {
         </p>
       </div>
 
-      <div className="space-y-3 mt-auto">
+      <div className="flex gap-3 mt-auto w-full">
         {/* Profile CTR */}
-        <div className="bg-gray-100 rounded-lg p-3 flex items-center gap-3">
+        <div className="flex-1 bg-gray-100 rounded-lg p-3 flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-blue-100 flex items-center justify-center text-blue-600">
             <FiMousePointer className="w-4 h-4" />
           </div>
@@ -68,7 +68,7 @@ const InterviewRateSection = () => {
         </div>
 
         {/* Avg Response Time */}
-        <div className="bg-gray-100 rounded-lg p-3 flex items-center gap-3">
+        <div className="flex-1 bg-gray-100 rounded-lg p-3 flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-purple-100 flex items-center justify-center text-purple-600">
             <FiClock className="w-4 h-4" />
           </div>

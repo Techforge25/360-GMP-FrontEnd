@@ -44,7 +44,7 @@ export default function BusinessAnalyticsPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600 font-medium">
                   Sort By
@@ -68,7 +68,7 @@ export default function BusinessAnalyticsPage() {
                 <span>Export</span>
                 <FiDownload className="w-4 h-4" />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

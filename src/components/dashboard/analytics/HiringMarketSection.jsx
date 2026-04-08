@@ -238,7 +238,7 @@ const HiringMarketSection = () => {
       </div>
 
       {/* Application Funnel and Sourcing Channels */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
         {/* Application Funnel */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="mb-4">
@@ -280,7 +280,7 @@ const HiringMarketSection = () => {
         </div>
 
         {/* Top Sourcing Channels */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
+        {/* <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="mb-4">
             <h3 className="text-lg font-bold text-gray-900 mb-1">
               Top Sourcing Channels
@@ -313,7 +313,7 @@ const HiringMarketSection = () => {
               Most candidates come from direct search
             </p>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Market Trends & Benchmarking */}
@@ -324,7 +324,7 @@ const HiringMarketSection = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Export Market Distribution */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
+          {/* <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
             <div className="mb-4">
               <h3 className="text-lg font-bold text-gray-900 mb-1">
                 Export Market Distribution
@@ -376,10 +376,10 @@ const HiringMarketSection = () => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Competitor Benchmarking */}
-          <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
+          <div className="lg:col-span-3 bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
             <div className="mb-4">
               <h3 className="text-lg font-bold text-gray-900 mb-1">
                 Competitor Benchmarking
@@ -398,9 +398,6 @@ const HiringMarketSection = () => {
                     </th>
                     <th className="text-left py-3 px-2 text-sm font-semibold text-gray-600 uppercase tracking-wide">
                       Growth MOM
-                    </th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                      Market Share
                     </th>
                   </tr>
                 </thead>
@@ -433,9 +430,6 @@ const HiringMarketSection = () => {
                           >
                             {competitor.growth}
                           </span>
-                        </td>
-                        <td className="py-4 px-2 text-sm text-gray-700">
-                          {competitor.marketShare}
                         </td>
                       </tr>
                     ))

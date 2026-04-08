@@ -250,7 +250,7 @@ const ProfilePerformanceSection = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
         {/* Views Over Time - Line Chart */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="mb-4">
@@ -309,7 +309,7 @@ const ProfilePerformanceSection = () => {
         </div>
 
         {/* Analytics Overview - Donut Chart */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
+        {/* <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="mb-4">
             <h3 className="text-lg font-bold text-gray-900 mb-1">
               Analytics Overview
@@ -355,7 +355,7 @@ const ProfilePerformanceSection = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
