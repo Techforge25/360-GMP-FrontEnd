@@ -625,3 +625,11 @@ export const digitsOnly = (value) => value.replace(/[^0-9]/g, "");
 export const digitsDecimalOnly = (value) => value.replace(/[^0-9.]/g, ""); // allow decimal for price
 export const subscriptionTableHeaders = ["Date", "Invoice ID", "Plans", "Amount", "Status"];
 export const routesSubscriptionCancelled = ["/onboarding/business-profile/", "/onboarding/user-profile/", "/onboarding/role", "reset-password", "forgot-password", "otp-verification", "signup"]
+
+export const popularTags = [
+  "Innovation",
+  "Networking",
+  "Industry News",
+  "Best Practices",
+  "Technology",
+];

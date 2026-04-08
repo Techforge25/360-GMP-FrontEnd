@@ -155,12 +155,12 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
     website: business.website || "No website available",
     address: business.location
       ? [
-          business.location.addressLine,
-          business.location.city,
-          business.location.country,
-        ]
-          .filter(Boolean)
-          .join(", ")
+        business.location.addressLine,
+        business.location.city,
+        business.location.country,
+      ]
+        .filter(Boolean)
+        .join(", ")
       : "Location not specified",
   };
 
@@ -201,7 +201,7 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
         {/* Certifications Box */}
         <div className="rounded-xl p-6 border border-[#E6E6E6]">
           <h3 className="text-2xl font-medium text-black mb-4">
-            Certificationsasdasdasdasdasd
+            Certifications
           </h3>
           <div className="space-y-3">
             {certifications.map((cert, index) => {

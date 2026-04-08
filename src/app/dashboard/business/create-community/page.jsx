@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 import communityAPI from "@/services/communityAPI";
 import { useUser } from "@/context/UserContext";
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import dynamic from "next/dynamic";
 import CKEditorField from "@/components/ui/CKEditor";
+import { popularTags } from "@/constants/index";
 
 export default function CreateCommunityPage() {
   const router = useRouter();
@@ -37,14 +37,6 @@ export default function CreateCommunityPage() {
   const [coverPreview, setCoverPreview] = useState(null);
 
   const [currentTag, setCurrentTag] = useState("");
-
-  const popularTags = [
-    "Innovation",
-    "Networking",
-    "Industry News",
-    "Best Practices",
-    "Technology",
-  ];
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -132,7 +124,6 @@ export default function CreateCommunityPage() {
       }
 
       if (formData.logo instanceof File) {
-        console.log("📤 Uploading profile image to Cloudinary...");
         const profileImageUrl = await uploadToCloudinary(
           formData.logo,
           "communities/profiles",
@@ -140,11 +131,9 @@ export default function CreateCommunityPage() {
         payload.profileImage = profileImageUrl;
       }
 
-      // Call API
       const response = await communityAPI.create(payload);
 
       if (response.success) {
-        // Navigate to communities page or the new community page
         router.push("/dashboard/business/communities");
       } else {
         console.error("❌ API returned success=false:", response);
@@ -702,13 +691,6 @@ export default function CreateCommunityPage() {
                     >
                       Cancel
                     </Link>
-                    {/* <button
-                      type="button"
-                      className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                      disabled={isSubmitting}
-                    >
-                      View as Public
-                    </button> */}
                     <button
                       type="submit"
                       disabled={isSubmitting}
@@ -749,37 +731,8 @@ export default function CreateCommunityPage() {
           </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-[#1a1a2e] text-white py-6 mt-12">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-400">
-              © 2025 360GMP. All rights reserved.
-            </p>
-            <div className="flex gap-6 text-sm">
-              <Link
-                href="/terms"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                Terms
-              </Link>
-              <Link
-                href="/privacy"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                Privacy
-              </Link>
-              <Link
-                href="/cookies"
-                className="text-gray-400 hover:text-white transition-colors"
-              >
-                Cookies
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
+
+
