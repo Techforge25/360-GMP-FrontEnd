@@ -114,11 +114,11 @@ export default function ProductInfo({ product }) {
           <FaStar />
         </div> */}
         <span className="text-gray-500 underline">
-          ({product.viewsCount || 0} Views)
+          ({product?.viewsCount || 0} Views)
         </span>
         <span className="text-gray-300">•</span>
         <span className="text-gray-500">
-          {product.stockQty || 0} (In Stock)
+          {product?.stockQty || 0} (In Stock)
         </span>
       </div>
 
@@ -126,20 +126,20 @@ export default function ProductInfo({ product }) {
       <div className="flex justify-between items-end pb-2">
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-semibold text-black">
-            ${product.pricePerUnit.toFixed(2)}
+            ${product?.pricePerUnit?.toFixed(2)}
           </span>
           <span className="text-gray-500 text-base font-semibold">/Pc</span>
         </div>
 
         <span className="text-gray-500 text-sm">
-          MOQ: {product.minOrderQty} pc
+          MOQ: {product?.minOrderQty} pc
         </span>
       </div>
 
       <div className="flex items-center justify-between bg-[#f0f0f0] py-4 my-4 px-4 rounded-xl">
         <div className="flex items-center gap-2">
-          <Image width={40} height={50} src={product.businessId.logo} alt="logo" className="rounded-md" />
-          <span className="text-black">{product.businessId.companyName}</span>
+          <Image width={40} height={50} src={product?.businessId?.logo} alt="logo" className="rounded-md" />
+          <span className="text-black">{product?.businessId?.companyName}</span>
         </div>
         <hr />
         <span className="text-[#22252b] bg-[#dfedff] px-4 py-1 border rounded-2xl flex items-center gap-2"><Image src={"/assets/images/verified.png"} width={20} height={20} alt="verified" />verified supplier</span>
@@ -197,7 +197,7 @@ export default function ProductInfo({ product }) {
               <div className="flex items-center border border-gray-200 rounded-lg bg-white overflow-hidden">
                 <button
                   onClick={() =>
-                    setQuantity(Math.max(product.minOrderQty, quantity - 1))
+                    setQuantity(Math.max(product?.minOrderQty, quantity - 1))
                   }
                   disabled={isFreeTrial}
                   className={`w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors ${isFreeTrial ? "bg-gray-50 cursor-not-allowed opacity-50" : ""}`}
@@ -210,7 +210,7 @@ export default function ProductInfo({ product }) {
                   // readOnly={isFreeTrial}
                   onChange={(e) =>
                     setQuantity(
-                      Math.max(product.minOrderQty, Number(e.target.value)),
+                      Math.max(product?.minOrderQty, Number(e.target.value)),
                     )
                   }
                   className={`w-12 text-center text-sm font-bold text-gray-900 border-x border-gray-200 py-1 outline-none ${isFreeTrial ? "bg-gray-50 cursor-not-allowed" : ""}`}
@@ -244,7 +244,7 @@ export default function ProductInfo({ product }) {
           Sub Total:{" "}
           {selectedTier.price === 0 ? (
             <span className="">
-              ${(quantity * product.pricePerUnit).toLocaleString()}
+              ${(quantity * product?.pricePerUnit).toLocaleString()}
             </span>
           ) : (
             <span className="">
@@ -259,7 +259,7 @@ export default function ProductInfo({ product }) {
         <h3 className="text-black">Tiered Pricing (Q: Price, Q: Price)</h3>
         <div className="my-3 p-6 bg-gray-50 rounded-xl border border-gray-200 shadow-sm">
           <div className="flex flex-wrap gap-8">
-            {product.tieredPricing.filter((tier) => tier.price !== 0 && tier.quantity !== 0).map((tier, index) => (
+            {product?.tieredPricing?.filter((tier) => tier.price !== 0 && tier.quantity !== 0).map((tier, index) => (
               <label
                 key={index}
                 className="flex items-center cursor-pointer group"
@@ -268,11 +268,11 @@ export default function ProductInfo({ product }) {
                   <input
                     type="radio"
                     name="pricing-tier"
-                    value={tier.price}
-                    checked={selectedTier.price === tier.price}
+                    value={tier?.price}
+                    checked={selectedTier.price === tier?.price}
                     onChange={() => {
                       setQuantity(tier.qty)
-                      setSelectedTier({ qty: Number(tier.qty), price: tier.price })
+                      setSelectedTier({ qty: Number(tier?.qty), price: tier?.price })
                       setIsTierSelected(true)
                     }}
                     className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-full checked:border-indigo-900 transition-all"
@@ -282,8 +282,8 @@ export default function ProductInfo({ product }) {
                 </div>
 
                 <span className={`ml-3 text-lg transition-colors text-gray-500`}>
-                  {tier.qty}pcs - <span className={`${selectedTier === tier.price ? 'text-indigo-900 font-medium' : 'text-gray-500'
-                    }`}>${tier.price.toFixed(2)}/pc</span>
+                  {tier?.qty}pcs - <span className={`${selectedTier === tier?.price ? 'text-indigo-900 font-medium' : 'text-gray-500'
+                    }`}>${tier?.price?.toFixed(2)}/pc</span>
                 </span>
               </label>
             ))}
@@ -303,7 +303,7 @@ export default function ProductInfo({ product }) {
       <div className="flex gap-4 mb-8">
         <button
           onClick={handleAddToCart}
-          disabled={product.isOwner}
+          disabled={product?.isOwner}
           className="flex-1 bg-[#240457] text-white py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#2a0b4d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Add To Cart  <FaShoppingCart />

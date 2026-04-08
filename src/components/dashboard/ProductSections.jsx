@@ -3,14 +3,16 @@ import React from "react";
 import { FiArrowRight, FiHeart } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import { getProductsBasePath } from "@/features/dashboard/products/mappers";
 import { useProductSectionsData } from "@/features/dashboard/products/useProductSectionsData";
+import DOMPurify from "dompurify";
 
 const ProductSections = () => {
   const router = useRouter();
   const { user } = useUserRole();
+  const pathname = usePathname()
   const { featured, topRanking, newProducts, loading, error } =
     useProductSectionsData();
   const carouselRef = React.useRef(null);
@@ -58,13 +60,6 @@ const ProductSections = () => {
     router.push(`${productsBasePath.replace(/\/products$/, "")}/marketplace`);
   };
 
-  const handleViewTopRanking = () => {
-    router.push(`${productsBasePath}/top-ranking`);
-  };
-
-  const handleViewNewProducts = () => {
-    router.push(`${productsBasePath}/new`);
-  };
 
   const handleViewProduct = (productId) => {
     router.push(`${productsBasePath}/${productId}`);
@@ -266,7 +261,7 @@ const ProductSections = () => {
                     </p>
                   </div>
                   <span
-                    onClick={handleViewTopRanking}
+                    onClick={() => pathname.includes("business") ? router.push("/dashboard/business/marketplace") : router.push("/dashboard/user/marketplace")}
                     className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline"
                   >
                     View More <ChevronRight />
@@ -277,13 +272,13 @@ const ProductSections = () => {
                   {topRanking.length > 2 && (
                     <>
                       <button
-                        onClick={scrollNewLeft}
+                        onClick={scrollTopRankingLeft}
                         className="absolute left-0 top-1/2 shadow-amber-50 -translate-y-1/2 -translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={scrollNewRight}
+                        onClick={scrollTopRankingRight}
                         className="absolute right-0 shadow-amber-50 top-1/2 -translate-y-1/2 translate-x-3 z-20 w-8 h-8 rounded-full bg-[#240457] text-white flex items-center justify-center shadow-lg hover:bg-[#1a0340] transition-all opacity-0 group-hover:opacity-100"
                       >
                         <ChevronRight className="w-4 h-4" />
@@ -315,9 +310,9 @@ const ProductSections = () => {
                         <h3 className="font-bold text-base truncate text-black mb-1">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-3 truncate">
-                          {item.desc}
-                        </p>
+                        <p className="text-sm text-gray-500 mb-3 truncate" dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(item.desc),
+                        }} />
                         <div className="flex justify-between items-center text-sm text-gray-600">
                           <span>MOQ: {item.minOrder || 100}</span>
                           <span className="text-sm text-gray-500">
@@ -343,7 +338,7 @@ const ProductSections = () => {
                     </p>
                   </div>
                   <span
-                    onClick={handleViewNewProducts}
+                    onClick={() => pathname.includes("business") ? router.push("/dashboard/business/marketplace") : router.push("/dashboard/user/marketplace")}
                     className="text-sm flex items-center gap-1 font-bold cursor-pointer hover:underline"
                   >
                     View More <ChevronRight />
@@ -392,9 +387,9 @@ const ProductSections = () => {
                         <h3 className="font-bold text-base truncate text-black mb-1">
                           {item.name}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-3 truncate">
-                          {item.desc}
-                        </p>
+                        <p className="text-sm text-gray-500 mb-3 truncate" dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(item.desc),
+                        }} />
                         <div className="flex justify-between items-center text-sm text-gray-600">
                           <span>MOQ: {item.minOrder || 100}</span>
                           <span className="text-sm text-gray-500">
@@ -409,10 +404,11 @@ const ProductSections = () => {
             )}
           </div>
         </section>
-      )}
+      )
+      }
       {/* Decorative element */}
       <div className="absolute bottom-16 -right-4 w-16 h-16 border-[12px] border-[#9747FF] rounded-full opacity-100 pointer-events-none"></div>
-    </div>
+    </div >
   );
 };
 

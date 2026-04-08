@@ -8,6 +8,7 @@ import { MdLockOutline } from "react-icons/md";
 import communityAPI from "@/services/communityAPI";
 import { useUserRole } from "@/context/UserContext";
 import { cn, getSlateText } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 
 const CommunitySection = () => {
   const scrollRef = React.useRef(null);
@@ -15,6 +16,7 @@ const CommunitySection = () => {
   const [communities, setCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useUserRole();
+  const pathname = usePathname()
   useEffect(() => {
     const fetchCommunities = async () => {
       try {
@@ -196,9 +198,8 @@ const CommunitySection = () => {
               <button
                 key={idx}
                 onClick={() => scrollTo(idx)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  activeIndex === idx ? "w-6 bg-[#240457]" : "w-1.5 bg-gray-300"
-                }`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${activeIndex === idx ? "w-6 bg-[#240457]" : "w-1.5 bg-gray-300"
+                  }`}
               />
             ),
           )}
@@ -207,7 +208,7 @@ const CommunitySection = () => {
 
       <div className="flex justify-center mt-10">
         <Link
-          href="/dashboard/user/businesses"
+          href={pathname.includes("business") ? "/dashboard/business/communities" : "/dashboard/user/communities"}
           className="px-6 py-2 bg-white border border-gray-300 rounded-full text-base font-medium text-black hover:bg-gray-50 shadow-sm"
         >
           Explore all communities

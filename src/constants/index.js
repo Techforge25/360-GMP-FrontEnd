@@ -172,7 +172,7 @@ export const getStatusColor = (status) => {
   }
 };
 
-export const tags = ["Manufacturing", "Healthcare", "Technology", "Consulting"]
+export const tags = ["Manufacturer", "Healthcare", "Technology", "Consulting"]
 
 export const cardsBusiness = [
   {

@@ -778,15 +778,6 @@ export default function MarketplaceContent() {
                         : "Discover our latest additions to the marketplace"}
                   </p>
                 </div>
-                {viewMode !== "all" && (
-                  <button
-                    onClick={() => setViewMode("all")}
-                    className="flex items-center gap-2 text-brand-primary font-semibold hover:underline self-start sm:self-center bg-white px-4 py-2 rounded-lg border border-purple-100 shadow-sm"
-                  >
-                    {/* <ChevronRight className="w-4 h-4 rotate-180" /> */}
-                    All Products
-                  </button>
-                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">

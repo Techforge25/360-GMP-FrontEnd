@@ -100,8 +100,6 @@ export default function SearchInputs() {
                     <Button
                          onClick={handleSubmit(handleSearch)}
                          className="bg-brand-primary hover:bg-brand-primary/90 text-white rounded-xl px-8 py-4 font-medium transition-all shadow-md hover:shadow-lg whitespace-nowrap"
-                         disabled={!watch("query") ||
-                              !watch("location")}
                     >
                          Search
                     </Button>
