@@ -594,7 +594,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             {/* Price */}
             <div className="flex flex-col flex-1">
               <label htmlFor={`price-${index}`} className="text-sm font-semibold text-gray-700 mb-1">
-                Price
+                Price Per Unit
               </label>
               <input
                 id={`price-${index}`}

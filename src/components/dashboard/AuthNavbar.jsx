@@ -42,7 +42,8 @@ const AuthNavbar = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [businessProfile, setBusinessProfile] = useState(null);
   const { user, setIsSwitchProfile } = useUserRole();
-  const { cartCount } = useCart();
+  const { cartCount, cartItems } = useCart();
+  console.log(cartItems, "cart count")
   const pathname = usePathname();
 
   // Fetch profile image based on user role
@@ -191,9 +192,9 @@ const AuthNavbar = () => {
                       alt="Cart"
                       className="w-6 h-6"
                     />
-                    {cartCount > 0 && (
+                    {cartItems?.length > 0 && (
                       <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-primary text-white text-[8px] flex items-center justify-center rounded-full font-semibold">
-                        {cartCount}
+                        {cartItems.length}
                       </span>
                     )}
                   </Link>

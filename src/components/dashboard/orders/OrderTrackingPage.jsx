@@ -304,8 +304,6 @@ const OrderTrackingPage = ({ orderId }) => {
     router.push(`/dashboard/invoice/${order._id}`);
   };
 
-  console.log(activeStep, "active step")
-
   return (
     <div className="min-h-screen bg-[#F8F9FA]">
       {/* Top Header */}

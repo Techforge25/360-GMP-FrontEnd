@@ -99,9 +99,9 @@ export default function ProductInfo({ product }) {
   return (
     <div className="w-full">
       <h1 className="text-xl font-medium text-black mb-2">{product.title}</h1>
-      <div className="text-gray-900 text-md mb-4">
+      {/* <div className="text-gray-900 text-md mb-4">
         <SlateRenderer content={product.detail} maxLength={50} />
-      </div>
+      </div> */}
 
       {/* Ratings */}
       <div className="flex items-center gap-2 text-sm mb-6">

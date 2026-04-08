@@ -48,11 +48,9 @@ export default function TablesBusiness({ tableData, hasMore, loadMore, loading, 
                                                        {item.status || "Unknown"}
                                                   </span>
                                              </td>
-                                             <Link href={`/wallet/business/transaction-details/${item.orderId}`}>
-                                                  <td className="flex items-center gap-3 px-6 py-3.5 text-[16px] font-semibold text-black">
-                                                       ${item.amount} <MdKeyboardArrowRight />
-                                                  </td>
-                                             </Link>
+                                             <td className="flex items-center gap-3 px-6 py-3.5 text-[16px] font-semibold text-black">
+                                                  ${item.amount} <MdKeyboardArrowRight />
+                                             </td>
                                         </tr>
                                    ))
                               ) : (
@@ -105,7 +103,7 @@ export default function TablesBusiness({ tableData, hasMore, loadMore, loading, 
                                         </td>
                                    </tr>
                               )
-                         ) : activeTabs === "Transactions" ? (
+                         ) : activeTabs === "Withdrawals" ? (
                               tableData?.length > 0 ? (
                                    tableData.map((item) => (
                                         <tr key={item.id}>

@@ -14,6 +14,7 @@ export const checkoutSchema = object({
                /^\+?[1-9]\d{9,14}$/,
                "Phone number must be a valid international format (e.g., +923001234567)"
           )
+          .max(15, "Phone Number cannot be exceeded more then 15 numbers")
           .required("Phone is required"),
 
      lineAddress1: string()

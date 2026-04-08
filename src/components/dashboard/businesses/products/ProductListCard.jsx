@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useUserRole } from "@/context/UserContext";
 import productAPI from "@/services/productAPI";
 import { getSlateText } from "@/lib/utils";
+import DOMPurify from "dompurify"
 
 export default function ProductListCard({ product }) {
   const router = useRouter();
@@ -50,9 +51,11 @@ export default function ProductListCard({ product }) {
 
       <div className="p-4">
         <h3 className="font-semibold text-gray-900 text-base mb-2">{name}</h3>
-        <p className="text-sm text-gray-500 mb-4 line-clamp-2 h-8 leading-4">
-          {getSlateText(description)}
-        </p>
+        <p className="text-sm text-gray-500 mb-4 line-clamp-2 h-8 leading-4"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(description),
+          }}
+        />
 
         <div className="flex justify-between items-center text-[14px] text-gray-500 mb-4 pb-4 border-b border-gray-100">
           <div className="flex flex-col">

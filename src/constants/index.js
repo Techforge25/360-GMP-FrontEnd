@@ -230,7 +230,7 @@ export const transactions = [
 
 export const businessWalletTabs = ["My Wallet",
   "Earnings",
-  "Transactions"]
+  "Withdrawals"]
 
 export const paymentCards = [
   {
@@ -285,9 +285,9 @@ export const chartData = [
 
 export const sortOptionsByTime = ["Last 3 Month", "Last 2 Weeks", "Last 1 Week"]
 
-export const tabsTransactionBusinessWallet = ["All", "Withdrawal"]
+export const tabsTransactionBusinessWallet = ["All"]
 
-export const tabsTransactionUserWallet = ["All", "Refund"]
+export const tabsTransactionUserWallet = ["All"]
 
 export const walletTransactionTabs = ["Description/Date", "Status", "Amount"]
 

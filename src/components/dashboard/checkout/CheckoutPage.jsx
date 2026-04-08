@@ -340,7 +340,7 @@ const CheckoutPage = () => {
                           <PhoneInput
                             {...field}
                             international
-                            defaultCountry="PK"
+                            defaultCountry="US"
                             placeholder="Phone Number *"
 
                             numberInputProps={{

@@ -3,6 +3,7 @@ import SlateRenderer from "@/components/ui/SlateRenderer";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import DOMPurify from "dompurify"
 
 export default function ProductSpecs({ product }) {
   const [activeTab, setActiveTab] = useState("specs");
@@ -72,7 +73,12 @@ export default function ProductSpecs({ product }) {
             Product Details
           </h3>
           <div className="text-sm text-gray-600 leading-relaxed">
-            <SlateRenderer content={product.detail} maxLength={100} />
+            <p
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(product.detail),
+              }}
+            />
+            {/* <SlateRenderer content={product.detail} maxLength={100} /> */}
           </div>
           {product.extras && (
             <div className="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">

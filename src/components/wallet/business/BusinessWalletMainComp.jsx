@@ -19,7 +19,7 @@ export default function BusinessWalletMainComp() {
      const [analytics, setAnalytics] = useState(null)
 
      const tablesTabHeader =
-          activeTabs === "Transactions"
+          activeTabs === "Withdrawals"
                ? walletTransactionTabs
                : activeTabs === "My Wallet"
                     ? walletMyWalletsTabs

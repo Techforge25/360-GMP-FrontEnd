@@ -216,8 +216,7 @@ const CartPage = () => {
                         •
                       </span>
                       <div className="flex items-center gap-2 text-sm sm:text-sm text-gray-600">
-                        <span>{moment(product.businessId.foundedDate).fromNow()}</span>
-                        <span className="text-gray-300">•</span>
+                        <span className="text-gray-300"></span>
                         <span>{product.businessId.companyName}</span>
                       </div>
                     </div>
@@ -405,7 +404,7 @@ const CartPage = () => {
                             }}
                           />
                         </div>
-                        <span className="absolute p-2 -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-[#240457] text-white text-sm sm:text-sm font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full border-2 border-white">
+                        <span className="absolute p-2 -top-1.5 -right-1.5 sm:-top-2 sm:-right-2 bg-[#240457] text-white text-sm sm:text-sm font-bold w-4 h-4 sm:w-8 sm:h-8 flex items-center justify-center rounded-full border-2 border-white">
                           {product.quantity}
                         </span>
                       </div>
