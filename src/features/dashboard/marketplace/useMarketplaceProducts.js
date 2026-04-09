@@ -22,6 +22,8 @@ export const useMarketplaceProducts = ({
 
   const fetchMarketplaceProducts = useCallback(async () => {
     setLoading(true);
+    setFilteredProducts([]);
+    setAllProducts([]);
     try {
       const params = buildMarketplaceQueryParams({
         page: 1,
@@ -114,11 +116,11 @@ export const useMarketplaceProducts = ({
     } finally {
       setLoadingMore(false);
     }
-  }, [hasMore, loadingMore, page, query, selectedCategories, selectedCountry]);
+  }, [hasMore, loadingMore, page, selectedCategories, selectedCountry]);
 
   useEffect(() => {
     fetchMarketplaceProducts();
-  }, [fetchMarketplaceProducts]);
+  }, [selectedCategories, selectedCountry]);
 
   return {
     featuredProducts,

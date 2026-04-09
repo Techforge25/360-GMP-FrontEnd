@@ -17,6 +17,7 @@ import React, { useRef, useState } from "react";
 import CKEditorField from "@/components/ui/CKEditor";
 import { digitsDecimalOnly, digitsOnly } from "@/constants/index";
 import { toast } from "react-toastify";
+import { MARKETPLACE_PRODUCT_CATEGORIES } from "@/features/dashboard/marketplace/constants";
 // import CKEditorField from "@/components/CKEditorField";
 
 // const CKEditor = dynamic(
@@ -51,8 +52,6 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     galleryImages: [],
     isFeatured: false,
   });
-
-  console.log(formData.previewImage, "preview image")
 
   const step1DisabledNext =
     currentStep === 1 &&
@@ -473,11 +472,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             onChange={handleStandardInputChange}
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
-            <option value="">Select Category</option>
-            <option value="Metals & Fabrication">Metals & Fabrication</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Textiles">Textiles</option>
-            <option value="Raw Materials">Raw Materials</option>
+            {MARKETPLACE_PRODUCT_CATEGORIES.map((cat, index) => {
+              return (
+                <option defaultValue={"Sports & Fitness"} key={index} value={cat}>{cat}</option>
+              )
+            })}
+
           </select>
           {errors.category && (
             <p className="text-red-500 text-xs mt-1">{errors.category}</p>

@@ -1,12 +1,15 @@
 "use client";
 
+import { is } from "date-fns/locale";
 import { Search } from "lucide-react";
+import { select } from "slate";
 
 export default function MarketplaceSearchHero({
   query,
   setQuery,
-  handleKeyDown,
   handleSearch,
+  handleClearFilters,
+  isSearchSelected
 }) {
   return (
     <>
@@ -51,10 +54,10 @@ export default function MarketplaceSearchHero({
               <input
                 type="text"
                 placeholder="Search products, or supplier..."
+                readOnly={isSearchSelected}
                 className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-3.5 border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-700 placeholder-gray-400 text-sm sm:text-base"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
               />
             </div>
             <button
@@ -62,6 +65,13 @@ export default function MarketplaceSearchHero({
               className="bg-brand-primary cursor-pointer hover:bg-brand-primary/90 text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg sm:rounded-xl font-medium transition-colors duration-200 whitespace-nowrap w-full sm:w-auto text-sm sm:text-base"
             >
               Search
+            </button>
+            <button
+              onClick={handleClearFilters}
+              disabled={!query}
+              className="bg-gray-500 cursor-pointer text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-lg sm:rounded-xl font-medium transition-colors duration-200 whitespace-nowrap w-full sm:w-auto text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 disabled:hover:bg-gray-500"
+            >
+              Clear Filters
             </button>
           </div>
         </div>

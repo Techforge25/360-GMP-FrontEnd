@@ -8,13 +8,17 @@ export const MARKETPLACE_POPULAR_CATEGORIES = [
 ];
 
 export const MARKETPLACE_PRODUCT_CATEGORIES = [
-  { name: "Insustrial Machinery", count: 0 },
-  { name: "Apparel & Fashion", count: 0 },
-  { name: "Beauty And Personal Care", count: 0 },
-  { name: "Electronic", count: 0 },
-  { name: "Category A", count: 0 },
-  { name: "Category B", count: 0 },
-  { name: "Category C", count: 0 },
+  "Sports & Fitness",
+  "Apparel & Clothing",
+  "Health And Personal Care",
+  "Education & Training",
+  "Electronics & Tech",
+  "Home & Lifestyle",
+  "Creative & Digital Products",
+  "Gifts & Custom Products",
+  "Automotive & Tools",
+  "Business & Office Supplies",
+  "Other"
 ];
 
 export const MARKETPLACE_COUNTRIES = [

@@ -42,14 +42,13 @@ export default function MarketplaceContent() {
   });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
-  const toggleCategory = (category) => {
-    setExpandedCategories((prev) => ({ ...prev, [category]: !prev[category] }));
-  };
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countrySearchQuery, setCountrySearchQuery] = useState("");
   const [query, setQuery] = useState("");
   const [viewMode, setViewMode] = useState("all"); // 'all' or 'top-ranking'
+  const [isSearchSelected, setIsSearchSelected] = useState(false);
   const sentinelRef = useRef(null);
   const bottomSectionRef = useRef(null);
   const {
@@ -69,6 +68,10 @@ export default function MarketplaceContent() {
     selectedCategories,
     selectedCountry,
   });
+
+  const toggleCategory = (category) => {
+    setExpandedCategories((prev) => ({ ...prev, [category]: !prev[category] }));
+  };
 
   // Infinite scroll observer
   useEffect(() => {
@@ -95,6 +98,7 @@ export default function MarketplaceContent() {
 
   const handleSearch = () => {
     fetchMarketplaceProducts();
+    setIsSearchSelected(true);
   };
 
   const handleCategoryToggle = (categoryName) => {
@@ -106,6 +110,9 @@ export default function MarketplaceContent() {
         return [...prev, categoryName];
       }
     });
+    if (selectedCountry === "") {
+      setIsSearchSelected(!isSearchSelected)
+    }
   };
 
   const handleViewTopRanking = () => {
@@ -126,6 +133,9 @@ export default function MarketplaceContent() {
 
   const handleCountrySelect = (countryName) => {
     setSelectedCountry((prev) => (prev === countryName ? "" : countryName));
+    if (selectedCategories.length === 0) {
+      setIsSearchSelected(!isSearchSelected)
+    }
   };
 
   const clearFilters = () => {
@@ -133,6 +143,8 @@ export default function MarketplaceContent() {
     setSelectedCountry("");
     setCountrySearchQuery("");
     setQuery("");
+    setIsSearchSelected(false);
+    fetchMarketplaceProducts();
   };
 
   const handleProductClick = async (product) => {
@@ -178,11 +190,6 @@ export default function MarketplaceContent() {
 
     router.push(getMarketplaceProductPath(user?.role, businessId, productId));
   };
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
 
   const displayProducts =
     viewMode === "all"
@@ -196,8 +203,9 @@ export default function MarketplaceContent() {
       <MarketplaceSearchHero
         query={query}
         setQuery={setQuery}
-        handleKeyDown={handleKeyDown}
         handleSearch={handleSearch}
+        handleClearFilters={clearFilters}
+        isSearchSelected={isSearchSelected}
       />
 
       {/* Products Section */}
@@ -239,7 +247,9 @@ export default function MarketplaceContent() {
                 {/* Product Category */}
                 <div className="border-b border-gray-200">
                   <button
-                    onClick={() => toggleCategory("product")}
+                    onClick={() => {
+                      toggleCategory("product")
+                    }}
                     className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors"
                   >
                     <span className="font-medium text-gray-900 text-sm sm:text-base">
@@ -261,11 +271,11 @@ export default function MarketplaceContent() {
                           <input
                             type="checkbox"
                             className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                            checked={selectedCategories.includes(cat.name)}
-                            onChange={() => handleCategoryToggle(cat.name)}
+                            checked={selectedCategories.includes(cat)}
+                            onChange={() => handleCategoryToggle(cat)}
                           />
                           <span className="text-sm sm:text-base text-gray-700 flex-1">
-                            {cat.name}
+                            {cat}
                           </span>
                           <ChevronRight className="w-3 h-3 text-gray-400" />
                         </label>
@@ -291,25 +301,6 @@ export default function MarketplaceContent() {
                   </button>
                   {expandedCategories.country && (
                     <div className="px-4 pb-4 bg-white">
-                      {/* Country Search Bar */}
-                      <div className="flex items-center gap-2 mb-4 p-1 border border-gray-200 rounded-lg shadow-sm">
-                        <div className="flex-1 flex items-center pl-2">
-                          <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 mr-2" />
-                          <input
-                            type="text"
-                            placeholder="Search Location"
-                            className="w-full py-1.5 text-sm sm:text-base focus:outline-none placeholder:text-gray-400 text-gray-700"
-                            value={countrySearchQuery}
-                            onChange={(e) =>
-                              setCountrySearchQuery(e.target.value)
-                            }
-                          />
-                        </div>
-                        <button className="bg-[#1D064F] hover:bg-[#2D0A75] text-white px-3 sm:px-4 py-1.5 rounded-md text-sm sm:text-sm font-semibold transition-colors">
-                          Search
-                        </button>
-                      </div>
-
                       {/* Country List */}
                       <div className="space-y-1 max-h-64 overflow-y-auto custom-scrollbar pr-1">
                         {MARKETPLACE_COUNTRIES
@@ -435,7 +426,9 @@ export default function MarketplaceContent() {
                       {/* Product Category - Mobile */}
                       <div className="border-b border-gray-200 pb-4">
                         <button
-                          onClick={() => toggleCategory("product")}
+                          onClick={() => {
+                            toggleCategory("product")
+                          }}
                           className="w-full flex items-center justify-between py-3 hover:bg-gray-50 transition-colors rounded-lg px-2"
                         >
                           <span className="font-medium text-gray-900 text-base">
@@ -458,14 +451,14 @@ export default function MarketplaceContent() {
                                   type="checkbox"
                                   className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                                   checked={selectedCategories.includes(
-                                    cat.name,
+                                    cat,
                                   )}
                                   onChange={() =>
-                                    handleCategoryToggle(cat.name)
+                                    handleCategoryToggle(cat)
                                   }
                                 />
                                 <span className="text-base text-gray-700 flex-1">
-                                  {cat.name}
+                                  {cat}
                                 </span>
                               </label>
                             ))}
@@ -544,81 +537,83 @@ export default function MarketplaceContent() {
             {/* Main Content */}
             <div className="flex-1 min-w-0">
               {/* Search Results Priority View */}
-              {(query || selectedCategories.length > 0 || selectedCountry) && (
-                <div className="mb-8">
-                  <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                      {query
-                        ? `Search Results for "${query}"`
-                        : "Filtered Products"}
-                    </h2>
-                    <span className="text-sm text-gray-500">
-                      {filteredProducts.length} products found
-                    </span>
-                  </div>
+              {((isSearchSelected && query) ||
+                selectedCategories.length > 0 ||
+                selectedCountry) && (
+                  <div className="mb-8">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                        {isSearchSelected && query
+                          ? `Search Results for "${query}"`
+                          : "Filtered Products"}
+                      </h2>
+                      <span className="text-sm text-gray-500">
+                        {filteredProducts.length} products found
+                      </span>
+                    </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                    {filteredProducts.length > 0 ? (
-                      filteredProducts.map((product, idx) => (
-                        <MarketplaceProductCard
-                          key={idx}
-                          product={product}
-                          isBusinessUser={isBusinessUser}
-                          handleProductClick={handleProductClick}
-                          addToCart={addToCart}
-                          router={router}
-                        />
-                      ))
-                    ) : (
-                      <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-200">
-                        <Search className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-                        <p className="text-gray-500 font-medium">
-                          No products match your search.
-                        </p>
-                        <button
-                          onClick={clearFilters}
-                          className="mt-3 text-brand-primary font-semibold hover:underline"
-                        >
-                          Clear all filters
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                      {filteredProducts.length > 0 && isSearchSelected ? (
+                        filteredProducts.map((product, idx) => (
+                          <MarketplaceProductCard
+                            key={idx}
+                            product={product}
+                            isBusinessUser={isBusinessUser}
+                            handleProductClick={handleProductClick}
+                            addToCart={addToCart}
+                            router={router}
+                          />
+                        ))
+                      ) : (
+                        <div className="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-gray-200">
+                          <Search className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                          <p className="text-gray-500 font-medium">
+                            No products match your search.
+                          </p>
+                          <button
+                            onClick={clearFilters}
+                            className="mt-3 text-brand-primary font-semibold hover:underline"
+                          >
+                            Clear all filters
+                          </button>
+                        </div>
+                      )}
+                    </div>
 
-                  <div className="my-12 border-t border-gray-100" />
-                </div>
-              )}
+                    <div className="my-12 border-t border-gray-100" />
+                  </div>
+                )}
 
               {/* Hide other sections if searching, or keep them below? 
                   User request says "marketplace search is not working", 
                   showing results at top is the fix. */}
 
               {/* Featured Products - Only show if not searching or at the bottom */}
-              {!query && (
-                <div className="mb-6 sm:mb-8">
-                  <h2 className="text-xl sm:text-2xl font-semibold text-black mb-3 sm:mb-4">
-                    Featured Products
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
-                    {featuredProducts.length > 0 ? (
-                      featuredProducts.map((product, idx) => (
-                        <MarketplaceProductCard
-                          key={idx}
-                          product={product}
-                          isBusinessUser={isBusinessUser}
-                          handleProductClick={handleProductClick}
-                          addToCart={addToCart}
-                          router={router}
-                        />
-                      ))
-                    ) : (
-                      <div className="text-sm sm:text-base text-gray-500 col-span-full text-center py-8">
-                        No featured products found
-                      </div>
-                    )}
-                  </div>
+              {/* {!query && ( */}
+              <div className="mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-semibold text-black mb-3 sm:mb-4">
+                  Featured Products
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
+                  {featuredProducts.length > 0 ? (
+                    featuredProducts.map((product, idx) => (
+                      <MarketplaceProductCard
+                        key={idx}
+                        product={product}
+                        isBusinessUser={isBusinessUser}
+                        handleProductClick={handleProductClick}
+                        addToCart={addToCart}
+                        router={router}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-sm sm:text-base text-gray-500 col-span-full text-center py-8">
+                      No featured products found
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+              {/* )} */}
 
               {/* Top Ranking */}
               <div className="mb-6 sm:mb-8 bg-brand-primary-light rounded-lg p-4 sm:p-6 text-white">
