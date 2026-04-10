@@ -114,13 +114,14 @@ const BusinessCard = ({ business, onContactClick }) => {
     sponsored = false,
   } = business || {};
 
+  console.log(business, "businesssssss")
+
   return (
     <div
-      className={`bg-[#F8F9FB] rounded-xl p-6 border-2 ${
-        sponsored
-          ? "border-indigo-200 shadow-md ring-1 ring-indigo-50"
-          : "border-gray-200"
-      } mb-4 relative`}
+      className={`bg-[#F8F9FB] rounded-xl p-6 border-2 ${sponsored
+        ? "border-indigo-200 shadow-md ring-1 ring-indigo-50"
+        : "border-gray-200"
+        } mb-4 relative`}
     >
       {sponsored && (
         <span className="absolute top-4 right-4 bg-white text-gray-600 text-[14px] px-2 py-0.5 rounded font-medium">
@@ -180,34 +181,15 @@ const BusinessCard = ({ business, onContactClick }) => {
           <p className="text-sm text-black font-semibold mb-1">
             On-time delivery
           </p>
-          <p className="text-sm font-sm text-gray-600">N/A</p>
-        </div>
-        <div>
-          <p className="text-sm text-black font-semibold mb-1">Reorder rate</p>
-          <p className="text-sm font-sm text-gray-600">N/A</p>
+          <p className="text-sm font-sm text-gray-600">{business?.stats?.onTime}</p>
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Response time</p>
-          <p className="text-sm font-sm text-gray-600">N/A</p>
-        </div>
-        <div>
-          <p className="text-sm text-black font-semibold mb-1">
-            Online revenue
-          </p>
-          {isFreeTrial ? (
-            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 bg-purple-50 border border-purple-100 rounded-full group cursor-pointer hover:bg-purple-100 transition-colors">
-              <FaCrown className="text-purple-600 text-[10px]" />
-              <span className="text-[11px] font-bold text-purple-600 uppercase tracking-tight">
-                Upgrade
-              </span>
-            </div>
-          ) : (
-            <p className="text-sm font-sm text-gray-600">N/A</p>
-          )}
+          <p className="text-sm font-sm text-gray-600">{business?.stats?.responseRate}</p>
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Products</p>
-          <p className="text-sm font-sm text-gray-600">0</p>
+          <p className="text-sm font-sm text-gray-600">{business?.stats?.products}</p>
         </div>
       </div>
 
@@ -218,11 +200,10 @@ const BusinessCard = ({ business, onContactClick }) => {
             href={actions.website}
             target="_blank"
             rel="noopener noreferrer"
-            className={`h-9 text-[14px] font-semibold border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center rounded-md border ${
-              isFreeTrial
-                ? "opacity-50 cursor-not-allowed pointer-events-none"
-                : ""
-            }`}
+            className={`h-9 text-[14px] font-semibold border-white hover:text-[#2402457] text-[#240457] bg-indigo-50 hover:bg-indigo-100 flex items-center justify-center rounded-md border ${isFreeTrial
+              ? "opacity-50 cursor-not-allowed pointer-events-none"
+              : ""
+              }`}
           >
             <FiGlobe className="mr-2" /> Website
           </a>

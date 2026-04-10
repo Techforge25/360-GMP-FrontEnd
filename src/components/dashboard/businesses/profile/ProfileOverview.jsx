@@ -19,6 +19,7 @@ import { useUserRole } from "@/context/UserContext";
 import { FaCrown } from "react-icons/fa";
 import SlateRenderer from "@/components/ui/SlateRenderer";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 
 // Dynamically import Leaflet map to avoid SSR issues
 const BusinessMapView = dynamic(
@@ -119,32 +120,32 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
 
   // Handle certifications (potential array of strings or objects)
   const rawCertifications = business.certifications || [];
-  const certifications = rawCertifications
-    .map((cert) => {
-      if (typeof cert !== "string") {
-        return {
-          name: cert.name || cert.title || "Certification",
-          desc: cert.desc || cert.description || "Verified Credential",
-          icon: cert.icon || "iso",
-          url: cert.url,
-        };
-      }
+  // const certifications = rawCertifications
+  //   .map((cert) => {
+  //     if (typeof cert !== "string") {
+  //       return {
+  //         name: cert.name || cert.title || "Certification",
+  //         desc: cert.desc || cert.description || "Verified Credential",
+  //         icon: cert.icon || "iso",
+  //         url: cert.url,
+  //       };
+  //     }
 
-      const isPiped = cert.includes("|");
-      const name = isPiped ? cert.split("|")[0] : cert;
-      const url = isPiped ? cert.split("|")[1] : null;
+  //     const isPiped = cert.includes("|");
+  //     const name = isPiped ? cert.split("|")[0] : cert;
+  //     const url = isPiped ? cert.split("|")[1] : null;
 
-      // Filter out raw URLs (legacy format)
-      if (cert.startsWith("http") && !isPiped) return null;
+  //     // Filter out raw URLs (legacy format)
+  //     if (cert.startsWith("http") && !isPiped) return null;
 
-      return {
-        name,
-        desc: url ? "View Certificate" : "Verified Credential",
-        url,
-        icon: "iso",
-      };
-    })
-    .filter(Boolean);
+  //     return {
+  //       name,
+  //       desc: url ? "View Certificate" : "Verified Credential",
+  //       url,
+  //       icon: "iso",
+  //     };
+  //   })
+  //   .filter(Boolean);
 
   const contact = {
     email:
@@ -162,6 +163,42 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
         .filter(Boolean)
         .join(", ")
       : "Location not specified",
+  };
+
+  const getFileName = (url) => {
+    try {
+      const parts = url.split("/");
+      const lastPart = parts[parts.length - 1];
+
+      // remove extension
+      return decodeURIComponent(lastPart.split(".")[0]);
+    } catch {
+      return "Certificate";
+    }
+  };
+
+  const getFileType = (url) => {
+    const ext = url.split(".").pop().toLowerCase();
+
+    if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
+    if (ext === "pdf") return "pdf";
+    if (["doc", "docx"].includes(ext)) return "doc";
+
+    return "other";
+  };
+
+  const getPreviewUrl = (url, type) => {
+    if (!url) return null;
+
+    if (type === "image") {
+      return url.replace("/upload/", "/upload/w_400,h_250,c_fill/");
+    }
+
+    if (type === "pdf" || type === "doc") {
+      return url.replace("/upload/", "/upload/pg_1,w_400,h_250,c_fill/") + ".jpg";
+    }
+
+    return null;
   };
 
   return (
@@ -204,38 +241,54 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
             Certifications
           </h3>
           <div className="space-y-3">
-            {certifications.map((cert, index) => {
-              const Content = (
-                <div className="bg-gray-50 rounded-lg p-3 flex items-start gap-3 h-full hover:bg-gray-100 transition-colors">
-                  <div
-                    className={`mt-1 ${cert.icon === "iso" ? "text-orange-500" : "text-blue-500"}`}
-                  >
-                    <IoShieldCheckmarkOutline className="text-xl" />
+            {business?.certifications?.map((url, index) => {
+              const fileType = getFileType(url);
+              const previewUrl = getPreviewUrl(url, fileType);
+              const fileName = getFileName(url);
+
+              return (
+                <a
+                  key={index}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group"
+                >
+                  <div className="bg-gray-50 rounded-lg p-3 flex flex-col gap-2 h-full hover:bg-gray-100 transition-colors">
+
+                    {/* Preview */}
+                    {previewUrl ? (
+                      <Image
+                        src={previewUrl}
+                        width={300}
+                        height={300}
+                        alt={fileName}
+                        className="w-full h-32 object-cover rounded-md"
+                      />
+                    ) : (
+                      <div className="w-full h-32 flex items-center justify-center bg-gray-200 rounded-md text-xs text-gray-500">
+                        No Preview
+                      </div>
+                    )}
+
+                    {/* Info */}
+                    <div className="flex items-start gap-3">
+                      <div className="mt-1 text-blue-500">
+                        <IoShieldCheckmarkOutline className="text-xl" />
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-bold text-gray-900 line-clamp-1">
+                          {fileName}
+                        </p>
+                        <p className="text-xs text-gray-500 uppercase">
+                          {fileType}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-gray-900 line-clamp-1">
-                      {cert.name}
-                    </p>
-                    <p className="text-sm text-gray-500">{cert.desc}</p>
-                  </div>
-                </div>
+                </a>
               );
-
-              if (cert.url) {
-                return (
-                  <a
-                    key={index}
-                    href={cert.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block group"
-                  >
-                    {Content}
-                  </a>
-                );
-              }
-
-              return <div key={index}>{Content}</div>;
             })}
           </div>
         </div>

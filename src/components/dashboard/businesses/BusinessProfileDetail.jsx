@@ -29,6 +29,7 @@ export default function BusinessProfileDetail({ businessId }) {
 
       const response = await businessProfileAPI.viewBusinessProfile(businessId);
       if (response.success && response.data) {
+        console.log(response, "response success")
         // Transform the data to match component expectations
         const transformedData = {
           ...response.data,

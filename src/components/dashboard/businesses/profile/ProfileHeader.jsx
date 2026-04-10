@@ -192,7 +192,7 @@ export default function ProfileHeader({ business }) {
           </div>
 
           {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-5 divide-x divide-gray-100 border-t bg-[#F8F9FB] pt-6">
+          {/* <div className="grid grid-cols-2 md:grid-cols-5 divide-x divide-gray-100 border-t bg-[#F8F9FB] pt-6">
             <div className="px-4 text-center md:text-left">
               <p className="text-sm font-semibold text-black mb-1">
                 On-time delivery
@@ -223,7 +223,7 @@ export default function ProfileHeader({ business }) {
               </p>
               <p className="text-gray-500 text-sm">{stats.products}</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

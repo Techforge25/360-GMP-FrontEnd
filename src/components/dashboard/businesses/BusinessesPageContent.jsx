@@ -285,7 +285,7 @@ export default function BusinessesPageContent() {
                       onClick={() => setIsMobileFilterOpen(false)}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                     >
-                      <span className="sr-only">Close</span>×
+                      <span className="sr-Online Revenuey">Close</span>×
                     </button>
                   </div>
                   <div className="p-4">
