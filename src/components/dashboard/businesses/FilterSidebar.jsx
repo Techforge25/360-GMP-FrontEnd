@@ -13,9 +13,9 @@ const FilterGroup = ({
 
   const handleCheckboxChange = (option) => {
     if (selectedValues.includes(option)) {
-      onChange(selectedValues.filter((v) => v !== option));
+      onChange([]);
     } else {
-      onChange([...selectedValues, option]);
+      onChange([option]);
     }
   };
 
@@ -55,11 +55,7 @@ const FilterGroup = ({
   );
 };
 
-const FilterSidebar = ({ filters = {}, onFilterChange }) => {
-  const handleIndustryChange = (values) => {
-    onFilterChange({ ...filters, industries: values });
-  };
-
+const FilterSidebar = ({ filters = {}, onFilterChange, registeredCountries }) => {
   const handleCountryChange = (values) => {
     onFilterChange({ ...filters, countries: values });
   };
@@ -75,32 +71,8 @@ const FilterSidebar = ({ filters = {}, onFilterChange }) => {
       </div>
 
       <FilterGroup
-        title="Industry Category"
-        options={[
-          "Privately held",
-          "Manufacturing",
-          "Chemicals & Petrochemicals",
-          "Fashion & Accessories",
-          "Service Project & Equipment",
-          "Consumer Electronics",
-          "Packaging Materials",
-          "Furniture & Home Decor",
-        ]}
-        selectedValues={filters.industries || []}
-        onChange={handleIndustryChange}
-      />
-
-      <FilterGroup
         title="Country"
-        options={[
-          "us United States of America",
-          "pk Pakistan",
-          "de Germany",
-          "cn China",
-          "be Belgium",
-          "fr France",
-          "za South Africa",
-        ]}
+        options={registeredCountries}
         selectedValues={filters.countries || []}
         onChange={handleCountryChange}
       />

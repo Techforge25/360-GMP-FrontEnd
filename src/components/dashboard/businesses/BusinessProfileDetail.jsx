@@ -28,9 +28,6 @@ export default function BusinessProfileDetail({ businessId }) {
       setError(null);
 
       const response = await businessProfileAPI.viewBusinessProfile(businessId);
-
-      console.log("Business Profile Detail API Response:", response);
-
       if (response.success && response.data) {
         // Transform the data to match component expectations
         const transformedData = {
@@ -39,8 +36,8 @@ export default function BusinessProfileDetail({ businessId }) {
           location: response.data.location || null,
           displayLocation: response.data.location
             ? `${response.data.location.city || ""}, ${response.data.location.country || ""}`
-                .replace(/^,\s*/, "")
-                .replace(/,\s*$/, "")
+              .replace(/^,\s*/, "")
+              .replace(/,\s*$/, "")
             : "Location not specified",
           verified:
             response.data.isVerified ||

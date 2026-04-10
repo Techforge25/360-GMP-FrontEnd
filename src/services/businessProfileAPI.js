@@ -296,6 +296,15 @@ class BusinessProfileAPI {
       enableErrorMessage: false,
     });
   }
+
+  async getBusinessCountriesRegistration() {
+    return await api.get({
+      url: "/businessProfile/countries",
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
 }
 
 const businessProfileAPI = new BusinessProfileAPI();

@@ -18,6 +18,7 @@ export default function BusinessesPageContent() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
+  const [registeredCountries, setRegisteredCountries] = useState([]);
 
   // Auto-loader State
   const [page, setPage] = useState(1);
@@ -27,7 +28,7 @@ export default function BusinessesPageContent() {
 
   const [filters, setFilters] = useState({
     industries: [],
-    countries: [],
+    countries: "",
     ratings: [],
   });
 
@@ -36,7 +37,7 @@ export default function BusinessesPageContent() {
     setHasMore(true);
     fetchInitialBusinessProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, location, filters]);
+  }, [filters]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
@@ -47,14 +48,17 @@ export default function BusinessesPageContent() {
       page: targetPage,
       limit: itemsPerPage,
       search: query,
-      sort: "-_id",
+      businessType: location,
+      country: filters.countries,
+      // industry: filters.industries.length > 0 ? filters.industries.join("|") : undefined,
+      // sort: "-_id",
     };
 
-    if (location) {
-      params.country = location;
-    } else if (filters.countries.length > 0) {
-      params.country = filters.countries.join("|");
-    }
+    // if (location) {
+    //   params.country = ;
+    // } else if (filters.countries.length > 0) {
+    // }
+    params.country = filters.countries;
 
     if (filters.industries.length > 0) {
       params.industry = filters.industries.join("|");
@@ -120,6 +124,14 @@ export default function BusinessesPageContent() {
     };
   }, [loadMoreBusinesses, hasMore, loadingMore, loading]);
 
+  useEffect(() => {
+    const fetchCountries = async () => {
+      const response = await businessProfileAPI.getBusinessCountriesRegistration();
+      setRegisteredCountries(response.data || [])
+    }
+    fetchCountries();
+  }, [])
+
   const fetchInitialBusinessProfiles = async () => {
     try {
       setLoading(true);
@@ -130,7 +142,6 @@ export default function BusinessesPageContent() {
 
       if (response.success && response.data) {
         const docs = response.data.docs || response.data || [];
-
         const sortedDocs = [...docs].sort((a, b) => {
           const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
           const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
@@ -166,6 +177,16 @@ export default function BusinessesPageContent() {
     setHasMore(true);
     fetchInitialBusinessProfiles();
   };
+
+  const clearFilters = () => {
+    setFilters({
+      industries: [],
+      countries: "",
+      ratings: [],
+    })
+    setLocation("");
+    setQuery("");
+  }
 
   // Transform backend schema to component schema
   const transformBusinessProfile = (profile) => {
@@ -227,18 +248,12 @@ export default function BusinessesPageContent() {
           location={location}
           setLocation={setLocation}
           onSearch={handleSearch}
+          onClearFilters={clearFilters}
         />
 
         <div className="mx-auto px-3 sm:px-6 lg:px-20">
           <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8 max-w-[1400px] mx-auto">
             {/* Mobile Filter Button */}
-            <button
-              onClick={() => setIsMobileFilterOpen(true)}
-              className="lg:hidden w-full flex items-center justify-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-3 mb-4 hover:bg-gray-50 transition-colors"
-            >
-              <CiMenuBurger className="w-5 h-5 text-[#240457]" />
-              <span className="font-medium text-gray-700">Filters</span>
-            </button>
 
             {/* Desktop Sidebar */}
             <aside className="hidden lg:block w-64 flex-shrink-0">
@@ -246,6 +261,7 @@ export default function BusinessesPageContent() {
                 <FilterSidebar
                   filters={filters}
                   onFilterChange={handleFilterChange}
+                  registeredCountries={registeredCountries}
                 />
               </div>
             </aside>
