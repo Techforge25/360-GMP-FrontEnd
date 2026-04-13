@@ -57,6 +57,7 @@ function SearchResults() {
         const commonParams = { search: query, limit: 10 };
         const locationParams = location ? { location } : {};
         const businessParams = businessType ? { businessType } : {};
+        const productsParams = { ...commonParams, businessId };
 
         // Parallel data fetching
         const [bizRes, prodRes, commRes, jobRes] = await Promise.allSettled([
@@ -66,7 +67,7 @@ function SearchResults() {
             ...businessParams,
           }),
           !businessType
-            ? productAPI.getAll({ ...commonParams })
+            ? productAPI.getBusinessProducts({ ...commonParams })
             : Promise.resolve({}),
           !businessType
             ? communityAPI.getAll({ ...commonParams })
@@ -130,7 +131,6 @@ function SearchResults() {
 
   const tabs = [
     { id: "all", label: "All Results", icon: FiSearch },
-    { id: "businesses", label: "Businesses", icon: BsBuilding },
     { id: "products", label: "Products", icon: FiBox },
     { id: "communities", label: "Communities", icon: FiUsers },
     { id: "jobs", label: "Jobs", icon: FiBriefcase },
@@ -180,9 +180,9 @@ function SearchResults() {
                 {/* Image/Icon Placeholder */}
                 <div className="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden relative">
                   {item.image ||
-                  item.coverImage ||
-                  item.logo ||
-                  item.company?.logo ? (
+                    item.coverImage ||
+                    item.logo ||
+                    item.company?.logo ? (
                     <img
                       src={
                         item.image ||
@@ -331,10 +331,9 @@ function SearchResults() {
               onClick={() => handleTabChange(tab.id)}
               className={`
                 flex items-center gap-2 px-5 py-2.5 rounded-full text-base font-medium transition-all whitespace-nowrap
-                ${
-                  activeTab === tab.id
-                    ? "bg-[#240457] text-white shadow-md"
-                    : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
+                ${activeTab === tab.id
+                  ? "bg-[#240457] text-white shadow-md"
+                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                 }
               `}
             >

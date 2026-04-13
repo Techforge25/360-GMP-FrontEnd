@@ -16,6 +16,18 @@ class ProductAPI {
     });
   }
 
+  async getBusinessProducts(params = {}, businessId) {
+    const queryParams = new URLSearchParams(params).toString();
+    const url = queryParams ? `/products/business/?${queryParams}` : "/products/business";
+
+    return await api.get({
+      url,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
   /**
    * Get featured products
    */

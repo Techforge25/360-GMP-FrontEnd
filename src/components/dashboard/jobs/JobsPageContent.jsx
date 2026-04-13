@@ -39,7 +39,7 @@ export default function JobsPageContent() {
     setPage(1);
     setHasMore(true);
     fetchInitialJobs();
-  }, [sortBy, filters, searchQuery, locationQuery]);
+  }, [sortBy, filters]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
@@ -184,6 +184,18 @@ export default function JobsPageContent() {
     fetchInitialJobs();
   };
 
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setLocationQuery("");
+    setFilters({
+      pay: [],
+      categories: [],
+      jobTypes: [],
+      locations: [],
+      datePosted: [],
+    });
+  }
+
   console.log("JobsPageContent Rendered: ", { jobs, loading, filters });
 
   if (loading && jobs.length === 0) {
@@ -212,7 +224,7 @@ export default function JobsPageContent() {
                 alt=""
               />
               <Input
-                placeholder="Search by role, skill, or company..."
+                placeholder="Search  by role, skill, or company..."
                 className="pl-10 text-text-secondary h-12 border-0 focus:ring-0 rounded-lg text-sm"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -248,7 +260,7 @@ export default function JobsPageContent() {
                 className="pl-9 lg:pl-10 text-text-secondary h-11 lg:h-12 border-0 focus:ring-0 rounded-none text-sm lg:text-base"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              // onKeyPress={(e) => e.key === "Enter" && handleSearch()}
               />
             </div>
 
@@ -265,7 +277,7 @@ export default function JobsPageContent() {
                 className="pl-9 lg:pl-10 text-text-secondary h-11 lg:h-12 border-0 focus:ring-0 rounded-none text-sm lg:text-base"
                 value={locationQuery}
                 onChange={(e) => setLocationQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
+              // onKeyPress={(e) => e.key === "Enter" && handleSearch()}
               />
             </div>
           </div>
@@ -275,6 +287,12 @@ export default function JobsPageContent() {
             onClick={handleSearch}
           >
             Search Jobs
+          </Button>
+          <Button
+            className="h-12 rounded-xl bg-white text-[#240457] lg:h-auto px-6 sm:px-8 text-sm sm:text-base font-medium w-full sm:w-auto"
+            onClick={handleClearFilters}
+          >
+            Clear Filters
           </Button>
         </div>
       </div>

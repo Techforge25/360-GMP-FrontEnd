@@ -19,6 +19,7 @@ import businessProfileAPI from "@/services/businessProfileAPI";
 import JobApplicationModal from "@/components/dashboard/jobs/JobApplicationModal";
 import { useUserRole } from "@/context/UserContext";
 import SlateRenderer from "@/components/ui/SlateRenderer";
+import DOMPurify from "dompurify";
 
 export default function JobDetailsContent() {
   const params = useParams();
@@ -57,7 +58,7 @@ export default function JobDetailsContent() {
     if (id) {
       fetchJob();
     }
-  }, [id]);
+  }, []);
 
   // Track view when job is loaded and user is not owner
   useEffect(() => {
@@ -183,9 +184,8 @@ export default function JobDetailsContent() {
                   </span>
                   <span className="text-text-secondary">•</span>
                   <span
-                    className={`font-medium italic ${
-                      job.status === "open" ? "text-green-600" : "text-red-600"
-                    }`}
+                    className={`font-medium italic ${job.status === "open" ? "text-green-600" : "text-red-600"
+                      }`}
                   >
                     {job.status === "open" ? "Active" : "Closed"}
                   </span>
@@ -236,10 +236,12 @@ export default function JobDetailsContent() {
               ) : user?.role === "user" ? (
                 <Button
                   onClick={() => setIsModalOpen(true)}
-                  disabled={job.status !== "open"}
+                  disabled={job.status === "open" && job.isApplied || job.status !== "open"}
                   className="w-full md:w-auto px-8 h-10 bg-[#2E1065] hover:bg-[#4c1d95] text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {job.status === "open" ? "Apply Now" : "Position Closed"}
+                  {job.status === "open" && !job.isApplied && "Apply Now"}
+                  {job.status === "open" && job.isApplied && "Applied"}
+                  {!job.status === "open" && "Position Closed"}
                 </Button>
               ) : null}
             </div>
@@ -255,26 +257,31 @@ export default function JobDetailsContent() {
               <h2 className="text-xl font-bold text-text-primary">
                 Job Description
               </h2>
-              <div className="flex items-center gap-2">
+              {/* <div className="flex items-center gap-2">
                 <button className="p-2 text-text-secondary hover:text-brand-primary hover:bg-gray-50 rounded-full transition-colors">
                   <FiShare2 size={20} />
                 </button>
                 <button className="p-2 text-text-secondary hover:text-brand-primary hover:bg-gray-50 rounded-full transition-colors">
                   <FiBookmark size={20} />
                 </button>
-              </div>
+              </div> */}
             </div>
 
             <div className="space-y-8 text-text-secondary">
               <section>
                 <div className="leading-relaxed text-black">
-                  <SlateRenderer className="text-black" content={job.description} />
+                  {/* <p
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(job.description),
+                    }}
+                  /> */}
+                  <SlateRenderer content={job.description} />
                 </div>
               </section>
             </div>
 
             {/* Report Job - Subtle at bottom, only for non-owners */}
-            {!isBusinessOwner && (
+            {/* {!isBusinessOwner && (
               <div className="mt-12 pt-6 border-t border-border-light">
                 <Button
                   variant="outline"
@@ -283,10 +290,10 @@ export default function JobDetailsContent() {
                   Report A Job
                 </Button>
               </div>
-            )}
+            )} */}
           </CardContent>
-        </Card>
-      </div>
+        </Card >
+      </div >
 
       {job && !isBusinessOwner && (
         <JobApplicationModal
@@ -299,7 +306,8 @@ export default function JobDetailsContent() {
             // Modal handles success state internally
           }}
         />
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }

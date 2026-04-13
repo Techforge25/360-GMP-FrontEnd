@@ -139,10 +139,9 @@ class CommunityAPI {
   /**
    * Update a member's role (e.g. make admin)
    */
-  async updateMemberRole(communityId, memberId, role) {
+  async updateMemberRole(communityId, memberId) {
     return await api.patch({
-      url: `/community/${communityId}/members/${memberId}`,
-      payload: { role },
+      url: `/community-membership/${communityId}/members/${memberId}/make-admin`,
       activateLoader: true,
       enableSuccessMessage: true,
       enableErrorMessage: true,
@@ -157,6 +156,16 @@ class CommunityAPI {
       activateLoader: false,
       enableSuccessMessage: false,
       enableErrorMessage: false,
+    });
+  }
+
+  // Demote Admin API
+  async demoteAdmin(communityId, memberId) {
+    return await api.patch({
+      url: `/community-membership/${communityId}/members/${memberId}/demote-admin`,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
     });
   }
 

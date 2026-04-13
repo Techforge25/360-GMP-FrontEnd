@@ -26,15 +26,15 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
     }
   }, [post]);
 
-  const [liked, setLiked] = useState(post.likedByUser || false);
-  const [likeCount, setLikeCount] = useState(post.likeCount || 0);
+  const [liked, setLiked] = useState(post?.likedByUser || false);
+  const [likeCount, setLikeCount] = useState(post?.likeCount || 0);
   const [showComments, setShowComments] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
 
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(post.content || "");
+  const [editContent, setEditContent] = useState(post?.content || "");
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Read more state
@@ -54,14 +54,14 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       postKeys: post ? Object.keys(post) : [],
     });
 
-    setLiked(post.likedByUser || false);
-    setLikeCount(post.likeCount || 0);
-    setEditContent(post.content || "");
+    setLiked(post?.likedByUser || false);
+    setLikeCount(post?.likeCount || 0);
+    setEditContent(post?.content || "");
     // Reset editing state if post changes
     setIsEditing(false);
 
     // Check if read more is needed (more than 3 lines of text)
-    if (post.content && post.content.length > 180) {
+    if (post?.content && post?.content?.length > 180) {
       setShowReadMore(true);
     } else {
       setShowReadMore(false);
@@ -71,16 +71,16 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
     // Reset comments when post changes
     setComments([]);
   }, [
-    post.likedByUser,
-    post.likeCount,
-    post._id,
-    post.content,
-    post.commentCount,
+    post?.likedByUser,
+    post?.likeCount,
+    post?._id,
+    post?.content,
+    post?.commentCount,
   ]);
 
   // Load comments when comments section is opened
   React.useEffect(() => {
-    if (showComments && comments.length === 0 && (post.commentCount || 0) > 0) {
+    if (showComments && comments?.length === 0 && (post?.commentCount || 0) > 0) {
       handleLoadComments();
     }
   }, [showComments]);
@@ -129,19 +129,19 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       setLiked(newLiked);
       setLikeCount(newLikeCount);
 
-      console.log("Liking post:", post._id);
-      const response = await postsAPI.likePost(post._id);
+      console.log("Liking post:", post?._id);
+      const response = await postsAPI.likePost(post?._id);
 
-      if (response.success) {
+      if (response?.success) {
         // Update with actual server response
-        setLiked(response.data.isLiked);
-        setLikeCount(response.data.likeCount);
+        setLiked(response?.data?.isLiked);
+        setLikeCount(response?.data?.likeCount);
 
         if (onUpdate) {
           onUpdate({
             _id: post._id,
-            likedByUser: response.data.isLiked,
-            likeCount: response.data.likeCount,
+            likedByUser: response?.data?.isLiked,
+            likeCount: response?.data?.likeCount,
           });
         }
       } else {
@@ -161,13 +161,13 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
   // Check if current user is post author
   const isPostAuthor = () => {
-    if (!currentUser || !post.authorId) return false;
+    if (!currentUser || !post?.authorId) return false;
 
     // Compare with current user's profile ID
-    if (currentUser.role === "business") {
-      return post.authorId._id === currentUser.profilePayload?._id;
+    if (currentUser?.role === "business") {
+      return post?.authorId?._id === currentUser?.profilePayload?._id;
     } else {
-      return post.authorId._id === currentUser.profilePayload?._id;
+      return post?.authorId?._id === currentUser?.profilePayload?._id;
     }
   };
 
@@ -182,13 +182,13 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        postsAPI.deletePost(post._id);
+        postsAPI.deletePost(post?._id);
       }
     })) return;
 
     try {
-      const response = await postsAPI.deletePost(post._id);
-      if (response.success && onDelete) {
+      const response = await postsAPI.deletePost(post?._id);
+      if (response?.success && onDelete) {
         onDelete(post._id);
       }
     } catch (error) {
@@ -199,7 +199,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   // Handle edit post
   const handleEdit = () => {
     setIsEditing(true);
-    setEditContent(post.content || "");
+    setEditContent(post?.content || "");
     setShowOptions(false);
   };
 
@@ -212,16 +212,16 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
     try {
       setIsUpdating(true);
-      const response = await postsAPI.updatePost(post._id, {
-        content: editContent.trim(),
+      const response = await postsAPI.updatePost(post?._id, {
+        content: editContent?.trim(),
       });
 
-      if (response.success) {
+      if (response?.success) {
         // Update the post data
         if (onUpdate) {
           onUpdate({
             ...post,
-            content: editContent.trim(),
+            content: editContent?.trim(),
             isEdited: true,
             editedAt: new Date().toISOString(),
           });
@@ -232,7 +232,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       console.error("Error updating post:", error);
       alert(
         "Failed to update post: " +
-        (error.response?.data?.message || error.message),
+        (error?.response?.data?.message || error?.message),
       );
     } finally {
       setIsUpdating(false);
@@ -242,7 +242,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   // Handle cancel edit
   const handleCancelEdit = () => {
     setIsEditing(false);
-    setEditContent(post.content || "");
+    setEditContent(post?.content || "");
   };
 
   // Handle comment submission
@@ -261,24 +261,24 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
     try {
       setIsCommenting(true);
       console.log("Adding comment to post:", {
-        postId: post._id,
+        postId: post?._id,
         content: commentText.trim(),
-        postTitle: post.content?.substring(0, 50) + "...",
+        postTitle: post?.content?.substring(0, 50) + "...",
       });
 
-      const response = await postsAPI.addComment(post._id, commentText.trim());
+      const response = await postsAPI.addComment(post?._id, commentText.trim());
 
-      if (response.success) {
+      if (response?.success) {
         console.log("Comment added successfully:", response.data);
         // Add new comment to local state
-        setComments((prev) => [response.data.comment, ...prev]);
+        setComments((prev) => [response?.data?.comment, ...prev]);
         setCommentText("");
 
         // Update post comment count
         if (onUpdate) {
           onUpdate({
-            _id: post._id,
-            commentCount: response.data.commentCount,
+            _id: post?._id,
+            commentCount: response?.data?.commentCount,
           });
         }
       } else {
@@ -288,13 +288,13 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
     } catch (error) {
       console.error("Error adding comment:", {
         error,
-        postId: post._id,
-        errorMessage: error.response?.data?.message || error.message,
-        errorStatus: error.response?.status,
-        fullErrorResponse: error.response?.data,
+        postId: post?._id,
+        errorMessage: error?.response?.data?.message || error?.message,
+        errorStatus: error?.response?.status,
+        fullErrorResponse: error?.response?.data,
       });
 
-      const errorMessage = error.response?.data?.message || error.message;
+      const errorMessage = error.response?.data?.message || error?.message;
       if (errorMessage.includes("Post ID is required")) {
         alert(
           "⚠️ Validation Error: The system requires a valid post ID for commenting. Please refresh the page and try again.",
@@ -313,7 +313,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
   // Handle load comments
   const handleLoadComments = async () => {
-    if (comments.length > 0) {
+    if (comments?.length > 0) {
       // If comments are already loaded, just toggle visibility
       setShowComments(!showComments);
       return;
@@ -321,10 +321,10 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
     try {
       setShowComments(true);
-      const response = await postsAPI.getPostComments(post._id, { limit: 5 });
+      const response = await postsAPI.getPostComments(post?._id, { limit: 5 });
 
-      if (response.success) {
-        setComments(response.data.comments || []);
+      if (response?.success) {
+        setComments(response?.data?.comments || []);
       }
     } catch (error) {
       console.error("Error loading comments:", error);
@@ -334,25 +334,25 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
   // Get author info
   const getAuthorInfo = () => {
-    if (!post.authorId)
+    if (!post?.authorId)
       return {
         name: "Unknown User",
         role: "Member",
         image: "/assets/images/Portrait_Placeholder.png",
       };
 
-    if (post.authorModel === "BusinessProfile") {
+    if (post?.authorModel === "BusinessProfile") {
       return {
-        name: post.authorId.companyName || "Business",
+        name: post?.authorId?.companyName || "Business",
         role: "Business",
-        image: post.authorId.logo || "/assets/images/Portrait_Placeholder.png",
+        image: post?.authorId?.logo || "/assets/images/Portrait_Placeholder.png",
       };
     } else {
       return {
-        name: post.authorId.fullName || "User",
-        role: post.authorId.title || "Member",
+        name: post?.authorId?.fullName || "User",
+        role: post?.authorId?.title || "Member",
         image:
-          post.authorId.imageProfile ||
+          post?.authorId?.imageProfile ||
           "/assets/images/Portrait_Placeholder.png",
       };
     }
@@ -373,8 +373,8 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   }
 
   // Event Post Type
-  if (post.type === "event" && post.event) {
-    const { name, description, date, location } = post.event;
+  if (post?.type === "event" && post?.event) {
+    const { name, description, date, location } = post?.event;
     const eventDate = new Date(date);
     const dateDay = eventDate.getDate();
     const dateMonth = eventDate
@@ -392,8 +392,8 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
               <img
-                src={author.image}
-                alt={author.name}
+                src={author?.image}
+                alt={author?.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.target.src = "/assets/images/Portrait_Placeholder.png";
@@ -402,10 +402,10 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
             </div>
             <div>
               <h4 className="text-sm font-semibold text-gray-900">
-                {author.name}
+                {author?.name}
               </h4>
               <p className="text-sm text-gray-500">
-                {formatTimeAgo(post.createdAt)}
+                {formatTimeAgo(post?.createdAt)}
               </p>
             </div>
           </div>
@@ -445,10 +445,10 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         </div>
 
         {/* Event Banner */}
-        {post.images && post.images.length > 0 && (
+        {post?.images && post?.images?.length > 0 && (
           <div className="w-full h-48 sm:h-64 relative">
             <img
-              src={post.images[0]}
+              src={post?.images[0]}
               alt={name}
               className="w-full h-full object-cover"
             />
@@ -466,7 +466,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         <div className="p-5">
           {/* Event Details */}
           <div className="flex gap-4">
-            {!post.images?.length && (
+            {!post?.images?.length && (
               <div className="flex-shrink-0 w-14 h-14 bg-blue-50 text-blue-600 rounded-lg flex flex-col items-center justify-center border border-blue-100">
                 <span className="text-sm font-bold uppercase">{dateMonth}</span>
                 <span className="text-xl font-bold leading-none">
@@ -519,13 +519,13 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   }
 
   // Document Post Type
-  if (post.type === "file" || (post.type === "post" && post.file)) {
-    const file = post.file || {};
-    const fileExtension = file.name?.split(".").pop().toUpperCase() || "DOC";
+  if (post?.type === "file" || (post?.type === "post" && post?.file)) {
+    const file = post?.file || {};
+    const fileExtension = file?.name?.split(".").pop().toUpperCase() || "DOC";
 
     const handleDownload = () => {
-      if (file.url) {
-        window.open(file.url, "_blank");
+      if (file?.url) {
+        window.open(file?.url, "_blank");
       } else {
         alert("File URL not found");
       }
@@ -534,13 +534,13 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         {/* Author Header */}
-        {post.authorId && (
+        {post?.authorId && (
           <div className="flex items-start justify-between mb-4">
             <div className="flex gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                 <img
-                  src={author.image}
-                  alt={author.name}
+                  src={author?.image}
+                  alt={author?.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.target.src = "/assets/images/Portrait_Placeholder.png";
@@ -549,12 +549,12 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
               </div>
               <div>
                 <h4 className="text-sm font-bold text-gray-900">
-                  {author.name}
+                  {author?.name}
                 </h4>
                 <div className="flex items-center text-sm text-gray-500 gap-1">
-                  <span>{author.role}</span>
+                  <span>{author?.role}</span>
                   <span>•</span>
-                  <span>{formatTimeAgo(post.createdAt)}</span>
+                  <span>{formatTimeAgo(post?.createdAt)}</span>
                 </div>
               </div>
             </div>
@@ -603,16 +603,16 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           {/* Document Info */}
           <div className="flex-1 min-w-0">
             <h3 className="text-base font-bold text-gray-900 mb-1">
-              {file.name || "Untitled Document"}
+              {file?.name || "Untitled Document"}
             </h3>
             <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              {post.content || post.description || "No description"}
+              {post?.content || post?.description || "No description"}
             </p>
             <div className="flex items-center gap-1 text-sm text-gray-500">
               <FiDownload className="w-3 h-3" />
               <span>
                 {(file.size / 1024 / 1024).toFixed(2)} MB •{" "}
-                {post.downloads || 0} Downloads
+                {post?.downloads || 0} Downloads
               </span>
             </div>
           </div>
@@ -642,14 +642,14 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   }
 
   // Poll Post Type
-  if (post.type === "poll" && post.poll) {
-    const { question, options, duration } = post.poll;
+  if (post?.type === "poll" && post?.poll) {
+    const { question, options, duration } = post?.poll;
     const [selectedOption, setSelectedOption] = useState(null);
     const [hasVoted, setHasVoted] = useState(false);
     const [pollOptions, setPollOptions] = useState(options || []);
 
     const totalVotes = pollOptions.reduce(
-      (sum, opt) => sum + (opt.votes || 0),
+      (sum, opt) => sum + (opt?.votes || 0),
       0,
     );
     const isPollExpired = duration && new Date(duration) < new Date();
@@ -702,8 +702,8 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           <div className="flex gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
               <img
-                src={author.image}
-                alt={author.name}
+                src={author?.image}
+                alt={author?.name}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.target.src = "/assets/images/Portrait_Placeholder.png";
@@ -711,11 +711,11 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
               />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-gray-900">{author.name}</h4>
+              <h4 className="text-sm font-bold text-gray-900">{author?.name}</h4>
               <div className="flex items-center text-sm text-gray-500 gap-1">
-                <span>{author.role}</span>
+                <span>{author?.role}</span>
                 <span>•</span>
-                <span>{formatTimeAgo(post.createdAt)}</span>
+                <span>{formatTimeAgo(post?.createdAt)}</span>
               </div>
             </div>
           </div>
@@ -768,7 +768,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         <div className="space-y-3 mb-4">
           {pollOptions.map((option, index) => {
             const percentage =
-              totalVotes > 0 ? ((option.votes || 0) / totalVotes) * 100 : 0;
+              totalVotes > 0 ? ((option?.votes || 0) / totalVotes) * 100 : 0;
             const isSelected = selectedOption === index;
 
             return (
@@ -794,11 +794,11 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                 {/* Option Content */}
                 <div className="relative px-4 py-3 flex items-center justify-between">
                   <span className="font-medium text-gray-900 text-sm">
-                    {option.option}
+                    {option?.option}
                   </span>
                   {hasVoted && (
                     <span className="font-semibold text-gray-700 text-sm">
-                      {percentage.toFixed(0)}%
+                      {percentage?.toFixed(0)}%
                     </span>
                   )}
                 </div>
@@ -808,10 +808,10 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         </div>
 
         {/* Tags */}
-        {post.tags && (
+        {post?.tags && (
           <div className="mb-4">
             <p className="text-sm text-gray-600">
-              <span className="font-medium">Tagged:</span> {post.tags}
+              <span className="font-medium">Tagged:</span> {post?.tags}
             </p>
           </div>
         )}
@@ -819,7 +819,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         {/* Interactions Stats */}
         <div className="flex items-center justify-between text-sm text-gray-600 mb-2 pt-3 border-t border-gray-100">
           <span>
-            {likeCount || 0} Likes • {post.commentCount || 0} Comments
+            {likeCount || 0} Likes • {post?.commentCount || 0} Comments
           </span>
         </div>
 
@@ -905,20 +905,20 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
             </div>
 
             {/* Comments List */}
-            {comments.length > 0 && (
+            {comments?.length > 0 && (
               <div className="space-y-3">
-                {comments.map((comment, index) => (
+                {comments?.map((comment, index) => (
                   <div key={index} className="flex gap-3">
                     <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                       <img
                         src={
-                          comment.userId?.imageProfile ||
-                          comment.userId?.logo ||
+                          comment?.userId?.imageProfile ||
+                          comment?.userId?.logo ||
                           "/assets/images/Portrait_Placeholder.png"
                         }
                         alt={
-                          comment.userId?.fullName ||
-                          comment.userId?.companyName ||
+                          comment?.userId?.fullName ||
+                          comment?.userId?.companyName ||
                           "User"
                         }
                         className="w-full h-full object-cover"
@@ -931,16 +931,16 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                     <div className="flex-1">
                       <div className="bg-gray-50 rounded-lg px-3 py-2">
                         <h5 className="text-sm font-semibold text-gray-900 mb-1">
-                          {comment.userId?.fullName ||
-                            comment.userId?.companyName ||
+                          {comment?.userId?.fullName ||
+                            comment?.userId?.companyName ||
                             "Anonymous User"}
                         </h5>
                         <p className="text-sm text-gray-700">
-                          {comment.content}
+                          {comment?.content}
                         </p>
                       </div>
                       <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                        <span>{formatTimeAgo(comment.commentedAt)}</span>
+                        <span>{formatTimeAgo(comment?.commentedAt)}</span>
                       </div>
                     </div>
                   </div>
@@ -949,14 +949,14 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
             )}
 
             {/* View More Comments */}
-            {(post.commentCount || 0) > comments.length && (
+            {(post?.commentCount || 0) > comments.length && (
               <button
                 onClick={() => {
                   handleLoadComments();
                 }}
                 className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
               >
-                View more comments ({(post.commentCount || 0) - comments.length}{" "}
+                View more comments ({(post?.commentCount || 0) - comments.length}{" "}
                 more)
               </button>
             )}
@@ -988,8 +988,8 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                 {author.name}
               </h4>
               <p className="text-sm text-gray-600">
-                {author.role} • {formatTimeAgo(post.createdAt)}
-                {post.isEdited && (
+                {author.role} • {formatTimeAgo(post?.createdAt)}
+                {post?.isEdited && (
                   <>
                     <span> • </span>
                     <span className="text-sm">Edited</span>
@@ -1045,7 +1045,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           </div>
 
           {/* Shared content indicator */}
-          {post.images && post.images.length > 0 && (
+          {post?.images && post?.images?.length > 0 && (
             <p className="text-sm text-gray-600 mt-1">
               {author.name} shared a photo
             </p>
@@ -1054,7 +1054,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       </div>
 
       {/* Post Content */}
-      {post.content && (
+      {post?.content && (
         <div className="mb-3">
           {isEditing ? (
             <div className="space-y-3">
@@ -1109,12 +1109,12 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       )}
 
       {/* Post Images */}
-      {post.images && post.images.length > 0 && (
+      {post?.images && post?.images?.length > 0 && (
         <div className="mb-3 -mx-4">
-          {post.images.length === 1 ? (
+          {post?.images?.length === 1 ? (
             <div className="relative w-full">
               <img
-                src={post.images[0]}
+                src={post?.images[0]}
                 alt="Post"
                 className="w-full h-auto object-cover"
                 onError={(e) => {
@@ -1124,7 +1124,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-1">
-              {post.images.slice(0, 4).map((image, index) => (
+              {post?.images?.slice(0, 4).map((image, index) => (
                 <div key={index} className="relative">
                   <img
                     src={image}
@@ -1137,7 +1137,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                   {index === 3 && post.images.length > 4 && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                       <span className="text-white font-semibold">
-                        +{post.images.length - 4} more
+                        +{post?.images?.length - 4} more
                       </span>
                     </div>
                   )}
@@ -1151,7 +1151,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       {/* Interactions Stats */}
       <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
         <span>
-          {likeCount || 0} Likes • {post.commentCount || 0} Comments
+          {likeCount || 0} Likes • {post?.commentCount || 0} Comments
         </span>
       </div>
 
@@ -1244,13 +1244,13 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                   <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                     <img
                       src={
-                        comment.userId?.imageProfile ||
-                        comment.userId?.logo ||
+                        comment?.userId?.imageProfile ||
+                        comment?.userId?.logo ||
                         "/assets/images/Portrait_Placeholder.png"
                       }
                       alt={
-                        comment.userId?.fullName ||
-                        comment.userId?.companyName ||
+                        comment?.userId?.fullName ||
+                        comment?.userId?.companyName ||
                         "User"
                       }
                       className="w-full h-full object-cover"
@@ -1263,12 +1263,12 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                   <div className="flex-1">
                     <div className="bg-gray-50 rounded-lg px-3 py-2">
                       <h5 className="text-sm font-semibold text-gray-900 mb-1">
-                        {comment.userId?.fullName ? comment.userId?.fullName : comment?.userId?.ownerName}
+                        {comment?.userId?.fullName ? comment.userId?.fullName : comment?.userId?.ownerName}
                       </h5>
-                      <p className="text-sm text-gray-700">{comment.content}</p>
+                      <p className="text-sm text-gray-700">{comment?.content}</p>
                     </div>
                     <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                      <span>{formatTimeAgo(comment.commentedAt)}</span>
+                      <span>{formatTimeAgo(comment?.commentedAt)}</span>
                     </div>
                   </div>
                 </div>
@@ -1277,14 +1277,14 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           )}
 
           {/* View More Comments */}
-          {(post.commentCount || 0) > comments.length && (
+          {(post?.commentCount || 0) > comments.length && (
             <button
               onClick={() => {
                 handleLoadComments();
               }}
               className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
             >
-              View more comments ({(post.commentCount || 0) - comments.length}{" "}
+              View more comments ({(post?.commentCount || 0) - comments.length}{" "}
               more)
             </button>
           )}

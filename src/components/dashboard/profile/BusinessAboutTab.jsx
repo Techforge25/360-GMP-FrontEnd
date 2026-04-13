@@ -1,21 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FiExternalLink, FiCamera, FiEdit2, FiTrash2 } from "react-icons/fi";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-
-// Custom Tooltip component - defined outside to prevent re-creation on each render
-const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-white px-3 py-2 shadow-lg rounded-lg border border-gray-200">
-        <p className="text-sm font-semibold text-gray-900">{payload[0].name}</p>
-        <p className="text-sm text-gray-600">{payload[0].value}%</p>
-      </div>
-    );
-  }
-  return null;
-};
-
+import { FiCamera, FiEdit2, FiTrash2 } from "react-icons/fi";
 import UploadGalleryModal from "./UploadGalleryModal";
 import ViewAlbumModal from "./ViewAlbumModal";
 import galleryAPI from "@/services/galleryAPI";
@@ -23,17 +8,20 @@ import businessProfileAPI from "@/services/businessProfileAPI";
 import { useUserRole } from "@/context/UserContext";
 import SlateRenderer from "@/components/ui/SlateRenderer";
 import Image from "next/image";
+import { toast } from "react-toastify";
+import UpdateGalleryModal from "./UpdateGalleryModal";
 
 const BusinessAboutTab = ({ businessId }) => {
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
   const [isViewAlbumModalOpen, setIsViewAlbumModalOpen] = useState(false);
+  const [isUpdateAlbumModalOpen, setIsUpdateAlbumModalOpen] = useState(false);
   const [selectedAlbum, setSelectedAlbum] = useState(null);
   const [gallery, setGallery] = useState(null);
   const [profileData, setProfileData] = useState(null);
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
+  const [singleAlbum, setSingleAlbum] = useState(null);
+  const [updateAlbum, setUpdateAlbum] = useState(false);
   const { role, user } = useUserRole();
 
-  // Helper to decode JWT (internal or from utils)
   const getProfileIdFromToken = (token) => {
     if (!token) return null;
     try {
@@ -67,24 +55,6 @@ const BusinessAboutTab = ({ businessId }) => {
     tokenBusinessId,
   });
 
-  // const isOwner =
-  //   role === "business" && (derivedBusinessId === businessId || !businessId);
-
-  // Mock data - replace with API data later
-  const [aboutData] = useState({
-    storyMission:
-      "Global Manufacturing Co. is a leading Tier 1 and Tier 2 supplier specializing in high-tolerance components, advanced material production, and efficient sub-assembly modules. With over 15 years of operational excellence, we partner with automotive OEMs and other suppliers to ensure supply chain resilience, superior component quality, and compliance with strict industry standards (like IATF 16949). We drive manufacturing optimization from raw material input to just-in-time delivery.",
-  });
-
-  const [exportData] = useState([
-    { name: "North America", value: 25, color: "#6366F1" },
-    { name: "South America", value: 15, color: "#8B5CF6" },
-    { name: "European Union", value: 0, color: "#F97316" },
-    { name: "Asia Pacific", value: 20, color: "#3B82F6" },
-    { name: "Other", value: 10, color: "#6B7280" },
-  ]);
-
-  // Fetch Profile data
   const fetchProfile = async () => {
     if (businessId) {
       try {
@@ -104,7 +74,6 @@ const BusinessAboutTab = ({ businessId }) => {
     }
   };
 
-  // Fetch albums on component mount
   const fetchAlbums = async () => {
     if (businessId) {
       try {
@@ -119,13 +88,25 @@ const BusinessAboutTab = ({ businessId }) => {
     }
   };
 
+  const deleteAlbum = async (e, id) => {
+    e.stopPropagation()
+    try {
+      const response = await businessProfileAPI.deleteBusinessProfileAlbum(id);
+      if (response.success) {
+        toast.success("Album deleted successfully!");
+        fetchAlbums();
+      }
+    } catch (error) {
+      console.error("Failed to delete album:", error);
+      toast.error(error?.response?.data?.message || "Failed to delete album");
+    }
+  }
 
-  React.useEffect(() => {
+  React.useEffect(() => { 
     fetchAlbums();
     fetchProfile();
-  }, [businessId, isViewAlbumModalOpen, isGalleryModalOpen]);
+  }, [businessId, isViewAlbumModalOpen, isGalleryModalOpen, updateAlbum]);
 
-  console.log(gallery, "galleries")
   return (
     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
       {/* Main Content */}
@@ -139,6 +120,11 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
 
           <div className="text-sm sm:text-sm text-gray-600 leading-relaxed min-h-[100px]">
+            {/* <p className="text-sm sm:text-sm text-gray-600 leading-relaxed min-h-[100px]"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(profileData?.description),
+              }}
+            /> */}
             {profileData?.description ? (
               <SlateRenderer
                 content={profileData.description}
@@ -177,6 +163,7 @@ const BusinessAboutTab = ({ businessId }) => {
                   onClick={() => {
                     setSelectedAlbum(album);
                     setIsViewAlbumModalOpen(true);
+                    setIsViewAlbumModalOpen(false)
                   }}
                   className="relative rounded-xl overflow-hidden group aspect-[4/3] cursor-pointer"
                 >
@@ -211,10 +198,13 @@ const BusinessAboutTab = ({ businessId }) => {
                   {/* Action Buttons */}
                   {/* {isOwner && ( */}
                   <div className="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button className="p-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                    <button className="p-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors" onClick={(e) => deleteAlbum(e, album._id)}>
                       <FiTrash2 className="w-3.5 h-3.5" />
                     </button>
-                    <button className="p-1.5 bg-white text-gray-700 rounded-md hover:bg-gray-100 transition-colors">
+                    <button className="p-1.5 bg-white text-gray-700 rounded-md hover:bg-gray-100 transition-colors" onClick={() => {
+                      setSingleAlbum(album)
+                      setIsUpdateAlbumModalOpen(true)
+                    }}>
                       <FiEdit2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -272,7 +262,6 @@ const BusinessAboutTab = ({ businessId }) => {
             {Array.isArray(profileData?.certifications) &&
               profileData.certifications.length > 0 ? (
               profileData.certifications.map((url, index) => {
-
                 const getFileType = (url) => {
                   const ext = url.split(".").pop().toLowerCase();
                   if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
@@ -332,20 +321,29 @@ const BusinessAboutTab = ({ businessId }) => {
         </div>
       </div>
 
-      <UploadGalleryModal
-        isOpen={isGalleryModalOpen}
-        onClose={() => setIsGalleryModalOpen(false)}
-        onUploadSuccess={fetchAlbums}
-      />
 
-      <ViewAlbumModal
-        isOpen={isViewAlbumModalOpen}
-        onClose={() => {
-          setIsViewAlbumModalOpen(false);
-          setSelectedAlbum(null);
-        }}
-        album={selectedAlbum}
-      />
+      {isUpdateAlbumModalOpen && (
+        <UpdateGalleryModal
+          isOpen={isUpdateAlbumModalOpen}
+          onClose={() => setIsUpdateAlbumModalOpen(false)}
+          album={singleAlbum}
+          setUpdateAlbum={setUpdateAlbum}
+        />
+
+      )}
+
+      {isViewAlbumModalOpen && (
+        <ViewAlbumModal
+          isOpen={isViewAlbumModalOpen}
+          onClose={() => {
+            setIsViewAlbumModalOpen(false);
+            setSelectedAlbum(null);
+          }}
+          album={selectedAlbum}
+        />
+      )}
+
+
     </div>
   );
 };

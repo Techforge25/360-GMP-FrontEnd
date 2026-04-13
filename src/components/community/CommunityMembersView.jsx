@@ -284,7 +284,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   const handleRemoveMember = async (memberId) => {
     if (!community?._id) return;
 
-    if (confirm("Are you sure you want to remove this member?")) {
+    if (confirm("Are you sure you want to remove this member as an Admin?")) {
       try {
         console.log(
           "Attempting to remove member. CommunityID:",
@@ -310,6 +310,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   };
 
   const handleMakeAdmin = async (memberId) => {
+    console.log(memberId, "members")
     if (!community?._id) return;
 
     if (confirm("Are you sure you want to make this member an admin?")) {
@@ -318,7 +319,28 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
         const response = await communityAPI.updateMemberRole(
           community._id,
           memberId,
-          "admin",
+        );
+        if (response.success) {
+          fetchMembers();
+          setActiveDropdown(null);
+        }
+      } catch (error) {
+        console.error("Error making member admin:", error);
+      } finally {
+        setProcessingId(null);
+      }
+    }
+  };
+
+  const handleDemoteAdmin = async (memberId) => {
+    if (!community?._id) return;
+
+    if (confirm("Are you sure you want to make this member an admin?")) {
+      try {
+        setProcessingId(memberId);
+        const response = await communityAPI.demoteAdmin(
+          community._id,
+          memberId,
         );
         if (response.success) {
           fetchMembers();
@@ -422,11 +444,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
               setCurrentPage(1);
               setSearchQuery("");
             }}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === "all"
-                ? "bg-[#240457] text-white"
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === "all"
+              ? "bg-[#240457] text-white"
+              : "text-gray-600 hover:bg-gray-100"
+              }`}
           >
             All Members
           </button>
@@ -451,11 +472,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                 setCurrentPage(1);
                 setSearchQuery("");
               }}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
-                activeTab === "requests"
-                  ? "bg-[#240457] text-white"
-                  : "text-gray-600 hover:bg-gray-100"
-              }`}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === "requests"
+                ? "bg-[#240457] text-white"
+                : "text-gray-600 hover:bg-gray-100"
+                }`}
             >
               Request
               {totalPending > 0 && (
@@ -478,19 +498,6 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
           <>
             {/* Table Header */}
             <div className="grid grid-cols-12 gap-4 py-3 px-4 bg-gray-50 rounded-lg mb-4">
-              <div className="col-span-1">
-                <input
-                  type="checkbox"
-                  className="rounded border-gray-300"
-                  checked={
-                    getCurrentData().length > 0 &&
-                    getCurrentData().every((item) =>
-                      selectedIds.includes(item._id),
-                    )
-                  }
-                  onChange={handleToggleSelectAll}
-                />
-              </div>
               <div className="col-span-3 text-sm font-medium text-gray-600">
                 Profile
               </div>
@@ -499,9 +506,6 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
               </div>
               <div className="col-span-2 text-sm font-medium text-gray-600">
                 Role
-              </div>
-              <div className="col-span-2 text-sm font-medium text-gray-600">
-                Status
               </div>
               <div className="col-span-2 text-sm font-medium text-gray-600">
                 Actions
@@ -523,14 +527,6 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                     key={request._id}
                     className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors"
                   >
-                    <div className="col-span-1 flex items-center">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300"
-                        checked={selectedIds.includes(request._id)}
-                        onChange={() => handleToggleSelectId(request._id)}
-                      />
-                    </div>
                     <div className="col-span-3 flex items-center gap-3">
                       <div className="relative">
                         <img
@@ -601,14 +597,6 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                     key={member._id}
                     className="grid grid-cols-12 gap-4 py-4 px-4 hover:bg-gray-50 rounded-lg transition-colors"
                   >
-                    <div className="col-span-1 flex items-center">
-                      <input
-                        type="checkbox"
-                        className="rounded border-gray-300"
-                        checked={selectedIds.includes(member._id)}
-                        onChange={() => handleToggleSelectId(member._id)}
-                      />
-                    </div>
                     <div className="col-span-3 flex items-center gap-3">
                       <div className="relative">
                         <img
@@ -623,12 +611,12 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                         {(member.memberModel === "BusinessProfile" ||
                           (member.role === "owner" &&
                             community?.businessId)) && (
-                          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#240457] rounded-full flex items-center justify-center">
-                            <span className="text-white text-sm font-bold">
-                              B
-                            </span>
-                          </div>
-                        )}
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#240457] rounded-full flex items-center justify-center">
+                              <span className="text-white text-sm font-bold">
+                                B
+                              </span>
+                            </div>
+                          )}
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-gray-900">
@@ -646,27 +634,20 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                     </div>
                     <div className="col-span-2 flex items-center">
                       <span
-                        className={`px-2 py-1 rounded-full text-sm font-medium ${
-                          member.role === "owner"
-                            ? "bg-purple-100 text-purple-800"
-                            : member.role === "admin"
-                              ? "bg-blue-100 text-blue-800"
-                              : member.role === "moderator"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-800"
-                        }`}
+                        className={`px-2 py-1 rounded-full text-sm font-medium ${member.role === "owner"
+                          ? "bg-purple-100 text-purple-800"
+                          : member.role === "admin"
+                            ? "bg-blue-100 text-blue-800"
+                            : member.role === "moderator"
+                              ? "bg-green-100 text-green-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
                       >
                         {member.role === "owner"
                           ? "Creator"
                           : member.role?.charAt(0).toUpperCase() +
-                              member.role?.slice(1) || "Member"}
+                          member.role?.slice(1) || "Member"}
                       </span>
-                    </div>
-                    <div className="col-span-2 flex items-center">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                        <span className="text-sm text-gray-600">Online</span>
-                      </div>
                     </div>
                     <div className="col-span-2 flex items-center gap-2">
                       <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
@@ -695,9 +676,16 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                                 onClick={() => setActiveDropdown(null)}
                               />
                               <div className="absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-40">
-                                {member.role !== "admin" && (
+                                {member.role === "admin" ? (
                                   <button
-                                    onClick={() => handleMakeAdmin(member._id)}
+                                    onClick={() => handleDemoteAdmin(member?.memberId)}
+                                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                  >
+                                    Demote Admin
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => handleMakeAdmin(member?.memberId)}
                                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                                   >
                                     Make Admin
@@ -707,7 +695,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                                   onClick={() =>
                                     handleRemoveMember(
                                       member.userProfileId?._id ||
-                                        member.memberId?._id,
+                                      member.memberId?._id,
                                     )
                                   }
                                   className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
@@ -762,11 +750,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       <button
                         key={page}
                         onClick={() => setCurrentPage(page)}
-                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                          page === currentPage
-                            ? "bg-[#240457] text-white"
-                            : "text-gray-600 hover:bg-gray-100 border border-gray-200"
-                        }`}
+                        className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${page === currentPage
+                          ? "bg-[#240457] text-white"
+                          : "text-gray-600 hover:bg-gray-100 border border-gray-200"
+                          }`}
                       >
                         {page}
                       </button>
@@ -776,11 +763,10 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                         <span className="text-gray-400 px-1">...</span>
                         <button
                           onClick={() => setCurrentPage(totalPages)}
-                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
-                            totalPages === currentPage
-                              ? "bg-[#240457] text-white"
-                              : "text-gray-600 hover:bg-gray-100 border border-gray-200"
-                          }`}
+                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-colors ${totalPages === currentPage
+                            ? "bg-[#240457] text-white"
+                            : "text-gray-600 hover:bg-gray-100 border border-gray-200"
+                            }`}
                         >
                           {totalPages}
                         </button>

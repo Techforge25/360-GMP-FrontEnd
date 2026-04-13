@@ -305,6 +305,26 @@ class BusinessProfileAPI {
       enableErrorMessage: false,
     });
   }
+
+  async deleteBusinessProfileAlbum(albumId) {
+    return await api.delete({
+      url: `/gallery/album/${albumId}`,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
+
+  async updateBusinessProfileAlbum(albumId, albumData) {
+    console.log(albumData, "album data")
+    return await api.patch({
+      url: `/gallery/album/${albumId}`,
+      payload: albumData,
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    });
+  }
 }
 
 const businessProfileAPI = new BusinessProfileAPI();

@@ -15,10 +15,7 @@ import { useUserRole } from "@/context/UserContext";
 export default function BusinessProfilePage() {
   const [activeTab, setActiveTab] = useState("Home");
   const [inventoryFilter, setInventoryFilter] = useState("");
-  const [userData, setUserData] = useState(null)
   const { userId } = useUserRole()
-
-  console.log(userId, "user id in business")
 
   const handleInventoryUpdate = () => {
     setInventoryFilter("Low Stock");
