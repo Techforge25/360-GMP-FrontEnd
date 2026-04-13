@@ -19,6 +19,7 @@ export default function RoleGuard({ children, allowedRoles }) {
         return;
       }
       const userRole = user.role;
+      const userId = user.userId
 
       const isAuthorized = allowedRoles.includes(userRole);
 
@@ -62,8 +63,10 @@ export default function RoleGuard({ children, allowedRoles }) {
           userRole === "free_trial"
         ) {
           router.push("/dashboard/user");
+        } else if (!userRole && userId) {
+          router.push("/onboarding/plans");
         } else {
-          router.push("/unauthorized");
+          router.push("/unautorized");
         }
       } else {
         setAuthorized(true);

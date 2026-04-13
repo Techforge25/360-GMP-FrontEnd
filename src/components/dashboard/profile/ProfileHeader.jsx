@@ -262,8 +262,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
         <Image
           src={
             newBanner?.previewUrl ||
-            profileData.banner ||
-            "/assets/images/profileBanner.png"
+            profileData.banner
           }
           alt="Cover"
           fill

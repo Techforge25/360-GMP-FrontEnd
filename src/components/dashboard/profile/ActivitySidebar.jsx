@@ -96,36 +96,36 @@ const ActivitySidebar = ({ onUpdateInventory }) => {
       };
 
       // Filter out empty nested objects and empty top-level fields
-      const filteredPayload = {};
-      if (payload.website && payload.website.trim() !== "") {
-        filteredPayload.website = payload.website;
-      }
+      // const filteredPayload = {};
+      // if (payload.website && payload.website.trim() !== "") {
+      //   filteredPayload.website = payload.website;
+      // }
 
-      if (formData.supportEmail && formData.supportEmail.trim() !== "") {
-        filteredPayload.supportEmail = formData.supportEmail;
-      }
-      if (formData.phone && formData.phone.trim() !== "") {
-        filteredPayload.phone = formData.phone;
-      }
+      // if (formData.supportEmail && formData.supportEmail.trim() !== "") {
+      //   filteredPayload.supportEmail = formData.supportEmail;
+      // }
+      // if (formData.phone && formData.phone.trim() !== "") {
+      //   filteredPayload.phone = formData.phone;
+      // }
 
-      if (formData.addressLine && formData.addressLine.trim() !== "") {
-        filteredPayload.addressLine = formData.addressLine;
-      }
-      if (formData.city && formData.city.trim() !== "") {
-        filteredPayload.city = formData.city;
-      }
-      if (formData.country && formData.country.trim() !== "") {
-        filteredPayload.country = formData.country;
-      }
+      // if (formData.addressLine && formData.addressLine.trim() !== "") {
+      //   filteredPayload.addressLine = formData.addressLine;
+      // }
+      // if (formData.city && formData.city.trim() !== "") {
+      //   filteredPayload.city = formData.city;
+      // }
+      // if (formData.country && formData.country.trim() !== "") {
+      //   filteredPayload.country = formData.country;
+      // }
 
       // Only send data if we have at least one field to update
-      if (Object.keys(filteredPayload).length === 0) {
+      if (Object.keys(payload).length === 0) {
         console.warn("No data to update");
         setIsEditing(false);
         return;
       }
 
-      await businessProfileAPI.updateContactInfo(filteredPayload);
+      await businessProfileAPI.updateContactInfo(payload);
       setIsEditing(false);
 
       // Refresh the profile data
