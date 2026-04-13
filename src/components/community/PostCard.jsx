@@ -521,7 +521,8 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   // Document Post Type
   if (post?.type === "file" || (post?.type === "post" && post?.file)) {
     const file = post?.file || {};
-    const fileExtension = file?.name?.split(".").pop().toUpperCase() || "DOC";
+    const fileExtension = file?.name?.split(".").pop().toUpperCase() === "PLEASE SEND YOUR RESUME AND A BRIEF COVER LETTER HIGHLIGHTING" ? "FILE" : "DOC";
+    console.log(fileExtension, "extension")
 
     const handleDownload = () => {
       if (file?.url) {

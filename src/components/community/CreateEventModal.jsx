@@ -130,6 +130,12 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
     }
   };
 
+  const getTomorrowDate = () => {
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split("T")[0];
+  };
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-[2px] p-4 overflow-y-auto">
       <div className="bg-white w-full max-w-6xl rounded-2xl shadow-xl relative animate-in fade-in zoom-in-95 duration-200">
@@ -185,6 +191,7 @@ const CreateEventModal = ({ isOpen, onClose, onSubmit, communityId }) => {
                     name="date"
                     value={formData.date}
                     onChange={handleInputChange}
+                    min={getTomorrowDate()}
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 transition-all text-sm"
                   />
                 </div>

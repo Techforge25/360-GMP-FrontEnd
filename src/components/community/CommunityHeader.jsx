@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { FiUsers } from "react-icons/fi";
 import communityAPI from "@/services/communityAPI";
+import api from "@/lib/axios";
+import { useRouter } from "next/navigation";
 
 const CommunityHeader = ({
   community,
@@ -12,6 +14,7 @@ const CommunityHeader = ({
   onMembershipUpdate,
 }) => {
   const [isJoining, setIsJoining] = useState(false);
+  const router = useRouter()
 
   if (!community) return null;
 
@@ -65,9 +68,14 @@ const CommunityHeader = ({
 
     if (isMember) {
       return (
-        <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-[#240457] text-white rounded-lg hover:bg-[#1a0340] font-semibold transition-colors text-sm whitespace-nowrap">
-          Joined
-        </button>
+        <>
+          <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-transparent text-red-500 border rounded-lg hover:bg-[red] hover:text-white font-semibold transition-colors text-sm whitespace-nowrap" onClick={() => leaveCommunity(community?._id)}>
+            Leave
+          </button>
+          <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-[#240457] text-white rounded-lg hover:bg-[#1a0340] font-semibold transition-colors text-sm whitespace-nowrap">
+            Joined
+          </button>
+        </>
       );
     }
 
@@ -110,6 +118,21 @@ const CommunityHeader = ({
       </button>
     );
   };
+
+  const leaveCommunity = async (communityId) => {
+    try {
+      const response = await api.post({
+        url: `/community/${communityId}/leave`,
+        enableErrorMessage: true,
+        enableSuccessMessage: true,
+      });
+      if (response.success) {
+        router.push("/dashboard/user/communities")
+      }
+    } catch (error) {
+      console.error("Failed to leave community:", error);
+    }
+  }
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">

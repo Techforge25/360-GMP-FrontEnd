@@ -192,9 +192,9 @@ const OwnedCommunityCard = ({ community, onDelete, formatMemberCount, setShowDel
                 <h3 className="text-base sm:text-lg font-bold text-gray-900">
                   {community.name}
                 </h3>
-                <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
+                {/* <button className="p-1 text-gray-400 hover:text-gray-600 transition-colors">
                   <FiEdit2 className="w-4 h-4" />
-                </button>
+                </button> */}
                 <span className="px-2 sm:px-3 py-1 bg-gray-100 text-gray-600 text-sm sm:text-sm font-medium rounded-full whitespace-nowrap">
                   {community.category || "General"}
                 </span>

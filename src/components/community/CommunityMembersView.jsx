@@ -139,16 +139,15 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
   };
 
   const getMemberDisplayImage = (member) => {
+    console.log(member, "memeber")
     if (member.role === "owner" && community?.businessId) {
       return (
         community.businessId?.logo || "/assets/images/Portrait_Placeholder.png"
       );
     }
-    if (member.memberModel === "BusinessProfile") {
+    if (member.role === "member") {
       return (
-        member.memberId?.logo ||
-        member.userProfileId?.imageProfile ||
-        "/assets/images/Portrait_Placeholder.png"
+        member.userProfileId?.logo
       );
     }
     return (
@@ -531,8 +530,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       <div className="relative">
                         <img
                           src={
-                            request.userProfileId?.imageProfile ||
-                            "/assets/images/Portrait_Placeholder.png"
+                            request.userProfileId?.logo
                           }
                           alt={request.userProfileId?.fullName}
                           className="w-10 h-10 rounded-full object-cover"

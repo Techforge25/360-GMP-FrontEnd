@@ -63,36 +63,30 @@ const CommunityMembersWidget = ({
               member.memberModel === "BusinessProfile" || isCreator;
             const displayName = isCreator
               ? community.businessId?.companyName ||
-                community.businessId?.name ||
-                "Business"
+              community.businessId?.name ||
+              "Business"
               : isBusiness
                 ? member.memberId?.companyName ||
-                  member.userProfileId?.fullName ||
-                  "Unknown"
+                member.userProfileId?.fullName ||
+                "Unknown"
                 : member.userProfileId?.fullName ||
-                  member.memberId?.companyName ||
-                  "Unknown Member";
+                member.memberId?.companyName ||
+                "Unknown Member";
             const displayImage = isCreator
-              ? community.businessId?.logo ||
-                "/assets/images/Portrait_Placeholder.png"
-              : isBusiness
-                ? member.memberId?.logo ||
-                  member.userProfileId?.imageProfile ||
-                  "/assets/images/Portrait_Placeholder.png"
-                : member.userProfileId?.imageProfile ||
-                  member.memberId?.logo ||
-                  "/assets/images/Portrait_Placeholder.png";
+              ? community.businessId?.logo
+              : !isBusiness
+                ? member.userProfileId?.logo : null;
             const displaySubtitle = isCreator
               ? community.businessId?.primaryIndustry ||
-                community.businessId?.businessType ||
-                "Business"
+              community.businessId?.businessType ||
+              "Business"
               : isBusiness
                 ? member.memberId?.primaryIndustry ||
-                  member.memberId?.businessType ||
-                  "Business"
+                member.memberId?.businessType ||
+                "Business"
                 : member.userProfileId?.title ||
-                  member.memberId?.industry ||
-                  "Member";
+                member.memberId?.industry ||
+                "Member";
             return (
               <div
                 key={member._id || index}
