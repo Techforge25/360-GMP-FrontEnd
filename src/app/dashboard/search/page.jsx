@@ -57,7 +57,7 @@ function SearchResults() {
         const commonParams = { search: query, limit: 10 };
         const locationParams = location ? { location } : {};
         const businessParams = businessType ? { businessType } : {};
-        const productsParams = { ...commonParams, businessId };
+        const productsParams = { ...commonParams };
 
         // Parallel data fetching
         const [bizRes, prodRes, commRes, jobRes] = await Promise.allSettled([
@@ -230,7 +230,7 @@ function SearchResults() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={
-                        typeof linkPrefix === "function"
+                        typeof linkPrefix === "function" 
                           ? linkPrefix(item)
                           : `${linkPrefix}/${item._id}`
                       }

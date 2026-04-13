@@ -1097,10 +1097,10 @@ const OrderTrackingPage = ({ orderId }) => {
                   </div>
                   <div>
                     <p className="text-[11px] font-bold text-[#8c9ca8] uppercase tracking-wider mb-1">
-                      EMAIL
+                      SELLER EMAIL
                     </p>
                     <p className="font-bold text-gray-900 text-[16px]">
-                      {order?.businessProfile?.email || "—"}
+                      {order?.businessProfile?.sellerEmail || "—"}
                     </p>
                   </div>
                 </div>

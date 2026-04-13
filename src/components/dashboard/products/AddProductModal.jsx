@@ -53,6 +53,12 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
     isFeatured: false,
   });
 
+  const isMinQtyInvalid =
+    formData.isSingleProductAvailable
+      ? formData.minOrderQty !== 1
+      : formData.minOrderQty < 2;
+
+
   const step1DisabledNext =
     currentStep === 1 &&
     (
@@ -61,13 +67,15 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
       !formData.pricePerUnit ||
       !formData.description ||
       !formData.lowStockThreshold ||
-      (!formData.isSingleProductAvailable && !formData.minOrderQty) ||
+      isMinQtyInvalid ||
+
       errors.title ||
       errors.category ||
       errors.pricePerUnit ||
       errors.tieredPricing ||
       errors.lowStockThreshold ||
-      errors.description
+      errors.description ||
+      errors.minOrderQty
     );
 
   const step2DisabledNext =
@@ -404,7 +412,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
 
       case "minOrderQty":
         if (!value) error = "Minimum order quantity required";
-        else if (Number(value) < 2 && !formData.isSingleProductAvailable) error = "Must be at greater than 1";
+        else if (Number(value) < 2 && !formData.isSingleProductAvailable) error = "Must be at least greater than 1";
         break;
 
       case "stockQty":

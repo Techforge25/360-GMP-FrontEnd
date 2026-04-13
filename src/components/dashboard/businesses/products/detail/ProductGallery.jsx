@@ -47,12 +47,15 @@ export default function ProductGallery({ images }) {
           Hot Seller
         </span>
 
-        <button
-          onClick={handlePrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 z-10"
-        >
-          <FaArrowLeft className="text-sm" />
-        </button>
+        {imgList.length > 1 && (
+          <button
+            onClick={handlePrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 z-10"
+          >
+            <FaArrowLeft className="text-sm" />
+          </button>
+
+        )}
 
         <img
           src={imgList[currentImage]}
@@ -63,12 +66,15 @@ export default function ProductGallery({ images }) {
           onError={(e) => (e.target.style.display = "none")}
         />
 
-        <button
-          onClick={handleNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 z-10"
-        >
-          <FaArrowRight className="text-sm" />
-        </button>
+        {imgList.length > 1 && (
+          <button
+            onClick={handleNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 z-10"
+          >
+            <FaArrowRight className="text-sm" />
+          </button>
+
+        )}
       </div>
 
       {/* Product Magnify(Zoom) */}
