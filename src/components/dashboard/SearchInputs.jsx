@@ -25,21 +25,13 @@ export default function SearchInputs() {
 
      const query = watch("query");
      const location = watch("location");
-     const type = watch("type");
 
      const handleSearch = (data) => {
-
           if (!data.query.trim() && !data.location.trim()) return;
-
-          const params = new URLSearchParams();
-
-          if (data.query.trim()) params.append("q", data.query.trim());
-          if (data.location.trim()) params.append("location", data.location.trim());
-          if (data.type.trim()) params.append("businessType", data.type.trim());
-
-          router.push(`/dashboard/search?${params.toString()}`);
+          router.push(
+               `/dashboard/search?q=${encodeURIComponent(data.query.trim())}`
+          );
      };
-
      const handleKeyDown = (e) => {
 
           if (
@@ -55,16 +47,15 @@ export default function SearchInputs() {
      };
 
      const handlePopularTagClick = (tag) => {
-
-          setValue("type", tag);
-
-          const params = new URLSearchParams();
-
-          if (query.trim()) params.append("q", query.trim());
-          if (location.trim()) params.append("location", location.trim());
-          params.append("businessType", tag);
-
-          router.push(`/dashboard/search?${params.toString()}`);
+          // setValue("type", tag);
+          // console.log(query, "query")
+          // const params = new URLSearchParams();
+          // params.append("q", query.trim());
+          // router.push(`/dashboard/search?${params.toString()}`);
+          // if (!data.query.trim() && !data.location.trim()) return;
+          router.push(
+               `/dashboard/search?businessType=${encodeURIComponent(tag.trim())}`
+          );
      };
 
      return (
@@ -77,7 +68,7 @@ export default function SearchInputs() {
 
                          <input
                               type="text"
-                              placeholder="Businesses, products, communities..."
+                              placeholder="Search Businesses"
                               className="flex-1 bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
                               {...register("query")}
                          />

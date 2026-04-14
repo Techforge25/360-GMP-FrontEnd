@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   FiChevronDown,
@@ -13,6 +13,8 @@ import jobAPI from "@/services/jobAPI";
 import CreateJobModal from "@/components/dashboard/jobs/CreateJobModal";
 import CandidatesView from "@/components/dashboard/jobs/CandidatesView";
 import { cn } from "@/lib/utils";
+import { jobsDropDown } from "@/constants/index";
+import JobDropdown from "./JobDropdown";
 
 export default function BusinessJobsTab() {
   const router = useRouter();
@@ -20,11 +22,16 @@ export default function BusinessJobsTab() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateJobModal, setShowCreateJobModal] = useState(false);
+  const [showEditJobModal, setShowEditJobModal] = useState(false)
   const [showCandidates, setShowCandidates] = useState(false);
+  const [dropDownOpen, setOpenDropDown] = useState(false)
   const [selectedJob, setSelectedJob] = useState(null);
   const [businessProfile, setBusinessProfile] = useState(null);
   const [recentApplicationsCount, setRecentApplicationsCount] = useState(0);
   const [selectedJobIds, setSelectedJobIds] = useState([]);
+  const [openIndex, setOpenIndex] = useState(null);
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef();
   const [activeStatusMenu, setActiveStatusMenu] = useState(null); // track which job's status menu is open
   const [hiringStats, setHiringStats] = useState({
     views: { count: 0, period: "30d" },
@@ -120,6 +127,12 @@ export default function BusinessJobsTab() {
     setShowCreateJobModal(true);
   };
 
+  console.log(openIndex, "open index")
+
+  const handleEditJob = () => {
+    setShowEditJobModal(true);
+  };
+
   const handleViewCandidates = (job) => {
     setSelectedJob(job);
     setShowCandidates(true);
@@ -172,6 +185,8 @@ export default function BusinessJobsTab() {
         : [...prev, jobId],
     );
   };
+
+  console.log(dropDownOpen, "drop down open")
 
   return (
     <>
@@ -285,11 +300,10 @@ export default function BusinessJobsTab() {
                         </td>
                       </tr>
                     ) : (
-                      jobs.map((job) => (
+                      jobs.map((job, index) => (
                         <tr
                           key={job._id}
                           className="hover:bg-gray-50 cursor-pointer"
-                          onClick={() => handleViewCandidates(job)}
                         >
                           <td className="py-4 px-4">
                             <div className="font-medium text-gray-900">
@@ -342,18 +356,18 @@ export default function BusinessJobsTab() {
                               >
                                 <span
                                   className={`inline-flex items-center gap-1 text-sm font-medium ${job.status === "open"
-                                      ? "text-green-700"
-                                      : job.status === "paused"
-                                        ? "text-yellow-700"
-                                        : "text-gray-700"
+                                    ? "text-green-700"
+                                    : job.status === "paused"
+                                      ? "text-yellow-700"
+                                      : "text-gray-700"
                                     }`}
                                 >
                                   <span
                                     className={`w-2 h-2 rounded-full ${job.status === "open"
-                                        ? "bg-green-500"
-                                        : job.status === "paused"
-                                          ? "bg-yellow-500"
-                                          : "bg-gray-500"
+                                      ? "bg-green-500"
+                                      : job.status === "paused"
+                                        ? "bg-yellow-500"
+                                        : "bg-gray-500"
                                       }`}
                                   ></span>
                                   {job.status.charAt(0).toUpperCase() +
@@ -417,10 +431,34 @@ export default function BusinessJobsTab() {
                           </td>
                           <td className="py-4 px-4">
                             <div className="flex items-center gap-2">
-                              <button className="p-1 hover:bg-gray-100 rounded">
+                              <button
+                                className="p-1 hover:bg-gray-100 rounded"
+                                onClick={() => {
+                                  setOpenDropDown((prev) => !prev);
+                                  setOpenIndex(index);
+                                }}
+                              >
                                 <FiMoreVertical className="w-5 h-5 text-gray-600" />
                               </button>
-                              <button className="p-1 hover:bg-gray-100 rounded">
+
+                              {dropDownOpen && openIndex === index && (
+                                <ul className="absolute right-0 top-8 bg-white shadow-md rounded z-50">
+                                  {jobsDropDown.map((dropdown, i) => (
+                                    <JobDropdown
+                                      key={i}
+                                      isOpen={true}
+                                      onToggle={() => { }}
+                                      onEdit={() => console.log("Edit", index)}
+                                      onView={() => console.log("View", index)}
+                                      onDelete={() => console.log("Delete", index)}
+                                    />
+                                  ))}
+                                </ul>
+                              )}
+
+                              <button className="p-1 hover:bg-gray-100 rounded"
+                                onClick={() => handleViewCandidates(job)}
+                              >
                                 <FiChevronRight className="w-5 h-5 text-gray-600" />
                               </button>
                             </div>
@@ -433,14 +471,21 @@ export default function BusinessJobsTab() {
               </div>
             </div>
           </div>
-        </div>
-      )}
+        </div >
+      )
+      }
       <CreateJobModal
         isOpen={showCreateJobModal}
         onClose={() => setShowCreateJobModal(false)}
         onSuccess={fetchBusinessJobsData}
         businessId={businessProfile?._id}
       />
+      {/* <EditJobModal
+        isOpen={showCreateJobModal}
+        onClose={() => setShowEditJobModal(false)}
+        onSuccess={fetchBusinessJobsData}
+        businessId={businessProfile?._id}
+      /> */}
     </>
   );
 }

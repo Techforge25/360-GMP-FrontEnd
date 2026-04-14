@@ -1,4 +1,4 @@
-import { BUSINESS_TYPE_OPTIONS, COUNTRIES, INCOTERMS_OPTIONS } from "@/constants/index";
+import { BUSINESS_TYPE_OPTIONS, companySizeBusiness, COUNTRIES, INCOTERMS_OPTIONS, productionCapacityBusiness } from "@/constants/index";
 import CKEditorField from "@/components/ui/CKEditor";
 import { Controller } from "react-hook-form";
 import { useState } from "react";
@@ -29,9 +29,22 @@ export default function Step1({ register, errors, className, control }) {
 
                     <div className="space-y-2">
                          <label className="text-base font-medium">
-                              Company Size <span className="text-red-500">*</span>
+                              Company Size<span className="text-red-500">*</span>
                          </label>
-                         <input type="text" maxLength={200} placeholder="1-500" {...register("companySize")} className={className} />
+                         <select
+                              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+                              {...register("companySize")}
+                              required
+                         >
+                              <option value="" disabled>
+                                   Select Company Size
+                              </option>
+                              {companySizeBusiness.map((opt) => (
+                                   <option key={opt} value={opt}>
+                                        {opt}
+                                   </option>
+                              ))}
+                         </select>
                          {errors.companySize && (
                               <p className="text-red-500">{errors?.companySize?.message}</p>
                          )}
@@ -55,7 +68,20 @@ export default function Step1({ register, errors, className, control }) {
                     </div>
                     <div className="space-y-2">
                          <label>Production Capactiy</label>
-                         <input maxLength={200} type="text" {...register("productionCapacity")} placeholder="50,000" className={className} />
+                         <select
+                              className="w-full h-11 rounded-md border border-border-light bg-surface px-3 py-2 text-base focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary appearance-none"
+                              {...register("productionCapacity")}
+                              required
+                         >
+                              <option value="" disabled>
+                                   Select Production Capacity
+                              </option>
+                              {productionCapacityBusiness.map((opt) => (
+                                   <option key={opt} value={opt}>
+                                        {opt}
+                                   </option>
+                              ))}
+                         </select>
                          {errors.productionCapacity && (
                               <p className="text-red-500">{errors?.productionCapacity?.message}</p>
                          )}
@@ -294,6 +320,6 @@ export default function Step1({ register, errors, className, control }) {
                          </p>
                     )}
                </div>
-          </div>
+          </div >
      );
 };

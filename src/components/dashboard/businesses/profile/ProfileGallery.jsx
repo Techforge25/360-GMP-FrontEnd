@@ -141,14 +141,16 @@ export default function ProfileGallery({ businessProfileId }) {
         ))}
       </div>
 
-      <ViewAlbumModal
-        isOpen={isViewModalOpen}
-        onClose={() => {
-          setIsViewModalOpen(false);
-          setSelectedAlbum(null);
-        }}
-        album={selectedAlbum}
-      />
+      {isViewModalOpen && selectedAlbum && (
+        <ViewAlbumModal
+          album={selectedAlbum}
+          onClose={() => {
+            setIsViewModalOpen(false);
+            setSelectedAlbum(null);
+          }}
+        />
+      )
+      }
     </div>
   );
 }

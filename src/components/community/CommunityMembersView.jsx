@@ -117,6 +117,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
   // Creator = business profile. Use community.businessId for owner, else memberId when BusinessProfile
   const getMemberDisplayName = (member) => {
+    console.log(member, "member")
     if (member.role === "owner" && community?.businessId) {
       return (
         community.businessId?.companyName ||
@@ -126,15 +127,11 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
     }
     if (member.memberModel === "BusinessProfile") {
       return (
-        member.memberId?.companyName ||
-        member.userProfileId?.fullName ||
-        "Unknown"
+        member.memberId?.fullName
       );
     }
     return (
-      member.userProfileId?.fullName ||
-      member.memberId?.companyName ||
-      "Unknown"
+      member.memberId?.fullName
     );
   };
 
@@ -142,18 +139,16 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
     console.log(member, "memeber")
     if (member.role === "owner" && community?.businessId) {
       return (
-        community.businessId?.logo || "/assets/images/Portrait_Placeholder.png"
+        community.memberId?.logo
       );
     }
     if (member.role === "member") {
       return (
-        member.userProfileId?.logo
+        member.memberId?.logo
       );
     }
     return (
-      member.userProfileId?.imageProfile ||
-      member.memberId?.logo ||
-      "/assets/images/Portrait_Placeholder.png"
+      member.memberId?.logo
     );
   };
 
@@ -530,9 +525,9 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       <div className="relative">
                         <img
                           src={
-                            request.userProfileId?.logo
+                            request.memberId?.logo
                           }
-                          alt={request.userProfileId?.fullName}
+                          alt={request.memberId?.fullName}
                           className="w-10 h-10 rounded-full object-cover"
                           onError={(e) => {
                             e.target.src =

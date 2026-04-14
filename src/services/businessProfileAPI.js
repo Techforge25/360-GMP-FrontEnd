@@ -99,6 +99,15 @@ class BusinessProfileAPI {
     });
   }
 
+  async getBusinessesName(search) {
+    return await api.get({
+      url: `/businessProfile${search}`,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
   /**
    * Delete a business profile
    */

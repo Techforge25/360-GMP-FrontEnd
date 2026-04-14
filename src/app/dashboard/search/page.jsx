@@ -16,19 +16,15 @@ import {
 } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import businessProfileAPI from "@/services/businessProfileAPI";
-import productAPI from "@/services/productAPI";
-import jobAPI from "@/services/jobAPI";
-import communityAPI from "@/services/communityAPI";
 import { useUserRole } from "@/context/UserContext";
 
 function SearchResults() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get("q") || "";
-  const location = searchParams.get("location") || "";
   const businessType = searchParams.get("businessType") || "";
   const initialTab = searchParams.get("type") || "all";
-
+  console.log(query, "query")
   const [activeTab, setActiveTab] = useState(initialTab);
   const [loading, setLoading] = useState(true);
   const [results, setResults] = useState({
@@ -48,68 +44,15 @@ function SearchResults() {
     const fetchResults = async () => {
       setLoading(true);
       try {
-        const commonParams = { search: query, limit: 10 };
-        const locationParams = location ? { location } : {};
-        const businessParams = businessType ? { businessType } : {};
-        const productsParams = { ...commonParams };
-
-        // Parallel data fetching
-        const [bizRes, prodRes, commRes, jobRes] = await Promise.allSettled([
-          businessProfileAPI.getAll({
-            ...commonParams,
-            ...locationParams,
-            ...businessParams,
-          }),
-          !businessType
-            ? productAPI.getBusinessProducts({ ...commonParams })
-            : Promise.resolve({}),
-          !businessType
-            ? communityAPI.getAll({ ...commonParams })
-            : Promise.resolve({}),
-          !businessType
-            ? jobAPI.getAll({ ...commonParams, ...locationParams })
-            : Promise.resolve({}),
-        ]);
-
-        const getDocs = (res) => {
-          if (res.status !== "fulfilled" || !res.value.success) return [];
-          const data = res.value.data;
-          if (Array.isArray(data)) return data;
-          if (data && Array.isArray(data.docs)) return data.docs;
-          return [];
-        };
-
-        let businesses = getDocs(bizRes);
-        // Client-side filtering for businesses if backend ignores search param
-        if (query && businesses.length > 0) {
-          const lowerQuery = query.toLowerCase();
-          businesses = businesses.filter(
-            (b) =>
-              (b.companyName &&
-                b.companyName.toLowerCase().includes(lowerQuery)) ||
-              (b.description &&
-                b.description.toLowerCase().includes(lowerQuery)) ||
-              (b.businessType &&
-                b.businessType.toLowerCase().includes(lowerQuery)) ||
-              (b.industry && b.industry.toLowerCase().includes(lowerQuery)),
-          );
-        }
-
-        // Filter by Business Type if present
-        if (businessType && businesses.length > 0) {
-          const lowerType = businessType.toLowerCase();
-          businesses = businesses.filter(
-            (b) =>
-              b.businessType &&
-              b.businessType.toLowerCase().includes(lowerType),
-          );
-        }
-
+        console.log(query, businessType, "query")
+        console.log()
+        // const commonParams = { search: query, limit: 10 };
+        // const locationParams = location ? { location } : {};
+        // const businessParams = businessType ? { businessType } : {};
+        // const productsParams = { ...commonParams };
+        const response = await businessProfileAPI.getBusinessesName(businessType ? `?businessType=${businessType}` : `?search=${query}`)
         setResults({
-          businesses: businesses,
-          products: getDocs(prodRes),
-          communities: getDocs(commRes),
-          jobs: getDocs(jobRes),
+          businesses: response.data.docs,
         });
       } catch (error) {
         console.error("Error fetching search results:", error);
@@ -139,21 +82,21 @@ function SearchResults() {
   };
 
   const ResultSection = ({ title, items, icon: Icon, type, linkPrefix }) => {
-    if (!items || items.length === 0) return null;
+    // if (!items || items.length === 0) return null;
 
     // Determine how many to show based on active tab
-    const displayItems = activeTab === "all" ? items.slice(0, 4) : items;
+    // const displayItems = activeTab === "all" ? items.slice(0, 4) : items;
 
     return (
       <div className="mb-10">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
-            <Icon className="text-brand-primary" /> {title}
+            {/* <Icon className="text-brand-primary" /> {title}
             <span className="text-base font-normal text-gray-500 ml-2">
               ({items.length} found)
-            </span>
+            </span> */}
           </h2>
-          {activeTab === "all" && items.length > 4 && (
+          {/* {activeTab === "all" && items.length > 4 && (
             <Button
               variant="ghost"
               onClick={() => handleTabChange(type)}
@@ -161,17 +104,16 @@ function SearchResults() {
             >
               View All <FiArrowRight />
             </Button>
-          )}
+          )} */}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           {displayItems.map((item) => (
             <Card
               key={item._id}
               className="hover:shadow-md transition-all border-none shadow-sm bg-white"
             >
               <CardContent className="p-4 flex gap-4">
-                {/* Image/Icon Placeholder */}
                 <div className="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden relative">
                   {item.image ||
                     item.coverImage ||
@@ -200,7 +142,6 @@ function SearchResults() {
                     {item.name || item.title || item.companyName}
                   </h3>
 
-                  {/* Subtitle / Meta */}
                   <div className="text-base text-gray-500 mb-2 truncate">
                     {type === "businesses" && (item.industry || item.email)}
                     {type === "products" &&
@@ -238,7 +179,7 @@ function SearchResults() {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -282,6 +223,8 @@ function SearchResults() {
       </Button>
     </div>
   );
+
+  console.log(results, "resil;ts")
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-8">
@@ -345,7 +288,6 @@ function SearchResults() {
           </div>
         ) : (
           <div>
-            {/* Show all or tabs based on activeTab */}
             {(activeTab === "all" || activeTab === "businesses") &&
               results.businesses.length > 0 && (
                 <ResultSection
@@ -358,7 +300,7 @@ function SearchResults() {
               )}
 
             {(activeTab === "all" || activeTab === "products") &&
-              results.products.length > 0 && (
+              results.length > 0 && (
                 <ResultSection
                   title="Products"
                   items={results.products}
@@ -376,7 +318,7 @@ function SearchResults() {
               )}
 
             {(activeTab === "all" || activeTab === "communities") &&
-              results.communities.length > 0 && (
+              results.length > 0 && (
                 <ResultSection
                   title="Communities"
                   items={results.communities}
@@ -387,7 +329,7 @@ function SearchResults() {
               )}
 
             {(activeTab === "all" || activeTab === "jobs") &&
-              results.jobs.length > 0 && (
+              results.length > 0 && (
                 <ResultSection
                   title="Jobs"
                   items={results.jobs}
@@ -398,7 +340,7 @@ function SearchResults() {
               )}
 
             {/* Empty State */}
-            {Object.values(results).every((arr) => arr.length === 0) && (
+            {results.length === 0 && (
               <NoResults />
             )}
           </div>

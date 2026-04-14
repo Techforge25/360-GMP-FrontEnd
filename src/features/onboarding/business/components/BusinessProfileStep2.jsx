@@ -17,6 +17,7 @@ export default function BusinessProfileStep2({
   const REGIONS = ["North America", "Europe", "Middle East", "Asia"];
   const logo = watch("logo")
   const [uploading, setUploading] = useState(null);
+  const [autoIndex, setAutoIndex] = useState(null);
   const banner = watch("banner")
   const taxCertificate = watch("taxRegistrationCertificate")
   const {
@@ -55,7 +56,41 @@ export default function BusinessProfileStep2({
     name: "tradeAffiliations"
   });
 
-  console.log(errors?.stakeholderDisclosure, "error stake hodler")
+  const stakeholders = watch("stakeholderDisclosure") || [];
+
+  const totalPercentage = stakeholders.reduce(
+    (sum, item) => sum + (Number(item?.ownershipPercentage) || 0),
+    0
+  );
+
+  const remainingPercentage = 100 - totalPercentage;
+
+  const handleAddStakeholder = () => {
+    const remaining = 100 - totalPercentage;
+
+    addStakeholder({
+      name: "",
+      ownershipPercentage: remaining > 0 ? remaining : 0,
+    });
+
+    setAutoIndex(stakeholderFields.length); // new index
+  };
+
+  useEffect(() => {
+    if (autoIndex === null) return;
+
+    const totalExceptAuto = stakeholders.reduce((sum, item, i) => {
+      if (i === autoIndex) return sum;
+      return sum + (Number(item?.ownershipPercentage) || 0);
+    }, 0);
+
+    const newValue = Math.max(0, 100 - totalExceptAuto);
+
+    setValue(
+      `stakeholderDisclosure.${autoIndex}.ownershipPercentage`,
+      newValue
+    );
+  }, [stakeholders, autoIndex, setValue]);
 
   return (
     <div className="space-y-8">
@@ -152,58 +187,85 @@ export default function BusinessProfileStep2({
         </div>
       </div>
 
+      <div className="text-sm">
+        <p>Total: {totalPercentage}%</p>
+        <p
+          className={
+            remainingPercentage !== 0 ? "text-red-500" : "text-green-600"
+          }
+        >
+          Remaining: {remainingPercentage}%
+        </p>
+      </div>
+
       <div className="space-y-4">
         <h2 className="font-bold">Stakeholders</h2>
-        {stakeholderFields.map((field, index) => (
-          <>
-            <div key={field.id} className="grid grid-cols-3 gap-4 items-center">
-              <input
-                {...register(`stakeholderDisclosure.${index}.name`)}
-                placeholder="Name"
-                className={className}
-              />
 
-              <input
-                type="number"
-                {...register(`stakeholderDisclosure.${index}.ownershipPercentage`)}
-                placeholder="Ownership %"
-                className={className}
-              />
-              <button type="button" onClick={() => removeStakeholder(index)}>
-                ❌ Remove
-              </button>
+        {/* SHOW ONLY IF EXISTS */}
+        {stakeholderFields.length > 0 && (
+          <>
+            {stakeholderFields.map((field, index) => (
+              <div key={field.id}>
+                <div className="grid grid-cols-3 gap-4 items-center">
+                  <input
+                    {...register(`stakeholderDisclosure.${index}.name`)}
+                    placeholder="Name"
+                    className={className}
+                  />
+
+                  <input
+                    type="number"
+                    {...register(`stakeholderDisclosure.${index}.ownershipPercentage`)}
+                    placeholder="Ownership %"
+                    className={className}
+                    disabled={index === autoIndex}
+                  />
+
+                  <button type="button" onClick={() => removeStakeholder(index)}>
+                    ❌ Remove
+                  </button>
+                </div>
+
+                {/* FIELD ERRORS */}
+                {errors?.stakeholderDisclosure?.[index]?.name && (
+                  <p className="text-red-500">
+                    {errors.stakeholderDisclosure[index].name.message}
+                  </p>
+                )}
+
+                {errors?.stakeholderDisclosure?.[index]?.ownershipPercentage && (
+                  <p className="text-red-500">
+                    {errors.stakeholderDisclosure[index].ownershipPercentage.message}
+                  </p>
+                )}
+              </div>
+            ))}
+
+            {/* TOTAL DISPLAY */}
+            <div className="text-sm mt-2">
+              <p>Total: {totalPercentage}%</p>
+
+              <p
+                className={
+                  remainingPercentage !== 0 ? "text-red-500" : "text-green-600"
+                }
+              >
+                Remaining: {remainingPercentage}%
+              </p>
+
+              {remainingPercentage !== 0 && (
+                <p className="text-red-500 text-xs">
+                  Total ownership must equal 100%
+                </p>
+              )}
             </div>
-            {errors?.stakeholderDisclosure?.[index]?.name && (
-              <p className="text-red-500">
-                {errors?.stakeholderDisclosure[index]?.name?.message}
-              </p>
-            )}
-
-            {errors?.stakeholderDisclosure?.[index]?.ownershipPercentage && (
-              <p className="text-red-500">
-                {errors?.stakeholderDisclosure[index]?.ownershipPercentage?.message}
-              </p>
-            )}
-
-            {typeof errors?.stakeholderDisclosure === "string" && (
-              <p className="text-red-500 text-sm mt-2">
-                {errors.stakeholderDisclosure}
-              </p>
-            )}
-          </>
-        ))}
-
-        {errors?.stakeholderDisclosure?.length > 0 && (
-          <>
-            {errors?.stakeholderDisclosure?.map((err) => {
-              <p className="text-red-500">{err?.ownershipPercentage?.message}</p>
-            })}
           </>
         )}
 
+        {/* ADD BUTTON */}
         <Button
           type="button"
-          onClick={() => addStakeholder({ name: "", ownershipPercentage: 0 })}
+          onClick={handleAddStakeholder}
         >
           + Add Stakeholder
         </Button>
@@ -576,6 +638,6 @@ export default function BusinessProfileStep2({
         </div>
 
       </div>
-    </div>
+    </div >
   );
 }

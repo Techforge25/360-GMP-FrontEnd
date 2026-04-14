@@ -270,12 +270,12 @@ export default function JobDetailsContent() {
             <div className="space-y-8 text-text-secondary">
               <section>
                 <div className="leading-relaxed text-black">
-                  {/* <p
+                  <p
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(job.description),
                     }}
-                  /> */}
-                  <SlateRenderer content={job.description} />
+                  />
+                  {/* <SlateRenderer content={job.description} /> */}
                 </div>
               </section>
             </div>
