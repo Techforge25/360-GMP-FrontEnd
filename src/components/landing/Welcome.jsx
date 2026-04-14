@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { FiArrowRight } from "react-icons/fi";
 import Link from "next/link";
+import { nutShellPoints } from "@/constants/index";
 
 const Welcome = () => {
   return (
@@ -47,7 +48,7 @@ const Welcome = () => {
               unique selections tailored to meet your every need. We appreciate
               you choosing us as your one stop global hub!
             </p>
-            <Link href="/nutshell-detail-page">
+            <Link href="/signup">
               <Button className="bg-brand-primary text-white px-10 py-6 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all">
                 Join Now <FiArrowRight className="ml-2 text-xl" />
               </Button>
@@ -55,7 +56,7 @@ const Welcome = () => {
           </div>
         </div>
 
-        <div className="relative  rounded-3xl p-8 md:p-12 z-10 bg-white shadow-sm border border-indigo-50 overflow-hidden">
+        <div className="relative sm:my-40 my-50  rounded-3xl p-8 md:p-12 z-10 bg-white shadow-sm border border-indigo-50 overflow-hidden">
           {/* Background Image */}
           <div className="relative z-10 text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-black mb-6">
@@ -95,49 +96,18 @@ const Welcome = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
                 {/* Point 1 */}
-                <div className="bg-[#ECEFF6]/80 backdrop-blur-sm py-6 px-5 rounded-2xl shadow-sm border border-gray-200 border-dashed hover:shadow-md transition-all group">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-lg shadow-md group-hover:scale-110 transition-transform">
-                      1
-                    </div>
-                    <p className="text-base md:text-lg text-black font-medium leading-tight">
-                      Eliminating inefficiencies
-                    </p>
-                  </div>
-                </div>
-
-                {/* Point 2 */}
-                <div className="relative group">
-                  <img
-                    className="hidden lg:block absolute -top-12 -left-8 w-16 opacity-40 animate-pulse"
-                    src="/assets/images/downArrow.png"
-                    alt=""
-                  />
-                  <div className="bg-[#ECEFF6]/80 backdrop-blur-sm py-6 px-5 rounded-2xl shadow-sm border border-gray-200 border-dashed hover:shadow-md transition-all">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-lg shadow-md group-hover:scale-110 transition-transform">
-                        2
+                {nutShellPoints.map((point, ind) => (
+                  <div key={ind} className="bg-[#ECEFF6]/80 backdrop-blur-sm py-6 px-5 rounded-2xl shadow-sm border border-gray-200 border-dashed hover:shadow-md transition-all group">
+                    <div  className="flex items-center gap-4">
+                      <div className="w-[20] h-[20] bg-brand-primary text-white rounded-full flex items-center justify-center flex-shrink-0 text-[12] shadow-md group-hover:scale-110 transition-transform">
+                        {point.id}
                       </div>
-                      <p className="text-base md:text-lg text-black font-medium leading-tight">
-                        Supporting global expansion
+                      <p className="text-[14px] md:text-[16px] text-black font-medium leading-tight">
+                        {point.title}
                       </p>
                     </div>
                   </div>
-                </div>
-
-                {/* Point 3 */}
-                <div className="relative group">
-                  <div className="bg-[#ECEFF6]/80 backdrop-blur-sm py-6 px-5 rounded-2xl shadow-sm border border-gray-200 border-dashed hover:shadow-md transition-all">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-brand-primary text-white rounded-full flex items-center justify-center flex-shrink-0 font-bold text-lg shadow-md group-hover:scale-110 transition-transform">
-                        3
-                      </div>
-                      <p className="text-base md:text-lg text-black font-medium leading-tight">
-                        Increasing visibility and collaboration
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
 
               <div className="hidden md:block absolute left-40 mt-2">
@@ -162,6 +132,27 @@ const Welcome = () => {
           <div className="relative top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-purple-200/30 blur-3xl -z-0 rounded-full pointer-events-none" />
         </div>
 
+        <div className="absolute text-black w-full inset-0 md:translate-y-4/2 sm:translate-y-400  xs:translate-y-500 translate-y-540 flex md:items-start items-center justify-center">
+          <div className="w-full z-10 md:h-[545px] md:h-[600px] h-[400] relative ">
+            <Image
+              src={"/assets/images/nutshellBg.png"}
+              width={1000}
+              height={900}
+              alt="nutshell Bg"
+              className="w-full h-full"
+            />
+            <div className="absolute -translate-y-34 left-0 right-0 max-w-[738px] mx-auto   ">
+              <p className="text-white text-[16px] md:text-[18px] text-center font-normal leading-tight p-4">
+                360GMP is not just a marketplace—it’s a global business
+                ecosystem. 360GMP is a unified digital ecosystem that connects
+                buyers, sellers, job-seekers, and companies in a single platform{" "}
+                <Link href={"/nutshell-detail-page"}>
+                  <span className="text-accent-info">More...</span>
+                </Link>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

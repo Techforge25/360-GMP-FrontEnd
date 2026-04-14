@@ -44,7 +44,7 @@ const Navbar = () => {
             />
           </Link>
 
-          <div className="hidden md:flex items-center space-x-12">
+          <div className="hidden md:flex items-center space-x-12 uppercase">
             <Link href="/" className={getNavLinkClass("/")}>
               Home
             </Link>

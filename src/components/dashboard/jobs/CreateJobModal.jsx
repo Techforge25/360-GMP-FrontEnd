@@ -321,7 +321,7 @@ export default function CreateJobModal({
                     className={cn(
                       "flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-medium transition-all",
                       isSelected
-                        ? "bg-[#2E1065] border-[#2E1065] text-white"
+                        ? "bg-brand-job-create border-brand-job-create text-white"
                         : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100",
                     )}
                   >
@@ -329,7 +329,7 @@ export default function CreateJobModal({
                       className={cn(
                         "w-4 h-4 rounded border flex items-center justify-center transition-colors",
                         isSelected
-                          ? "border-white bg-[#2E1065]"
+                          ? "border-white bg-brand-job-create"
                           : "border-gray-400 bg-white",
                       )}
                     >
@@ -351,7 +351,7 @@ export default function CreateJobModal({
               <CountrySelect
                 value={formData.location.country}
                 onChange={(value) => handleLocationChange("country", value)}
-                className="h-12 text-black border-gray-200 focus:ring-2 focus:ring-[#2E1065]"
+                className="h-12 text-black border-gray-200 focus:ring-2 focus:ring-brand-job-create"
               />
             </div>
 
@@ -365,7 +365,7 @@ export default function CreateJobModal({
                 placeholder="e.g Los Angeles"
                 value={formData.location.city}
                 onChange={(e) => handleLocationChange("city", e.target.value)}
-                className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none transition-all"
+                className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none transition-all"
               />
             </div>
           </div>
@@ -385,7 +385,7 @@ export default function CreateJobModal({
                   placeholder="700"
                   value={formData.salary.min}
                   onChange={(e) => handleSalaryChange("min", e.target.value)}
-                  className="w-full text-black h-12 pl-8 pr-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none transition-all"
+                  className="w-full text-black h-12 pl-8 pr-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
@@ -404,7 +404,7 @@ export default function CreateJobModal({
                   placeholder="1200"
                   value={formData.salary.max}
                   onChange={(e) => handleSalaryChange("max", e.target.value)}
-                  className="w-full text-black h-12 pl-8 pr-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none transition-all"
+                  className="w-full text-black h-12 pl-8 pr-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none transition-all"
                 />
               </div>
             </div>
@@ -415,7 +415,7 @@ export default function CreateJobModal({
                 <select
                   value={formData.salary.period}
                   onChange={(e) => handleSalaryChange("period", e.target.value)}
-                  className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
+                  className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
                 >
                   {SALARY_PERIODS.map((period) => (
                     <option key={period} value={period}>
@@ -455,7 +455,7 @@ export default function CreateJobModal({
                 onChange={(e) =>
                   handleInputChange("postingDuration", e.target.value)
                 }
-                className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
+                className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
               >
                 {POSTING_DURATIONS.map((dur) => (
                   <option key={dur} value={dur}>
@@ -539,7 +539,7 @@ export default function CreateJobModal({
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-6 h-12 rounded-lg bg-[#2E1065] text-white font-medium hover:bg-[#1a0638] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 h-12 rounded-lg bg-brand-job-create text-white font-medium hover:bg-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Posting..." : "Post a Job"}
             </button>

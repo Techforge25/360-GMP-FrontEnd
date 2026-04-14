@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { GoArrowDown } from "react-icons/go";
@@ -46,6 +46,14 @@ const Hero = () => {
   ];
 
   const totalSlides = slides.length;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % slides.length);
+    }, 10000); // 5 seconds
+
+    return () => clearInterval(interval); // cleanup
+  }, [slides.length]);
 
   return (
     <section className="relative w-full h-[90vh] md:h-screen min-h-[500px] flex items-center overflow-hidden">
