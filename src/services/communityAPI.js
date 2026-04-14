@@ -169,6 +169,16 @@ class CommunityAPI {
     });
   }
 
+  // add vote
+  async addVote(postId) {
+    return await api.post({
+      url: `/community-posts/${postId}/vote`,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
   // Leave Community
   async leaveCommunity(communityId) {
     return await api.get({

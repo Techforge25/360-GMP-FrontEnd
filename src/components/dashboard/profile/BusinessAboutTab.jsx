@@ -102,10 +102,12 @@ const BusinessAboutTab = ({ businessId }) => {
     }
   }
 
-  React.useEffect(() => { 
+  React.useEffect(() => {
     fetchAlbums();
     fetchProfile();
   }, [businessId, isViewAlbumModalOpen, isGalleryModalOpen, updateAlbum]);
+
+  console.log(isGalleryModalOpen, "is gallery")
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
@@ -334,7 +336,6 @@ const BusinessAboutTab = ({ businessId }) => {
 
       {isViewAlbumModalOpen && (
         <ViewAlbumModal
-          isOpen={isViewAlbumModalOpen}
           onClose={() => {
             setIsViewAlbumModalOpen(false);
             setSelectedAlbum(null);
@@ -344,6 +345,15 @@ const BusinessAboutTab = ({ businessId }) => {
       )}
 
 
+      {isGalleryModalOpen && (
+        <UploadGalleryModal
+          isOpen={isGalleryModalOpen}
+          onClose={() => {
+            setIsGalleryModalOpen(false)
+            setSelectedAlbum(null)
+          }}
+        />
+      )}
     </div>
   );
 };

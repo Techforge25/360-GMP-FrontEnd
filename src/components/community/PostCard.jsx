@@ -17,6 +17,9 @@ import {
 import { AiFillLike } from "react-icons/ai";
 import postsAPI from "@/services/postsAPI";
 import Swal from 'sweetalert2'
+import { toast } from "react-toastify";
+import communityAPI from "@/services/communityAPI";
+import api from "@/lib/axios";
 
 const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   // Debug logging to check if post has proper _id
@@ -173,23 +176,23 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
   // Handle delete post
   const handleDelete = async () => {
-    if (!Swal.fire({
-      title: "Are you sure you want to delete this post?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#5C24D2",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        postsAPI.deletePost(post?._id);
-      }
-    })) return;
-
     try {
-      const response = await postsAPI.deletePost(post?._id);
-      if (response?.success && onDelete) {
-        onDelete(post._id);
+      const result = await Swal.fire({
+        title: "Are you sure you want to delete this post?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#5C24D2",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      });
+
+      // 👉 Only run if user clicks CONFIRM
+      if (result.isConfirmed) {
+        const response = await postsAPI.deletePost(post?._id);
+
+        if (response?.success && onDelete) {
+          onDelete(post._id);
+        }
       }
     } catch (error) {
       console.error("Error deleting post:", error);
@@ -655,7 +658,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
     );
     const isPollExpired = duration && new Date(duration) < new Date();
 
-    const handleVote = async (optionIndex) => {
+    const handleVote = async (optionIndex, option) => {
       if (hasVoted || isPollExpired) return;
 
       try {
@@ -666,6 +669,15 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         setPollOptions(newOptions);
         setSelectedOption(optionIndex);
         setHasVoted(true);
+
+        await api.post({
+          url: `/community-posts/${post?._id}/vote`,
+          payload: { option: option.option },
+          enableSuccessMessage: true,
+          enableErrorMessage: false,
+          activateLoader: false,
+        });
+        toast.success("Vote has been given Successfully!")
 
         // TODO: Call API to record vote
         // const response = await postsAPI.votePoll(post._id, optionIndex);
@@ -775,7 +787,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
             return (
               <button
                 key={index}
-                onClick={() => handleVote(index)}
+                onClick={() => handleVote(index, option)}
                 disabled={hasVoted || isPollExpired}
                 className={`w-full text-left relative overflow-hidden rounded-lg border-2 transition-all ${hasVoted
                   ? isSelected
@@ -794,7 +806,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
                 {/* Option Content */}
                 <div className="relative px-4 py-3 flex items-center justify-between">
-                  <span className="font-medium text-gray-900 text-sm">
+                  <span className="font-medium text-gray-900 text-sm" onClick={() => handleVote()}>
                     {option?.option}
                   </span>
                   {hasVoted && (
@@ -1018,13 +1030,6 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                     {isPostAuthor() && (
                       <>
                         <button
-                          onClick={handleEdit}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                        >
-                          <FiEdit3 className="w-4 h-4" />
-                          Edit Post
-                        </button>
-                        <button
                           onClick={() => {
                             setShowOptions(false);
                             handleDelete();
@@ -1036,9 +1041,6 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                         </button>
                       </>
                     )}
-                    <button className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
-                      Report Post
-                    </button>
                   </div>
                 </>
               )}

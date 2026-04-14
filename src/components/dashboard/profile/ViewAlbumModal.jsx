@@ -5,8 +5,6 @@ import { FiX, FiImage, FiCalendar } from "react-icons/fi";
 const ViewAlbumModal = ({ isOpen, onClose, album }) => {
   const [selectedImage, setSelectedImage] = useState(null);
 
-  if (!isOpen || !album) return null;
-
   const handleClose = () => {
     setSelectedImage(null);
     onClose();
@@ -19,10 +17,10 @@ const ViewAlbumModal = ({ isOpen, onClose, album }) => {
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0 bg-white z-10">
           <div>
             <h2 className="text-xl font-bold text-gray-900">
-              {album.albumName || "Untitled Album"}
+              {album?.albumName || "Untitled Album"}
             </h2>
-            {album.description && (
-              <p className="text-sm text-gray-500 mt-1">{album.description}</p>
+            {album?.description && (
+              <p className="text-sm text-gray-500 mt-1">{album?.description}</p>
             )}
           </div>
           <button
@@ -35,9 +33,9 @@ const ViewAlbumModal = ({ isOpen, onClose, album }) => {
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-gray-50">
-          {album.images && album.images.length > 0 ? (
+          {album?.images && album?.images?.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {album.images.map((image, index) => (
+              {album?.images?.map((image, index) => (
                 <div
                   key={index}
                   onClick={() => setSelectedImage(image)}
@@ -69,10 +67,10 @@ const ViewAlbumModal = ({ isOpen, onClose, album }) => {
             <FiCalendar className="w-3.5 h-3.5" />
             <span>
               Created{" "}
-              {new Date(album.createdAt || Date.now()).toLocaleDateString()}
+              {new Date(album?.createdAt || Date.now()).toLocaleDateString()}
             </span>
           </div>
-          <span>{album.images?.length || 0} items</span>
+          <span>{album?.images?.length || 0} items</span>
         </div>
       </div>
 

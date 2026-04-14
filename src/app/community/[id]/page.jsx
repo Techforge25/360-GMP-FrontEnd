@@ -185,7 +185,6 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
     );
   };
 
-  // Handle post deletion
   const handlePostDelete = (postId) => {
     setPosts((prev) => prev.filter((post) => post._id !== postId));
   };
