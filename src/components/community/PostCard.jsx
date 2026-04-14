@@ -164,8 +164,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
   // Check if current user is post author
   const isPostAuthor = () => {
-    if (!currentUser || !post?.authorId) return false;
-
+    // if (!currentUser || !post?.authorId) return false;
     // Compare with current user's profile ID
     if (currentUser?.role === "business") {
       return post?.authorId?._id === currentUser?.profilePayload?._id;
@@ -427,20 +426,20 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                   onClick={() => setShowOptions(false)}
                 />
                 <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
-                  {isPostAuthor() && (
-                    <>
-                      <button
-                        onClick={() => {
-                          setShowOptions(false);
-                          handleDelete();
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                        Delete Post
-                      </button>
-                    </>
-                  )}
+                  {/* {isPostAuthor() && ( */}
+                  <>
+                    <button
+                      onClick={() => {
+                        setShowOptions(false);
+                        handleDelete();
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                      Delete Post
+                    </button>
+                  </>
+                  {/* )} */}
                 </div>
               </>
             )}
@@ -569,28 +568,28 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
               >
                 <FiMoreHorizontal size={20} />
               </button>
-              {showOptions && (
-                <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setShowOptions(false)}
-                  />
-                  <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
-                    {isPostAuthor() && (
-                      <button
-                        onClick={() => {
-                          setShowOptions(false);
-                          handleDelete();
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                      >
-                        <FiTrash2 className="w-4 h-4" />
-                        Delete Post
-                      </button>
-                    )}
-                  </div>
-                </>
-              )}
+              {/* {showOptions && (
+                <> */}
+              <div
+                className="fixed inset-0 z-10"
+                onClick={() => setShowOptions(false)}
+              />
+              <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
+                {/* {isPostAuthor() && ( */}
+                <button
+                  onClick={() => {
+                    setShowOptions(false);
+                    handleDelete();
+                  }}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                >
+                  <FiTrash2 className="w-4 h-4" />
+                  Delete Post
+                </button>
+                {/* )} */}
+              </div>
+              {/* </>
+              )} */}
             </div>
           </div>
         )}
@@ -746,18 +745,18 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                   onClick={() => setShowOptions(false)}
                 />
                 <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
-                  {isPostAuthor() && (
-                    <button
-                      onClick={() => {
-                        setShowOptions(false);
-                        handleDelete();
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                      Delete Post
-                    </button>
-                  )}
+                  {/* {isPostAuthor() && ( */}
+                  <button
+                    onClick={() => {
+                      setShowOptions(false);
+                      handleDelete();
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                    Delete Post
+                  </button>
+                  {/* )} */}
                 </div>
               </>
             )}
@@ -1027,20 +1026,20 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                     onClick={() => setShowOptions(false)}
                   />
                   <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
-                    {isPostAuthor() && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setShowOptions(false);
-                            handleDelete();
-                          }}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                          Delete Post
-                        </button>
-                      </>
-                    )}
+                    {/* {isPostAuthor() && ( */}
+                    {/* <> */}
+                    <button
+                      onClick={() => {
+                        setShowOptions(false);
+                        handleDelete();
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                    >
+                      <FiTrash2 className="w-4 h-4" />
+                      Delete Post
+                    </button>
+                    {/* </> */}
+                    {/* )} */}
                   </div>
                 </>
               )}
@@ -1057,99 +1056,103 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       </div>
 
       {/* Post Content */}
-      {post?.content && (
-        <div className="mb-3">
-          {isEditing ? (
-            <div className="space-y-3">
-              <textarea
-                value={editContent}
-                onChange={(e) => setEditContent(e.target.value)}
-                className="w-full text-black p-3 border border-gray-300 rounded-lg text-sm leading-relaxed resize-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
-                rows={3}
-                placeholder="Edit your post..."
-                maxLength={1000}
-              />
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-500">
-                  {editContent.length}/1000 characters
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={handleCancelEdit}
-                    disabled={isUpdating}
-                    className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveEdit}
-                    disabled={isUpdating || !editContent.trim()}
-                    className="px-3 py-1.5 text-sm bg-[#240457] text-white rounded-md hover:bg-[#1a0340] transition-colors disabled:opacity-50"
-                  >
-                    {isUpdating ? "Saving..." : "Save"}
-                  </button>
+      {
+        post?.content && (
+          <div className="mb-3">
+            {isEditing ? (
+              <div className="space-y-3">
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="w-full text-black p-3 border border-gray-300 rounded-lg text-sm leading-relaxed resize-none focus:ring-2 focus:ring-[#240457] focus:border-transparent"
+                  rows={3}
+                  placeholder="Edit your post..."
+                  maxLength={1000}
+                />
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-500">
+                    {editContent.length}/1000 characters
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleCancelEdit}
+                      disabled={isUpdating}
+                      className="px-3 py-1.5 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveEdit}
+                      disabled={isUpdating || !editContent.trim()}
+                      className="px-3 py-1.5 text-sm bg-[#240457] text-white rounded-md hover:bg-[#1a0340] transition-colors disabled:opacity-50"
+                    >
+                      {isUpdating ? "Saving..." : "Save"}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div>
-              <p className="text-sm text-gray-900 leading-relaxed whitespace-pre-wrap">
-                {showReadMore && !isExpanded
-                  ? post.content.substring(0, 180) + "..."
-                  : post.content}
-              </p>
-              {showReadMore && (
-                <button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium mt-1"
-                >
-                  {isExpanded ? "Show less" : "Read more..."}
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+            ) : (
+              <div>
+                <p className="text-sm text-gray-900 leading-relaxed whitespace-pre-wrap">
+                  {showReadMore && !isExpanded
+                    ? post.content.substring(0, 180) + "..."
+                    : post.content}
+                </p>
+                {showReadMore && (
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium mt-1"
+                  >
+                    {isExpanded ? "Show less" : "Read more..."}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      }
 
       {/* Post Images */}
-      {post?.images && post?.images?.length > 0 && (
-        <div className="mb-3 -mx-4">
-          {post?.images?.length === 1 ? (
-            <div className="relative w-full">
-              <img
-                src={post?.images[0]}
-                alt="Post"
-                className="w-full h-auto object-cover"
-                onError={(e) => {
-                  e.target.style.display = "none";
-                }}
-              />
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-1">
-              {post?.images?.slice(0, 4).map((image, index) => (
-                <div key={index} className="relative">
-                  <img
-                    src={image}
-                    alt={`Post image ${index + 1}`}
-                    className="w-full h-48 object-cover"
-                    onError={(e) => {
-                      e.target.style.display = "none";
-                    }}
-                  />
-                  {index === 3 && post.images.length > 4 && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <span className="text-white font-semibold">
-                        +{post?.images?.length - 4} more
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+      {
+        post?.images && post?.images?.length > 0 && (
+          <div className="mb-3 -mx-4">
+            {post?.images?.length === 1 ? (
+              <div className="relative w-full">
+                <img
+                  src={post?.images[0]}
+                  alt="Post"
+                  className="w-full h-auto object-cover"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-1">
+                {post?.images?.slice(0, 4).map((image, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={image}
+                      alt={`Post image ${index + 1}`}
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        e.target.style.display = "none";
+                      }}
+                    />
+                    {index === 3 && post.images.length > 4 && (
+                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <span className="text-white font-semibold">
+                          +{post?.images?.length - 4} more
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      }
 
       {/* Interactions Stats */}
       <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
@@ -1189,111 +1192,113 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
       </div>
 
       {/* Comments Section */}
-      {showComments && (
-        <div className="mt-3 pt-3 border-t border-gray-200">
-          {/* Comment Input */}
-          <div className="flex gap-3 mb-4">
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-              <img
-                src={
-                  currentUser?.profilePayload?.imageProfile ||
-                  currentUser?.profilePayload?.logo ||
-                  "/assets/images/Portrait_Placeholder.png"
-                }
-                alt="Your profile"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.src = "/assets/images/Portrait_Placeholder.png";
-                }}
-              />
-            </div>
-            <div className="flex-1">
-              <div className="relative">
-                <textarea
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Write a comment..."
-                  className="w-full bg-gray-50 border text-black border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  rows={1}
-                  onInput={(e) => {
-                    e.target.style.height = "auto";
-                    e.target.style.height = e.target.scrollHeight + "px";
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleComment();
-                    }
+      {
+        showComments && (
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            {/* Comment Input */}
+            <div className="flex gap-3 mb-4">
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                <img
+                  src={
+                    currentUser?.profilePayload?.imageProfile ||
+                    currentUser?.profilePayload?.logo ||
+                    "/assets/images/Portrait_Placeholder.png"
+                  }
+                  alt="Your profile"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.src = "/assets/images/Portrait_Placeholder.png";
                   }}
                 />
-                {commentText.trim() && (
-                  <button
-                    onClick={handleComment}
-                    disabled={isCommenting}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-800 disabled:opacity-50 text-sm font-medium"
-                  >
-                    {isCommenting ? "Posting..." : "Post"}
-                  </button>
-                )}
+              </div>
+              <div className="flex-1">
+                <div className="relative">
+                  <textarea
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Write a comment..."
+                    className="w-full bg-gray-50 border text-black border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    rows={1}
+                    onInput={(e) => {
+                      e.target.style.height = "auto";
+                      e.target.style.height = e.target.scrollHeight + "px";
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleComment();
+                      }
+                    }}
+                  />
+                  {commentText.trim() && (
+                    <button
+                      onClick={handleComment}
+                      disabled={isCommenting}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 text-blue-600 hover:text-blue-800 disabled:opacity-50 text-sm font-medium"
+                    >
+                      {isCommenting ? "Posting..." : "Post"}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
+
+            {/* Comments List */}
+            {comments.length > 0 && (
+              <div className="space-y-3">
+                {comments.map((comment, index) => (
+                  <div key={index} className="flex gap-3">
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
+                      <img
+                        src={
+                          comment?.userId?.imageProfile ||
+                          comment?.userId?.logo ||
+                          "/assets/images/Portrait_Placeholder.png"
+                        }
+                        alt={
+                          comment?.userId?.fullName ||
+                          comment?.userId?.companyName ||
+                          "User"
+                        }
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "/assets/images/Portrait_Placeholder.png";
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="bg-gray-50 rounded-lg px-3 py-2">
+                        <h5 className="text-sm font-semibold text-gray-900 mb-1">
+                          {comment?.userId?.fullName ? comment.userId?.fullName : comment?.userId?.ownerName}
+                        </h5>
+                        <p className="text-sm text-gray-700">{comment?.content}</p>
+                      </div>
+                      <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
+                        <span>{formatTimeAgo(comment?.commentedAt)}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* View More Comments */}
+            {(post?.commentCount || 0) > comments.length && (
+              <button
+                onClick={() => {
+                  handleLoadComments();
+                }}
+                className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
+              >
+                View more comments ({(post?.commentCount || 0) - comments.length}{" "}
+                more)
+              </button>
+            )}
           </div>
-
-          {/* Comments List */}
-          {comments.length > 0 && (
-            <div className="space-y-3">
-              {comments.map((comment, index) => (
-                <div key={index} className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
-                    <img
-                      src={
-                        comment?.userId?.imageProfile ||
-                        comment?.userId?.logo ||
-                        "/assets/images/Portrait_Placeholder.png"
-                      }
-                      alt={
-                        comment?.userId?.fullName ||
-                        comment?.userId?.companyName ||
-                        "User"
-                      }
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src =
-                          "/assets/images/Portrait_Placeholder.png";
-                      }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="bg-gray-50 rounded-lg px-3 py-2">
-                      <h5 className="text-sm font-semibold text-gray-900 mb-1">
-                        {comment?.userId?.fullName ? comment.userId?.fullName : comment?.userId?.ownerName}
-                      </h5>
-                      <p className="text-sm text-gray-700">{comment?.content}</p>
-                    </div>
-                    <div className="flex items-center gap-4 mt-1 text-sm text-gray-500">
-                      <span>{formatTimeAgo(comment?.commentedAt)}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* View More Comments */}
-          {(post?.commentCount || 0) > comments.length && (
-            <button
-              onClick={() => {
-                handleLoadComments();
-              }}
-              className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
-            >
-              View more comments ({(post?.commentCount || 0) - comments.length}{" "}
-              more)
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   );
 };
 
