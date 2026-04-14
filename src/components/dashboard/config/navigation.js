@@ -15,6 +15,7 @@ import {
   isBusinessRole,
   isUserRole,
 } from "@/lib/auth/session";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const getRolePrefix = (role) =>
   isBusinessRole(role) ? "/dashboard/business" : "/dashboard/user";
@@ -42,8 +43,8 @@ export const getHeaderIconLinks = (role) => {
 };
 
 export const getProfileMenuLinks = (role) => {
-  console.log(role, "roled")
   const prefix = getRolePrefix(role);
+  console.log(prefix, "roled")
   const links = [
     {
       label: "My Profile",
@@ -73,6 +74,16 @@ export const getProfileMenuLinks = (role) => {
       mobileIconClassName:
         "bg-gradient-to-r from-pink-500 to-pink-600",
     },
+    ...(role === "business"
+  ? [
+      {
+        label: "setting",
+        href: `${prefix}/business-settings`,
+        icon: IoSettingsOutline,
+        mobileIconClassName: "bg-gradient-to-r from-pink-500 to-pink-600",
+      },
+    ]
+  : []),
     {
       label: "Support",
       href: `${prefix}/support`,

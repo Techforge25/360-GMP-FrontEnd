@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "leaflet/dist/leaflet.css";
 @import "tailwindcss";
 
@@ -8,6 +9,10 @@
   --color-brand-primary-light: #9747ff;
   --color-brand-secondary: #e8eef6;
   --color-brand-secondary-dark: #0B192C;
+  --color-brand-setting-ligh: #eff6ff;
+  --color-brand-setting-sky: #F0FDF5;
+  --color-brand-setting-tab: #B4B4B433;
+  --color-brand-job-create: #2E1065;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
@@ -25,6 +30,9 @@
   --color-text-gray-more: #768299;
   --color-text-light-gray-more: #474747;
   --color-text-orange:#CC6A21;
+  --color-text-dark:#22252B;
+  --color-text-light-setting:#32363F;
+  --color-text-setting-dark:#40444C;
 
   /* ===== Borders ===== */
   --color-border-light: #d3d6de;
@@ -32,6 +40,7 @@
   --color-border-orange:#CC6A21;
   --color-border-primary-light: #9747ff;
   --color-border-gray-light: #D1D7E3;
+  --color-border-outline-light: #E3E7EE;
 
   /* ===== Status / Accent ===== */
   --color-accent-success: #22c55e;
@@ -55,6 +64,7 @@
 
   /* ===== Typography ===== */
   --font-primary: "Open Sans", sans-serif;
+  --font-secondary: "Inter", sans-serif;
   --text-heading-size: 22px;
   --text-heading-weight: 400;
 
