@@ -103,22 +103,22 @@ export const orders = [
 
 export const businessTabs = {
   "All Orders": "/orders/business/all-orders",
-  "New": "/orders/business/new-orders",
+  New: "/orders/business/new-orders",
   "Prepare Shipment": "/orders/business/processing-orders",
-  "Shipped": "/orders/business/in-transit-orders",
-  "Delivered": "/orders/business/delivered-orders",
-  "Completed": "/orders/business/completed-orders",
-  "Cancelled": "/orders/business/cancelled-orders",
+  Shipped: "/orders/business/in-transit-orders",
+  Delivered: "/orders/business/delivered-orders",
+  Completed: "/orders/business/completed-orders",
+  Cancelled: "/orders/business/cancelled-orders",
 };
 
 export const userTabs = {
   "All Orders": "/orders/user/all-orders",
-  "New": "/orders/user/new-orders",
+  New: "/orders/user/new-orders",
   "Seller Preparing": "/orders/user/processing-orders",
-  "Shipped": "/orders/user/in-transit-orders",
-  "Delivered": "/orders/user/delivered-orders",
-  "Completed": "/orders/user/completed-orders",
-  "Cancelled": "/orders/user/cancelled-orders",
+  Shipped: "/orders/user/in-transit-orders",
+  Delivered: "/orders/user/delivered-orders",
+  Completed: "/orders/user/completed-orders",
+  Cancelled: "/orders/user/cancelled-orders",
 };
 
 export const tabs = [
@@ -172,106 +172,197 @@ export const getStatusColor = (status) => {
   }
 };
 
-export const tags = ["Manufacturer", "Healthcare", "Technology", "Consulting"]
+export const tags = ["Manufacturer", "Healthcare", "Technology", "Consulting"];
 
 export const cardsBusiness = [
   {
     amount: "$12,450.00",
     icon: "/assets/images/card-1.png",
     text: "Net Balance",
-    text2: "Available for withdrawal"
+    text2: "Available for withdrawal",
   },
   {
     amount: "$3,200.00",
     icon: "/assets/images/card-2.png",
     text: "Pending Settlements",
-    text2: "Held in escrow"
+    text2: "Held in escrow",
   },
   {
     amount: "$156,500.00",
     icon: "/assets/images/card-3.png",
     text: "Total Sales Volume",
-    text2: "Total Sales Volume"
+    text2: "Total Sales Volume",
   },
   {
     amount: "$3,200.00",
     icon: "/assets/images/card-4.png",
     text: "Platform & Service Deductions",
-    text2: "Total Fee"
+    text2: "Total Fee",
   },
-]
+];
 
 export const cardsUser = [
   {
     amount: "$12,450.00",
     icon: "/assets/images/card-1.png",
     text: "Net Balance",
-    text2: "Available for withdrawal"
+    text2: "Available for withdrawal",
   },
   {
     amount: "$3,200.00",
     icon: "/assets/images/card-2.png",
     text: "Pending Settlements",
-    text2: "Held in escrow"
+    text2: "Held in escrow",
   },
-]
-
-export const transactions = [
-  { id: 1, description: "Sale - CNC Machined Component", date: "OCT 24, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$900.00", positive: true },
-  { id: 2, description: "Sale - High-Speed USB-C Data Cable", date: "OCT 22, 2025, 10:30 AM", method: "Visa **** 4321", status: "Pending", amount: "+$100.00", positive: true },
-  { id: 3, description: "Sale - Industrial Smart Watch", date: "OCT 27, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$600.00", positive: true },
-  { id: 4, description: "Sale - Noise Reduction Headset", date: "OCT 29, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$2,000.00", positive: true },
-  { id: 5, description: "Sale - High-Speed USB-C Data Cable", date: "OCT 22, 2025, 10:30 AM", method: "Visa **** 4321", status: "Pending", amount: "+$100.00", positive: true },
-  { id: 6, description: "Withdrawal To Bank Account ****4567", date: "OCT 22, 2025, 10:30 AM", method: "Bank Account ****4567", status: "Completed", amount: "-$100.00", positive: false },
-  { id: 7, description: "Sale - Industrial Smart Watch", date: "OCT 27, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$600.00", positive: true },
-  { id: 8, description: "Sale - Noise Reduction Headset", date: "OCT 29, 2025, 10:30 AM", method: "Visa **** 4321", status: "Completed", amount: "+$2,000.00", positive: true },
-  { id: 9, description: "Sale - High-Speed USB-C Data Cable", date: "OCT 22, 2025, 10:30 AM", method: "Visa **** 4321", status: "Pending", amount: "+$100.00", positive: true },
 ];
 
 export const businessWalletTabs = ["My Wallet",
   "Earnings",
   "Withdrawals"]
+export const transactions = [
+  {
+    id: 1,
+    description: "Sale - CNC Machined Component",
+    date: "OCT 24, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Completed",
+    amount: "+$900.00",
+    positive: true,
+  },
+  {
+    id: 2,
+    description: "Sale - High-Speed USB-C Data Cable",
+    date: "OCT 22, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Pending",
+    amount: "+$100.00",
+    positive: true,
+  },
+  {
+    id: 3,
+    description: "Sale - Industrial Smart Watch",
+    date: "OCT 27, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Completed",
+    amount: "+$600.00",
+    positive: true,
+  },
+  {
+    id: 4,
+    description: "Sale - Noise Reduction Headset",
+    date: "OCT 29, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Completed",
+    amount: "+$2,000.00",
+    positive: true,
+  },
+  {
+    id: 5,
+    description: "Sale - High-Speed USB-C Data Cable",
+    date: "OCT 22, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Pending",
+    amount: "+$100.00",
+    positive: true,
+  },
+  {
+    id: 6,
+    description: "Withdrawal To Bank Account ****4567",
+    date: "OCT 22, 2025, 10:30 AM",
+    method: "Bank Account ****4567",
+    status: "Completed",
+    amount: "-$100.00",
+    positive: false,
+  },
+  {
+    id: 7,
+    description: "Sale - Industrial Smart Watch",
+    date: "OCT 27, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Completed",
+    amount: "+$600.00",
+    positive: true,
+  },
+  {
+    id: 8,
+    description: "Sale - Noise Reduction Headset",
+    date: "OCT 29, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Completed",
+    amount: "+$2,000.00",
+    positive: true,
+  },
+  {
+    id: 9,
+    description: "Sale - High-Speed USB-C Data Cable",
+    date: "OCT 22, 2025, 10:30 AM",
+    method: "Visa **** 4321",
+    status: "Pending",
+    amount: "+$100.00",
+    positive: true,
+  },
+];
 
 export const paymentCards = [
   {
     logo: "/assets/images/mastercard.png",
     cardName: "Mastercard · Default Method",
     extraInfo: "globalmanufacturing@gmail.com",
-    btnText: "Disconnect"
+    btnText: "Disconnect",
   },
   {
     logo: "/assets/images/visa.png",
     cardName: "visa ****2125",
     extraInfo: "Expiry · 12/27",
-    btnText: "Set as Default"
+    btnText: "Set as Default",
   },
-]
-
+];
 
 export const events = [
-  { date: "OCT 25, 2025,", time: "10:30 AM", title: "Order Placed", description: "Order #ORD-2025-55 Crated." },
-  { date: "OCT 26, 2025,", time: "10:30 AM", title: "Escrow Period", description: "Fund Held Securely Pending Delivery." },
-  { date: "OCT 27, 2025,", time: "06:15 AM", title: "Delivery Confirmed", description: "Buyer Confirmed Receipt Of Goods." },
-  { date: "OCT 28, 2025,", time: "12:15 AM", title: "Funds Released", description: "Payout Successfully Transferred To Seller Wallet", isLast: true },
+  {
+    date: "OCT 25, 2025,",
+    time: "10:30 AM",
+    title: "Order Placed",
+    description: "Order #ORD-2025-55 Crated.",
+  },
+  {
+    date: "OCT 26, 2025,",
+    time: "10:30 AM",
+    title: "Escrow Period",
+    description: "Fund Held Securely Pending Delivery.",
+  },
+  {
+    date: "OCT 27, 2025,",
+    time: "06:15 AM",
+    title: "Delivery Confirmed",
+    description: "Buyer Confirmed Receipt Of Goods.",
+  },
+  {
+    date: "OCT 28, 2025,",
+    time: "12:15 AM",
+    title: "Funds Released",
+    description: "Payout Successfully Transferred To Seller Wallet",
+    isLast: true,
+  },
 ];
 
 export const financialBreakdown = [
   {
     type: "Gross Sale Amount",
     desc: "Total Order Value",
-    amount: "$900"
+    amount: "$900",
   },
   {
     type: "Platform Fee",
     desc: "Standard Service Rate (10%)",
-    amount: "-$100.00"
+    amount: "-$100.00",
   },
   {
     type: "VAT/TAX",
     desc: "Applied Regional Tax (0%)",
-    amount: "..."
-  }
-]
+    amount: "...",
+  },
+];
 
 export const chartData = [
   { day: "Mon", escrowVolume: 2200, netIncome: 3200 },
@@ -283,24 +374,74 @@ export const chartData = [
   { day: "Sun", escrowVolume: 3400, netIncome: 3000 },
 ];
 
-export const sortOptionsByTime = ["Last 3 Month", "Last 2 Weeks", "Last 1 Week"]
+export const sortOptionsByTime = [
+  "Last 3 Month",
+  "Last 2 Weeks",
+  "Last 1 Week",
+];
 
 export const tabsTransactionBusinessWallet = ["All"]
 
 export const tabsTransactionUserWallet = ["All"]
 
-export const walletTransactionTabs = ["Description/Date", "Status", "Amount"]
+export const walletTransactionTabs = ["Description/Date", "Status", "Amount"];
 
-export const walletMyWalletsTabs = ["Description/Date", "Payment Method", "Status", "Amount"]
+export const walletMyWalletsTabs = [
+  "Description/Date",
+  "Payment Method",
+  "Status",
+  "Amount",
+];
 
-export const walletEarningsTabs = ["Date", "Gross Amounts", "Fee (10%)", "Net Profit", "Status"]
+export const walletEarningsTabs = [
+  "Date",
+  "Gross Amounts",
+  "Fee (10%)",
+  "Net Profit",
+  "Status",
+];
 
 export const transactionsUserWallet = [
-  { id: 1, title: "Buy - High-Speed USB-C Data Cable", date: "TODAY, 14:23 AM", amount: "- $100.00", type: "debit", status: "Completed" },
-  { id: 2, title: "Service Subscription", date: "OCT 22, 2025, 9:30 AM", amount: "- $199.00", type: "debit", status: "Completed" },
-  { id: 3, title: "Buy - Earbuds", date: "OCT 22, 2025, 11:30 AM", amount: "- $99.00", type: "debit", status: "Failed" },
-  { id: 4, title: "Refund From Store-ABC", date: "OCT 22, 2025, 10:30 AM", amount: "+ $100.00", type: "credit", status: "Completed" },
-  { id: 5, title: "Refund From Store-ABC", date: "OCT 22, 2025, 10:30 AM", amount: "+ $100.00", type: "credit", status: "Completed" },
+  {
+    id: 1,
+    title: "Buy - High-Speed USB-C Data Cable",
+    date: "TODAY, 14:23 AM",
+    amount: "- $100.00",
+    type: "debit",
+    status: "Completed",
+  },
+  {
+    id: 2,
+    title: "Service Subscription",
+    date: "OCT 22, 2025, 9:30 AM",
+    amount: "- $199.00",
+    type: "debit",
+    status: "Completed",
+  },
+  {
+    id: 3,
+    title: "Buy - Earbuds",
+    date: "OCT 22, 2025, 11:30 AM",
+    amount: "- $99.00",
+    type: "debit",
+    status: "Failed",
+  },
+  {
+    id: 4,
+    title: "Refund From Store-ABC",
+    date: "OCT 22, 2025, 10:30 AM",
+    amount: "+ $100.00",
+    type: "credit",
+    status: "Completed",
+  },
+  {
+    id: 5,
+    title: "Refund From Store-ABC",
+    date: "OCT 22, 2025, 10:30 AM",
+    amount: "+ $100.00",
+    type: "credit",
+    status: "Completed",
+  },
 ];
 
 export const chartDataUser = [
@@ -311,7 +452,7 @@ export const chartDataUser = [
   { month: "Fri", marketplace: 2000, refund: 280 },
   { month: "Sat", marketplace: 2200, refund: 350 },
   { month: "Sun", marketplace: 2200, refund: 350 },
-]
+];
 
 export const BUSINESS_TYPE_OPTIONS = [
   "Manufacturer",
@@ -320,7 +461,7 @@ export const BUSINESS_TYPE_OPTIONS = [
   "Retailer",
   "Service Provider",
   "Consultant",
-  "Franchise"
+  "Franchise",
 ];
 
 export const COUNTRIES = [
@@ -517,7 +658,7 @@ export const COUNTRIES = [
   "Vietnam",
   "Yemen",
   "Zambia",
-  "Zimbabwe"
+  "Zimbabwe",
 ];
 
 export const INCOTERMS_OPTIONS = [
@@ -531,7 +672,7 @@ export const INCOTERMS_OPTIONS = [
   "CIP - Carriage and Insurance Paid To",
   "DAP - Delivered At Place",
   "DPU - Delivered At Place Unloaded",
-  "DDP - Delivered Duty Paid"
+  "DDP - Delivered Duty Paid",
 ];
 
 export const SHIPPING_OPTIONS = [
@@ -539,7 +680,7 @@ export const SHIPPING_OPTIONS = [
   "Sea Freight",
   "Express Courier",
   "Rail Freight",
-  "Road Transport"
+  "Road Transport",
 ];
 
 export const stepsOnboarding = [
@@ -604,23 +745,6 @@ export const stepFields = {
   ],
 };
 
-const isStepValid = (step) => {
-  const values = getValues();
-  const errorsKeys = Object.keys(errors);
-
-  // get fields for this step
-  const fields = stepFields[step];
-
-  // if any field in this step has an error, step is invalid
-  return !fields.some((field) => {
-    // support nested fields like 'location.city'
-    const parts = field.split(".");
-    let value = values;
-    for (const part of parts) value = value?.[part];
-    return !value || errorsKeys.includes(field);
-  });
-};
-
 export const digitsOnly = (value) => value.replace(/[^0-9]/g, "");
 export const digitsDecimalOnly = (value) => value.replace(/[^0-9.]/g, ""); // allow decimal for price
 export const subscriptionTableHeaders = ["Date", "Invoice ID", "Plans", "Amount", "Status"];
@@ -632,4 +756,42 @@ export const popularTags = [
   "Industry News",
   "Best Practices",
   "Technology",
+];
+
+export const nutShellPoints = [
+  {
+    id: 1,
+    title: "Eliminating inefficiencies",
+  },
+  {
+    id: 2,
+    title: "Supporting global expansion",
+  },
+  {
+    id: 3,
+    title: "Increasing visibility and collaboration",
+  },
+];
+
+export const settingsTabs = [
+  {
+    title: "company identity",
+    icon: "/assets/images/identity.svg",
+    href: "",
+  },
+  {
+    title: "Operations & Logistics",
+    icon: "/assets/images/truck.svg",
+    href: "",
+  },
+  {
+    title: "Business Intelligence",
+    icon: "/assets/images/rate.svg",
+    href: "",
+  },
+  {
+    title: "Documentation & Verification",
+    icon: "/assets/images/verification.svg",
+    href: "",
+  },
 ];

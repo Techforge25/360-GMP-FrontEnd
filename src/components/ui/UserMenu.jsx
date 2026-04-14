@@ -12,6 +12,7 @@ import {
   FiChevronDown,
 } from "react-icons/fi";
 import { Card } from "@/components/ui/Card";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const UserMenu = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);

@@ -10,6 +10,10 @@ import { useUser } from "@/context/UserContext";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import CKEditorField from "@/components/ui/CKEditor";
 import { popularTags } from "@/constants/index";
+import { MdKeyboardArrowRight } from "react-icons/md";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { createCommunitySchema } from "@/validations/communities";
 
 export default function CreateCommunityPage() {
   const router = useRouter();
@@ -25,7 +29,7 @@ export default function CreateCommunityPage() {
     purpose: "",
     tags: [],
     rules: "",
-    privacyType: "public",
+    type: "public",
     postingPermissions: "all",
     coverImage: null,
     accentColor: "#3F82EE",
@@ -33,6 +37,36 @@ export default function CreateCommunityPage() {
     region: "",
   });
 
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    watch,
+    control,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(createCommunitySchema),
+    mode: "all",
+    defaultValues: {
+      name: "",
+      logo: null,
+      industry: "",
+      category: "",
+      shortDescription: "",
+      purpose: "",
+      tags: [],
+      rules: "",
+      privacyType: "public",
+      postingPermissions: "all",
+      coverImage: null,
+      accentColor: "#3F82EE",
+      bannerTagline: "",
+      region: "",
+    },
+  });
+
+
+  const tags = watch("tags");
   const [logoPreview, setLogoPreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
 
@@ -42,30 +76,89 @@ export default function CreateCommunityPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAddTag = () => {
-    if (formData.tags.length >= 3) {
-      alert("Maximum 3 tags allowed");
-      return;
-    }
-    if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
-      setFormData((prev) => ({
-        ...prev,
-        tags: [...prev.tags, currentTag.trim()],
-      }));
-      setCurrentTag("");
-    }
-  };
+  // const handleAddTag = () => {
+  //   if (formData.tags.length >= 3) {
+  //     alert("Maximum 3 tags allowed");
+  //     return;
+  //   }
+  //   if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       tags: [...prev.tags, currentTag.trim()],
+  //     }));
+  //     setCurrentTag("");
+  //   }
+  // };
 
-  const handleRemoveTag = (tagToRemove) => {
-    setFormData((prev) => ({
-      ...prev,
-      tags: prev.tags.filter((tag) => tag !== tagToRemove),
-    }));
-  };
+  const handleAddTag = () => {
+  const trimmedTag = currentTag.trim();
+
+  if (tags.length >= 3) {
+    alert("Maximum 3 tags allowed");
+    return;
+  }
+
+  if (!trimmedTag) return;
+
+  // if (!alphaNumericPattern.test(trimmedTag)) {
+  //   alert("Tags can only contain letters, numbers, spaces, and hyphens");
+  //   return;
+  // }
+
+  if (trimmedTag.length < 2 || trimmedTag.length > 30) {
+    alert("Tag must be between 2 and 30 characters");
+    return;
+  }
+
+  if (tags.some((tag) => tag.toLowerCase() === trimmedTag.toLowerCase())) {
+    alert("Duplicate tag not allowed");
+    return;
+  }
+
+  setValue("tags", [...tags, trimmedTag], { shouldValidate: true });
+  setCurrentTag("");
+};
+
+const handleRemoveTag = (tagToRemove) => {
+  setValue(
+    "tags",
+    tags.filter((tag) => tag !== tagToRemove),
+    { shouldValidate: true }
+  );
+};
+
+
+
+
+  // const handleRemoveTag = (tagToRemove) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     tags: prev.tags.filter((tag) => tag !== tagToRemove),
+  //   }));
+  // };
 
   const handleFileUpload = (field, file) => {
     if (file) {
       handleInputChange(field, file);
+      uploadToCloudinary(
+        file,
+        field === "logo" ? "communities/profiles" : "communities/covers",
+      ).then((url) => {
+        handleInputChange(field, url);
+        if (field === "logo") {
+          setValue(field, url, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+          });
+        } else if (field === "coverImage") {
+          setValue(field, url, {
+            shouldValidate: true,
+            shouldDirty: true,
+            shouldTouch: true,
+          });
+        }
+      });
 
       // Create preview
       const reader = new FileReader();
@@ -89,47 +182,31 @@ export default function CreateCommunityPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
+    console.log("Form data to submit:", data);
+    // e.preventDefault();
     setIsSubmitting(true);
 
     try {
       let payload = {
-        name: formData.name,
-        type: formData.privacyType,
-        description: formData.shortDescription,
-        businessId: user?.businessId,
+        name: data.name,
+        type: data.privacyType,
+        description: data.shortDescription,
+        businessId: data?.businessId,
       };
 
       // Add details for all community types
       payload = {
         ...payload,
-        category: formData.category || formData.industry,
-        purpose: formData.purpose,
-        tags: formData.tags,
-        rules: formData.rules,
-        industry: formData.industry,
-        region: formData.region,
+        category: data.category,
+        purpose: data.purpose,
+        tags: data.tags,
+        rules: data.rules,
+        // industry: data.industry,
+        region: data.region,
+        profileImage: data.logo,
+        coverImage: data.coverImage,
       };
-
-      // Upload images to Cloudinary (Universal for all types)
-      if (formData.coverImage instanceof File) {
-        console.log("📤 Uploading cover image to Cloudinary...");
-        const coverImageUrl = await uploadToCloudinary(
-          formData.coverImage,
-          "communities/covers",
-        );
-        payload.coverImage = coverImageUrl;
-        console.log("✅ Cover image uploaded:", coverImageUrl);
-      }
-
-      if (formData.logo instanceof File) {
-        const profileImageUrl = await uploadToCloudinary(
-          formData.logo,
-          "communities/profiles",
-        );
-        payload.profileImage = profileImageUrl;
-      }
 
       const response = await communityAPI.create(payload);
 
@@ -146,8 +223,8 @@ export default function CreateCommunityPage() {
       // Show user-friendly error
       alert(
         error?.response?.data?.message ||
-        error?.message ||
-        "Failed to create community. Please try again.",
+          error?.message ||
+          "Failed to create community. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -166,14 +243,11 @@ export default function CreateCommunityPage() {
           <IoChevronBack className="w-4 h-4" />
           Back
         </Link>
-        <p
-
-          className="text-gray-600 "
-        >
-          Home
-        </p>
-        <span className="text-[#240457]">›</span>
-        <span className="text-[#240457] font-medium">Create Community</span>
+        <p className="text-gray-600 ">Home</p>
+        <span className="text-brand-primary">
+          <MdKeyboardArrowRight className="w-4 h-4" />
+        </span>
+        <span className="text-brand-primary font-medium">Create Community</span>
       </div>
       <div className="relative bg-gradient-to-r from-blue-400 via-blue-300 to-blue-200 overflow-hidden">
         <div className="absolute inset-0 opacity-20">
@@ -181,7 +255,6 @@ export default function CreateCommunityPage() {
         </div>
 
         <div className="relative max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-
           {/* Title */}
           <div>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3">
@@ -200,7 +273,7 @@ export default function CreateCommunityPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form Section */}
           <div className="lg:col-span-2">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Community Info */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-6">
@@ -215,11 +288,15 @@ export default function CreateCommunityPage() {
                   <input
                     type="text"
                     placeholder="eg. Automotive Manufacturing Network"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange("name", e.target.value)}
-                    className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                    required
+                    {...register("name")}
+                    className={`w-full text-black px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 text-base 
+                    ${errors.name ? "border-red-500" : "border-gray-300"}`}
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
                   <p className="text-sm text-gray-500 mt-1">
                     Short, clear and brand-friendly
                   </p>
@@ -279,12 +356,8 @@ export default function CreateCommunityPage() {
                     Industry / Category <span className="text-red-500">*</span>
                   </label>
                   <select
-                    value={formData.industry}
-                    onChange={(e) =>
-                      handleInputChange("industry", e.target.value)
-                    }
+                    {...register("category")}
                     className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                    required
                   >
                     <option value="">Select an industry</option>
                     <option value="Technology">Technology</option>
@@ -296,6 +369,11 @@ export default function CreateCommunityPage() {
                     <option value="Automotive">Automotive</option>
                     <option value="Sports">Sports</option>
                   </select>
+                  {errors.industry && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.industry.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Region */}
@@ -304,10 +382,7 @@ export default function CreateCommunityPage() {
                     Region (Optional)
                   </label>
                   <select
-                    value={formData.region}
-                    onChange={(e) =>
-                      handleInputChange("region", e.target.value)
-                    }
+                  {...register("region")}
                     className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                   >
                     <option value="">Select a region</option>
@@ -318,6 +393,14 @@ export default function CreateCommunityPage() {
                     <option value="Africa">Africa</option>
                     <option value="Australia">Australia</option>
                   </select>
+
+                {
+                  errors.region && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.region.message}
+                    </p>
+                  )
+                }
                 </div>
 
                 {/* Short Description */}
@@ -327,17 +410,18 @@ export default function CreateCommunityPage() {
                   </label>
                   <textarea
                     placeholder="One-line explanation of what is this community about"
-                    value={formData.shortDescription}
-                    onChange={(e) =>
-                      handleInputChange("shortDescription", e.target.value)
-                    }
+                    {...register("shortDescription")}
                     maxLength={120}
                     rows={2}
-                    className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none"
-                    required
+                    className={`w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none ${errors.shortDescription ? "border-red-500" : "border-gray-300"}`}
                   />
+                  {errors.shortDescription && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.shortDescription.message}
+                    </p>
+                  )}
                   <p className="text-sm text-gray-500 mt-1">
-                    {formData.shortDescription.length}/120 characters
+                    {watch("shortDescription").length || 0}/120 characters
                   </p>
                 </div>
               </div>
@@ -354,20 +438,30 @@ export default function CreateCommunityPage() {
                     Community Purpose <span className="text-red-500">*</span>
                   </label>
                 </div>
-                <CKEditorField
-                  value={formData.purpose}
-                  onChange={(val) => {
-                    handleInputChange("purpose", val);
-                  }}
-                  placeholder="Detailed job description..."
-                  maxLength={2000}
+                <Controller
+                  name="purpose"
+                  defaultValue=""
+                  control={control}
+                  render={({ field }) => (
+                    <CKEditorField
+                      value={field.value}
+                      onChange={(val) => field.onChange(val)}
+                      placeholder="Detailed job description..."
+                      maxLength={2000}
+                    />
+                  )}
                 />
+                {errors.purpose && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.purpose.message}
+                  </p>
+                )}
                 <p className="text-sm text-gray-500 mt-1">
                   Minimum 10 characters required
                 </p>
 
                 {/* Tags/Topics */}
-                <div className="mb-6">
+                {/* <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-900 mb-2">
                     Tags / Topics (Optional)
                   </label>
@@ -405,7 +499,6 @@ export default function CreateCommunityPage() {
                     </button>
                   </div>
 
-                  {/* Added Tags */}
                   {formData.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-3">
                       {formData.tags.map((tag) => (
@@ -426,7 +519,6 @@ export default function CreateCommunityPage() {
                     </div>
                   )}
 
-                  {/* Popular Tags */}
                   <div>
                     <p className="text-sm text-gray-600 mb-2">Popular Tags:</p>
                     <div className="flex flex-wrap gap-2">
@@ -454,7 +546,120 @@ export default function CreateCommunityPage() {
                       ))}
                     </div>
                   </div>
-                </div>
+                </div> */}
+
+
+
+
+                <div className="mb-6">
+  <label className="block text-sm font-medium text-gray-900 mb-2">
+    Tags / Topics (Optional)
+  </label>
+
+  <div className="flex gap-2 mb-3">
+    <div className="flex-1 relative">
+      <input
+        type="text"
+        placeholder={
+          tags.length >= 3
+            ? "Maximum tags reached"
+            : "Add a tag and press enter"
+        }
+        value={currentTag}
+        onChange={(e) => setCurrentTag(e.target.value)}
+        disabled={tags.length >= 3}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleAddTag();
+          }
+        }}
+        className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base disabled:bg-gray-50 disabled:cursor-not-allowed"
+      />
+
+      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
+        {tags.length}/3
+      </span>
+    </div>
+
+    <button
+      type="button"
+      onClick={handleAddTag}
+      disabled={tags.length >= 3}
+      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      <FiPlus className="w-5 h-5 text-gray-700" />
+    </button>
+  </div>
+
+  {/* Added Tags */}
+  {tags.length > 0 && (
+    <div className="flex flex-wrap gap-2 mb-3">
+      {tags.map((tag) => (
+        <span
+          key={tag}
+          className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm"
+        >
+          {tag}
+          <button
+            type="button"
+            onClick={() => handleRemoveTag(tag)}
+            className="hover:text-red-600"
+          >
+            <FiX className="w-4 h-4" />
+          </button>
+        </span>
+      ))}
+    </div>
+  )}
+
+  {/* Popular Tags */}
+  <div>
+    <p className="text-sm text-gray-600 mb-2">Popular Tags:</p>
+    <div className="flex flex-wrap gap-2">
+      {popularTags.map((tag) => (
+        <button
+          key={tag}
+          type="button"
+          onClick={() => {
+            if (tags.length >= 3) {
+              alert("Maximum 3 tags allowed");
+              return;
+            }
+
+            if (!tags.includes(tag)) {
+              setValue("tags", [...tags, tag], { shouldValidate: true });
+            }
+          }}
+          disabled={tags.length >= 3}
+          className="px-3 py-1.5 bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-lg text-sm text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {tag}
+        </button>
+      ))}
+    </div>
+  </div>
+
+  {/* Error */}
+  {errors.tags && (
+    <p className="text-red-500 text-sm mt-1">
+      {errors.tags.message}
+    </p>
+  )}
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 {/* Rules & Guidelines */}
                 <div className="flex justify-between items-center mb-2">
@@ -462,14 +667,26 @@ export default function CreateCommunityPage() {
                     Rules & Guidelines <span className="text-red-500">*</span>
                   </label>
                 </div>
-                <CKEditorField
-                  value={formData.rules}
-                  onChange={(val) => {
-                    handleInputChange("rules", val);
-                  }}
-                  placeholder="Rules description..."
-                  maxLength={2000}
+                <Controller
+                  name="rules"
+                  defaultValue=""
+                  control={control}
+                  render={({ field }) => (
+                    <CKEditorField
+                      value={field.value}
+                      onChange={(val) => {
+                        field.onChange(val);
+                      }}
+                      placeholder="Rules description..."
+                      maxLength={2000}
+                    />
+                  )}
                 />
+                {errors.rules && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.rules.message}
+                  </p>
+                )}
                 <div className="mt-1">
                   <p className="text-sm text-gray-500">
                     Minimum 10 characters required
@@ -495,10 +712,8 @@ export default function CreateCommunityPage() {
                         type="radio"
                         name="privacy"
                         value="public"
-                        checked={formData.privacyType === "public"}
-                        onChange={(e) =>
-                          handleInputChange("privacyType", e.target.value)
-                        }
+                        checked={watch("type") === "public"}
+                        {...register("type")}
                         className="mt-1 w-5 h-5 text-blue-600"
                       />
                       <div className="flex-1">
@@ -520,10 +735,8 @@ export default function CreateCommunityPage() {
                         type="radio"
                         name="privacy"
                         value="private"
-                        checked={formData.privacyType === "private"}
-                        onChange={(e) =>
-                          handleInputChange("privacyType", e.target.value)
-                        }
+                        checked={watch("type") === "private"}
+                        {...register("type")}
                         className="mt-1 w-5 h-5 text-blue-600"
                       />
                       <div className="flex-1">
@@ -545,10 +758,8 @@ export default function CreateCommunityPage() {
                         type="radio"
                         name="privacy"
                         value="featured"
-                        checked={formData.privacyType === "featured"}
-                        onChange={(e) =>
-                          handleInputChange("privacyType", e.target.value)
-                        }
+                        checked={watch("type") === "featured"}
+                        {...register("type")}
                         className="mt-1 w-5 h-5 text-blue-600"
                       />
                       <div className="flex-1">
@@ -564,6 +775,11 @@ export default function CreateCommunityPage() {
                       </div>
                     </label>
                   </div>
+                  {errors.type && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.type.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Posting Permissions */}
@@ -572,10 +788,7 @@ export default function CreateCommunityPage() {
                     Posting Permissions <span className="text-red-500">*</span>
                   </label>
                   <select
-                    value={formData.postingPermissions}
-                    onChange={(e) =>
-                      handleInputChange("postingPermissions", e.target.value)
-                    }
+                    {...register("postingPermissions")}
                     className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                   >
                     <option value="all">All members</option>
@@ -634,6 +847,11 @@ export default function CreateCommunityPage() {
                       </label>
                     </div>
                   )}
+                  {errors.coverImage && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.coverImage.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Highlight Color */}
@@ -645,19 +863,13 @@ export default function CreateCommunityPage() {
                     <div className="relative">
                       <input
                         type="color"
-                        value={formData.accentColor}
-                        onChange={(e) =>
-                          handleInputChange("accentColor", e.target.value)
-                        }
+                        {...register("accentColor")}
                         className="w-12 text-black h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
                       />
                     </div>
                     <input
                       type="text"
-                      value={formData.accentColor}
-                      onChange={(e) =>
-                        handleInputChange("accentColor", e.target.value)
-                      }
+                      {...register("accentColor")}
                       className="flex-1 text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       placeholder="#3F82EE"
                     />
@@ -672,10 +884,7 @@ export default function CreateCommunityPage() {
                   <input
                     type="text"
                     placeholder="A catchy tagline for your community header"
-                    value={formData.bannerTagline}
-                    onChange={(e) =>
-                      handleInputChange("bannerTagline", e.target.value)
-                    }
+                    {...register("bannerTagline")}
                     className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                   />
                 </div>
@@ -734,5 +943,3 @@ export default function CreateCommunityPage() {
     </div>
   );
 }
-
-
