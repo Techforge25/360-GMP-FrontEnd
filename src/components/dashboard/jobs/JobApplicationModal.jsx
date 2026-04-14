@@ -180,10 +180,11 @@ export default function JobApplicationModal({
 
       <div className="space-y-2">
         <label className="text-base font-medium text-text-primary">
-          How many year of experience
+          Years of experience
         </label>
         <Input
           className="text-black"
+          type="number"
           placeholder="4"
           value={formData.experience}
           onChange={(e) =>
@@ -219,6 +220,7 @@ export default function JobApplicationModal({
         </label>
         <Input
           className="text-black"
+          type="number"
           placeholder="$1000-1500"
           value={formData.salaryExpectation}
           onChange={(e) =>
