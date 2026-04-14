@@ -4,23 +4,17 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   FiSearch,
-  FiMapPin,
   FiBriefcase,
   FiUsers,
   FiBox,
-  FiShoppingBag,
   FiArrowRight,
 } from "react-icons/fi";
 import { BsBuilding } from "react-icons/bs";
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
 } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import businessProfileAPI from "@/services/businessProfileAPI";
 import productAPI from "@/services/productAPI";
 import jobAPI from "@/services/jobAPI";
@@ -131,9 +125,9 @@ function SearchResults() {
 
   const tabs = [
     { id: "all", label: "All Results", icon: FiSearch },
-    { id: "products", label: "Products", icon: FiBox },
-    { id: "communities", label: "Communities", icon: FiUsers },
-    { id: "jobs", label: "Jobs", icon: FiBriefcase },
+    // { id: "products", label: "Products", icon: FiBox },
+    // { id: "communities", label: "Communities", icon: FiUsers },
+    // { id: "jobs", label: "Jobs", icon: FiBriefcase },
   ];
 
   const handleTabChange = (tabId) => {
@@ -230,7 +224,7 @@ function SearchResults() {
                   <div className="flex items-center gap-2">
                     <Link
                       href={
-                        typeof linkPrefix === "function" 
+                        typeof linkPrefix === "function"
                           ? linkPrefix(item)
                           : `${linkPrefix}/${item._id}`
                       }

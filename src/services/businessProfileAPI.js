@@ -23,6 +23,19 @@ class BusinessProfileAPI {
     });
   }
 
+  // getCommunitiesSearch
+  async getSearchData(businessId, tab) {
+    // If params contain arrays (like industries), we might need to join them
+    // But BusinessesPageContent will handle joining for regex fields
+    const url = tab === "products" ? `/businessProfile/${businessId}/products` : tab === "jobs" ? `/businessProfile/${businessId}/jobs` : `/businessProfile/${businessId}/communities`;
+    return await api.get({
+      url,
+      activateLoader: true,
+      enableSuccessMessage: false,
+      enableErrorMessage: true,
+    });
+  }
+
   /**
    * Get a single business profile by ID
    */

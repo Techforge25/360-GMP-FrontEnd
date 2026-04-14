@@ -16,7 +16,7 @@ class ProductAPI {
     });
   }
 
-  async getBusinessProducts(params = {}, businessId) {
+  async getBusinessProducts(params = {}) {
     const queryParams = new URLSearchParams(params).toString();
     const url = queryParams ? `/products/business/?${queryParams}` : "/products/business";
 
