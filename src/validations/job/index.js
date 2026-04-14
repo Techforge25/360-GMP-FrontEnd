@@ -68,3 +68,33 @@ export const createJobSchema = Yup.object().shape({
     .nullable()
     .transform(value => (value === "" ? null : value)),
 });
+
+
+export const createJobApplicationSchema = Yup.object({
+  resumeUrl: Yup.string()
+    .trim()
+    .url("Resume must be a valid URL")
+    .required("Resume is required"),
+
+  portfolioLink: Yup.string()
+    .trim()
+    .nullable()
+    .notRequired()
+    .url("Portfolio link must be a valid URL"),
+
+  yearsOfExperience: Yup.number()
+    .min(0, "Years of experience must be 0 or more")
+    .nullable()
+    .notRequired(),
+
+  immediateJoiningStatus: Yup.string()
+    .oneOf(["Yes", "No"], "Invalid value")
+    .nullable()
+    .notRequired(),
+
+  expectedSalary: Yup.number()
+    .integer("Salary must be an integer")
+    .positive("Salary must be positive")
+    .nullable()
+    .notRequired(),
+});

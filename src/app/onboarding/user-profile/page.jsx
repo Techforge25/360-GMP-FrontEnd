@@ -1993,6 +1993,17 @@ const Step3 = ({ formData, handleChange }) => (
       </div>
 
       {/* Validation message */}
+      <div>
+        {
+          formData.minSalary < 0 &&(
+            <p className="text-sm text-red-500 font-medium mt-1">
+            Maximum salary cannot be less than minimum salary
+          </p>
+          )
+        }
+
+
+      </div>
       {formData.minSalary &&
         formData.maxSalary &&
         Number(formData.maxSalary) < Number(formData.minSalary) && (

@@ -480,6 +480,7 @@ const AddProductModal = ({ isOpen, onClose, onSuccess, editProduct }) => {
             onChange={handleStandardInputChange}
             className="w-full text-black text-base p-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
           >
+            <option value="">Select Category</option>
             {MARKETPLACE_PRODUCT_CATEGORIES.map((cat, index) => {
               return (
                 <option defaultValue={"Sports & Fitness"} key={index} value={cat}>{cat}</option>
