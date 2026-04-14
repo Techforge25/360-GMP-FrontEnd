@@ -6,6 +6,9 @@ import jobAPI from "@/services/jobAPI";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import dynamic from "next/dynamic";
 import CKEditorField from "@/components/ui/CKEditor";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { createJobSchema } from "@/validations/job";
 
 const SlateEditor = dynamic(() => import("@/components/ui/SlateEditor"), {
   ssr: false,
@@ -72,6 +75,35 @@ export default function CreateJobModal({
     description: "",
   });
 
+  const {
+    setValue,
+    register,
+    handleSubmit,
+    watch,
+    isValid,
+    control,
+    formState: { errors, isSubmitted },
+  } = useForm({
+    resolver: yupResolver(createJobSchema),
+    mode: "all",
+    defaultValues: {
+      jobTitle: "",
+      jobCategory: "",
+      customCategory: "",
+      experienceLevel: "",
+      employmentType: "",
+      location: {
+        country: "",
+        city: "",
+      },
+      salaryMin: "",
+      salaryMax: "",
+      period: "Month",
+      postingDuration: "30 Days",
+      description: "",
+    },
+  });
+
   if (!isOpen) return null;
 
   const handleInputChange = (field, value) => {
@@ -101,34 +133,14 @@ export default function CreateJobModal({
     }));
   };
 
-  const handleEmploymentTypeToggle = (typeLabel) => {
-    setFormData((prev) => ({
-      ...prev,
-      employmentType: prev.employmentType === typeLabel ? "" : typeLabel,
-    }));
+  const handleEmploymentTypeToggle = (value) => {
+    setValue("employmentType", value, { shouldValidate: true });
   };
 
-  const handleSubmit = async () => {
-    // Basic Validation
-    if (
-      !formData.jobTitle ||
-      !formData.jobCategory ||
-      (formData.jobCategory === "Other" && !formData.customCategory) ||
-      descLength === 0 ||
-      !formData.employmentType ||
-      !formData.location.country ||
-      !formData.location.city ||
-      !formData.salary.min ||
-      !formData.salary.max
-    ) {
-      alert("Please fill in all required fields.");
-      return;
-    }
+  // console.log("Form Errors:", isSubmitted);
 
-    if (descLength > 5000) {
-      alert("Job description cannot exceed 5000 characters.");
-      return;
-    }
+  const onSubmit = async (data) => {
+    console.log("Form Data to Submit:", data);
 
     if (!businessId) {
       alert("Business ID is missing. Please reload the page.");
@@ -137,27 +149,17 @@ export default function CreateJobModal({
 
     try {
       setLoading(true);
-
-      // Transform data for API if needed.
-      // Assuming backend expects flat structure or specific nested objects.
-      // Based on previous conversations, schema has:
-      // jobTitle, jobCategory, employmentType (String), experienceLevel, description,
-      // salaryMin, salaryMax, location: { country, city }
-
       const payload = {
-        businessId, // Added businessId to payload
-        jobTitle: formData.jobTitle,
+        businessId,
+        jobTitle: data.jobTitle,
         jobCategory:
-          formData.jobCategory === "Other"
-            ? formData.customCategory
-            : formData.jobCategory,
-        employmentType: formData.employmentType,
-        experienceLevel: formData.experienceLevel,
-        description: formData.description,
-        salaryMin: Number(formData.salary.min),
-        salaryMax: Number(formData.salary.max),
-        location: formData.location,
-        // postingDuration is likely used for expiration logic on backend or just stored
+          data.jobCategory === "Other" ? data.customCategory : data.jobCategory,
+        employmentType: data.employmentType,
+        experienceLevel: data.experienceLevel,
+        description: data.description,
+        salaryMin: Number(data.salaryMin),
+        salaryMax: Number(data.salaryMax),
+        location: data.location,
       };
 
       const response = await jobAPI.create(payload);
@@ -176,7 +178,10 @@ export default function CreateJobModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h2 className="text-xl font-bold text-gray-900">Create a job</h2>
@@ -198,10 +203,14 @@ export default function CreateJobModal({
             <input
               type="text"
               placeholder="e.g Lead Supply Chain Analyst"
-              value={formData.jobTitle}
-              onChange={(e) => handleInputChange("jobTitle", e.target.value)}
-              className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none transition-all"
+              {...register("jobTitle")}
+              className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none transition-all"
             />
+            {errors.jobTitle && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.jobTitle.message}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -213,10 +222,7 @@ export default function CreateJobModal({
               <div className="space-y-3">
                 <div className="relative">
                   <select
-                    value={formData.jobCategory}
-                    onChange={(e) =>
-                      handleInputChange("jobCategory", e.target.value)
-                    }
+                    {...register("jobCategory")}
                     className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
                   >
                     <option value="" disabled>
@@ -247,17 +253,20 @@ export default function CreateJobModal({
                   </div>
                 </div>
 
-                {formData.jobCategory === "Other" && (
+                {watch("jobCategory") === "Other" && (
                   <div className="animate-in slide-in-from-top-2 duration-200">
                     <input
                       type="text"
                       placeholder="Enter custom category"
-                      value={formData.customCategory}
-                      onChange={(e) =>
-                        handleInputChange("customCategory", e.target.value)
-                      }
+                      {...register("customCategory")}
                       className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none transition-all"
                     />
+
+                    {errors.customCategory && (
+                      <p className="text-sm text-red-500 mt-1">
+                        {errors.customCategory.message}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
@@ -270,10 +279,7 @@ export default function CreateJobModal({
               </label>
               <div className="relative">
                 <select
-                  value={formData.experienceLevel}
-                  onChange={(e) =>
-                    handleInputChange("experienceLevel", e.target.value)
-                  }
+                  {...register("experienceLevel")}
                   className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2E1065] focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
                 >
                   <option value="" disabled>
@@ -313,7 +319,7 @@ export default function CreateJobModal({
             </label>
             <div className="flex flex-wrap gap-3">
               {EMPLOYMENT_TYPES.map((type) => {
-                const isSelected = formData.employmentType === type.label;
+                const isSelected = watch("employmentType") === type.label;
                 return (
                   <button
                     key={type.id}
@@ -339,6 +345,11 @@ export default function CreateJobModal({
                   </button>
                 );
               })}
+              {errors.employmentType && (
+                <p className="w-full text-sm text-red-500 mt-1">
+                  {errors.employmentType.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -349,10 +360,17 @@ export default function CreateJobModal({
                 Country <span className="text-red-500">*</span>
               </label>
               <CountrySelect
-                value={formData.location.country}
-                onChange={(value) => handleLocationChange("country", value)}
+                value={watch("location.country")}
+                onChange={(value) =>
+                  setValue("location.country", value, { shouldValidate: true })
+                }
                 className="h-12 text-black border-gray-200 focus:ring-2 focus:ring-brand-job-create"
               />
+              {errors.location?.country && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.location.country.message}
+                </p>
+              )}
             </div>
 
             {/* City */}
@@ -363,10 +381,14 @@ export default function CreateJobModal({
               <input
                 type="text"
                 placeholder="e.g Los Angeles"
-                value={formData.location.city}
-                onChange={(e) => handleLocationChange("city", e.target.value)}
+                {...register("location.city")}
                 className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none transition-all"
               />
+              {errors.location?.city && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.location.city.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -383,11 +405,15 @@ export default function CreateJobModal({
                 <input
                   type="number"
                   placeholder="700"
-                  value={formData.salary.min}
-                  onChange={(e) => handleSalaryChange("min", e.target.value)}
+                  {...register("salaryMin")}
                   className="w-full text-black h-12 pl-8 pr-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none transition-all"
                 />
               </div>
+              {errors.salaryMin && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.salaryMin.message}
+                </p>
+              )}
             </div>
 
             {/* Salary Range (Max) */}
@@ -402,19 +428,22 @@ export default function CreateJobModal({
                 <input
                   type="number"
                   placeholder="1200"
-                  value={formData.salary.max}
-                  onChange={(e) => handleSalaryChange("max", e.target.value)}
+                  {...register("salaryMax")}
                   className="w-full text-black h-12 pl-8 pr-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none transition-all"
                 />
               </div>
+              {errors.salaryMax && (
+                <p className="text-sm text-red-500 mt-1">
+                  {errors.salaryMax.message}
+                </p>
+              )}
             </div>
 
             {/* Salary Period */}
             <div className="space-y-2">
               <div className="relative">
                 <select
-                  value={formData.salary.period}
-                  onChange={(e) => handleSalaryChange("period", e.target.value)}
+                  {...register("period")}
                   className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
                 >
                   {SALARY_PERIODS.map((period) => (
@@ -440,6 +469,11 @@ export default function CreateJobModal({
                     />
                   </svg>
                 </div>
+                {errors.salaryPeriod && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.salaryPeriod.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -451,10 +485,7 @@ export default function CreateJobModal({
             </label>
             <div className="relative">
               <select
-                value={formData.postingDuration}
-                onChange={(e) =>
-                  handleInputChange("postingDuration", e.target.value)
-                }
+                {...register("postingDuration")}
                 className="w-full text-black h-12 px-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-brand-job-create focus:border-transparent outline-none appearance-none bg-white cursor-pointer"
               >
                 {POSTING_DURATIONS.map((dur) => (
@@ -488,22 +519,25 @@ export default function CreateJobModal({
               <label className="text-sm font-medium text-gray-700">
                 Job Description <span className="text-red-500">*</span>
               </label>
-              <span
-                className={cn(
-                  "text-sm font-medium text-gray-400",
-                )}
-              >
-                {descLength}/2000
+              <span className={cn("text-sm font-medium text-gray-400")}>
+                {watch("description")?.length || 0}/2000
               </span>
             </div>
-            <CKEditorField
-              value={formData.description}
-              onChange={(val) => {
-                handleInputChange("description", val);
-              }} onLengthChange={(len) => setDescLength(len)}
-              placeholder="Detailed job description..."
-              maxLength={2000}
+
+            <Controller
+              name="description"
+              control={control}
+              defaultValue={""}
+              render={({ field }) => (
+                <CKEditorField
+                  value={field.value}
+                  onChange={(val) => field.onChange(val)}
+                  placeholder="Detailed job description..."
+                  maxLength={2000}
+                />
+              )}
             />
+
             {descLength > 2000 && (
               <p className="text-sm text-red-500 mt-1">
                 Description cannot exceed 2000 characters
@@ -519,11 +553,11 @@ export default function CreateJobModal({
             <p className="text-sm text-gray-500">
               You are posting{" "}
               <span className="text-gray-900 font-medium">
-                {formData.jobTitle || "[Job Title]"}
+                {watch("jobTitle") || "[Job Title]"}
               </span>{" "}
               in{" "}
               <span className="text-gray-900 font-medium">
-                {formData.location.city || "[Location]"}
+                {watch("location")?.city || "[Location]"}
               </span>
               . Status: Pending Review upon submission.
             </p>
@@ -537,7 +571,7 @@ export default function CreateJobModal({
               Cancel
             </button>
             <button
-              onClick={handleSubmit}
+              type="submit"
               disabled={loading}
               className="px-6 h-12 rounded-lg bg-brand-job-create text-white font-medium hover:bg-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -545,7 +579,7 @@ export default function CreateJobModal({
             </button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
