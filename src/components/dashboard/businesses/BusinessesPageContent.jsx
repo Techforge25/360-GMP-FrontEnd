@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { CiMenuBurger } from "react-icons/ci";
 import { FiX } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
+import { useUserRole } from "@/context/UserContext";
 
 export default function BusinessesPageContent() {
   const [businesses, setBusinesses] = useState([]);
@@ -19,6 +20,7 @@ export default function BusinessesPageContent() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
   const [registeredCountries, setRegisteredCountries] = useState([]);
+  const { searchedKey, setSearchedKey } = useUserRole()
 
   // Auto-loader State
   const [page, setPage] = useState(1);
@@ -47,7 +49,7 @@ export default function BusinessesPageContent() {
     const params = {
       page: targetPage,
       limit: itemsPerPage,
-      search: query,
+      search: searchedKey !== "" ? searchedKey : query,
       businessType: location,
       country: filters.countries,
       // industry: filters.industries.length > 0 ? filters.industries.join("|") : undefined,
@@ -176,6 +178,7 @@ export default function BusinessesPageContent() {
     setPage(1);
     setHasMore(true);
     fetchInitialBusinessProfiles();
+    setSearchedKey("")
   };
 
   const clearFilters = () => {

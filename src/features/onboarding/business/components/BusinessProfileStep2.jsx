@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/Button";
 import { useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import { SHIPPING_OPTIONS } from "@/constants/index";
+import { REGIONS, SHIPPING_OPTIONS } from "@/constants/index";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { UploadField } from "@/components/ui/UploadField";
 export default function BusinessProfileStep2({
@@ -14,7 +14,6 @@ export default function BusinessProfileStep2({
   setValue,
   getValues
 }) {
-  const REGIONS = ["North America", "Europe", "Middle East", "Asia"];
   const logo = watch("logo")
   const [uploading, setUploading] = useState(null);
   const [autoIndex, setAutoIndex] = useState(null);

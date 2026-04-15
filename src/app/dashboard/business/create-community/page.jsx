@@ -9,33 +9,15 @@ import communityAPI from "@/services/communityAPI";
 import { useUser } from "@/context/UserContext";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import CKEditorField from "@/components/ui/CKEditor";
-import { popularTags } from "@/constants/index";
+import { BUSINESS_TYPE_OPTIONS, popularTags, REGIONS } from "@/constants/index";
 import { MdKeyboardArrowRight } from "react-icons/md";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createCommunitySchema } from "@/validations/communities";
 
 export default function CreateCommunityPage() {
-  const router = useRouter();
-  const { user } = useUser();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    logo: null,
-    industry: "",
-    category: "",
-    shortDescription: "",
-    purpose: "",
-    tags: [],
-    rules: "",
-    type: "public",
-    postingPermissions: "all",
-    coverImage: null,
-    accentColor: "#3F82EE",
-    bannerTagline: "",
-    region: "",
-  });
+  const router = useRouter()
 
   const {
     setValue,
@@ -43,38 +25,30 @@ export default function CreateCommunityPage() {
     handleSubmit,
     watch,
     control,
+    getValues,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(createCommunitySchema),
     mode: "all",
     defaultValues: {
       name: "",
-      logo: null,
-      industry: "",
       category: "",
-      shortDescription: "",
+      type: "public",
+      description: "",
       purpose: "",
       tags: [],
       rules: "",
-      privacyType: "public",
-      postingPermissions: "all",
       coverImage: null,
-      accentColor: "#3F82EE",
-      bannerTagline: "",
+      profileImage: null,
+      industry: "",
       region: "",
     },
   });
 
-
-  const tags = watch("tags");
+  const tags = getValues("tags");
   const [logoPreview, setLogoPreview] = useState(null);
   const [coverPreview, setCoverPreview] = useState(null);
-
   const [currentTag, setCurrentTag] = useState("");
-
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
 
   // const handleAddTag = () => {
   //   if (formData.tags.length >= 3) {
@@ -91,44 +65,38 @@ export default function CreateCommunityPage() {
   // };
 
   const handleAddTag = () => {
-  const trimmedTag = currentTag.trim();
+    const trimmedTag = currentTag.trim();
 
-  if (tags.length >= 3) {
-    alert("Maximum 3 tags allowed");
-    return;
-  }
+    console.log(tags, "current tag")
 
-  if (!trimmedTag) return;
+    if (tags.length >= 3) {
+      alert("Maximum 3 tags allowed");
+      return;
+    }
 
-  // if (!alphaNumericPattern.test(trimmedTag)) {
-  //   alert("Tags can only contain letters, numbers, spaces, and hyphens");
-  //   return;
-  // }
+    if (!trimmedTag) return;
 
-  if (trimmedTag.length < 2 || trimmedTag.length > 30) {
-    alert("Tag must be between 2 and 30 characters");
-    return;
-  }
+    if (trimmedTag.length < 2 || trimmedTag.length > 30) {
+      alert("Tag must be between 2 and 30 characters");
+      return;
+    }
 
-  if (tags.some((tag) => tag.toLowerCase() === trimmedTag.toLowerCase())) {
-    alert("Duplicate tag not allowed");
-    return;
-  }
+    if (tags.some((tag) => tag.toLowerCase() === trimmedTag.toLowerCase())) {
+      alert("Duplicate tag not allowed");
+      return;
+    }
 
-  setValue("tags", [...tags, trimmedTag], { shouldValidate: true });
-  setCurrentTag("");
-};
+    setValue("tags", [...tags, trimmedTag], { shouldValidate: true });
+    setCurrentTag("");
+  };
 
-const handleRemoveTag = (tagToRemove) => {
-  setValue(
-    "tags",
-    tags.filter((tag) => tag !== tagToRemove),
-    { shouldValidate: true }
-  );
-};
-
-
-
+  const handleRemoveTag = (tagToRemove) => {
+    setValue(
+      "tags",
+      tags.filter((tag) => tag !== tagToRemove),
+      { shouldValidate: true }
+    );
+  };
 
   // const handleRemoveTag = (tagToRemove) => {
   //   setFormData((prev) => ({
@@ -139,13 +107,11 @@ const handleRemoveTag = (tagToRemove) => {
 
   const handleFileUpload = (field, file) => {
     if (file) {
-      handleInputChange(field, file);
       uploadToCloudinary(
         file,
-        field === "logo" ? "communities/profiles" : "communities/covers",
+        field === "profileImage" ? "communities/profiles" : "communities/covers",
       ).then((url) => {
-        handleInputChange(field, url);
-        if (field === "logo") {
+        if (field === "profileImage") {
           setValue(field, url, {
             shouldValidate: true,
             shouldDirty: true,
@@ -160,10 +126,9 @@ const handleRemoveTag = (tagToRemove) => {
         }
       });
 
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
-        if (field === "logo") {
+        if (field === "profileImage") {
           setLogoPreview(reader.result);
         } else if (field === "coverImage") {
           setCoverPreview(reader.result);
@@ -174,8 +139,8 @@ const handleRemoveTag = (tagToRemove) => {
   };
 
   const handleRemoveFile = (field) => {
-    handleInputChange(field, null);
-    if (field === "logo") {
+    // handleInputChange(field, null);
+    if (field === "profileImage") {
       setLogoPreview(null);
     } else if (field === "coverImage") {
       setCoverPreview(null);
@@ -187,28 +152,31 @@ const handleRemoveTag = (tagToRemove) => {
     // e.preventDefault();
     setIsSubmitting(true);
 
+    const newData = {
+      ...data,
+      industry: getValues("industry")
+    }
+
     try {
-      let payload = {
-        name: data.name,
-        type: data.privacyType,
-        description: data.shortDescription,
-        businessId: data?.businessId,
-      };
+      // let payload = {
+      //   name: data.name,
+      //   type: data.type,
+      //   description: data.shortDescription,
+      //   businessId: data?.businessId,
+      // };
+      // payload = {
+      //   ...payload,
+      //   category: data.category,
+      //   purpose: data.purpose,
+      //   tags: data.tags,
+      //   rules: data.rules,
+      //   // industry: data.industry,
+      //   region: data.region,
+      //   profileImage: data.logo,
+      //   coverImage: data.coverImage,
+      // };
 
-      // Add details for all community types
-      payload = {
-        ...payload,
-        category: data.category,
-        purpose: data.purpose,
-        tags: data.tags,
-        rules: data.rules,
-        // industry: data.industry,
-        region: data.region,
-        profileImage: data.logo,
-        coverImage: data.coverImage,
-      };
-
-      const response = await communityAPI.create(payload);
+      const response = await communityAPI.create(newData);
 
       if (response.success) {
         router.push("/dashboard/business/communities");
@@ -223,8 +191,8 @@ const handleRemoveTag = (tagToRemove) => {
       // Show user-friendly error
       alert(
         error?.response?.data?.message ||
-          error?.message ||
-          "Failed to create community. Please try again.",
+        error?.message ||
+        "Failed to create community. Please try again.",
       );
     } finally {
       setIsSubmitting(false);
@@ -316,7 +284,7 @@ const handleRemoveTag = (tagToRemove) => {
                       />
                       <button
                         type="button"
-                        onClick={() => handleRemoveFile("logo")}
+                        onClick={() => handleRemoveFile("profileImage")}
                         className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                         title="Remove image"
                       >
@@ -331,7 +299,7 @@ const handleRemoveTag = (tagToRemove) => {
                         className="hidden"
                         accept="image/*"
                         onChange={(e) =>
-                          handleFileUpload("logo", e.target.files[0])
+                          handleFileUpload("profileImage", e.target.files[0])
                         }
                       />
                       <label htmlFor="logo-upload" className="cursor-pointer">
@@ -360,14 +328,11 @@ const handleRemoveTag = (tagToRemove) => {
                     className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                   >
                     <option value="">Select an industry</option>
-                    <option value="Technology">Technology</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Logistics">Logistics</option>
-                    <option value="Automotive">Automotive</option>
-                    <option value="Sports">Sports</option>
+                    {BUSINESS_TYPE_OPTIONS.map((busType, index) => {
+                      return (
+                        <option value={busType} key={index}>{busType}</option>
+                      )
+                    })}
                   </select>
                   {errors.industry && (
                     <p className="text-red-500 text-sm mt-1">
@@ -382,25 +347,23 @@ const handleRemoveTag = (tagToRemove) => {
                     Region (Optional)
                   </label>
                   <select
-                  {...register("region")}
+                    {...register("region")}
                     className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                   >
                     <option value="">Select a region</option>
-                    <option value="Asia">Asia</option>
-                    <option value="Europe">Europe</option>
-                    <option value="North America">North America</option>
-                    <option value="South America">South America</option>
-                    <option value="Africa">Africa</option>
-                    <option value="Australia">Australia</option>
+                    {REGIONS.map((region, index) => {
+                      return (
+                        <option value={region} key={index}>{region}</option>
+                      )
+                    })}
                   </select>
 
-                {
-                  errors.region && (
+                  {errors.region && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors.region.message}
                     </p>
                   )
-                }
+                  }
                 </div>
 
                 {/* Short Description */}
@@ -410,18 +373,18 @@ const handleRemoveTag = (tagToRemove) => {
                   </label>
                   <textarea
                     placeholder="One-line explanation of what is this community about"
-                    {...register("shortDescription")}
+                    {...register("description")}
                     maxLength={120}
                     rows={2}
-                    className={`w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none ${errors.shortDescription ? "border-red-500" : "border-gray-300"}`}
+                    className={`w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base resize-none ${errors.description ? "border-red-500" : "border-gray-300"}`}
                   />
-                  {errors.shortDescription && (
+                  {errors.description && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.shortDescription.message}
+                      {errors.description.message}
                     </p>
                   )}
                   <p className="text-sm text-gray-500 mt-1">
-                    {watch("shortDescription").length || 0}/120 characters
+                    {watch("description").length || 0}/120 characters
                   </p>
                 </div>
               </div>
@@ -548,118 +511,102 @@ const handleRemoveTag = (tagToRemove) => {
                   </div>
                 </div> */}
 
-
-
-
                 <div className="mb-6">
-  <label className="block text-sm font-medium text-gray-900 mb-2">
-    Tags / Topics (Optional)
-  </label>
+                  <label className="block text-sm font-medium text-gray-900 mb-2">
+                    Tags / Topics (Optional)
+                  </label>
 
-  <div className="flex gap-2 mb-3">
-    <div className="flex-1 relative">
-      <input
-        type="text"
-        placeholder={
-          tags.length >= 3
-            ? "Maximum tags reached"
-            : "Add a tag and press enter"
-        }
-        value={currentTag}
-        onChange={(e) => setCurrentTag(e.target.value)}
-        disabled={tags.length >= 3}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleAddTag();
-          }
-        }}
-        className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base disabled:bg-gray-50 disabled:cursor-not-allowed"
-      />
+                  <div className="flex gap-2 mb-3">
+                    <div className="flex-1 relative">
+                      <input
+                        type="text"
+                        placeholder={
+                          tags.length >= 3
+                            ? "Maximum tags reached"
+                            : "Add a tag and press enter"
+                        }
+                        value={currentTag}
+                        onChange={(e) => setCurrentTag(e.target.value)}
+                        disabled={tags.length >= 3}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddTag();
+                          }
+                        }}
+                        className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base disabled:bg-gray-50 disabled:cursor-not-allowed"
+                      />
 
-      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
-        {tags.length}/3
-      </span>
-    </div>
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">
+                        {tags.length}/3
+                      </span>
+                    </div>
 
-    <button
-      type="button"
-      onClick={handleAddTag}
-      disabled={tags.length >= 3}
-      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      <FiPlus className="w-5 h-5 text-gray-700" />
-    </button>
-  </div>
+                    <button
+                      type="button"
+                      onClick={handleAddTag}
+                      disabled={tags.length >= 3}
+                      className="px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <FiPlus className="w-5 h-5 text-gray-700" />
+                    </button>
+                  </div>
 
-  {/* Added Tags */}
-  {tags.length > 0 && (
-    <div className="flex flex-wrap gap-2 mb-3">
-      {tags.map((tag) => (
-        <span
-          key={tag}
-          className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm"
-        >
-          {tag}
-          <button
-            type="button"
-            onClick={() => handleRemoveTag(tag)}
-            className="hover:text-red-600"
-          >
-            <FiX className="w-4 h-4" />
-          </button>
-        </span>
-      ))}
-    </div>
-  )}
+                  {/* Added Tags */}
+                  {tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm"
+                        >
+                          {tag}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveTag(tag)}
+                            className="hover:text-red-600"
+                          >
+                            <FiX className="w-4 h-4" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
-  {/* Popular Tags */}
-  <div>
-    <p className="text-sm text-gray-600 mb-2">Popular Tags:</p>
-    <div className="flex flex-wrap gap-2">
-      {popularTags.map((tag) => (
-        <button
-          key={tag}
-          type="button"
-          onClick={() => {
-            if (tags.length >= 3) {
-              alert("Maximum 3 tags allowed");
-              return;
-            }
+                  {/* Popular Tags */}
+                  <div>
+                    <p className="text-sm text-gray-600 mb-2">Popular Tags:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {popularTags.map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() => {
+                            if (tags.length >= 3) {
+                              alert("Maximum 3 tags allowed");
+                              return;
+                            }
 
-            if (!tags.includes(tag)) {
-              setValue("tags", [...tags, tag], { shouldValidate: true });
-            }
-          }}
-          disabled={tags.length >= 3}
-          className="px-3 py-1.5 bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-lg text-sm text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {tag}
-        </button>
-      ))}
-    </div>
-  </div>
+                            if (!tags.includes(tag)) {
+                              setValue("tags", [...tags, tag], { shouldValidate: true });
+                            }
+                          }}
+                          disabled={tags.length >= 3}
+                          className="px-3 py-1.5 bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 rounded-lg text-sm text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-  {/* Error */}
-  {errors.tags && (
-    <p className="text-red-500 text-sm mt-1">
-      {errors.tags.message}
-    </p>
-  )}
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+                  {/* Error */}
+                  {errors.tags && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.tags.message}
+                    </p>
+                  )}
+                </div>
 
                 {/* Rules & Guidelines */}
                 <div className="flex justify-between items-center mb-2">
@@ -781,21 +728,6 @@ const handleRemoveTag = (tagToRemove) => {
                     </p>
                   )}
                 </div>
-
-                {/* Posting Permissions */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Posting Permissions <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    {...register("postingPermissions")}
-                    className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                  >
-                    <option value="all">All members</option>
-                    <option value="moderators">Moderators only</option>
-                    <option value="approved">Approved members</option>
-                  </select>
-                </div>
               </div>
 
               {/* Community Appearance */}
@@ -852,41 +784,6 @@ const handleRemoveTag = (tagToRemove) => {
                       {errors.coverImage.message}
                     </p>
                   )}
-                </div>
-
-                {/* Highlight Color */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Highlight Color / Accent Color (Optional)
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <input
-                        type="color"
-                        {...register("accentColor")}
-                        className="w-12 text-black h-12 rounded-lg border-2 border-gray-300 cursor-pointer"
-                      />
-                    </div>
-                    <input
-                      type="text"
-                      {...register("accentColor")}
-                      className="flex-1 text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                      placeholder="#3F82EE"
-                    />
-                  </div>
-                </div>
-
-                {/* Banner Tagline */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-900 mb-2">
-                    Banner Tagline (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="A catchy tagline for your community header"
-                    {...register("bannerTagline")}
-                    className="w-full text-black px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
-                  />
                 </div>
               </div>
 

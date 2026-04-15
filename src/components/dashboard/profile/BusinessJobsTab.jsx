@@ -440,9 +440,8 @@ export default function BusinessJobsTab() {
                               >
                                 <FiMoreVertical className="w-5 h-5 text-gray-600" />
                               </button>
-
                               {dropDownOpen && openIndex === index && (
-                                <ul className="absolute right-0 top-8 bg-white shadow-md rounded z-50">
+                                <ul className="relative right-0 top-8 bg-white shadow-md rounded z-50">
                                   {jobsDropDown.map((dropdown, i) => (
                                     <JobDropdown
                                       key={i}

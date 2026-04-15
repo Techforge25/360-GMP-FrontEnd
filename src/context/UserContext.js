@@ -24,6 +24,7 @@ export const UserProvider = ({ children }) => {
     profile: "",
     isInActivated: true
   })
+  const [searchedKey, setSearchedKey] = useState("")
 
 
   useEffect(() => {
@@ -254,7 +255,9 @@ export const UserProvider = ({ children }) => {
         setIsSwitchProfile,
         isSwitchProfile,
         setUserId,
-        userId
+        userId,
+        setSearchedKey,
+        searchedKey
       }}
     >
       {children}

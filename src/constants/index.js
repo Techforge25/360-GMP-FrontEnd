@@ -802,3 +802,5 @@ export const companySizeBusiness = ["1-50", "51-100", "101-150", "151-200", "201
 export const productionCapacityBusiness = ["1000-10000", "10001-20000", "20001-30000", "30001-40000", "40001-50000", "50001-60000", "60001-70000", "700001-80000", "80001-90000", "90001-100000"]
 
 export const jobsDropDown = ["Edit Job", "Delete Job", "Job Detail"]
+
+export const REGIONS = ["North America", "Europe", "Middle East", "Asia"];

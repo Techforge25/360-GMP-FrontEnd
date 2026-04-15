@@ -1,10 +1,9 @@
 "use client";
 import React, { Suspense, useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   FiSearch,
-  FiBriefcase,
   FiUsers,
   FiBox,
   FiArrowRight,
@@ -23,36 +22,26 @@ function SearchResults() {
   const router = useRouter();
   const query = searchParams.get("q") || "";
   const businessType = searchParams.get("businessType") || "";
-  const initialTab = searchParams.get("type") || "all";
-  console.log(query, "query")
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const params = new URLSearchParams()
   const [loading, setLoading] = useState(true);
   const [results, setResults] = useState({
     businesses: [],
     products: [],
     communities: [],
-    jobs: [],
   });
 
-  const { user } = useUserRole();
-
-  useEffect(() => {
-    setActiveTab(initialTab);
-  }, [initialTab]);
+  const { user, setSearchedKey } = useUserRole();
 
   useEffect(() => {
     const fetchResults = async () => {
       setLoading(true);
+      setSearchedKey(query)
       try {
-        console.log(query, businessType, "query")
-        console.log()
-        // const commonParams = { search: query, limit: 10 };
-        // const locationParams = location ? { location } : {};
-        // const businessParams = businessType ? { businessType } : {};
-        // const productsParams = { ...commonParams };
-        const response = await businessProfileAPI.getBusinessesName(businessType ? `?businessType=${businessType}` : `?search=${query}`)
+        const response = await businessProfileAPI.getGlobalSearch(query)
         setResults({
-          businesses: response.data.docs,
+          businesses: response.data.businesses,
+          communities: response.data.communities,
+          products: response.data.products
         });
       } catch (error) {
         console.error("Error fetching search results:", error);
@@ -61,54 +50,50 @@ function SearchResults() {
       }
     };
 
-    if (query || location || businessType) {
+    if (query || businessType) {
       fetchResults();
     }
-  }, [query, location, businessType]);
-
-  const tabs = [
-    { id: "all", label: "All Results", icon: FiSearch },
-    // { id: "products", label: "Products", icon: FiBox },
-    // { id: "communities", label: "Communities", icon: FiUsers },
-    // { id: "jobs", label: "Jobs", icon: FiBriefcase },
-  ];
+  }, [query]);
 
   const handleTabChange = (tabId) => {
-    setActiveTab(tabId);
     const params = new URLSearchParams(searchParams);
     if (tabId === "all") params.delete("type");
     else params.set("type", tabId);
     router.replace(`/dashboard/search?${params.toString()}`);
   };
 
+  const handleSearchByName = (title) => {
+    const getModelPath = user?.role === "business" ? "business" : "user"
+    if (title === "Businesses") {
+      router.push(`/dashboard/${getModelPath}/businesses`)
+    } else if (title === "Products") {
+      router.push(`/dashboard/${getModelPath}/marketplace`)
+    } else {
+      router.push(`/dashboard/${getModelPath}/communities`)
+    }
+  }
+
   const ResultSection = ({ title, items, icon: Icon, type, linkPrefix }) => {
-    // if (!items || items.length === 0) return null;
-
-    // Determine how many to show based on active tab
-    // const displayItems = activeTab === "all" ? items.slice(0, 4) : items;
-
     return (
       <div className="mb-10">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
-            {/* <Icon className="text-brand-primary" /> {title}
+            <Icon className="text-brand-primary" /> {title}
             <span className="text-base font-normal text-gray-500 ml-2">
               ({items.length} found)
-            </span> */}
+            </span>
           </h2>
-          {/* {activeTab === "all" && items.length > 4 && (
-            <Button
-              variant="ghost"
-              onClick={() => handleTabChange(type)}
-              className="text-brand-primary hover:text-brand-primary-dark font-medium flex items-center gap-1"
-            >
-              View All <FiArrowRight />
-            </Button>
-          )} */}
+          <Button
+            variant="ghost"
+            onClick={() => handleSearchByName(title)}
+            className="text-brand-primary hover:text-brand-primary-dark font-medium flex items-center gap-1"
+          >
+            View All <FiArrowRight />
+          </Button>
         </div>
 
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-          {displayItems.map((item) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+          {items?.map((item) => (
             <Card
               key={item._id}
               className="hover:shadow-md transition-all border-none shadow-sm bg-white"
@@ -116,15 +101,15 @@ function SearchResults() {
               <CardContent className="p-4 flex gap-4">
                 <div className="w-16 h-16 rounded-lg bg-gray-100 flex-shrink-0 overflow-hidden relative">
                   {item.image ||
-                    item.coverImage ||
                     item.logo ||
-                    item.company?.logo ? (
+                    item.company?.logo || item?.profileImage ? (
                     <img
                       src={
                         item.image ||
                         item.coverImage ||
                         item.logo ||
-                        item.company?.logo
+                        item.company?.logo ||
+                        item?.profileImage
                       }
                       alt={item.name || item.title}
                       className="w-full h-full object-cover"
@@ -144,8 +129,12 @@ function SearchResults() {
 
                   <div className="text-base text-gray-500 mb-2 truncate">
                     {type === "businesses" && (item.industry || item.email)}
-                    {type === "products" &&
-                      `$${item.pricePerUnit} • ${item.category || "General"}`}
+                    {type === "products" && (
+                      <>
+                        Price Per Unit: ${item.pricePerUnit}
+                      </>
+                    )
+                    }
                     {type === "communities" &&
                       `${item.memberCount || 0} members • ${item.privacy || "Public"}`}
                     {type === "jobs" && (
@@ -164,11 +153,7 @@ function SearchResults() {
 
                   <div className="flex items-center gap-2">
                     <Link
-                      href={
-                        typeof linkPrefix === "function"
-                          ? linkPrefix(item)
-                          : `${linkPrefix}/${item._id}`
-                      }
+                      href={`${linkPrefix}/${item._id}`}
                     >
                       <span className="text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
                         View Details
@@ -179,7 +164,7 @@ function SearchResults() {
               </CardContent>
             </Card>
           ))}
-        </div> */}
+        </div>
       </div>
     );
   };
@@ -206,13 +191,6 @@ function SearchResults() {
             in category <strong>"{businessType}"</strong>
           </>
         )}
-        {location && (
-          <span>
-            {" "}
-            in "<strong>{location}</strong>"
-          </span>
-        )}
-        .
       </p>
       <Button
         variant="outline"
@@ -223,8 +201,6 @@ function SearchResults() {
       </Button>
     </div>
   );
-
-  console.log(results, "resil;ts")
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-8">
@@ -249,38 +225,8 @@ function SearchResults() {
                 </span>
               </>
             )}
-            {location && (
-              <span className="ml-1">
-                near{" "}
-                <span className="font-semibold text-gray-900">
-                  "{location}"
-                </span>
-              </span>
-            )}
           </p>
         </div>
-
-        {/* Tabs */}
-        <div className="flex overflow-x-auto pb-2 gap-2 mb-8 scrollbar-hide">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabChange(tab.id)}
-              className={`
-                flex items-center gap-2 px-5 py-2.5 rounded-full text-base font-medium transition-all whitespace-nowrap
-                ${activeTab === tab.id
-                  ? "bg-[#240457] text-white shadow-md"
-                  : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
-                }
-              `}
-            >
-              <tab.icon size={16} />
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Content */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-900 mb-4"></div>
@@ -288,59 +234,37 @@ function SearchResults() {
           </div>
         ) : (
           <div>
-            {(activeTab === "all" || activeTab === "businesses") &&
-              results.businesses.length > 0 && (
-                <ResultSection
-                  title="Businesses"
-                  items={results.businesses}
-                  icon={BsBuilding}
-                  type="businesses"
-                  linkPrefix="/dashboard/business/businesses"
-                />
-              )}
+            {results?.businesses?.length > 0 && (
+              <ResultSection
+                title="Businesses"
+                items={results?.businesses}
+                icon={BsBuilding}
+                type="businesses"
+                linkPrefix={`/dashboard/${user?.role === "business" ? "business" : "user"}/businesses/`}
+              />
+            )}
 
-            {(activeTab === "all" || activeTab === "products") &&
-              results.length > 0 && (
-                <ResultSection
-                  title="Products"
-                  items={results.products}
-                  icon={FiBox}
-                  type="products"
-                  linkPrefix={(item) => {
-                    const bizId =
-                      item.ownerBusiness?._id ||
-                      item.ownerBusiness ||
-                      item.owner ||
-                      "unknown";
-                    return `/dashboard/business/businesses/${bizId}/products/${item._id}`;
-                  }}
-                />
-              )}
+            {results?.products?.length > 0 && (
+              <ResultSection
+                title="Products"
+                items={results?.products}
+                icon={FiBox}
+                type="products"
+                linkPrefix={`/dashboard/${user?.role === "business" ? "business" : "user"}/products`}
+              />
+            )}
 
-            {(activeTab === "all" || activeTab === "communities") &&
-              results.length > 0 && (
-                <ResultSection
-                  title="Communities"
-                  items={results.communities}
-                  icon={FiUsers}
-                  type="communities"
-                  linkPrefix="/community"
-                />
-              )}
+            {results?.communities?.length > 0 && (
+              <ResultSection
+                title="Communities"
+                items={results?.communities}
+                icon={FiUsers}
+                type="communities"
+                linkPrefix={`/community`}
+              />
+            )}
 
-            {(activeTab === "all" || activeTab === "jobs") &&
-              results.length > 0 && (
-                <ResultSection
-                  title="Jobs"
-                  items={results.jobs}
-                  icon={FiBriefcase}
-                  type="jobs"
-                  linkPrefix="/dashboard/business/jobs"
-                />
-              )}
-
-            {/* Empty State */}
-            {results.length === 0 && (
+            {results?.businesses?.length === 0 && results?.products?.length === 0 && results?.communities?.length === 0 && (
               <NoResults />
             )}
           </div>

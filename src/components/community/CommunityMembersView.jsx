@@ -248,6 +248,8 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
     }
   };
 
+  console.log(pendingRequests, "requests pending")
+
   const handleIgnoreRequest = async (userProfileId) => {
     if (!community?._id) return;
 
@@ -367,6 +369,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
       year: "numeric",
     });
   };
+
 
   return (
     <div className="bg-white rounded-xl border border-gray-200">
@@ -537,16 +540,16 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-gray-900">
-                          {request.userProfileId?.fullName || "Unknown User"}
+                          {request?.memberId?.fullName}
                         </h4>
                         <p className="text-sm text-gray-500">
-                          {request.userProfileId?.title || "Member"}
+                          {request?.memberId?.title}
                         </p>
                       </div>
                     </div>
                     <div className="col-span-2 flex items-center">
                       <span className="text-sm text-gray-500">
-                        {formatDate(request.createdAt)}
+                        {formatDate(request?.createdAt)}
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center">
@@ -562,20 +565,20 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                     <div className="col-span-2 flex items-center gap-2">
                       <button
                         onClick={() =>
-                          handleAcceptRequest(request.userProfileId?._id)
+                          handleAcceptRequest(request.memberId?._id)
                         }
-                        disabled={processingId === request.userProfileId?._id}
+                        disabled={processingId === request.memberId?._id}
                         className="px-3 py-1.5 bg-blue-100 text-blue-700 text-sm rounded-md hover:bg-blue-200 transition-colors disabled:opacity-50"
                       >
-                        {processingId === request.userProfileId?._id
+                        {processingId === request.memberId?._id
                           ? "..."
                           : "Accept"}
                       </button>
                       <button
                         onClick={() =>
-                          handleIgnoreRequest(request.userProfileId?._id)
+                          handleIgnoreRequest(request.memberId?._id)
                         }
-                        disabled={processingId === request.userProfileId?._id}
+                        disabled={processingId === request.memberId?._id}
                         className="px-3 py-1.5 bg-red-100 text-red-700 text-sm rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
                       >
                         Ignore

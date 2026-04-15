@@ -1,8 +1,5 @@
 "use client";
-
-import { is } from "date-fns/locale";
 import { Search } from "lucide-react";
-import { select } from "slate";
 
 export default function MarketplaceSearchHero({
   query,

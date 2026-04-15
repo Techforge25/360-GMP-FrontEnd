@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import productAPI from "@/services/productAPI";
 import { buildMarketplaceQueryParams } from "@/features/dashboard/marketplace/helpers";
+import { useUserRole } from "@/context/UserContext";
 
 export const useMarketplaceProducts = ({
   query,
@@ -19,6 +20,8 @@ export const useMarketplaceProducts = ({
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const { searchedKey, setSearchedKey } = useUserRole()
+
 
   const fetchMarketplaceProducts = useCallback(async () => {
     setLoading(true);
@@ -29,6 +32,7 @@ export const useMarketplaceProducts = ({
         page: 1,
         limit: 8,
         query,
+        searchedKey,
         selectedCategories,
         selectedCountry,
       });
@@ -96,6 +100,7 @@ export const useMarketplaceProducts = ({
         page,
         limit: 8,
         query,
+        searchedKey,
         selectedCategories,
         selectedCountry,
       });

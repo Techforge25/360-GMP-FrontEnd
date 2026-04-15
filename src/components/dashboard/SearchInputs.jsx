@@ -47,14 +47,8 @@ export default function SearchInputs() {
      };
 
      const handlePopularTagClick = (tag) => {
-          // setValue("type", tag);
-          // console.log(query, "query")
-          // const params = new URLSearchParams();
-          // params.append("q", query.trim());
-          // router.push(`/dashboard/search?${params.toString()}`);
-          // if (!data.query.trim() && !data.location.trim()) return;
           router.push(
-               `/dashboard/search?businessType=${encodeURIComponent(tag.trim())}`
+               `/dashboard/search?q=${encodeURIComponent(tag.trim())}`
           );
      };
 

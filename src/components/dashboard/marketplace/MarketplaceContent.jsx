@@ -32,7 +32,7 @@ import Image from "next/image";
 
 export default function MarketplaceContent() {
   const router = useRouter();
-  const { user } = useUserRole();
+  const { user, searchedKey } = useUserRole();
   const { addToCart } = useCart();
   const isBusinessUser = user?.role === "business";
   const [expandedCategories, setExpandedCategories] = useState({
@@ -41,8 +41,6 @@ export default function MarketplaceContent() {
     ratings: false,
   });
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-
-
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [countrySearchQuery, setCountrySearchQuery] = useState("");
@@ -537,13 +535,13 @@ export default function MarketplaceContent() {
             {/* Main Content */}
             <div className="flex-1 min-w-0">
               {/* Search Results Priority View */}
-              {((isSearchSelected && query) ||
+              {(((isSearchSelected && query) || searchedKey !== "") ||
                 selectedCategories.length > 0 ||
                 selectedCountry) && (
                   <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                        {isSearchSelected && query
+                        {(isSearchSelected && query) || searchedKey !== ""
                           ? `Search Results for "${query}"`
                           : "Filtered Products"}
                       </h2>
@@ -553,7 +551,7 @@ export default function MarketplaceContent() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {filteredProducts.length > 0 && isSearchSelected ? (
+                      {(filteredProducts.length > 0 && isSearchSelected) || searchedKey !== "" ? (
                         filteredProducts.map((product, idx) => (
                           <MarketplaceProductCard
                             key={idx}
