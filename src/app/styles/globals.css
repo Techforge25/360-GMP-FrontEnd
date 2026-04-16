@@ -13,6 +13,11 @@
   --color-brand-setting-sky: #F0FDF5;
   --color-brand-setting-tab: #B4B4B433;
   --color-brand-job-create: #2E1065;
+  --color-brand-business: #8A38F5;
+  --color-brand-business-button-light: #DCDCDC33;
+  --color-brand-business-icon-light: #FFDFDF;
+  --color-brand-business-icon2-light: #DFEDFF;
+  --color-brand-business-icon-dark: #185ADB;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
@@ -33,6 +38,8 @@
   --color-text-dark:#22252B;
   --color-text-light-setting:#32363F;
   --color-text-setting-dark:#40444C;
+  --color-text-setting-light:#444953;
+  --color-text-setting-darks: #232323;
 
   /* ===== Borders ===== */
   --color-border-light: #d3d6de;
@@ -47,6 +54,10 @@
   --color-accent-warning: #facc15;
   --color-accent-danger: #dc2626;
   --color-accent-info: #0a78d2;
+
+  /* radio Button */
+
+  --color-radio-button: #033495;
 
   /* ===== Highlight Backgrounds ===== */
   --color-highlight-yellow: #fef3c7;
@@ -99,6 +110,11 @@
   --color-brand-primary-light: #9747ff;
   --color-brand-secondary: #e8eef6;
   --color-brand-tertiary: #FF99C3;
+  --color-brand-button: #8A38F5;
+  --color-brand-business-button-light: #DCDCDC33;
+  --color-brand-business-icon-light: #FFDFDF;
+  --color-brand-business-icon2-light: #DFEDFF;
+  --color-brand-business-icon-dark: #185ADB;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
@@ -107,6 +123,9 @@
   --color-scaffold-background: #e3e3e3;
   --color-surface: #ffffff;
 
+  /* Radio Button */
+  --color-radio-button: #033495;
+
   /* ===== Text ===== */
   --color-text-primary: #010101;
   --color-text-secondary: #556179;
@@ -114,6 +133,8 @@
   --color-text-inverse: #ffffff;
   --color-text-link: #2497cd;
   --color-text-gray-more: #768299;
+  --color-text-setting-light: #444953;
+  --color-text-setting-darks: #232323;
 
   /* ===== Borders ===== */
   --color-border-light: #d3d6de;
@@ -218,4 +239,15 @@ input {
 
 button {
   cursor: pointer;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
 }

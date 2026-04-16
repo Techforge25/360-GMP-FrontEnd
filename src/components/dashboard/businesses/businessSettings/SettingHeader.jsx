@@ -6,7 +6,7 @@ import { IoMdArrowBack } from "react-icons/io";
 const SettingHeader = ({ backButton, saveButton }) => {
   const router =useRouter()
   return (
-    <section className="bg-gradient-to-l from-brand-setting-ligh to-brand-setting-sky p-6">
+    <section className="bg-gradient-to-l from-brand-setting-ligh to-brand-setting-sky py-[12px] px-[20px]">
       <div className="">
         {backButton && (
           <button onClick={()=>{router.back()}} className="flex items-center gap-2">

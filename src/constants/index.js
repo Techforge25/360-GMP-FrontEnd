@@ -795,3 +795,145 @@ export const settingsTabs = [
     href: "",
   },
 ];
+
+export const companyIdentityData = [
+  {
+    lable:"Owner Name",
+    fieldsData:"Alex john"
+  },
+  {
+    lable:"Company Name",
+    fieldsData:"Global Manufacturing LLC"
+  },
+  {
+    lable:"Trade Name",
+    fieldsData:"Manufacturing"
+  },
+  {
+    lable:"Business Type",
+    fieldsData:"Private Corporation"
+  },
+  {
+    lable:"Founded Date",
+    fieldsData:"12-3-2023"
+  },
+  {
+    lable:"official company website",
+    fieldsData:"www.globalmanufacturing.com"
+  },
+]
+export const companyIdentityLeftData = [
+  {
+    lable:"identification of business owner name",
+    fieldsData:"Alex John"
+  },
+  {
+    lable:"select primary industry",
+    fieldsData:"Manufacturing"
+  },
+  {
+    lable:"country of registration",
+    fieldsData:"USA"
+  },
+  {
+    lable:"company size",
+    fieldsData:"12-40 Employes"
+  },
+  {
+    lable:"Operating Hours",
+    fieldsData:"Monday - Friday: 9:00 AM - 6:00 PM PST"
+  },
+  {
+    lable:"Operating Hours",
+    fieldsData:"Monday - Friday: 9:00 AM - 6:00 PM PST"
+  },  
+]
+
+export const OperationsAndLogisticsData = [
+  {
+    lable:"country",
+    fieldsData:"Canada"
+  },
+  {
+    lable:"address line",
+    fieldsData:"block 123 carbon town Ottawa  "
+  },
+  {
+    lable:"additional ware  house address",
+    fieldsData:"123 Maple Street, Toronto, ON M5V 2T6"
+  },
+  {
+    lable:"business registration address",
+    fieldsData:"250 King Street W, Suite 1200, Toronto, ON M5V 3L9"
+  },
+  {
+    lable:"city",
+    fieldsData:"Ottawa"
+  },
+  {
+    lable:"warehouse address",
+    fieldsData:"123 Maple Street, Toronto, ON M5V 2T6"
+  },
+  {
+    lable:"mandatory pickup address",
+    fieldsData:"1 Maple Street, Toronto, ON M5V 2T6"
+  },
+  {
+    lable:"international office",
+    fieldsData:"1 Maple Street, Toronto, ON M5V 2T6"
+  },
+]
+
+export const standerdUnitWeight = [
+  {unit:"123",
+  value: "Kg"
+  },
+  {unit:"length",
+  value: "102cm"
+  },
+  {unit:"height",
+  value: "22cm"
+  },
+  {unit:"width",
+  value: "123cm"
+  },
+]
+
+export const PAKING_TYPES = [
+  "costume box",
+  "Pallets",
+  "Industrial Wrap",
+]
+
+export const BusinessIntelligenceDetails = [
+  {
+    lable:"Contact person name",
+    fieldsData:"Sarah Jenkins"
+  },
+  {
+    lable:"title",
+    fieldsData:"Head of Operations"
+  },
+  {
+    lable:"Phone",
+    fieldsData:"+171 50 123 4567"
+  },
+  {
+    lable:"support Email",
+    fieldsData:"info@gmail.com"
+  },
+]
+
+export const regionOfOperations = [
+  "Local",
+  "GCC",
+  "European Union"
+]
+
+export const IOS_OPTIONS = [
+  "ISO 9001",
+  "CE certified",
+  "TUV SUD",
+  "FDA approved",
+  "Ethical Sourcing"
+]
