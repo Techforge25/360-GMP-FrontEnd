@@ -1,6 +1,6 @@
 "use client";
 import React, { Suspense, useState, useEffect } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   FiSearch,
@@ -22,7 +22,6 @@ function SearchResults() {
   const router = useRouter();
   const query = searchParams.get("q") || "";
   const businessType = searchParams.get("businessType") || "";
-  const params = new URLSearchParams()
   const [loading, setLoading] = useState(true);
   const [results, setResults] = useState({
     businesses: [],
@@ -30,12 +29,12 @@ function SearchResults() {
     communities: [],
   });
 
-  const { user, setSearchedKey } = useUserRole();
+  const { user, setSearchedKey, searchedKey } = useUserRole();
 
   useEffect(() => {
+    setSearchedKey(query)
     const fetchResults = async () => {
       setLoading(true);
-      setSearchedKey(query)
       try {
         const response = await businessProfileAPI.getGlobalSearch(query)
         setResults({
@@ -55,23 +54,17 @@ function SearchResults() {
     }
   }, [query]);
 
-  const handleTabChange = (tabId) => {
-    const params = new URLSearchParams(searchParams);
-    if (tabId === "all") params.delete("type");
-    else params.set("type", tabId);
-    router.replace(`/dashboard/search?${params.toString()}`);
-  };
-
   const handleSearchByName = (title) => {
-    const getModelPath = user?.role === "business" ? "business" : "user"
+    const getModelPath = user?.role === "business" ? "business" : "user";
+    const encodedQuery = encodeURIComponent(query);
     if (title === "Businesses") {
-      router.push(`/dashboard/${getModelPath}/businesses`)
+      router.push(`/dashboard/${getModelPath}/businesses?q=${encodedQuery}`);
     } else if (title === "Products") {
-      router.push(`/dashboard/${getModelPath}/marketplace`)
+      router.push(`/dashboard/${getModelPath}/marketplace?q=${encodedQuery}`);
     } else {
-      router.push(`/dashboard/${getModelPath}/communities`)
+      router.push(`/dashboard/${getModelPath}/communities?q=${encodedQuery}`);
     }
-  }
+  };
 
   const ResultSection = ({ title, items, icon: Icon, type, linkPrefix }) => {
     return (

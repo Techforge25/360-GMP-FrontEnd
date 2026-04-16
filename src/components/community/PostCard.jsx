@@ -336,11 +336,12 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
   // Get author info
   const getAuthorInfo = () => {
+    console.log(post, "postsssss")
     if (!post?.authorId)
       return {
         name: "Unknown User",
         role: "Member",
-        image: "/assets/images/Portrait_Placeholder.png",
+        image: post?.authorId?.logo,
       };
 
     if (post?.authorModel === "BusinessProfile") {
@@ -354,13 +355,14 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         name: post?.authorId?.fullName || "User",
         role: post?.authorId?.title || "Member",
         image:
-          post?.authorId?.imageProfile ||
+          post?.authorId?.logo ||
           "/assets/images/Portrait_Placeholder.png",
       };
     }
   };
 
   const author = getAuthorInfo();
+  console.log(author, 'authors')
 
   // Guard clause - don't render if post doesn't have required _id
   if (!post?._id) {
@@ -397,9 +399,6 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                 src={author?.image}
                 alt={author?.name}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.src = "/assets/images/Portrait_Placeholder.png";
-                }}
               />
             </div>
             <div>
@@ -419,30 +418,31 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
             >
               <FiMoreHorizontal size={20} />
             </button>
-            {showOptions && (
-              <>
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowOptions(false)}
-                />
-                <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
-                  {/* {isPostAuthor() && ( */}
-                  <>
-                    <button
-                      onClick={() => {
-                        setShowOptions(false);
-                        handleDelete();
-                      }}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                      Delete Post
-                    </button>
-                  </>
-                  {/* )} */}
-                </div>
-              </>
-            )}
+            <>
+              {showOptions && (
+                <>
+                  <div
+                    className=""
+                    onClick={() => setShowOptions(false)}
+                  />
+                  <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
+                    <>
+                      <button
+                        onClick={() => {
+                          setShowOptions(false);
+                          handleDelete();
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                        Delete Post
+                      </button>
+                    </>
+                    {/* )} */}
+                  </div>
+                </>
+              )}
+            </>
           </div>
         </div>
 
@@ -571,23 +571,26 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
               {/* {showOptions && (
                 <> */}
               <div
-                className="fixed inset-0 z-10"
+                className=""
                 onClick={() => setShowOptions(false)}
               />
-              <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
-                {/* {isPostAuthor() && ( */}
-                <button
-                  onClick={() => {
-                    setShowOptions(false);
-                    handleDelete();
-                  }}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                >
-                  <FiTrash2 className="w-4 h-4" />
-                  Delete Post
-                </button>
-                {/* )} */}
-              </div>
+              {showOptions && (
+                <div className="absolute right-0 top-8 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-2 w-48">
+                  {/* {isPostAuthor() && ( */}
+                  <button
+                    onClick={() => {
+                      setShowOptions(false);
+                      handleDelete();
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                    Delete Post
+                  </button>
+                  {/* )} */}
+                </div>
+              )}
+
               {/* </>
               )} */}
             </div>
@@ -676,7 +679,6 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           enableErrorMessage: false,
           activateLoader: false,
         });
-        toast.success("Vote has been given Successfully!")
 
         // TODO: Call API to record vote
         // const response = await postsAPI.votePoll(post._id, optionIndex);
@@ -714,12 +716,9 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           <div className="flex gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
               <img
-                src={author?.image}
+                src={author?.authorId?.logo}
                 alt={author?.name}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.src = "/assets/images/Portrait_Placeholder.png";
-                }}
               />
             </div>
             <div>

@@ -7,6 +7,7 @@ import { useUserRole } from "@/context/UserContext";
 
 export const useMarketplaceProducts = ({
   query,
+  searchedParam,
   selectedCategories,
   selectedCountry,
 }) => {
@@ -20,7 +21,6 @@ export const useMarketplaceProducts = ({
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const { searchedKey, setSearchedKey } = useUserRole()
 
 
   const fetchMarketplaceProducts = useCallback(async () => {
@@ -32,7 +32,7 @@ export const useMarketplaceProducts = ({
         page: 1,
         limit: 8,
         query,
-        searchedKey,
+        searchedParam,
         selectedCategories,
         selectedCountry,
       });
@@ -89,7 +89,7 @@ export const useMarketplaceProducts = ({
     } finally {
       setLoading(false);
     }
-  }, [query, selectedCategories, selectedCountry]);
+  }, [query, selectedCategories, selectedCountry, searchedParam]);
 
   const loadMoreProducts = useCallback(async () => {
     if (loadingMore || !hasMore) return;
@@ -100,7 +100,7 @@ export const useMarketplaceProducts = ({
         page,
         limit: 8,
         query,
-        searchedKey,
+        searchedParam,
         selectedCategories,
         selectedCountry,
       });

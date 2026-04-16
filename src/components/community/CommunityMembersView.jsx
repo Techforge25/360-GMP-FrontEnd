@@ -674,14 +674,14 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                               <div className="absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-40">
                                 {member.role === "admin" ? (
                                   <button
-                                    onClick={() => handleDemoteAdmin(member?.memberId)}
+                                    onClick={() => handleDemoteAdmin(member?.memberId?._id)}
                                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                                   >
                                     Demote Admin
                                   </button>
                                 ) : (
                                   <button
-                                    onClick={() => handleMakeAdmin(member?.memberId)}
+                                    onClick={() => handleMakeAdmin(member?.memberId?._id)}
                                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                                   >
                                     Make Admin

@@ -49,6 +49,8 @@ export default function MarketplaceContent() {
   const [isSearchSelected, setIsSearchSelected] = useState(false);
   const sentinelRef = useRef(null);
   const bottomSectionRef = useRef(null);
+  const params = new URLSearchParams()
+  const searchedParam = params.get("q")
   const {
     featuredProducts,
     topRankingProducts,
@@ -63,9 +65,11 @@ export default function MarketplaceContent() {
     loadMoreProducts,
   } = useMarketplaceProducts({
     query,
+    searchedParam,
     selectedCategories,
     selectedCountry,
   });
+
 
   const toggleCategory = (category) => {
     setExpandedCategories((prev) => ({ ...prev, [category]: !prev[category] }));
@@ -136,11 +140,18 @@ export default function MarketplaceContent() {
     }
   };
 
+  const removeParams = () => {
+    const newParams = new URLSearchParams(params.toString());
+    newParams.delete("q");
+    router.push(`?${newParams.toString()}`);
+  }
+
   const clearFilters = () => {
     setSelectedCategories([]);
     setSelectedCountry("");
     setCountrySearchQuery("");
     setQuery("");
+    removeParams()
     setIsSearchSelected(false);
     fetchMarketplaceProducts();
   };
@@ -541,7 +552,7 @@ export default function MarketplaceContent() {
                   <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-                        {(isSearchSelected && query) || searchedKey !== ""
+                        {(isSearchSelected && query) || searchedParam !== ""
                           ? `Search Results for "${query}"`
                           : "Filtered Products"}
                       </h2>
@@ -551,7 +562,7 @@ export default function MarketplaceContent() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-                      {(filteredProducts.length > 0 && isSearchSelected) || searchedKey !== "" ? (
+                      {(filteredProducts.length > 0 && isSearchSelected) || searchedParam !== "" ? (
                         filteredProducts.map((product, idx) => (
                           <MarketplaceProductCard
                             key={idx}

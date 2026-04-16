@@ -314,6 +314,11 @@ export default function CreateCommunityPage() {
                           SVG, JPG, or PNG. Max file size 5MB.
                         </p>
                       </label>
+                      {errors.profileImage && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.profileImage.message}
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -625,7 +630,7 @@ export default function CreateCommunityPage() {
                         field.onChange(val);
                       }}
                       placeholder="Rules description..."
-                      maxLength={2000}
+                      // maxLength={2000}
                     />
                   )}
                 />
