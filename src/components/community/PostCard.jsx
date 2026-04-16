@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   FiMoreHorizontal,
   FiThumbsUp,
@@ -15,11 +15,13 @@ import {
   FiTrash2,
 } from "react-icons/fi";
 import { AiFillLike } from "react-icons/ai";
+import { createPortal } from "react-dom";
 import postsAPI from "@/services/postsAPI";
 import Swal from 'sweetalert2'
 import { toast } from "react-toastify";
 import communityAPI from "@/services/communityAPI";
 import api from "@/lib/axios";
+import ImageGallery from "react-image-gallery";
 
 const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   // Debug logging to check if post has proper _id
@@ -34,6 +36,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   const [showComments, setShowComments] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [showFullImages, setShowFullImages] = useState(false)
 
   // Edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -48,6 +51,8 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   const [commentText, setCommentText] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
   const [comments, setComments] = useState([]);
+
+  const galleryRef = useRef()
 
   // Update local state when post prop changes (e.g., after refresh)
   React.useEffect(() => {
@@ -653,7 +658,6 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
     const [selectedOption, setSelectedOption] = useState(null);
     const [hasVoted, setHasVoted] = useState(false);
     const [pollOptions, setPollOptions] = useState(options || []);
-
     const totalVotes = pollOptions.reduce(
       (sum, opt) => sum + (opt?.votes || 0),
       0,
@@ -716,8 +720,8 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
           <div className="flex gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
               <img
-                src={author?.authorId?.logo}
-                alt={author?.name}
+                src={post?.authorId?.logo}
+                alt={post?.name}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -872,7 +876,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
               <div className="w-8 h-8 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">
                 <img
                   src={
-                    currentUser?.profilePayload?.imageProfile ||
+                    currentUser?.authorId?.logo ||
                     currentUser?.profilePayload?.logo ||
                     "/assets/images/Portrait_Placeholder.png"
                   }
@@ -1116,6 +1120,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
         post?.images && post?.images?.length > 0 && (
           <div className="mb-3 -mx-4">
             {post?.images?.length === 1 ? (
+
               <div className="relative w-full">
                 <img
                   src={post?.images[0]}
@@ -1127,27 +1132,38 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
                 />
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-1">
-                {post?.images?.slice(0, 4).map((image, index) => (
-                  <div key={index} className="relative">
-                    <img
-                      src={image}
-                      alt={`Post image ${index + 1}`}
-                      className="w-full h-48 object-cover"
-                      onError={(e) => {
-                        e.target.style.display = "none";
-                      }}
-                    />
-                    {index === 3 && post.images.length > 4 && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <span className="text-white font-semibold">
-                          +{post?.images?.length - 4} more
-                        </span>
+              <>
+                <>
+                  {/* ✅ GRID */}
+                  <div className="grid grid-cols-2 gap-1 rounded-xl overflow-hidden">
+                    {post?.images?.slice(0, 4).map((image, index) => (
+                      <div
+                        key={index}
+                        className="relative w-full h-40 bg-gray-100 overflow-hidden"
+                        onClick={() => {
+                          setShowFullImages(true);
+                        }}
+                      >
+                        <img
+                          src={image}
+                          alt={`Post ${index}`}
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-200 cursor-pointer"
+                          onError={(e) => (e.target.style.display = "none")}
+                        />
+
+                        {/* +More Overlay */}
+                        {/* {index === 3 && post.images.length > 4 && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <span className="text-white text-lg font-semibold">
+                              +{post.images.length - 4}
+                            </span>
+                          </div>
+                        )} */}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              </>
             )}
           </div>
         )

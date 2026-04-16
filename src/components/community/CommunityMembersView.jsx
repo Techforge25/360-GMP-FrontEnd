@@ -97,7 +97,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
       fetchMembers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [community?._id, activeTab, currentPage]);
+  }, [community?._id, activeTab, currentPage, handleAcceptRequest, handleIgnoreRequest]);
 
   // Clear selection when tab or page changes
   useEffect(() => {
