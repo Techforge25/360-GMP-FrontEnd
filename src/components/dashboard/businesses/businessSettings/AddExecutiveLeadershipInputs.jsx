@@ -15,52 +15,54 @@ const AddExecutiveLeadershipInputs = ({
   const list = formData[name] || [];
 
   // Handle Change
-  const handleChange = (index, value) => {
-    const updated = [...list];
-    updated[index] = value;
+ const handleChange = (index, value) => {
+  const updated = [...list];
+  updated[index] = value;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: updated
-    }));
-  };
+  setFormData((prev) => ({
+    ...prev,
+    [name]: updated
+  }));
+};
 
   // Remove
   const removeItem = (index) => {
-    const updated = list.filter((_, i) => i !== index);
+  const updated = list.filter((_, i) => i !== index);
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: updated
-    }));
-  };
+  setFormData((prev) => ({
+    ...prev,
+    [name]: updated
+  }));
+};
 
   // Validate
-  const canAddMore = () => {
-    if (list.length === 0) return true;
+ const canAddMore = () => {
+  if (list.length === 0) return true;
 
-    const last = list[list.length - 1];
-    let err = {};
+  const last = list[list.length - 1];
+  let err = "";
 
-    if (!last.role) err.role = "Field is required";
+  if (!last || last.trim() === "") {
+    err = "Field is required";
+  }
 
-    setErrors((prev) => ({
-      ...prev,
-      [list.length - 1]: err
-    }));
+  setErrors((prev) => ({
+    ...prev,
+    [list.length - 1]: err
+  }));
 
-    return Object.keys(err).length === 0;
-  };
+  return err === "";
+};
 
   // Add
-  const addItem = () => {
-    if (!canAddMore()) return;
+ const addItem = () => {
+  if (!canAddMore()) return;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: [...prev[name], { name: "" }]
-    }));
-  };
+  setFormData((prev) => ({
+    ...prev,
+    [name]: [...prev[name], ""]
+  }));
+};
 
   return (
     <div>
