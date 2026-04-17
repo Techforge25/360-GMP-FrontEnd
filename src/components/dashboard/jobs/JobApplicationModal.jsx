@@ -6,6 +6,7 @@ import {
   FiFileText,
   FiUpload,
   FiArrowRight,
+  FiArrowLeft,
 } from "react-icons/fi";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -31,13 +32,21 @@ export default function JobApplicationModal({
   const [step, setStep] = useState(STEP_FORM);
   const [loading, setLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [formErrors, setFormErrors] = useState({
+    resumeUrl: "",
+    resumeName: "",
+    portfolioLink: "",
+    yearsOfExperience: "",
+    immediateJoiningStatus: "",
+    expectedSalary: "",
+  });
   const [formData, setFormData] = useState({
     resumeUrl: "",
     resumeName: "",
-    portfolio: "",
-    experience: "",
-    urgentJoining: "",
-    salaryExpectation: "",
+    portfolioLink: "",
+    yearsOfExperience: "",
+    immediateJoiningStatus: "",
+    expectedSalary: "",
   });
 
   useEffect(() => {
@@ -68,13 +77,82 @@ export default function JobApplicationModal({
     phone: userProfile?.phone || "N/A",
   };
 
-  const handleNext = () => {
-    if (!formData.resumeUrl) {
-      alert("Please upload a resume first.");
-      return;
+ const handleNext = () => {
+  const errors = {};
+
+  // -------------------------
+  // Resume validation
+  // -------------------------
+  if (!formData.resumeUrl) {
+    errors.resumeUrl = "Resume is required";
+  } else {
+    try {
+      new URL(formData.resumeUrl);
+    } catch {
+      errors.resumeUrl = "Resume must be a valid URL";
     }
-    setStep(STEP_REVIEW);
-  };
+  }
+
+  // -------------------------
+  // Portfolio validation (optional)
+  // -------------------------
+  if (formData.portfolioLink) {
+    try {
+      new URL(formData.portfolioLink);
+    } catch {
+      errors.portfolioLink = "Portfolio link must be a valid URL";
+    }
+  }
+
+  // -------------------------
+  // Experience validation (optional number >= 0)
+  // -------------------------
+  if (formData.yearsOfExperience !== "" && formData.yearsOfExperience != null) {
+    const exp = Number(formData.yearsOfExperience);
+
+    if (isNaN(exp)) {
+      errors.yearsOfExperience = "Years of experience must be a number";
+    } else if (exp < 0) {
+      errors.yearsOfExperience = "Years of experience must be 0 or more";
+    }
+  }
+
+  // -------------------------
+  // Immediate joining validation (optional enum)
+  // -------------------------
+  if (
+    formData.immediateJoiningStatus &&
+    !["Yes", "No"].includes(formData.immediateJoiningStatus)
+  ) {
+    errors.immediateJoiningStatus = "Invalid value";
+  }
+
+  // -------------------------
+  // Expected salary validation (optional positive integer)
+  // -------------------------
+  if (formData.expectedSalary !== "" && formData.expectedSalary != null) {
+    const salary = Number(formData.expectedSalary);
+
+    if (!Number.isInteger(salary)) {
+      errors.expectedSalary = "Salary must be an integer";
+    } else if (salary <= 0) {
+      errors.expectedSalary = "Salary must be positive";
+    }
+  }
+
+  // -------------------------
+  // FINAL STEP
+  // -------------------------
+  if (Object.keys(errors).length > 0) {
+    setFormErrors(errors);
+    return;
+  }
+
+  setFormErrors({});
+  setStep(STEP_REVIEW);
+};
+
+
 
   const handleBack = () => {
     setStep(STEP_FORM);
@@ -85,10 +163,10 @@ export default function JobApplicationModal({
       setLoading(true);
       const payload = {
         resumeUrl: formData.resumeUrl,
-        portfolioLink: formData.portfolio,
-        yearsOfExperience: Number(formData.experience),
-        immediateJoiningStatus: formData.urgentJoining,
-        expectedSalary: formData.salaryExpectation,
+        portfolioLink: formData.portfolioLink,
+        yearsOfExperience: Number(formData.yearsOfExperience),
+        immediateJoiningStatus: formData.immediateJoiningStatus,
+        expectedSalary: Number(formData.expectedSalary),
       };
 
       await jobAPI.apply(jobId, payload);
@@ -160,11 +238,16 @@ export default function JobApplicationModal({
             </button>
           </div>
         ) : (
-          <FileUpload
-            label="Upload Document"
-            subLabel="PDF, DOC, DOCX, JPG, PNG (Max 5MB)"
-            onUpload={handleResumeUpload}
-          />
+          <>
+            <FileUpload
+              label="Upload Document"
+              subLabel="PDF, DOC, DOCX, JPG, PNG (Max 5MB)"
+              onUpload={handleResumeUpload}
+            />
+            {formErrors.resumeUrl && (
+              <p className="text-red-500">{formErrors.resumeUrl}</p>
+            )}
+          </>
         )}
         <iframe src={formData.resumeUrl} className="mx-auto" frameborder="0"></iframe>
       </div>
@@ -176,11 +259,14 @@ export default function JobApplicationModal({
         <Input
           className="text-black"
           placeholder="https://portfolio.com"
-          value={formData.portfolio}
+          value={formData.portfolioLink}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, portfolio: e.target.value }))
+            setFormData((prev) => ({ ...prev, portfolioLink: e.target.value }))
           }
         />
+        {formErrors.portfolioLink && (
+          <p className="text-red-500">{formErrors.portfolioLink}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -190,11 +276,17 @@ export default function JobApplicationModal({
         <Input
           className="text-black"
           placeholder="4"
-          value={formData.experience}
+          value={formData.yearsOfExperience}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, experience: e.target.value }))
+            setFormData((prev) => ({
+              ...prev,
+              yearsOfExperience: e.target.value,
+            }))
           }
         />
+        {formErrors.yearsOfExperience && (
+          <p className="text-red-500">{formErrors.yearsOfExperience}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -202,9 +294,12 @@ export default function JobApplicationModal({
           This is urgent role to fill can you join immediatley?
         </label>
         <select
-          value={formData.urgentJoining}
+          value={formData.immediateJoiningStatus}
           onChange={(e) =>
-            setFormData((prev) => ({ ...prev, urgentJoining: e.target.value }))
+            setFormData((prev) => ({
+              ...prev,
+              immediateJoiningStatus: e.target.value,
+            }))
           }
           className={cn(
             "flex h-10 w-full rounded-md border border-border-light bg-white px-3 py-2 text-base ring-offset-surface file:border-0 file:bg-transparent file:text-base file:font-medium placeholder:text-text-hint focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-black",
@@ -216,6 +311,9 @@ export default function JobApplicationModal({
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
+        {formErrors.immediateJoiningStatus && (
+          <p className="text-red-500">{formErrors.immediateJoiningStatus}</p>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -225,14 +323,17 @@ export default function JobApplicationModal({
         <Input
           className="text-black"
           placeholder="$1000-1500"
-          value={formData.salaryExpectation}
+          value={formData.expectedSalary}
           onChange={(e) =>
             setFormData((prev) => ({
               ...prev,
-              salaryExpectation: e.target.value,
+              expectedSalary: e.target.value,
             }))
           }
         />
+        {formErrors.expectedSalary && (
+          <p className="text-red-500">{formErrors.expectedSalary}</p>
+        )}
       </div>
 
       <div className="flex justify-center pt-4">
@@ -260,7 +361,12 @@ export default function JobApplicationModal({
       {/* General Information */}
       <section className="space-y-4">
         <h3 className="text-lg font-medium text-text-primary">
-          General Information
+          <span onClick={()=>setStep(STEP_FORM)} className="cursor-pointer" >
+          <FiArrowLeft size={24} />
+          </span>
+          <span>
+            General Information
+          </span>
         </h3>
 
         <div className="space-y-4 p-4 border border-border-light rounded-lg">

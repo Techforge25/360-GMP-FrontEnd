@@ -1,477 +1,118 @@
-"use client";
-import { UploadField } from "@/components/ui/UploadField";
-import { COUNTRIES } from "@/constants/index";
-import { uploadToCloudinary } from "@/lib/cloudinary";
-import { createBusinessProfileSchema } from "@/validations/business-onboarding";
-import { yupResolver } from "@hookform/resolvers/yup";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { companyIdentityData } from "@/constants/index";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import { FaEdit } from "react-icons/fa";
 
 const CompanyIdentity = () => {
-     const {
-        register,
-        handleSubmit,
-        control,
-        trigger,
-        setValue,
-        getValues,
-        watch,
-        formState: { errors, isValid }
-      } = useForm({
-        resolver: yupResolver(createBusinessProfileSchema),
-        mode: "all",
-        defaultValues: {
-          ownerName: "",
-          identificationOfBusinessOwner: "",
-          companyName: "",
-          tradeName: "",
-          businessType: "",
-          companySize: "",
-          foundedDate: null,
-          primaryIndustry: "",
-          operationHour: "",
-          countryOfRegistration: "",
-          businessRegistrationNumber: "",
-          taxIdentificationNumber: "",
-          dunsNumber: "",
-          incoterms: "",
-          complianceScreeningStatus: false,
-          location: {
-            country: "",
-            city: "",
-            addressLine: "",
-            warehouseAddress: "",
-            additionalWarehouseAddress: "",
-            mandatoryPickupAddress: "",
-            businessRegistrationAddress: "",
-            internationalOffices: []
-          },
-          shipping: {
-            capabilities: [],
-            exportExperience: false
-          },
-          executiveLeadership: [],
-          stakeholderDisclosure: [],
-          regionOfOperations: [],
-          productionCapacity: "",
-          tradeAffiliations: [],
-          annualRevenueRange: "",
-          auditingAgency: "",
-          certificateOfIncorporation: "",
-          taxRegistrationCertificate: "",
-          standardProductDimensions: {
-            length: 0,
-            width: 0,
-            height: 0,
-            weight: 0
-          },
-          certifications: [],
-          b2bContact: {
-            name: "",
-            title: "",
-            phone: "",
-            supportEmail: ""
-          },
-          logo: "",
-          banner: "",
-          website: "",
-          description: ""
-        }
-      });
-
   return (
-    <main className="p-4 ">
-      <div className="p-[30px] bg-white border border-border-outline-light rounded-[12px]">
-        {/* main Headigng */}
-        <h1 className="font-semibold font-primary text-text-dark md:text-[28px] sm:text-[24px] text-[20px] pb-2 border-b-[1px] border-border-gray-light   ">
-          Basic Identity & Legal
-        </h1>
-
-        {/* info Heading */}
-        <div className="my-6 border-b border-border-gray-light pb-2">
-          <p className="capitalize text-[#40444C] font-primary font-semibold text-[18px] ">
-            basic info
+    <div className="settingsContainer">
+      {/* Header Business Settings */}
+      <div className="flex items-center justify-between border-b-[1px] border-border-gray-light pb-4">
+        <div className="flex items-center gap-[8px]">
+          <div>
+            <Image
+              src={"/assets/images/companyIdentityIcon.svg"}
+              alt="/assets/images/companyIdentityIcon.svg"
+              height={30}
+              width={30}
+            />
+          </div>
+          <p className="settings-primary-heading">
+            Company Identity
           </p>
         </div>
+        <Link href={"business-settings/company-identity"}>
+          <button className="edit-button">
+            <span className="text-[14px] font-secondary ">Edit</span>
+            <span>
+              <FaEdit size={20} />
+            </span>
+          </button>
+        </Link>
+      </div>
 
-        {/* Info Edit Form */}
+      {/* Info Heading  */}
+      <div className="my-6 border-b border-border-gray-light pb-2">
+        <p className="capitalize text-text-gray-more font-primary font-semibold text-[18px] ">
+          basic info
+        </p>
+      </div>
 
-        <form  >
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px]">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="ownerName"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                Owner Name
-              </label>
-              <input
-                type="text"
-                id="ownerName"
-                placeholder="Alex"
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
+      {/* User Details  flex items-center md:justify-between justify-start sm:flex-row flex-col gap-[16px] */}
 
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="identification of business owner name"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                identification of business owner name
-              </label>
-              <input
-                type="text"
-                id="identification of business owner name"
-                placeholder="identification of business owner name"
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
+      <div className="grid grid-cols-1 md:grid-cols-2 -gap-[16px]">
+        {/* Start Left */}
+        {companyIdentityData.map((item, ind) => (
+          <div key={ind} className="w-full">
+            <div className="my-2">
+              <p className="settings-title">
+                {item.lable}
+              </p>
+              <p className="settings-name">
+                {item.fieldsData}
+              </p>
             </div>
           </div>
+        ))}
+        {/* Start Right */}
+      </div>
 
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px] sm:mt-4 mt-2">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="companyName"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                company name
-              </label>
-              <input
-                type="text"
-                id="companyName"
-                placeholder="Alex"
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
+      {/* Mission/Bio */}
 
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="countryOfRegistration"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                select primary industry
-              </label>
-              <select
-                id="countryOfRegistration"
-                className="py-[12px] px-[16px] cursor-pointer font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px] text-text-gray-more"
-              >
-                <option
-                  value=""
-                  selected
-                  disabled
-                  className="text-text-gray-more md:text-[14px] text-[12px] "
-                >
-                  select primary industry
-                </option>
-                {COUNTRIES.map((country, ind) => (
-                  <option
-                    key={ind}
-                    value={country}
-                    className="text-text-gray-more cursor-pointer md:text-[14px] text-[12px] "
-                  >
-                    {country}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <div className="sm:pb-6 pb-4">
+        <h4 className="sm:text-[16px] text-[14px] font-primary font-semibold text-text-dark ">
+          Mission/Bio
+        </h4>
+        <p className="sm:text-[16px] text-[14px]  font-secondary text-text-gray-more text-justify sm:mt-2 md:mt-1 ">
+          Global Manufacturing Co. is a leading Tier 1 and Tier 2 supplier
+          specializing in high-tolerance components, advanced material
+          production, and efficient sub-assembly modules. With over 15 years of
+          operational excellence, we partner with automotive OEMs and other
+          suppliers to ensure supply chain resilience, superior component
+          quality, and compliance with strict industry standards (like IATF
+          16949). We drive manufacturing optimization from raw material input to
+          just-in-time delivery.
+        </p>
+      </div>
+
+      {/* Legal compliance */}
+
+      <div className="border-b border-border-gray-light pb-2">
+        <p className="settings-subheading">Legal Compliance</p>
+      </div>
+
+      {/* Legal compliance details */}
+      <div className="flex items-center md:justify-between justify-start sm:flex-row flex-col gap-[16px]">
+        <div className="w-full">
+          <div className="sm:my-4 my-2">
+            <p className="settings-title">Registration Numbers</p>
+            <p className="settings-name">Reg No: 987654321-ABC</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px] sm:mt-4 mt-2">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="tradeName"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                trade name{" "}
-                <span className="text-text-light-gray-more text-[14px]">
-                  {"(optional)"}
-                </span>
-              </label>
-              <input
-                type="text"
-                id="tradeName"
-                placeholder="trade name "
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
+          <div className="sm:my-4 my-2">
+            <p className="settings-title">Duns Number</p>
+            <p className="settings-name">123</p>
+          </div>
+        </div>
 
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="countryOfRegistration"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                country of registration
-              </label>
-              <select
-                id="countryOfRegistration"
-                className="py-[12px] px-[16px] cursor-pointer font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px] text-text-gray-more"
-              >
-                <option
-                  value=""
-                  selected
-                  disabled
-                  className="text-text-gray-more md:text-[14px] text-[12px] "
-                >
-                  select country
-                </option>
-                {COUNTRIES.map((country, ind) => (
-                  <option
-                    key={ind}
-                    value={country}
-                    className="text-text-gray-more cursor-pointer md:text-[14px] text-[12px] "
-                  >
-                    {country}
-                  </option>
-                ))}
-              </select>
-            </div>
+        <div className="w-full">
+          <div className="sm:my-4 my-2">
+            <p className="settings-title">Text identification number</p>
+            <p className="settings-name">VAT: EU123456789</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px] sm:mt-4 mt-2">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="businessType"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                business type
-              </label>
-              <input
-                type="text"
-                id="businessType"
-                placeholder="Private Corporation"
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="companySize"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                company size
-              </label>
-              <select
-                id="companySize"
-                className="py-[12px] px-[16px] cursor-pointer font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px] text-text-gray-more"
-              >
-                <option
-                  value=""
-                  selected
-                  disabled
-                  className="text-text-gray-more md:text-[14px] text-[12px] "
-                >
-                  Company Size
-                </option>
-                {COUNTRIES.map((country, ind) => (
-                  <option
-                    key={ind}
-                    value={country}
-                    className="text-text-gray-more cursor-pointer md:text-[14px] text-[12px] "
-                  >
-                    {country}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px] sm:mt-4 mt-2">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="foundedDate"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                founded date
-              </label>
-              <input
-                type="date"
-                id="foundedDate"
-                defaultValue={new Date().toISOString().split("T")[0]}
-                placeholder="Private Corporation"
-                className="py-[12px] px-[16px] font-secondary text-[14px] cursor-pointer  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="operatingHours"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                Operating Hours
-              </label>
-              <input
-                type="time"
-                id="operatingHours"
-                defaultValue={new Date().toISOString().split("T")[0]}
-                placeholder="Private Corporation"
-                className="py-[12px] px-[16px] font-secondary text-[14px] cursor-pointer  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-          </div>
-
-          <div className=" sm:mt-4 mt-2">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="officialCompanyWebsite"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                official company website
-              </label>
-              <input
-                type="text"
-                id="officialCompanyWebsite"
-                placeholder=" "
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-          </div>
-
-          <div className=" sm:mt-4 mt-2">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="companyMissionAndBio"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                company mission and bio
-              </label>
-              <textarea
-                minLength={200}
-                maxLength={20000}
-                type="text"
-                id="companyMissionAndBio"
-                placeholder="*"
-                className="py-[12px] px-[16px] h-25 font-secondary text-[14px] text-text-dark  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-          </div>
-
-          {/* info Heading */}
-          <div className="my-6 border-b border-border-gray-light pb-2">
-            <p className="capitalize text-[#40444C] font-primary font-semibold text-[18px] ">
-              Legal compliance
+          <div className="sm:my-4 my-2">
+            <p className="settings-title ">
+              Select Primary Industry
+            </p>
+            <p className="settings-name ">
+              Manufacturing
             </p>
           </div>
-
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px]">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="businessRegistrationNumber"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                Business Registration Number
-              </label>
-              <input
-                type="text"
-                id="businessRegistrationNumber"
-                placeholder="Registration Number"
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="textIdentificationNumber"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                Text identification number
-              </label>
-              <input
-                type="text"
-                id="textIdentificationNumber"
-                placeholder="Text Identification Number"
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px]">
-            <div className="flex flex-col md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="dunsNumber"
-                className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer"
-              >
-                Duns Number
-              </label>
-              <input
-                type="text"
-                id="dunsNumber"
-                placeholder="data universal numbering system"
-                className="py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]"
-              />
-            </div>
-          </div>
-
-          <div className="sm:mt-4 mt-2">
-            <div className="flex flex-row-reverse justify-end md:gap-[8px] gap-[6px]">
-              <label
-                htmlFor="complianceScreeningStatus"
-                className="font-primary font-semibold md:text-[14px] text-[12px] text-text-gray-more leading-[28px] capitalize cursor-pointer"
-              >
-                compliance screening status
-              </label>
-              <input
-                type="checkbox"
-                id="complianceScreeningStatus"
-                className=""
-              />
-            </div>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:gap-[16px] gap-[8px] ">
-
-            <div className="sm:mt-4 mt-2">
-              <UploadField
-                label="Profile Image"
-                isImage={true}
-                // value={"logo"}
-                // loading={uploading === ".pdf"}
-                // onUpload={async (file) => {
-                //   try {
-                //     setUploading(".pdf");
-                //     const url = await uploadToCloudinary(file, ".pdf");
-                //     setValue(url);
-                //   } catch (err) {
-                //     console.error(err);
-                //   } finally {
-                //     setUploading(null);
-                //   }
-                // }}
-                onRemove={() => setValue(null)}
-              />
-            </div>
-
-            <div className="sm:mt-4 mt-2">
-              <UploadField
-                label="Banner Image"
-                isImage={true}
-                // value={"logo"}
-                // loading={uploading === ".pdf"}
-                // onUpload={async (file) => {
-                //   try {
-                //     setUploading(".pdf");
-                //     const url = await uploadToCloudinary(file, ".pdf");
-                //     setValue(url);
-                //   } catch (err) {
-                //     console.error(err);
-                //   } finally {
-                //     setUploading(null);
-                //   }
-                // }}
-                // onRemove={() => setValue(null)}
-              />
-            </div>
-          </div>
-
-          
-
-            
-
-
-
-        </form>
+        </div>
       </div>
-    </main>
+    </div>
   );
 };
 

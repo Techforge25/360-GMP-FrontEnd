@@ -27,17 +27,17 @@ const BusinessMapView = dynamic(() => import("./BusinessMapView"), {
 });
 
 const SOCIAL_PATTERNS = {
-  linkedin: /^https:\/\/(www\.)?linkedin\.com\/in\//i,
-  twitter: /^https:\/\/(www\.)?(twitter\.com|x\.com)\//i,
-  facebook: /^https:\/\/(www\.)?facebook\.com\//i,
-  instagram: /^https:\/\/(www\.)?instagram\.com\//i,
+  linkedin: /^https:\/\/([\w]+\.)?linkedin\.com\/in\//i,
+  twitter: /^https:\/\/(w\.)?(twitter\.com|x\.com)\//i,
+  facebook: /^(https?:\/\/)?([\w]+\.)?facebook\.com\/(profile\.php\?id=\d+|[A-Za-z0-9.]+)\/?$/i,
+  instagram: /^(https?:\/\/)?([\w]+\.)?instagram\.com\/[A-Za-z0-9._]+\/?$/i,
   website: /^https?:\/\//i,
 };
 
 const getSocialIcon = (platform) => {
   const p = platform?.toLowerCase() || "";
   if (p.includes("linkedin")) return FaLinkedinIn;
-  if (p.includes("twitter")) return FaTwitter;
+  if (p.includes("twitter")) return FaXTwitter;
   if (p.includes("facebook")) return FaFacebookF;
   if (p.includes("instagram")) return FaInstagram;
   return FiGlobe;
@@ -438,10 +438,12 @@ const ActivitySidebar = ({ onUpdateInventory }) => {
         {isEditing ? (
           <div className="space-y-3 bg-[#B4B4B433] p-3 rounded-lg">
             <div className="flex items-center gap-2">
-              <img
+              <Image
                 src="/assets/images/mailIcon.png"
                 className="w-[16px] h-[16px]"
                 alt="email"
+                width={1000}
+                height={1000}
               />
               <input
                 type="email"
@@ -630,7 +632,7 @@ const ActivitySidebar = ({ onUpdateInventory }) => {
         )}
         {/* Map / Location */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden py-3 px-5 mt-4">
-          <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden">
+          <div className="aspect-square bg-blue-50 relative rounded-lg overflow-hidden z-0">
             {isClient && <BusinessMapView center={mapLocation} zoom={13} />}
           </div>
         </div>
@@ -706,6 +708,8 @@ const ApplicantItem = ({ name, time }) => (
 );
 
 import { FiUser } from "react-icons/fi";
+import Image from "next/image";
+import { FaXTwitter } from "react-icons/fa6";
 
 const ContactItem = ({ icon: Icon, text }) => (
   <li className="flex items-start gap-3">

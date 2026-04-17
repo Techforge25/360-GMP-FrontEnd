@@ -40,6 +40,9 @@ const nextConfig = {
       },
     ],
   },
+   allowedDevOrigins: [
+    "http://192.168.1.7:3000",
+  ],
   async rewrites() {
     const backendOrigin =
       process.env.NEXT_PUBLIC_BACKEND_ORIGIN || "http://localhost:8000";

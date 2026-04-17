@@ -56,7 +56,13 @@ export default function UserProfileStep2({
       alert("Description cannot exceed 1000 characters");
       return;
     }
-    if (!institution || !degree || !fieldOfStudy || !startDate || (!isCurrent && !endDate)) {
+    if (
+      !institution ||
+      !degree ||
+      !fieldOfStudy ||
+      !startDate ||
+      (!isCurrent && !endDate)
+    ) {
       alert("Please fill all education fields");
       return;
     }
@@ -93,50 +99,70 @@ export default function UserProfileStep2({
     resetDraft();
   };
 
+  const isPdf = formData.resumeUrl?.endsWith(".pdf");
+
+  console.log("Form Data:", isPdf);
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">Upload your resume</h3>
 
         {formData.resumeUrl && (
-          <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-green-800">
-                Resume uploaded successfully!
-              </p>
-              <p className="text-sm text-green-700 mt-1">
-                Your resume is ready for submission
-              </p>
-              <div className="flex gap-3 mt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleChange("resumeUrl", "");
-                  }}
-                  className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+          <>
+            <div className="flex items-center gap-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center text-green-600">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  Update resume
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleChange("resumeUrl", "")}
-                  className="text-sm text-red-600 hover:text-red-800"
-                >
-                  Remove resume
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-green-800">
+                  Resume uploaded successfully!
+                </p>
+                <p className="text-sm text-green-700 mt-1">
+                  Your resume is ready for submission
+                </p>
+                <div className="flex gap-3 mt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleChange("resumeUrl", "");
+                    }}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Update resume
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleChange("resumeUrl", "")}
+                    className="text-sm text-red-600 hover:text-red-800"
+                  >
+                    Remove resume
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+
+            {isPdf && (
+              <iframe
+                src={formData?.resumeUrl}
+                width="100%"
+                height="300px"
+                style={{ marginTop: "20px", border: "1px solid #ccc" }}
+              />
+            )}
+          </>
         )}
 
         {!formData.resumeUrl && (
@@ -145,10 +171,12 @@ export default function UserProfileStep2({
             subLabel="PDF, DOC, DOCX, JPG, PNG (Max 5MB)"
             onUploadingChange={setIsUploading}
             onUpload={(file, onProgress) =>
-              uploadToCloudinary(file, "user/resume", onProgress).then((url) => {
-                handleChange("resumeUrl", url);
-                return url;
-              })
+              uploadToCloudinary(file, "user/resume", onProgress).then(
+                (url) => {
+                  handleChange("resumeUrl", url);
+                  return url;
+                },
+              )
             }
           />
         )}
@@ -165,7 +193,9 @@ export default function UserProfileStep2({
           placeholder="Type a skill and press Enter or comma (e.g. Python, Java)"
         />
         <div className="flex flex-wrap gap-2 mt-2">
-          <span className="text-sm text-text-hint w-full mb-1">Suggestions:</span>
+          <span className="text-sm text-text-hint w-full mb-1">
+            Suggestions:
+          </span>
           {skillSuggestions?.map((skill) => (
             <button
               key={skill}
@@ -199,7 +229,10 @@ export default function UserProfileStep2({
 
         <div className="space-y-2">
           {formData.education.map((edu, index) => (
-            <div key={index} className="border rounded-lg p-4 bg-surface relative group">
+            <div
+              key={index}
+              className="border rounded-lg p-4 bg-surface relative group"
+            >
               <p className="text-base font-medium">
                 {edu.degree} in {edu.fieldOfStudy}
               </p>
@@ -214,7 +247,12 @@ export default function UserProfileStep2({
                   className="p-2 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                   title="Edit"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -229,7 +267,12 @@ export default function UserProfileStep2({
                   className="p-2 text-red-600 hover:bg-red-50 rounded-md transition-colors"
                   title="Delete"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -272,7 +315,9 @@ export default function UserProfileStep2({
             <Input
               placeholder="Degree"
               value={educationDraft.degree}
-              onChange={(e) => setEducationDraft((p) => ({ ...p, degree: e.target.value }))}
+              onChange={(e) =>
+                setEducationDraft((p) => ({ ...p, degree: e.target.value }))
+              }
               required
             />
             <Input
@@ -320,7 +365,7 @@ export default function UserProfileStep2({
                     }))
                   }
                   required={!educationDraft.isCurrent}
-                  min={educationDraft.startDate || undefined} 
+                  min={educationDraft.startDate || undefined}
                 />
                 {/* Validation message */}
                 {educationDraft.endDate &&
@@ -348,8 +393,11 @@ export default function UserProfileStep2({
             </label>
             <Input
               placeholder="Grade (e.g. GPA 3.8 / First Class)"
+              type="text"
               value={educationDraft.grade}
-              onChange={(e) => setEducationDraft((p) => ({ ...p, grade: e.target.value }))}
+              onChange={(e) =>
+                setEducationDraft((p) => ({ ...p, grade: e.target.value }))
+              }
             />
             <div className="flex justify-between items-center mt-1">
               <span className="text-sm font-medium text-text-secondary">

@@ -10,6 +10,7 @@ import SlateRenderer from "@/components/ui/SlateRenderer";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import UpdateGalleryModal from "./UpdateGalleryModal";
+import { AlertTriangle, User, X } from "lucide-react";
 
 const BusinessAboutTab = ({ businessId }) => {
   const [isGalleryModalOpen, setIsGalleryModalOpen] = useState(false);
@@ -21,6 +22,8 @@ const BusinessAboutTab = ({ businessId }) => {
   const [singleAlbum, setSingleAlbum] = useState(null);
   const [updateAlbum, setUpdateAlbum] = useState(false);
   const { role, user } = useUserRole();
+  const [isImageDeletedModal, setIsImageDeletedModal] = useState(false);
+  const [deleteAlbumId, setDeleteAlbumId] = useState(null);
 
   const getProfileIdFromToken = (token) => {
     if (!token) return null;
@@ -62,7 +65,7 @@ const BusinessAboutTab = ({ businessId }) => {
           await businessProfileAPI.viewBusinessProfile(businessId);
 
         if (response.success && response.data) {
-          console.log(response.data, "response data")
+          console.log(response.data, "response data");
           setProfileData(response.data);
         } else {
           console.error("Fetch profile failed:", response.message);
@@ -80,7 +83,7 @@ const BusinessAboutTab = ({ businessId }) => {
         console.log("Fetching albums for:", businessId);
         const response = await galleryAPI.fetchAlbums(businessId);
         console.log("Fetch albums FULL response:", response);
-        console.log("abcdef")
+        console.log("abcdef");
         setGallery(response.data.docs);
       } catch (error) {
         console.error("Failed to fetch gallery:", error);
@@ -88,26 +91,29 @@ const BusinessAboutTab = ({ businessId }) => {
     }
   };
 
-  const deleteAlbum = async (e, id) => {
-    e.stopPropagation()
+  const handleDeleteModal = (id)=>{
+    setIsImageDeletedModal(true);
+    setDeleteAlbumId(id);
+  }
+
+  const deleteAlbum = async (id) => {
     try {
       const response = await businessProfileAPI.deleteBusinessProfileAlbum(id);
       if (response.success) {
         toast.success("Album deleted successfully!");
+        setIsImageDeletedModal(false);
         fetchAlbums();
       }
     } catch (error) {
       console.error("Failed to delete album:", error);
       toast.error(error?.response?.data?.message || "Failed to delete album");
     }
-  }
+  };
 
   React.useEffect(() => {
     fetchAlbums();
     fetchProfile();
   }, [businessId, isViewAlbumModalOpen, isGalleryModalOpen, updateAlbum]);
-
-  console.log(isGalleryModalOpen, "is gallery")
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
@@ -138,7 +144,6 @@ const BusinessAboutTab = ({ businessId }) => {
           </div>
         </div>
 
-
         {/* Gallery */}
         <div className="bg-white rounded-xl border border-gray-200 p-5 sm:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
@@ -165,7 +170,7 @@ const BusinessAboutTab = ({ businessId }) => {
                   onClick={() => {
                     setSelectedAlbum(album);
                     setIsViewAlbumModalOpen(true);
-                    setIsViewAlbumModalOpen(false)
+                    setIsViewAlbumModalOpen(false);
                   }}
                   className="relative rounded-xl overflow-hidden group aspect-[4/3] cursor-pointer"
                 >
@@ -174,17 +179,14 @@ const BusinessAboutTab = ({ businessId }) => {
                     return (
                       <div key={index} className="absolute inset-0 bg-gray-200">
                         <Image
-                          src={
-                            image
-                          }
+                          src={image}
                           fill
                           alt={"gallery image"}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       </div>
-                    )
+                    );
                   })}
-
 
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-300 group-hover:via-black/40" />
@@ -198,15 +200,23 @@ const BusinessAboutTab = ({ businessId }) => {
                   )}
 
                   {/* Action Buttons */}
+
                   {/* {isOwner && ( */}
                   <div className="absolute top-3 left-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <button className="p-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors" onClick={(e) => deleteAlbum(e, album._id)}>
+                    <button
+                      className="p-1.5 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                      
+                      onClick = {() => {handleDeleteModal(album?._id)}}
+                    >
                       <FiTrash2 className="w-3.5 h-3.5" />
                     </button>
-                    <button className="p-1.5 bg-white text-gray-700 rounded-md hover:bg-gray-100 transition-colors" onClick={() => {
-                      setSingleAlbum(album)
-                      setIsUpdateAlbumModalOpen(true)
-                    }}>
+                    <button
+                      className="p-1.5 bg-white text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
+                      onClick={() => {
+                        setSingleAlbum(album);
+                        setIsUpdateAlbumModalOpen(true);
+                      }}
+                    >
                       <FiEdit2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -262,11 +272,12 @@ const BusinessAboutTab = ({ businessId }) => {
 
           <div className="space-y-3">
             {Array.isArray(profileData?.certifications) &&
-              profileData.certifications.length > 0 ? (
+            profileData.certifications.length > 0 ? (
               profileData.certifications.map((url, index) => {
                 const getFileType = (url) => {
                   const ext = url.split(".").pop().toLowerCase();
-                  if (["jpg", "jpeg", "png", "webp"].includes(ext)) return "image";
+                  if (["jpg", "jpeg", "png", "webp"].includes(ext))
+                    return "image";
                   if (ext === "pdf") return "pdf";
                   if (["doc", "docx"].includes(ext)) return "word";
                   return "other";
@@ -302,7 +313,7 @@ const BusinessAboutTab = ({ businessId }) => {
                       {fileType === "word" && (
                         <iframe
                           src={`https://docs.google.com/gview?url=${encodeURIComponent(
-                            optimizedUrl
+                            optimizedUrl,
                           )}&embedded=true`}
                           title={name}
                           className="w-full h-64"
@@ -323,7 +334,6 @@ const BusinessAboutTab = ({ businessId }) => {
         </div>
       </div>
 
-
       {isUpdateAlbumModalOpen && (
         <UpdateGalleryModal
           isOpen={isUpdateAlbumModalOpen}
@@ -331,7 +341,6 @@ const BusinessAboutTab = ({ businessId }) => {
           album={singleAlbum}
           setUpdateAlbum={setUpdateAlbum}
         />
-
       )}
 
       {isViewAlbumModalOpen && (
@@ -344,18 +353,83 @@ const BusinessAboutTab = ({ businessId }) => {
         />
       )}
 
-
       {isGalleryModalOpen && (
         <UploadGalleryModal
           isOpen={isGalleryModalOpen}
           onClose={() => {
-            setIsGalleryModalOpen(false)
-            setSelectedAlbum(null)
+            setIsGalleryModalOpen(false);
+            setSelectedAlbum(null);
           }}
+          
         />
       )}
+
+      {
+        // For future implementation of delete confirmation
+        isImageDeletedModal&&(
+          <DeleteImageModal
+          onClose={() => {
+            setIsImageDeletedModal(false);
+          }}
+          onDelete={() => deleteAlbum(deleteAlbumId)}
+
+          />
+        )
+      }
     </div>
   );
 };
 
 export default BusinessAboutTab;
+
+const DeleteImageModal = ({ onDelete, onClose }) => {
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      
+      {/* Modal Box */}
+      <div className="bg-white rounded-2xl shadow-xl p-6 w-[90%] max-w-md relative text-center">
+        
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 flex items-center gap-1 text-sm"
+        >
+          Close <X size={16} />
+        </button>
+
+        {/* Icon */}
+        <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-red-100">
+          <AlertTriangle className="text-red-600" size={28} />
+        </div>
+
+        {/* Title */}
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          Want To Delete Image?
+        </h2>
+
+        {/* Description */}
+        <p className="text-gray-500 mb-6 text-sm leading-relaxed">
+          Are you sure you want to delete this image? This action cannot be undone.
+        </p>
+
+        {/* Buttons */}
+        <div className="flex gap-3 mb-4">
+          <button
+            onClick={onClose}
+            className="flex-1 py-2 rounded-lg border text-gray-600 hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+
+          <button
+            onClick={onDelete}
+            className="flex-1 py-2 rounded-lg bg-brand-primary text-white hover:bg-brand-primary flex items-center justify-center gap-2"
+          >
+            Delete <FiTrash2 size={16} />
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
