@@ -4,7 +4,7 @@ class ProductAPI {
   /**
    * Get all products
    */
-  async getAll(params = {}) {
+  async getAll(params) {
     const queryParams = new URLSearchParams(params).toString();
     const url = queryParams ? `/products?${queryParams}` : "/products";
 

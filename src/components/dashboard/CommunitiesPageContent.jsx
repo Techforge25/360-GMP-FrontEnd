@@ -17,8 +17,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
-  // Filters
+  const [isInitialized, setIsInitialized] = useState(false)
   const [sortBy, setSortBy] = useState("recent");
   const [searchQuery, setSearchQuery] = useState("");
   const [recentSearches, setRecentSearches] = useState([]);
@@ -26,14 +25,14 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   const [region, setRegion] = useState("");
   const sentinelRef = useRef(null);
   const searchParams = useSearchParams();
+  const router = useRouter()
 
+  const q = searchParams.get("q");
   useEffect(() => {
     fetchRecentSearches();
-
-    // Check for search query in URL
-    const searchFromUrl = searchParams.get("search");
-    if (searchFromUrl) {
-      setSearchQuery(searchFromUrl);
+    setIsInitialized(true)
+    if (q) {
+      setSearchQuery(q);
     }
   }, [searchParams]);
 
@@ -49,11 +48,12 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   };
 
   useEffect(() => {
+    if (!isInitialized && q) return;
     // Reset and fetch initial data when filters change
     setPage(1);
     setHasMore(true);
     fetchInitialCommunities();
-  }, [industry, region, sortBy]);
+  }, [industry, region, sortBy, searchQuery]);
 
   const loadMoreCommunities = useCallback(async () => {
     if (loadingMore || !hasMore) return;
@@ -89,7 +89,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
     } finally {
       setLoadingMore(false);
     }
-  }, [loadingMore, hasMore, page, searchQuery, industry, region, sortBy]);
+  }, [loadingMore, hasMore, page, industry, region, sortBy]);
 
   // Infinite scroll observer
   useEffect(() => {
@@ -116,7 +116,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
   const fetchInitialCommunities = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const queryParams = new URLSearchParams({
         page: 1,
         limit: 6,
@@ -154,6 +154,12 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
     }
   };
 
+  const removeSearchUrl = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("q");
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }
+
   const handleSearch = async () => {
     setPage(1);
     setHasMore(true);
@@ -168,9 +174,11 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
         console.error("Failed to save search history:", error);
       }
     }
+    removeSearchUrl()
   };
 
   const handleKeyDown = (e) => {
+    removeSearchUrl()
     if (e.key === "Enter") {
       handleSearch();
     }
@@ -304,10 +312,13 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   <BsBuilding className="w-5 h-5 text-gray-400 flex-shrink-0" />
                   <select
                     value={industry}
-                    onChange={(e) => setIndustry(e.target.value)}
+                    onChange={(e) => {
+                      removeSearchUrl()
+                      setIndustry(e.target.value)
+                    }}
                     className="flex-1 bg-transparent border-none focus:outline-none text-base text-gray-700 appearance-none cursor-pointer"
                   >
-                    <option value="">Industry</option>
+                    <option value="">Select Industry</option>
                     <option value="technology">Technology</option>
                     <option value="healthcare">Healthcare</option>
                     <option value="manufacturing">Manufacturing</option>
@@ -320,10 +331,13 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
                   <BsGlobe2 className="w-5 h-5 text-gray-400 flex-shrink-0" />
                   <select
                     value={region}
-                    onChange={(e) => setRegion(e.target.value)}
+                    onChange={(e) => {
+                      removeSearchUrl()
+                      setRegion(e.target.value)
+                    }}
                     className="flex-1 bg-transparent border-none focus:outline-none text-base text-gray-700 appearance-none cursor-pointer"
                   >
-                    <option value="">Region</option>
+                    <option value="">Select Region</option>
                     <option value="north-america">North America</option>
                     <option value="europe">Europe</option>
                     <option value="asia">Asia</option>
@@ -382,11 +396,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
 
       {/* Communities Grid */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {loading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Loading communities...</p>
-          </div>
-        ) : communities.length === 0 ? (
+        {communities.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500">No communities found</p>
           </div>

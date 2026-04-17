@@ -370,7 +370,6 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
           user={user}
           onMembershipUpdate={handleMembershipUpdate}
         />
-
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Sidebar */}
           <div className="lg:col-span-3 space-y-6">
@@ -399,6 +398,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
                   isMember={isMember}
                   membershipStatus={membershipStatus}
                   isOwner={isOwner}
+                  isOwnCommunity={isOwnBusinessCommunity}
                 />
 
                 <FeedTabs
@@ -456,7 +456,6 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

@@ -21,6 +21,7 @@ const FeedInput = ({
   isMember = false,
   membershipStatus = null,
   isOwner = false,
+  isOwnCommunity
 }) => {
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -127,6 +128,7 @@ const FeedInput = ({
   };
 
   return (
+    
     <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
       <CreatePostModal
         isOpen={isModalOpen}
@@ -175,6 +177,8 @@ const FeedInput = ({
           </p>
         </div>
       ) : null}
+
+      { }
 
       <div className="mb-4">
         <textarea

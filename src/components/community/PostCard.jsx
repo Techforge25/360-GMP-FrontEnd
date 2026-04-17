@@ -51,6 +51,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
   const [commentText, setCommentText] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
   const [comments, setComments] = useState([]);
+  const [page, setPage] = useState(1)
 
   const galleryRef = useRef()
 
@@ -320,22 +321,24 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
 
   // Handle load comments
   const handleLoadComments = async () => {
-    if (comments?.length > 0) {
-      // If comments are already loaded, just toggle visibility
-      setShowComments(!showComments);
-      return;
-    }
-
     try {
       setShowComments(true);
-      const response = await postsAPI.getPostComments(post?._id, { limit: 5 });
+
+      const response = await postsAPI.getPostComments(post?._id, {
+        limit: 5,
+        page, // or skip
+      });
 
       if (response?.success) {
-        setComments(response?.data?.comments || []);
+        setComments((prev) => [
+          ...prev,
+          ...(response?.data?.comments || []),
+        ]);
+
+        setPage((prev) => prev + 1);
       }
     } catch (error) {
       console.error("Error loading comments:", error);
-      setShowComments(false);
     }
   };
 
@@ -968,6 +971,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
               <button
                 onClick={() => {
                   handleLoadComments();
+                  setPage((prev) => prev + 1)
                 }}
                 className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
               >
@@ -1303,6 +1307,7 @@ const PostCard = ({ post, onUpdate, onDelete, currentUser, isOwner }) => {
               <button
                 onClick={() => {
                   handleLoadComments();
+                  setPage((prev) => prev + 1)
                 }}
                 className="text-sm text-gray-600 hover:text-gray-800 mt-3 font-medium"
               >
