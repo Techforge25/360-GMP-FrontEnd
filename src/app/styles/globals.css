@@ -18,6 +18,9 @@
   --color-brand-business-icon-light: #FFDFDF;
   --color-brand-business-icons-light: #DFEDFF;
   --color-brand-business-icon-dark: #185ADB;
+  --color-brand-rating-star:#FF8D28;
+  --color-brand-rating-star-border:#E5E7EB;
+  --color-brand-rating-text-border:#6B7280;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
@@ -117,6 +120,9 @@
   --color-brand-business-icon-light: #FFDFDF;
   --color-brand-business-icons-light: #DFEDFF;
   --color-brand-business-icon-dark: #185ADB;
+  --color-brand-rating-star:#FF8D28;
+  --color-brand-rating-star-border:#E5E7EB;
+  --color-brand-rating-text-border:#6B7280;
 
   /* ===== Surfaces ===== */
   --color-surface-DEFAULT: #ffffff;
@@ -234,7 +240,7 @@ input {
   }
 
   .label{
-    @apply font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer
+    @apply font-primary font-semibold md:text-[16px] text-[14px] text-text-primary leading-[28px] capitalize cursor-pointer
   }
   .inputs{
     @apply py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]

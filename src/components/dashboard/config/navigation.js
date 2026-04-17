@@ -77,7 +77,7 @@ export const getProfileMenuLinks = (role) => {
     ...(role === "business"
   ? [
       {
-        label: "setting",
+        label: "Setting",
         href: `${prefix}/business-settings`,
         icon: IoSettingsOutline,
         mobileIconClassName: "bg-gradient-to-r from-pink-500 to-pink-600",

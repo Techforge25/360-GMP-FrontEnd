@@ -119,6 +119,7 @@ export const userTabs = {
   Delivered: "/orders/user/delivered-orders",
   Completed: "/orders/user/completed-orders",
   Cancelled: "/orders/user/cancelled-orders",
+  "To Review":"/orders/user/to-review-orders"
 };
 
 export const tabs = [

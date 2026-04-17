@@ -25,6 +25,7 @@ import ConfirmModal from "@/components/modal/ConfirmModal";
 import api from "@/lib/axios";
 import useSocket from "@/hooks/useSocket";
 import { getStatusColor } from "@/constants/index";
+import BusinessProductReviewModal from "./BusinessProductReviewModal";
 
 const OrderTrackingPage = ({ orderId }) => {
   const router = useRouter();
@@ -106,6 +107,8 @@ const OrderTrackingPage = ({ orderId }) => {
     day: "numeric",
     year: "numeric",
   });
+
+ const [open, setOpen] = useState(false);
 
   useSocket("update-order-status", (data) => {
     if (!data?.status) return;
@@ -948,7 +951,7 @@ const OrderTrackingPage = ({ orderId }) => {
                         <span className="font-bold">Camera Pro Outlet</span>. Thank
                         you for using our escrow service for a secure purchase.
                       </p>
-                      <button className="w-full bg-[#1E0B4B] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#140733] transition-colors text-[16px]">
+                      <button onClick={() => setOpen(true)} className="w-full bg-[#1E0B4B] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#140733] transition-colors text-[16px]">
                         Leave Feedback <FiStar className="w-4 h-4 fill-white" />
                       </button>
                     </div>
@@ -1135,6 +1138,12 @@ const OrderTrackingPage = ({ orderId }) => {
           setShowCancelModal={setShowCancelModal}
           danger={true} // red button
         />
+      )}
+
+      {/* Leave Fedback Modal */}
+
+       {open && (
+        <BusinessProductReviewModal onClose={() => setOpen(false)} />
       )}
 
 
