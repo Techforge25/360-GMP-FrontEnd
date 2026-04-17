@@ -264,7 +264,7 @@ const OperationsandLogisticsForm = () => {
                   Packaging Types
                 </h5>
 
-                <div className="flex items-center gap-[12px] ">
+                <div className="flex items-center flex-wrap gap-[12px] ">
                   {PAKING_TYPES.map((type, ind) => (
                     <div
                       className="flex cursor-pointer items-center gap-[4px] py-[11px] px-[16px] border-[1px] border-border-outline-light rounded-[8px] "

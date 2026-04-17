@@ -144,7 +144,7 @@ const BusinessIntelligenceForm = () => {
               <div className="relative">
                 <input
                   type="text"
-                  className="md-py-[12px] py-[10px] md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px]    "
+                  className="md-py-[12px] py-[10px] md:py-[12px] py-[10px] md:px-[32px] px-[32px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px]    "
                 />
                 <IoIosSearch
                   size={20}
