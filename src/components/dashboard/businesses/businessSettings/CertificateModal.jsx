@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import { IoIosTrash } from "react-icons/io";
+import { MdDownload } from "react-icons/md";
 
 export default function CertificateModal({ isOpen, onClose, fileUrl }) {
   // Close on ESC
@@ -17,29 +19,28 @@ export default function CertificateModal({ isOpen, onClose, fileUrl }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-black/60"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
 
       {/* Modal */}
       <div className="relative bg-white w-[90%] max-w-4xl rounded-lg shadow-lg border border-blue-500">
-        
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b">
           <div className="flex items-center gap-3">
             {/* Delete icon (optional) */}
-            <button className="text-red-500 hover:text-red-700">
-              🗑
+            <button className="text-accent-danger">
+              <IoIosTrash size={24} />
             </button>
 
             {/* Download button */}
             <a
               href={fileUrl}
               download
-              className="bg-indigo-600 text-white px-3 py-1 rounded-md text-sm hover:bg-indigo-700"
+              className="bg-brand-primary text-white px-[16px] py-[8px] rounded-md text-[16px] flex items-center gap-[2px]"
             >
-              ⬇ download
+              <span>
+                <MdDownload size={24} className="text-white" />
+              </span>
+              <span>Download</span>
             </a>
           </div>
 
@@ -54,10 +55,7 @@ export default function CertificateModal({ isOpen, onClose, fileUrl }) {
 
         {/* Body (Preview) */}
         <div className="p-6 flex justify-center bg-gray-100">
-          <iframe
-            src={fileUrl}
-            className="w-full h-[600px] border rounded"
-          />
+          <iframe src={fileUrl} className="w-full h-[600px] border rounded" />
         </div>
       </div>
     </div>
