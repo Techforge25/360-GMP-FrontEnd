@@ -18,6 +18,8 @@ export default function ProfileHeader({ business }) {
   const isUserRole =
     role === "user" || role === "free_trial" || role === "paid_user";
 
+  console.log(business, "business info")
+
   // Robust check for free trial (role or subscription plan)
   const isFreeTrial =
     role === "free_trial" ||
@@ -85,7 +87,7 @@ export default function ProfileHeader({ business }) {
       console.error("Error creating review invite:", error);
       showError(
         error?.response?.data?.message ||
-          "Something went wrong while initiating review.",
+        "Something went wrong while initiating review.",
       );
     } finally {
       setIsLoadingInvite(false);
@@ -121,10 +123,9 @@ export default function ProfileHeader({ business }) {
               onClick={handlePostReview}
               disabled={isLoadingInvite || isFreeTrial}
               className={`px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 transition-all duration-300 
-                ${
-                  isFreeTrial
-                    ? "bg-gray-400 text-gray-100 cursor-not-allowed opacity-80"
-                    : "bg-[#f2994a] text-white hover:bg-[#e08a3e] disabled:opacity-70 disabled:cursor-not-allowed"
+                ${isFreeTrial
+                  ? "bg-gray-400 text-gray-100 cursor-not-allowed opacity-80"
+                  : "bg-[#f2994a] text-white hover:bg-[#e08a3e] disabled:opacity-70 disabled:cursor-not-allowed"
                 }`}
             >
               {isLoadingInvite ? (
@@ -175,7 +176,7 @@ export default function ProfileHeader({ business }) {
               <span>{employees}</span>
             </div>
             <div className="flex items-center gap-1">
-              <span>$ Revenue • {revenue}</span>
+              <span>$ Revenue • {business?.annualRevenueRange}</span>
             </div>
             <div className="flex items-center gap-1">
               <BsCalendar3 />

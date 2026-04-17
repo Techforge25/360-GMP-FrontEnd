@@ -408,9 +408,9 @@ const ActivitySidebar = ({ onUpdateInventory }) => {
           {applicants.length > 0 ? (
             applicants.map((app, index) => (
               <ApplicantItem
-                key={app._id || index}
-                name={app.applicantName || "Unknown Candidate"} // Assuming applicantName or similar field
-                time={formatTimeAgo(app.createdAt)}
+                key={app?._id || index}
+                name={app?.userProfileId?.fullName}
+                time={formatTimeAgo(app?.createdAt)}
               />
             ))
           ) : (

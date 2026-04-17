@@ -1,7 +1,6 @@
 export default function Step2({ formData, handleChange, setIsUploading, phoneError }) {
      const [currentCertName, setCurrentCertName] = useState("");
      const [isCustomCert, setIsCustomCert] = useState(false);
-     const [uploadingCert, setUploadingCert] = useState(false);
      const [previewCert, setPreviewCert] = useState(null);
 
      const predefinedCerts = [
@@ -11,15 +10,6 @@ export default function Step2({ formData, handleChange, setIsUploading, phoneErr
           "FDA Approved",
           "Ethical Sourcing",
      ];
-
-     // const handleAddCert = (name, url) => {
-     //      const currentCerts = formData.certifications || [];
-     //      if (currentCerts.length >= 3) return;
-
-     //      handleChange("certifications", [...currentCerts, { name, url }]);
-     //      setCurrentCertName("");
-     //      setIsCustomCert(false);
-     // };
 
      return (
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-300">
@@ -323,14 +313,6 @@ export default function Step2({ formData, handleChange, setIsUploading, phoneErr
                               <div className="sticky top-0 bg-white border-b border-border-light p-4 flex justify-between items-center z-10">
                                    <h3 className="text-lg font-semibold">{previewCert.name}</h3>
                                    <div className="flex items-center gap-3">
-                                        {/* <a
-                  href={previewCert.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-brand-primary hover:text-brand-primary/80 transition-colors"
-                >
-                  Open in New Tab
-                </a> */}
                                         <button
                                              type="button"
                                              onClick={() => setPreviewCert(null)}

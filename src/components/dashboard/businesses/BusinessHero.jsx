@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import Image from "next/image";
 import { IoSend } from "react-icons/io5";
 import { MdClear } from "react-icons/md";
+import { FaBagShopping } from "react-icons/fa6";
 
 const BusinessHero = ({ query, setQuery, location, setLocation, onSearch, onClearFilters }) => {
   return (
@@ -47,10 +48,10 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch, onClea
               />
             </div>
             <div className="flex items-center px-3 py-2.5 xs:py-3 bg-white rounded-md border border-gray-200 shadow-sm">
-              <FiMapPin className="text-gray-500 mr-2 w-4 h-4 flex-shrink-0" />
+              <FaBagShopping className="text-gray-500 mr-2 w-4 h-4 flex-shrink-0" />
               <input
                 type="text"
-                placeholder="Type Location"
+                placeholder="Search Business Type"
                 className="w-full bg-transparent border-none focus:outline-none text-sm text-gray-700 placeholder:text-gray-400"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
@@ -89,7 +90,7 @@ const BusinessHero = ({ query, setQuery, location, setLocation, onSearch, onClea
               />
             </div>
             <div className="flex-1 flex items-center px-4 py-4 h-12 lg:h-14 bg-white rounded-md border border-gray-200 shadow-sm">
-              <FiMapPin className="text-gray-500 mr-3 w-5 h-5 flex-shrink-0" />
+              <FaBagShopping className="text-gray-500 mr-2 w-4 h-4 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Search Business Type"

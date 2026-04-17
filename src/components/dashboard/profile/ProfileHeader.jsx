@@ -122,7 +122,7 @@ const ProfileHeader = ({ activeTab = "Home", onTabChange }) => {
       try {
         setIsUploadingBanner(true);
         const bannerUrl = await uploadToCloudinary(file, "business/banner");
-        const response = await businessProfileAPI.updateMyProfile({
+        const response = await businessProfileAPI.updateBanner({
           banner: bannerUrl,
         });
         if (response?.data) {

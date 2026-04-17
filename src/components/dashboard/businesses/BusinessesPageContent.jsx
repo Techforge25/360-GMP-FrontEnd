@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { CiMenuBurger } from "react-icons/ci";
 import { FiX } from "react-icons/fi";
 import businessProfileAPI from "@/services/businessProfileAPI";
+import { useUserRole } from "@/context/UserContext";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function BusinessesPageContent() {
   const [businesses, setBusinesses] = useState([]);
@@ -19,12 +21,15 @@ export default function BusinessesPageContent() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [selectedBusinessContact, setSelectedBusinessContact] = useState(null);
   const [registeredCountries, setRegisteredCountries] = useState([]);
-
+  const paramSearch = new URLSearchParams(window.location.search);
+  const searchParam = paramSearch.get("q")
+  console.log(searchParam, "searched params")
   // Auto-loader State
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [itemsPerPage] = useState(10);
   const sentinelRef = useRef(null);
+  const router = useRouter()
 
   const [filters, setFilters] = useState({
     industries: [],
@@ -37,17 +42,18 @@ export default function BusinessesPageContent() {
     setHasMore(true);
     fetchInitialBusinessProfiles();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
+  }, [filters, searchParam]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
   };
 
+
   const getQueryParams = (targetPage) => {
     const params = {
       page: targetPage,
       limit: itemsPerPage,
-      search: query,
+      search: searchParam ?? query,
       businessType: location,
       country: filters.countries,
       // industry: filters.industries.length > 0 ? filters.industries.join("|") : undefined,
@@ -176,9 +182,17 @@ export default function BusinessesPageContent() {
     setPage(1);
     setHasMore(true);
     fetchInitialBusinessProfiles();
+    router.replace(pathname)
   };
 
+  const pathname = usePathname()
+
+  const removeParams = () => {
+    router.replace(pathname)
+  }
+
   const clearFilters = () => {
+    removeParams()
     setFilters({
       industries: [],
       countries: "",

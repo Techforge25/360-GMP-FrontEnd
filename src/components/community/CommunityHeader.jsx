@@ -10,6 +10,7 @@ const CommunityHeader = ({
   isOwner,
   isMember,
   membershipStatus,
+  isOwnCommunity,
   user,
   onMembershipUpdate,
 }) => {
@@ -66,7 +67,7 @@ const CommunityHeader = ({
       );
     }
 
-    if (isMember) {
+    if (isMember && !isOwnCommunity) {
       return (
         <>
           <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 bg-transparent text-red-500 border rounded-lg hover:bg-[red] hover:text-white font-semibold transition-colors text-sm whitespace-nowrap" onClick={() => leaveCommunity(community?._id)}>
@@ -102,20 +103,27 @@ const CommunityHeader = ({
     }
 
     return (
-      <button
-        onClick={handleJoinCommunity}
-        disabled={isJoining}
-        className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-colors text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {isJoining ? (
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-            Joining...
-          </div>
+      <>
+        {isOwnCommunity ? (
+          <p className="text-red-500 mt-8">You cannot join your own Business Community</p>
         ) : (
-          "Join Community"
+          <button
+            onClick={handleJoinCommunity}
+            disabled={isJoining}
+            className="flex-1 sm:flex-none px-4 sm:px-6 py-2 sm:py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition-colors text-sm whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isJoining ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                Joining...
+              </div>
+            ) : (
+              "Join Community"
+            )}
+          </button>
         )}
-      </button>
+      </>
+
     );
   };
 

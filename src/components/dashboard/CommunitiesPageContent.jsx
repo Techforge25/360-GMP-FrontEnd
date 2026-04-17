@@ -25,9 +25,7 @@ export default function CommunitiesPageContent({ canCreateCommunity = false }) {
   const [industry, setIndustry] = useState("");
   const [region, setRegion] = useState("");
   const sentinelRef = useRef(null);
-
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   useEffect(() => {
     fetchRecentSearches();

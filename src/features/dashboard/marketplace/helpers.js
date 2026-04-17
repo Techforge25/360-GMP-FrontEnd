@@ -1,3 +1,5 @@
+"use client"
+import { useUserRole } from "@/context/UserContext";
 import { getDashboardPathForRole } from "@/lib/auth/session";
 
 export const extractEntityId = (value) => {
@@ -11,13 +13,14 @@ export const buildMarketplaceQueryParams = ({
   page = 1,
   limit = 8,
   query,
+  searchedKey,
   selectedCategories,
   selectedCountry,
 }) => {
   const params = { page, limit };
-
+  console.log(searchedKey, "searched key")
   if (query) {
-    params.search = query;
+    params.search = searchedKey !== "" ? searchedKey : query;
   }
   if (selectedCategories.length > 0) {
     params.category = selectedCategories.join(",");

@@ -97,7 +97,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
       fetchMembers();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [community?._id, activeTab, currentPage]);
+  }, [community?._id, activeTab, currentPage, handleAcceptRequest, handleIgnoreRequest]);
 
   // Clear selection when tab or page changes
   useEffect(() => {
@@ -117,6 +117,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
 
   // Creator = business profile. Use community.businessId for owner, else memberId when BusinessProfile
   const getMemberDisplayName = (member) => {
+    console.log(member, "member")
     if (member.role === "owner" && community?.businessId) {
       return (
         community.businessId?.companyName ||
@@ -126,15 +127,11 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
     }
     if (member.memberModel === "BusinessProfile") {
       return (
-        member.memberId?.companyName ||
-        member.userProfileId?.fullName ||
-        "Unknown"
+        member.memberId?.fullName
       );
     }
     return (
-      member.userProfileId?.fullName ||
-      member.memberId?.companyName ||
-      "Unknown"
+      member.memberId?.fullName
     );
   };
 
@@ -142,18 +139,16 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
     console.log(member, "memeber")
     if (member.role === "owner" && community?.businessId) {
       return (
-        community.businessId?.logo || "/assets/images/Portrait_Placeholder.png"
+        community.memberId?.logo
       );
     }
     if (member.role === "member") {
       return (
-        member.userProfileId?.logo
+        member.memberId?.logo
       );
     }
     return (
-      member.userProfileId?.imageProfile ||
-      member.memberId?.logo ||
-      "/assets/images/Portrait_Placeholder.png"
+      member.memberId?.logo
     );
   };
 
@@ -252,6 +247,8 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
       setProcessingId(null);
     }
   };
+
+  console.log(pendingRequests, "requests pending")
 
   const handleIgnoreRequest = async (userProfileId) => {
     if (!community?._id) return;
@@ -372,6 +369,7 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
       year: "numeric",
     });
   };
+
 
   return (
     <div className="bg-white rounded-xl border border-gray-200">
@@ -530,9 +528,9 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       <div className="relative">
                         <img
                           src={
-                            request.userProfileId?.logo
+                            request.memberId?.logo
                           }
-                          alt={request.userProfileId?.fullName}
+                          alt={request.memberId?.fullName}
                           className="w-10 h-10 rounded-full object-cover"
                           onError={(e) => {
                             e.target.src =
@@ -542,16 +540,16 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-gray-900">
-                          {request.userProfileId?.fullName || "Unknown User"}
+                          {request?.memberId?.fullName}
                         </h4>
                         <p className="text-sm text-gray-500">
-                          {request.userProfileId?.title || "Member"}
+                          {request?.memberId?.title}
                         </p>
                       </div>
                     </div>
                     <div className="col-span-2 flex items-center">
                       <span className="text-sm text-gray-500">
-                        {formatDate(request.createdAt)}
+                        {formatDate(request?.createdAt)}
                       </span>
                     </div>
                     <div className="col-span-2 flex items-center">
@@ -567,20 +565,20 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                     <div className="col-span-2 flex items-center gap-2">
                       <button
                         onClick={() =>
-                          handleAcceptRequest(request.userProfileId?._id)
+                          handleAcceptRequest(request.memberId?._id)
                         }
-                        disabled={processingId === request.userProfileId?._id}
+                        disabled={processingId === request.memberId?._id}
                         className="px-3 py-1.5 bg-blue-100 text-blue-700 text-sm rounded-md hover:bg-blue-200 transition-colors disabled:opacity-50"
                       >
-                        {processingId === request.userProfileId?._id
+                        {processingId === request.memberId?._id
                           ? "..."
                           : "Accept"}
                       </button>
                       <button
                         onClick={() =>
-                          handleIgnoreRequest(request.userProfileId?._id)
+                          handleIgnoreRequest(request.memberId?._id)
                         }
-                        disabled={processingId === request.userProfileId?._id}
+                        disabled={processingId === request.memberId?._id}
                         className="px-3 py-1.5 bg-red-100 text-red-700 text-sm rounded-md hover:bg-red-200 transition-colors disabled:opacity-50"
                       >
                         Ignore
@@ -676,14 +674,14 @@ const CommunityMembersView = ({ onBack, community, isOwner }) => {
                               <div className="absolute right-0 top-full mt-1 z-20 bg-white border border-gray-200 rounded-lg shadow-lg py-1 w-40">
                                 {member.role === "admin" ? (
                                   <button
-                                    onClick={() => handleDemoteAdmin(member?.memberId)}
+                                    onClick={() => handleDemoteAdmin(member?.memberId?._id)}
                                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                                   >
                                     Demote Admin
                                   </button>
                                 ) : (
                                   <button
-                                    onClick={() => handleMakeAdmin(member?.memberId)}
+                                    onClick={() => handleMakeAdmin(member?.memberId?._id)}
                                     className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
                                   >
                                     Make Admin

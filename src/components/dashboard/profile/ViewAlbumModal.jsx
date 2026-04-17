@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useState } from "react";
 import { FiX, FiImage, FiCalendar } from "react-icons/fi";
 
@@ -41,12 +42,31 @@ const ViewAlbumModal = ({ isOpen, onClose, album }) => {
                   onClick={() => setSelectedImage(image)}
                   className="group relative aspect-square rounded-xl overflow-hidden cursor-pointer border border-gray-200 shadow-sm bg-white"
                 >
-                  <img
-                    src={image}
-                    alt={`Album image ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                  />
+                  {image.endsWith(".mp4") ||
+                    image.endsWith(".mov") ||
+                    image.endsWith(".avi") ? (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <div>
+                        <video
+                          src={image}
+                          autoPlay
+                          className="w-full h-full object-cover"
+                        ></video>
+                      </div>
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+                        <FiImage className="text-white w-8 h-8 opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300" />
+                      </div>
+                    </div>
+                  ) : (
+                    <Image
+                      src={image}
+                      alt={`Album image ${index + 1}`}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                      width={1000}
+                      height={1000}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
                     <FiImage className="text-white w-8 h-8 opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all duration-300" />
                   </div>
@@ -86,11 +106,24 @@ const ViewAlbumModal = ({ isOpen, onClose, album }) => {
           >
             <FiX className="w-8 h-8" />
           </button>
-          <img
-            src={selectedImage}
-            alt="Full view"
-            className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
-          />
+          {selectedImage.endsWith(".mp4") ||
+            selectedImage.endsWith(".mov") ||
+            selectedImage.endsWith(".avi") ? (
+            <video
+              src={selectedImage}
+              autoPlay
+              loop
+              className="max-w-full max-h-[90vh] rounded-lg shadow-2xl"
+            ></video>
+          ) : (
+            <Image
+              src={selectedImage}
+              alt="Full view"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              width={1000}
+              height={1000}
+            />
+          )}
         </div>
       )}
     </div>

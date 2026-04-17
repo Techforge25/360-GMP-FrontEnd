@@ -32,6 +32,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
   const [posts, setPosts] = useState([]);
   const [postsLoading, setPostsLoading] = useState(false);
   const [pagination, setPagination] = useState(null);
+  const [isOwnBusinessCommunity, setIsOwnBusinessCommunity] = useState(false)
 
   // Fetch community posts
   const fetchCommunityPosts = async (page = 1, filterType = activeTab) => {
@@ -204,6 +205,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
 
         if (response.success) {
           setCommunity(response.data.community);
+          setIsOwnBusinessCommunity(response?.data?.isOwnCommunity)
 
           // Determine if the current user is the owner by checking the
           // membership role field from the backend schema (role: "owner")
@@ -364,6 +366,7 @@ export default function CommunityDetailsPage({ params: paramsPromise }) {
           isOwner={isOwner}
           isMember={isMember}
           membershipStatus={membershipStatus}
+          isOwnCommunity={isOwnBusinessCommunity}
           user={user}
           onMembershipUpdate={handleMembershipUpdate}
         />

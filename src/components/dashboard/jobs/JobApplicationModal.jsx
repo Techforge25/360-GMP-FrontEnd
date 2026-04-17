@@ -154,6 +154,10 @@ export default function JobApplicationModal({
 
 
 
+  const handleBack = () => {
+    setStep(STEP_FORM);
+  }
+
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -245,6 +249,7 @@ export default function JobApplicationModal({
             )}
           </>
         )}
+        <iframe src={formData.resumeUrl} className="mx-auto" frameborder="0"></iframe>
       </div>
 
       <div className="space-y-2">
@@ -338,6 +343,15 @@ export default function JobApplicationModal({
         >
           Continue <FiArrowRight />
         </Button>
+        {step === STEP_REVIEW && (
+          <Button
+            onClick={handleBack}
+            className="w-full sm:w-auto px-12 h-12 bg-[#2E1065] hover:bg-[#4c1d95] text-white rounded-lg flex items-center justify-center gap-2"
+          >
+            Back <FiArrowRight />
+          </Button>
+        )}
+
       </div>
     </div>
   );
@@ -445,7 +459,7 @@ export default function JobApplicationModal({
         </div>
       </section>
 
-      <div className="flex justify-center pt-4">
+      <div className="flex items-baseline gap-2 justify-center pt-4">
         <Button
           onClick={handleSubmit}
           disabled={loading}
@@ -459,6 +473,23 @@ export default function JobApplicationModal({
             </>
           )}
         </Button>
+        {step === STEP_REVIEW && (
+          <div className="flex justify-center pt-4">
+            <Button
+              onClick={handleBack}
+              disabled={loading}
+              className="w-full sm:w-auto px-12 h-12 bg-transparent hover:bg-[#240457] hover:text-white border text-[#240457] rounded-lg flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                "Submitting..."
+              ) : (
+                <>
+                  Back <FiArrowRight />
+                </>
+              )}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

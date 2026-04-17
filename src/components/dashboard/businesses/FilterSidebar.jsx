@@ -1,4 +1,6 @@
 "use client";
+import { useUserRole } from "@/context/UserContext";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FiChevronDown, FiChevronUp, FiSearch, FiFilter } from "react-icons/fi";
 
@@ -10,6 +12,7 @@ const FilterGroup = ({
   isOpenDefault = true,
 }) => {
   const [isOpen, setIsOpen] = useState(isOpenDefault);
+
 
   const handleCheckboxChange = (option) => {
     if (selectedValues.includes(option)) {
@@ -56,12 +59,18 @@ const FilterGroup = ({
 };
 
 const FilterSidebar = ({ filters = {}, onFilterChange, registeredCountries }) => {
+  const { setSearchedKey } = useUserRole()
+  const pathname = usePathname()
+  const router = useRouter()
+  
   const handleCountryChange = (values) => {
     onFilterChange({ ...filters, countries: values });
+    router.replace(pathname)
   };
 
   const handleRatingChange = (values) => {
     onFilterChange({ ...filters, ratings: values });
+    router.replace(pathname)
   };
 
   return (

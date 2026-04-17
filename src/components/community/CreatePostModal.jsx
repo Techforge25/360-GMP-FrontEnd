@@ -226,7 +226,7 @@ const CreatePostModal = ({ isOpen, onClose, onSubmit, communityId }) => {
             <span className="text-gray-300">|</span>
             <button
               onClick={() => fileInputRef.current?.click()}
-              disabled={isSubmitting}
+              disabled={isSubmitting || selectedImages.length === 4}
               className="flex items-center gap-2 group transition-all disabled:opacity-50"
             >
               <IoCameraOutline className="text-[#22c55e] w-6 h-6" />
@@ -241,7 +241,7 @@ const CreatePostModal = ({ isOpen, onClose, onSubmit, communityId }) => {
               className="hidden"
               accept="image/*,video/*"
               multiple
-              disabled={isSubmitting}
+              disabled={isSubmitting || selectedImages.length === 4}
             />
           </div>
 

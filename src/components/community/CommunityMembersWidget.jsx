@@ -35,7 +35,7 @@ const CommunityMembersWidget = ({
     };
 
     fetchMembers();
-  }, [communityId]);
+  }, [communityId, community]);
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5">
@@ -61,32 +61,21 @@ const CommunityMembersWidget = ({
             const isCreator = member.role === "owner" && community?.businessId;
             const isBusiness =
               member.memberModel === "BusinessProfile" || isCreator;
-            const displayName = isCreator
-              ? community.businessId?.companyName ||
-              community.businessId?.name ||
-              "Business"
-              : isBusiness
-                ? member.memberId?.companyName ||
-                member.userProfileId?.fullName ||
-                "Unknown"
-                : member.userProfileId?.fullName ||
-                member.memberId?.companyName ||
-                "Unknown Member";
-            const displayImage = isCreator
-              ? community.businessId?.logo
-              : !isBusiness
-                ? member.userProfileId?.logo : null;
-            const displaySubtitle = isCreator
-              ? community.businessId?.primaryIndustry ||
-              community.businessId?.businessType ||
-              "Business"
-              : isBusiness
-                ? member.memberId?.primaryIndustry ||
-                member.memberId?.businessType ||
-                "Business"
-                : member.userProfileId?.title ||
-                member.memberId?.industry ||
-                "Member";
+            // const displayName = isCreator
+            //   ? community.businessId?.companyName ||
+            //   community.businessId?.name ||
+            //   "Business"
+            //   : isBusiness
+            //     ? member.memberId?.companyName ||
+            //     member.userProfileId?.fullName ||
+            //     "Unknown"
+            //     : member.userProfileId?.fullName ||
+            //     member.memberId?.companyName ||
+            //     "Unknown Member";
+            const displayName = member?.memberId?.fullName
+            const displayImage = member?.memberId?.logo
+            const displaySubtitle = member?.memberId?.title
+
             return (
               <div
                 key={member._id || index}

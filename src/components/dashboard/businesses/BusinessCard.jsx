@@ -114,7 +114,6 @@ const BusinessCard = ({ business, onContactClick }) => {
     sponsored = false,
   } = business || {};
 
-  console.log(business, "businesssssss")
 
   return (
     <div
@@ -179,13 +178,13 @@ const BusinessCard = ({ business, onContactClick }) => {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 bg-gray-50/50 rounded-lg p-4 mb-6 border border-gray-100">
         <div>
           <p className="text-sm text-black font-semibold mb-1">
-            On-time delivery
+            Operation Hours
           </p>
-          <p className="text-sm font-sm text-gray-600">{business?.stats?.onTime}</p>
+          <p className="text-sm font-sm text-gray-600">{business?.operationHour}</p>
         </div>
         <div>
-          <p className="text-sm text-black font-semibold mb-1">Response time</p>
-          <p className="text-sm font-sm text-gray-600">{business?.stats?.responseRate}</p>
+          <p className="text-sm text-black font-semibold mb-1">Company Size</p>
+          <p className="text-sm font-sm text-gray-600">{business?.companySize}</p>
         </div>
         <div>
           <p className="text-sm text-black font-semibold mb-1">Products</p>

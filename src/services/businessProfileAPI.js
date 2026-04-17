@@ -99,6 +99,24 @@ class BusinessProfileAPI {
     });
   }
 
+  async getBusinessesName(search) {
+    return await api.get({
+      url: `/businessProfile${search}`,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
+  async getGlobalSearch(search) {
+    return await api.get({
+      url: `/explore?search=${search}`,
+      activateLoader: true,
+      enableSuccessMessage: true,
+      enableErrorMessage: true,
+    });
+  }
+
   /**
    * Delete a business profile
    */
@@ -133,6 +151,16 @@ class BusinessProfileAPI {
       enableSuccessMessage: false,
       enableErrorMessage: false,
     });
+  }
+
+  async updateBanner(banner) {
+    return await api.patch({
+      url: `/business-profile-management/banner`,
+      payload: { banner },
+      activateLoader: false,
+      enableSuccessMessage: false,
+      enableErrorMessage: false,
+    })
   }
 
   /**

@@ -20,6 +20,7 @@ import { FaCrown } from "react-icons/fa";
 import SlateRenderer from "@/components/ui/SlateRenderer";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import DOMPurify from "dompurify"
 
 // Dynamically import Leaflet map to avoid SSR issues
 const BusinessMapView = dynamic(
@@ -201,15 +202,18 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
     return null;
   };
 
+  console.log(description, "description")
+
   return (
     <div className="flex flex-col lg:flex-row gap-6 mb-10">
       {/* Left Column: Overview */}
       <div className="flex-1 rounded-xl p-6 border border-[#E6E6E6]">
         <div>
           <h2 className="text-3xl font-medium text-black mb-4">Overview</h2>
-          <SlateRenderer
-            content={description}
-            className="text-gray-600 leading-relaxed mb-6 text-sm"
+          <p className="text-sm text-gray-500 mb-4 leading-4"
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(description),
+            }}
           />
         </div>
 
@@ -366,6 +370,6 @@ export default function ProfileOverview({ business, socialLinks = [] }) {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
