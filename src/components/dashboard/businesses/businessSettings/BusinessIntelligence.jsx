@@ -1,16 +1,10 @@
-import {
-  BusinessIntelligenceDetails,
-  companyIdentityLeftData,
-  OperationsAndLogisticsData,
-  regionOfOperations,
-  standerdUnitWeight,
-} from "@/constants/index";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaEdit } from "react-icons/fa";
 
-const BusinessIntelligence = () => {
+const BusinessIntelligence = ({ businessIntelligence }) => {
+  console.log(businessIntelligence, "business intelligence")
   return (
     <div className="settingsContainer">
       {/* Header Business Settings */}
@@ -41,7 +35,7 @@ const BusinessIntelligence = () => {
       {/* Info Heading  */}
       <div className="my-6 border-b border-border-gray-light pb-2">
         <p className="settings-subheading">
-          Primary B2B Contact
+          {businessIntelligence?.primaryB2BContact?.headingName}
         </p>
       </div>
 
@@ -49,11 +43,11 @@ const BusinessIntelligence = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 -gap-[16px]">
         {/* Start Left */}
-        {BusinessIntelligenceDetails.map((item, ind) => (
-          <div key={ind}  className="w-full">
+        {businessIntelligence?.primaryB2BContact?.details?.map((item, ind) => (
+          <div key={ind} className="w-full">
             <div className="my-2">
-              <p className="settings-title">{item.lable}</p>
-              <p className="settings-name">{item.fieldsData}</p>
+              <p className="settings-title">{item.key}</p>
+              <p className="settings-name">{item.value}</p>
             </div>
           </div>
         ))}
@@ -64,79 +58,91 @@ const BusinessIntelligence = () => {
       <div>
         <div className="border-b border-border-gray-light pb-2">
           <p className="settings-subheading">
-            Stack Holder discolosure
+            {businessIntelligence?.stakeHolderDisclosure?.headingName}
           </p>
         </div>
 
-        <div className="sm:my-4 my-2">
-          <p className="settings-title">
-            Owner & Leadership
-          </p>
-          <p className="settings-name">
-            <span className="uppercase">CEO,MD,OFFICER</span>{" "}
-            <span className="w-[6px] h-[6px] bg-text-secondary rounded-full inline-block" />{" "}
-            <span>5 members</span>
-          </p>
-        </div>
+        {businessIntelligence?.stakeHolderDisclosure?.details?.map((detail, index) => {
+          return (
+            <div key={index} className="sm:my-4 my-2">
+              <p className="settings-title">
+                {detail?.key}
+              </p>
+              {detail?.value?.map((val, index) => {
+                return (
+                  <p className="settings-name" key={index}>
+                    <span className="uppercase">{val}</span>{" "}
+                  </p>
+                )
+              })}
+
+            </div>
+          )
+        })}
+
       </div>
 
       <div>
         <div className="border-b border-border-gray-light pb-2">
           <p className="settings-subheading">
-            Operational & Trade Profile
+            {businessIntelligence?.operationalTradeProfile?.headingName}
           </p>
         </div>
 
-        <div className="sm:my-4 my-2">
-          <p className="settings-title">
-            Region Of Operation
-          </p>
-          <div className="flex items-center gap-[12px] flex-wrap md:py-[8px] py-[6px]">
-            
-              <button
-                className="py-[11px] px-[29px] font-secondary font-medium text-[14px] text-white border-[1px] border-border-outline-light rounded-[8px]   bg-brand-primary "
-              >
-                Eurape
-              </button>
-           
-          </div>
-        </div>
-      </div>
+        {businessIntelligence?.operationalTradeProfile?.details?.map((ops, index) => {
+          const isArray = Array.isArray(ops?.value);
 
-      <div className="flex items-center md:flex-row flex-col justify-between gap-[4px]">
-        <div className="w-full">
-          <h6 className="settings-title">
-            Product Capacity
-          </h6>
-          <p className="settings-name">
-            50,000+ Units per month
-          </p>
-        </div>
-        <div className="w-full">
-          <h6 className="settings-title">
-            Trade affiliation
-          </h6>
-          <p className="settings-name">
-            Trade affiliation
-          </p>
-        </div>
+          return (
+            <div key={index} className="sm:my-4 my-2">
+              <p className="settings-title">{ops?.key}</p>
+
+              <div className="flex items-center gap-3">
+                {isArray ? (
+                  ops?.value?.map((region, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-[12px] flex-wrap md:py-[8px] py-[6px]"
+                    >
+                      {ops.key === "Region Of Operation" ? (
+                        <button className="py-[11px] px-[29px] font-secondary font-medium text-[14px] text-white border-[1px] border-border-outline-light rounded-[8px] bg-brand-primary">
+                          {region}
+                        </button>
+                      ) : (
+                        <p className="settings-name">{ops?.value}</p>
+                      )}
+
+                    </div>
+                  ))
+                ) : (
+                  <p className="settings-name">{ops?.value}</p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+
       </div>
 
       <div className="md:py-[32px] sm:py-[28px] py-[22px] ">
         <div className="border-b border-border-gray-light pb-2">
           <p className="settings-subheading">
-            Financial and Regulatory
+            {businessIntelligence?.financialAndRegulatory?.headingName}
           </p>
         </div>
 
-        <div className="sm:my-4 my-2">
-          <p className="settings-title">
-            Auditing Agency
-          </p>
-          <p className="settings-name">
-            SGS, Intertek, PWC, or Local Auditor
-          </p>
-        </div>
+        {businessIntelligence?.financialAndRegulatory?.details?.map((detail, index) => {
+          return (
+            <div className="sm:my-4 my-2">
+              <p className="settings-title">
+                {detail?.key}
+              </p>
+              <p className="settings-name">
+                {detail?.value}
+              </p>
+            </div>
+          )
+        })}
+
       </div>
     </div>
   );

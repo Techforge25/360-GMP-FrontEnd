@@ -6,9 +6,11 @@ import { RiArrowDropLeftLine, RiArrowDropRightLine } from "react-icons/ri";
 import OperationsAndLogistics from "./OperationsAndLogistics";
 import BusinessIntelligence from "./BusinessIntelligence";
 import DocumentationAndVerification from "./DocumentationAndVerification";
+import useSettings from "@/hooks/useSettings";
 
 const BusinessSideNav = ({ setActiveTab, activeTab }) => {
   const scrollRef = useRef(null);
+  const myProfile = useSettings(activeTab)
 
   const scrollLeft = () => {
     if (scrollRef.current) {
@@ -80,13 +82,13 @@ const BusinessSideNav = ({ setActiveTab, activeTab }) => {
       </div>
 
       {activeTab === "company identity" ? (
-        <CompanyIdentity />
+        <CompanyIdentity companyIdentity={myProfile} />
       ) : activeTab === "Operations & Logistics" ? (
-        <OperationsAndLogistics />
+        <OperationsAndLogistics operationsLogistics={myProfile} />
       ) : activeTab === "Business Intelligence" ? (
-        <BusinessIntelligence />
+        <BusinessIntelligence businessIntelligence={myProfile} />
       ) : activeTab === "Documentation & Verification" ? (
-        <DocumentationAndVerification />
+        <DocumentationAndVerification documentationVerification={myProfile} />
       ) : (
         "No Data Found"
       )}
