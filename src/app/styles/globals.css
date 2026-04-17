@@ -16,7 +16,7 @@
   --color-brand-business: #8A38F5;
   --color-brand-business-button-light: #DCDCDC33;
   --color-brand-business-icon-light: #FFDFDF;
-  --color-brand-business-icon2-light: #DFEDFF;
+  --color-brand-business-icons-light: #DFEDFF;
   --color-brand-business-icon-dark: #185ADB;
 
   /* ===== Surfaces ===== */
@@ -34,11 +34,11 @@
   --color-text-link: #2497cd;
   --color-text-gray-more: #768299;
   --color-text-light-gray-more: #474747;
-  --color-text-orange:#CC6A21;
-  --color-text-dark:#22252B;
-  --color-text-light-setting:#32363F;
-  --color-text-setting-dark:#40444C;
-  --color-text-setting-light:#444953;
+  --color-text-orange: #CC6A21;
+  --color-text-dark: #22252B;
+  --color-text-light-setting: #32363F;
+  --color-text-setting-dark: #40444C;
+  --color-text-setting-light: #444953;
   --color-text-setting-darks: #232323;
 
   /* ===== Borders ===== */
@@ -98,6 +98,8 @@
   --breakpoint-xl: 1440px;
 }
 
+
+
 /* 
    Keep standard root variables if needed for other libs, 
    but mapped to our new theme values or just hardcoded.
@@ -113,7 +115,7 @@
   --color-brand-button: #8A38F5;
   --color-brand-business-button-light: #DCDCDC33;
   --color-brand-business-icon-light: #FFDFDF;
-  --color-brand-business-icon2-light: #DFEDFF;
+  --color-brand-business-icons-light: #DFEDFF;
   --color-brand-business-icon-dark: #185ADB;
 
   /* ===== Surfaces ===== */
@@ -203,11 +205,53 @@ input {
   color: black;
 }
 
-@layer components {
+@layer {
   .businessWalletBanner {
     background: radial-gradient(circle at center, #d1b9f1 0%, transparent 40%),
       linear-gradient(90deg, #8e47f6, #a766fd);
   }
+
+  .settingsContainer {
+    @apply w-full bg-white border border-border-gray-light rounded-[0.75rem] py-[1.375rem] px-[1rem]  overflow-y-auto;
+  }
+
+  .edit-button {
+    @apply text-text-dark font-secondary flex items-center gap-2 border-[1px] border-border-gray-light px-[18px] py-[6px] rounded-[8px]
+  }
+
+  .settings-title {
+    @apply font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px]
+  }
+  .settings-name{
+    @apply font-secondary text-text-secondary text-[14px] leading-[28px] 
+  }
+
+  .settings-subheading{
+    @apply text-text-gray-more font-primary font-semibold text-[18px] 
+  }
+  .settings-primary-heading{
+    @apply text-text-dark text-[1.375rem] font-semibold font-primary
+  }
+
+  .label{
+    @apply font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize cursor-pointer
+  }
+  .inputs{
+    @apply py-[12px] px-[16px] font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px]
+  }
+.select-list{
+  @apply py-[12px] px-[16px] cursor-pointer font-secondary text-[14px]  outline-none border-[1px] border-border-outline-light rounded-[12px] text-text-gray-more
+}
+.select-option{
+  @apply text-text-gray-more md:text-[14px] text-[12px]
+}
+.operations-input{
+  @apply md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px]
+}
+
+
+
+
 }
 
 @layer utilities {
@@ -248,6 +292,8 @@ button {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }

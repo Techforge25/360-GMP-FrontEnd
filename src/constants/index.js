@@ -216,9 +216,7 @@ export const cardsUser = [
   },
 ];
 
-export const businessWalletTabs = ["My Wallet",
-  "Earnings",
-  "Withdrawals"]
+export const businessWalletTabs = ["My Wallet", "Earnings", "Withdrawals"];
 export const transactions = [
   {
     id: 1,
@@ -380,9 +378,9 @@ export const sortOptionsByTime = [
   "Last 1 Week",
 ];
 
-export const tabsTransactionBusinessWallet = ["All"]
+export const tabsTransactionBusinessWallet = ["All"];
 
-export const tabsTransactionUserWallet = ["All"]
+export const tabsTransactionUserWallet = ["All"];
 
 export const walletTransactionTabs = ["Description/Date", "Status", "Amount"];
 
@@ -462,7 +460,7 @@ export const BUSINESS_TYPE_OPTIONS = [
   "Service Provider",
   "Consultant",
   "Franchise",
-  "Others"
+  "Others",
 ];
 
 export const COUNTRIES = [
@@ -748,8 +746,22 @@ export const stepFields = {
 
 export const digitsOnly = (value) => value.replace(/[^0-9]/g, "");
 export const digitsDecimalOnly = (value) => value.replace(/[^0-9.]/g, ""); // allow decimal for price
-export const subscriptionTableHeaders = ["Date", "Invoice ID", "Plans", "Amount", "Status"];
-export const routesSubscriptionCancelled = ["/onboarding/business-profile/", "/onboarding/user-profile/", "/onboarding/role", "reset-password", "forgot-password", "otp-verification", "signup"]
+export const subscriptionTableHeaders = [
+  "Date",
+  "Invoice ID",
+  "Plans",
+  "Amount",
+  "Status",
+];
+export const routesSubscriptionCancelled = [
+  "/onboarding/business-profile/",
+  "/onboarding/user-profile/",
+  "/onboarding/role",
+  "reset-password",
+  "forgot-password",
+  "otp-verification",
+  "signup",
+];
 
 export const popularTags = [
   "Innovation",
@@ -799,149 +811,160 @@ export const settingsTabs = [
 
 export const companyIdentityData = [
   {
-    lable:"Owner Name",
-    fieldsData:"Alex john"
+    lable: "Owner Name",
+    fieldsData: "Alex john",
   },
   {
-    lable:"Company Name",
-    fieldsData:"Global Manufacturing LLC"
+    lable: "Identification Of Business Owner Name",
+    fieldsData: "Alex John",
   },
   {
-    lable:"Trade Name",
-    fieldsData:"Manufacturing"
+    lable: "Company Name",
+    fieldsData: "Global Manufacturing LLC",
   },
   {
-    lable:"Business Type",
-    fieldsData:"Private Corporation"
+    lable: "Select Primary Industry",
+    fieldsData: "Manufacturing",
   },
   {
-    lable:"Founded Date",
-    fieldsData:"12-3-2023"
+    lable: "Trade Name",
+    fieldsData: "Manufacturing",
   },
   {
-    lable:"official company website",
-    fieldsData:"www.globalmanufacturing.com"
-  },
-]
-export const companyIdentityLeftData = [
-  {
-    lable:"identification of business owner name",
-    fieldsData:"Alex John"
+    lable: "Country Of Registration",
+    fieldsData: "USA",
   },
   {
-    lable:"select primary industry",
-    fieldsData:"Manufacturing"
+    lable: "Business Type",
+    fieldsData: "Private Corporation",
+  },
+
+  {
+    lable: "Company Size",
+    fieldsData: "12-40 Employees",
+  },
+
+  {
+    lable: "Founded Date",
+    fieldsData: "12-3-2023",
+  },
+
+  {
+    lable: "Operating Hours",
+    fieldsData: "Monday - Friday: 9:00 AM - 6:00 PM PST",
   },
   {
-    lable:"country of registration",
-    fieldsData:"USA"
+    lable: "Official Company Website",
+    fieldsData: "www.globalmanufacturing.com",
   },
+
   {
-    lable:"company size",
-    fieldsData:"12-40 Employes"
+    lable: "Operating Hours",
+    fieldsData: "Monday - Friday: 9:00 AM - 6:00 PM PST",
   },
-  {
-    lable:"Operating Hours",
-    fieldsData:"Monday - Friday: 9:00 AM - 6:00 PM PST"
-  },
-  {
-    lable:"Operating Hours",
-    fieldsData:"Monday - Friday: 9:00 AM - 6:00 PM PST"
-  },  
-]
+];
+
 
 export const OperationsAndLogisticsData = [
   {
-    lable:"country",
-    fieldsData:"Canada"
+    lable: "Country",
+    fieldsData: "Canada",
   },
   {
-    lable:"address line",
-    fieldsData:"block 123 carbon town Ottawa  "
+    lable: "City",
+    fieldsData: "Ottawa",
   },
   {
-    lable:"additional ware  house address",
-    fieldsData:"123 Maple Street, Toronto, ON M5V 2T6"
+    lable: "Address Line",
+    fieldsData: "Block 123 Carbon Town Ottawa  ",
+  },
+   {
+    lable: "Warehouse Address",
+    fieldsData: "123 Maple Street, Toronto, ON M5V 2T6",
   },
   {
-    lable:"business registration address",
-    fieldsData:"250 King Street W, Suite 1200, Toronto, ON M5V 3L9"
+    lable: "Additional Warehouse Address",
+    fieldsData: "123 Maple Street, Toronto, ON M5V 2T6",
   },
   {
-    lable:"city",
-    fieldsData:"Ottawa"
+    lable: "Mandatory Pickup Address",
+    fieldsData: "1 Maple Street, Toronto, ON M5V 2T6",
   },
   {
-    lable:"warehouse address",
-    fieldsData:"123 Maple Street, Toronto, ON M5V 2T6"
+    lable: "Business Registration Address",
+    fieldsData: "250 King Street W, Suite 1200, Toronto, ON M5V 3L9",
   },
   {
-    lable:"mandatory pickup address",
-    fieldsData:"1 Maple Street, Toronto, ON M5V 2T6"
+    lable: "International Office",
+    fieldsData: "1 Maple Street, Toronto, ON M5V 2T6",
   },
-  {
-    lable:"international office",
-    fieldsData:"1 Maple Street, Toronto, ON M5V 2T6"
-  },
-]
+ 
+  
+];
 
 export const standerdUnitWeight = [
-  {unit:"123",
-  value: "Kg"
-  },
-  {unit:"length",
-  value: "102cm"
-  },
-  {unit:"height",
-  value: "22cm"
-  },
-  {unit:"width",
-  value: "123cm"
-  },
-]
+  { unit: "123", value: "Kg" },
+  { unit: "length", value: "102cm" },
+  { unit: "height", value: "22cm" },
+  { unit: "width", value: "123cm" },
+];
 
-export const PAKING_TYPES = [
-  "costume box",
-  "Pallets",
-  "Industrial Wrap",
-]
+export const PAKING_TYPES = ["costume box", "Pallets", "Industrial Wrap"];
 
 export const BusinessIntelligenceDetails = [
   {
-    lable:"Contact person name",
-    fieldsData:"Sarah Jenkins"
+    lable: "Contact Person Name",
+    fieldsData: "Sarah Jenkins",
   },
   {
-    lable:"title",
-    fieldsData:"Head of Operations"
+    lable: "Phone",
+    fieldsData: "+171 50 123 4567",
   },
   {
-    lable:"Phone",
-    fieldsData:"+171 50 123 4567"
+    lable: "Title",
+    fieldsData: "Head of Operations",
   },
+  
   {
-    lable:"support Email",
-    fieldsData:"info@gmail.com"
+    lable: "Support Email",
+    fieldsData: "info@gmail.com",
   },
-]
+];
 
-export const regionOfOperations = [
-  "Local",
-  "GCC",
-  "European Union"
-]
+export const regionOfOperations = ["Local", "GCC", "European Union"];
 
 export const IOS_OPTIONS = [
   "ISO 9001",
   "CE certified",
   "TUV SUD",
   "FDA approved",
-  "Ethical Sourcing"
-]
-export const companySizeBusiness = ["1-50", "51-100", "101-150", "151-200", "201-250", "251-500", "501-1000", "1000-2500", "2500-5000"]
+  "Ethical Sourcing",
+];
+export const companySizeBusiness = [
+  "1-50",
+  "51-100",
+  "101-150",
+  "151-200",
+  "201-250",
+  "251-500",
+  "501-1000",
+  "1000-2500",
+  "2500-5000",
+];
 
-export const productionCapacityBusiness = ["1000-10000", "10001-20000", "20001-30000", "30001-40000", "40001-50000", "50001-60000", "60001-70000", "700001-80000", "80001-90000", "90001-100000"]
+export const productionCapacityBusiness = [
+  "1000-10000",
+  "10001-20000",
+  "20001-30000",
+  "30001-40000",
+  "40001-50000",
+  "50001-60000",
+  "60001-70000",
+  "700001-80000",
+  "80001-90000",
+  "90001-100000",
+];
 
-export const jobsDropDown = ["Edit Job", "Delete Job", "Job Detail"]
+export const jobsDropDown = ["Edit Job", "Delete Job", "Job Detail"];
 
-export const REGIONS = ["North America", "Europe", "Middle East", "Asia"];
+export const REGIONS = ["North America", "Europe", "Middle East", "Asia","Other"];

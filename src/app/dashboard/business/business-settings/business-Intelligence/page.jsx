@@ -5,7 +5,7 @@ import React from 'react'
 const page = () => {
   return (
     <div>
-        <SettingHeader backButton saveButton />
+        <SettingHeader backButton/>
 
         <BusinessIntelligenceForm  />
     </div>

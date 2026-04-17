@@ -2,70 +2,88 @@
 import React, { useState } from "react";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 
-const AddExecutiveLeadershipInputs = () => {
-  const [leaders, setLeaders] = useState([]);
-  const [errors, setErrors] = useState([]);
+const AddExecutiveLeadershipInputs = ({
+    buttonName,
+  heading,
+  placeholder,
+  name,
+  formData,
+  setFormData
+}) => {
+   const [errors, setErrors] = useState({});
+
+  const list = formData[name] || [];
 
   // Handle Change
   const handleChange = (index, value) => {
-    const updated = [...leaders];
-    updated[index].role = value;
-    setLeaders(updated);
+    const updated = [...list];
+    updated[index] = value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: updated
+    }));
   };
 
   // Remove
-  const removeLeader = (index) => {
-    const updated = leaders.filter((_, i) => i !== index);
-    setLeaders(updated);
+  const removeItem = (index) => {
+    const updated = list.filter((_, i) => i !== index);
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: updated
+    }));
   };
 
-  // Validate last row
+  // Validate
   const canAddMore = () => {
-    if (leaders.length === 0) return true;
+    if (list.length === 0) return true;
 
-    const last = leaders[leaders.length - 1];
+    const last = list[list.length - 1];
     let err = {};
 
     if (!last.role) err.role = "Field is required";
 
-    setErrors((prev) => {
-      const updated = [...prev];
-      updated[leaders.length - 1] = err;
-      return updated;
-    });
+    setErrors((prev) => ({
+      ...prev,
+      [list.length - 1]: err
+    }));
 
     return Object.keys(err).length === 0;
   };
 
   // Add
-  const addLeader = () => {
+  const addItem = () => {
     if (!canAddMore()) return;
 
-    setLeaders([...leaders, { role: "" }]);
+    setFormData((prev) => ({
+      ...prev,
+      [name]: [...prev[name], { name: "" }]
+    }));
   };
 
   return (
     <div>
-      <div className="space-y-4">
+      <div className="space-y-4 bg-brand-business-button-light py-[1rem] px-[1rem] rounded-[0.75rem]">
         <h2 className="text-[16px] font-semibold font-primary text-text-dark ">
-          Executive Leadership
+          {heading ? heading : "Executive Leadership"}
         </h2>
 
         {/* Inputs */}
-        {leaders.map((item, index) => (
+        {list?.map((item, index) => (
           <div key={index} className="space-y-1">
-            <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-[8px] items-center">
+            <div className="grid md:grid-cols-1 sm:grid-cols-1 grid-cols-1 gap-[8px] items-center">
               <input
                 value={item.role}
-                onChange={(e) => handleChange(index, e.target.value)}
-                placeholder="e.g CEO, MD, OFFICER"
-                className="md:py-[12px] py-[10px] md:px-[16px] px-[12px] w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more"
+              onChange={(e) => handleChange(index, e.target.value)}
+              placeholder={placeholder}
+                className="inputs"
               />
 
               <div>
                 <button
                   type="button"
-                  onClick={() => removeLeader(index)}
+                  onClick={() => removeItem(index)}
                   className="text-[14px] font-secondary border-[1px] border-border-outline-light px-[16px] py-[11px] rounded-[8px] bg-border-gray-light text-text-dark flex items-center gap-[4]"
                 >
                   <span>
@@ -86,10 +104,10 @@ const AddExecutiveLeadershipInputs = () => {
         {/* Button */}
         <button
           type="button"
-          onClick={addLeader}
-          className="text-[16px] font-semibold font-secondary border-[1px] border-border-outline-light px-[16px] py-[11px] rounded-[8px] bg-brand-primary text-white flex items-center gap-[4]"
+          onClick={addItem}
+          className="text-[16px] font-medium font-secondary border-[1px] border-border-outline-light px-[16px] py-[11px] rounded-[8px] bg-brand-primary text-white flex items-center gap-[4]"
         >
-          + Add Executive Leader
+          + {buttonName ? buttonName : "Add Executive Leader"}
         </button>
       </div>
     </div>

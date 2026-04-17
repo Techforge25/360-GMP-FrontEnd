@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { IoPersonRemoveOutline } from "react-icons/io5";
 const AddStakeHolderInputs = () => {
-  const [stakeholders, setStakeholders] = useState([]);
+  const [stakeholders, setStakeholders] = useState([{ name: "", ownershipPercentage: "" }]);
   const [errors, setErrors] = useState([]);
 
   // Handle Change
@@ -47,7 +47,7 @@ const AddStakeHolderInputs = () => {
 
   return (
     <div>
-      <div className="space-y-4">
+      <div className="space-y-4 bg-brand-business-button-light py-[1rem] px-[1rem] rounded-[0.75rem]">
         <h2 className="text-[16px] font-semibold font-primary text-text-dark ">
           Stakeholders
         </h2>
@@ -55,7 +55,7 @@ const AddStakeHolderInputs = () => {
         {/* Inputs */}
         {stakeholders.map((item, index) => (
           <div key={index} className="space-y-1">
-            <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1  gap-[8px] items-center">
+            <div className="grid md:grid-cols-2 sm:grid-cols-2 grid-cols-1  gap-[8px] items-center">
               <input
                 value={item.name}
                 onChange={(e) => handleChange(index, "name", e.target.value)}
@@ -104,7 +104,7 @@ const AddStakeHolderInputs = () => {
         <button
           type="button"
           onClick={addStakeholder}
-          className="text-[16px] font-semibold font-secondary border-[1px] border-border-outline-light px-[16px] py-[11px] rounded-[8px] bg-brand-primary text-white flex items-center gap-[4]"
+          className="text-[16px] font-medium font-secondary border-[1px] border-border-outline-light px-[16px] py-[11px] rounded-[8px] bg-brand-primary text-white flex items-center gap-[4]"
         >
           + Add Stakeholder
         </button>

@@ -1,7 +1,4 @@
-import {
-  companyIdentityData,
-  companyIdentityLeftData,
-} from "@/constants/index";
+import { companyIdentityData } from "@/constants/index";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -9,24 +6,24 @@ import { FaEdit } from "react-icons/fa";
 
 const CompanyIdentity = () => {
   return (
-    <div className="w-full h-[909px] bg-white border-[1px] border-border-gray-light rounded-[12px] py-[22px] px-[16px] overflow-hidden overflow-y-auto">
+    <div className="settingsContainer">
       {/* Header Business Settings */}
       <div className="flex items-center justify-between border-b-[1px] border-border-gray-light pb-4">
         <div className="flex items-center gap-[8px]">
-          <span>
+          <div>
             <Image
               src={"/assets/images/companyIdentityIcon.svg"}
               alt="/assets/images/companyIdentityIcon.svg"
               height={30}
               width={30}
             />
-          </span>
-          <span className="capitalize text-text-dark text-[22px] font-semibold font-primary">
-            company identity
-          </span>
+          </div>
+          <p className="settings-primary-heading">
+            Company Identity
+          </p>
         </div>
         <Link href={"business-settings/company-identity"}>
-          <button className="text-text-dark font-secondary flex items-center gap-2 border-[1px] border-border-gray-light px-[18px] py-[6px] rounded-[8px] ">
+          <button className="edit-button">
             <span className="text-[14px] font-secondary ">Edit</span>
             <span>
               <FaEdit size={20} />
@@ -42,36 +39,23 @@ const CompanyIdentity = () => {
         </p>
       </div>
 
-      {/* User Details  */}
+      {/* User Details  flex items-center md:justify-between justify-start sm:flex-row flex-col gap-[16px] */}
 
-      <div className="flex items-center md:justify-between justify-start sm:flex-row flex-col gap-[16px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 -gap-[16px]">
         {/* Start Left */}
-        <div className="w-full">
-          {companyIdentityData.map((item, ind) => (
-            <div key={ind} className={`${ind === 0 ? "" : "sm:my-6 my-2"}`}>
-              <p className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize ">
+        {companyIdentityData.map((item, ind) => (
+          <div key={ind} className="w-full">
+            <div className="my-2">
+              <p className="settings-title">
                 {item.lable}
               </p>
-              <p className="font-secondary text-text-secondary text-[14px] leading-[28px]  ">
+              <p className="settings-name">
                 {item.fieldsData}
               </p>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
         {/* Start Right */}
-
-        <div className="w-full">
-          {companyIdentityLeftData.map((item, ind) => (
-            <div className={`${ind === 0 ? "" : "sm:my-6 my-2"}`} key={ind}>
-              <p className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize ">
-                {item.lable}
-              </p>
-              <p className="font-secondary text-text-secondary text-[14px] leading-[28px]  ">
-                {item.fieldsData}
-              </p>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Mission/Bio */}
@@ -95,48 +79,34 @@ const CompanyIdentity = () => {
       {/* Legal compliance */}
 
       <div className="border-b border-border-gray-light pb-2">
-        <p className="capitalize text-text-gray-more font-primary font-semibold text-[18px] ">
-          Legal compliance
-        </p>
+        <p className="settings-subheading">Legal Compliance</p>
       </div>
 
       {/* Legal compliance details */}
       <div className="flex items-center md:justify-between justify-start sm:flex-row flex-col gap-[16px]">
         <div className="w-full">
           <div className="sm:my-4 my-2">
-            <p className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize ">
-              Registration Numbers
-            </p>
-            <p className="font-secondary text-text-secondary text-[14px] leading-[28px]  ">
-              Reg No: 987654321-ABC
-            </p>
+            <p className="settings-title">Registration Numbers</p>
+            <p className="settings-name">Reg No: 987654321-ABC</p>
           </div>
 
           <div className="sm:my-4 my-2">
-            <p className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize ">
-              Duns Number
-            </p>
-            <p className="font-secondary text-text-secondary text-[14px] leading-[28px]  ">
-              123
-            </p>
+            <p className="settings-title">Duns Number</p>
+            <p className="settings-name">123</p>
           </div>
         </div>
 
         <div className="w-full">
           <div className="sm:my-4 my-2">
-            <p className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize ">
-              Text identification number
-            </p>
-            <p className="font-secondary text-text-secondary text-[14px] leading-[28px]  ">
-              VAT: EU123456789
-            </p>
+            <p className="settings-title">Text identification number</p>
+            <p className="settings-name">VAT: EU123456789</p>
           </div>
 
           <div className="sm:my-4 my-2">
-            <p className="font-primary font-semibold md:text-[16px] text-[14px] text-text-dark leading-[28px] capitalize ">
-              select primary industry
+            <p className="settings-title ">
+              Select Primary Industry
             </p>
-            <p className="font-secondary text-text-secondary text-[14px] leading-[28px]  ">
+            <p className="settings-name ">
               Manufacturing
             </p>
           </div>

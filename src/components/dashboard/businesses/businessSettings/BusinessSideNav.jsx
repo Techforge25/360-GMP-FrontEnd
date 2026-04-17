@@ -31,7 +31,7 @@ const BusinessSideNav = ({ setActiveTab, activeTab }) => {
 
   return (
     <div className="p-6 flex items-start sm:flex-row flex-col justify-between gap-[16px]">
-      <div className="relative sm:border-[1px] sm:border-border-gray-light sm:bg-white sm:max-w-[275px] w-full rounded-[12px] overflow-hidden">
+      <div className="sm:sticky sm:top-28 relative sm:border-[1px] sm:border-border-gray-light sm:bg-white sm:max-w-[275px] w-full rounded-[12px] overflow-hidden">
         {/* Buttons */}
         <button
           onClick={scrollLeft}

@@ -1,15 +1,44 @@
-import { regionOfOperations } from "@/constants/index";
+"use client";
+import {
+  INCOTERMS_OPTIONS,
+  productionCapacityBusiness,
+  regionOfOperations,
+  REGIONS,
+} from "@/constants/index";
 import AddExecutiveLeadershipInputs from "./AddExecutiveLeadershipInputs";
 import AddStakeHolderInputs from "./AddStakeHolderInputs";
-import { IoIosSearch } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
+import { RiArrowDropDownLine } from "react-icons/ri";
+import { useState } from "react";
 
 const BusinessIntelligenceForm = () => {
+  const [selectedRegions, setSelectedRegions] = useState(["Europe"]);
+  const [formData, setFormData] = useState({
+    leadership: [""],
+    affiliations: [""],
+    offices: [""],
+  });
+
+  const handleChange = (region) => {
+    setSelectedRegions(
+      (prev) =>
+        prev.includes(region)
+          ? prev.filter((item) => item !== region) // remove
+          : [...prev, region], // add
+    );
+  };
+
+  const removeRegion = (region) => {
+    setSelectedRegions((prev) => prev.filter((item) => item !== region));
+  };
+
+  console.log(formData,"formData");
+
   return (
     <main className="py-[32px] px-[20px]">
       <div className="p-[30px] bg-white border border-border-outline-light rounded-[12px]">
         <div>
-          <h2 className="font-semibold font-primary md:text-[28px] sm:text-[22px] text-[18px] text-text-setting-darks ">
+          <h2 className="font-semibold font-primary md:text-[28px] sm:text-[22px] text-[18px] text-text-setting-darks">
             Business Intelligence
           </h2>
           <div className="md:py-[32px] sm:py-[22px] py-[18px] ">
@@ -20,9 +49,7 @@ const BusinessIntelligenceForm = () => {
         {/* Company Location */}
         <div>
           <div>
-            <h6 className="font-semibold font-primary md:text-[18px] text-[16px] text-text-setting-dark capitalize">
-              primary B2B contact
-            </h6>
+            <h6 className="settings-subheading">Primary B2B Contact</h6>
             <div className="md:pt-[16px] sm:pt-[14px] pb-[28px] md:pb-[32px] ">
               <div className="bg-border-outline-light h-[1px]" />
             </div>
@@ -32,30 +59,26 @@ const BusinessIntelligenceForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-[8px] md:gap-[16px]">
               <div className="flex flex-col md:gap-[8px] sm:gap-[6px] gap-[4px] ">
                 <div>
-                  <label className="text-[14px] font-semibold font-primary text-text-primary capitalize">
-                    contact person name
-                  </label>
+                  <label className="label">Contact Person Name</label>
                 </div>
                 <div>
                   <input
                     type="text"
                     placeholder="e.g John Doe"
-                    className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more  "
+                    className="operations-input"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col md:gap-[8px] sm:gap-[6px] gap-[4px] ">
                 <div>
-                  <label className="text-[14px] font-semibold font-primary text-text-primary capitalize">
-                    title
-                  </label>
+                  <label className="label">title</label>
                 </div>
                 <div>
                   <input
                     type="text"
                     placeholder="Title"
-                    className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more  "
+                    className="operations-input"
                   />
                 </div>
               </div>
@@ -64,30 +87,26 @@ const BusinessIntelligenceForm = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-[8px] md:gap-[16px]">
               <div className="flex flex-col md:gap-[8px] sm:gap-[6px] gap-[4px] ">
                 <div>
-                  <label className="text-[14px] font-semibold font-primary text-text-primary capitalize">
-                    phone
-                  </label>
+                  <label className="label">phone</label>
                 </div>
                 <div>
                   <input
                     type="text"
                     placeholder="e.g +1 234 567 890"
-                    className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more  "
+                    className="operations-input"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col md:gap-[8px] sm:gap-[6px] gap-[4px] ">
                 <div>
-                  <label className="text-[14px] font-semibold font-primary text-text-primary capitalize">
-                    support Email
-                  </label>
+                  <label className="label">support Email</label>
                 </div>
                 <div>
                   <input
                     type="email"
                     placeholder="e.g john.doe@example.com"
-                    className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more  "
+                    className="operations-input"
                   />
                 </div>
               </div>
@@ -105,7 +124,30 @@ const BusinessIntelligenceForm = () => {
 
               <div className="space-y-[10px]">
                 <AddStakeHolderInputs />
-                <AddExecutiveLeadershipInputs />
+                <AddExecutiveLeadershipInputs
+                  heading={"Executive Leadership"}
+                  buttonName={"Add Leadership"}
+                  placeholder={"e.g John Doe CEO"}
+                  name={"leadership"}
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+                <AddExecutiveLeadershipInputs
+                  heading={"Trade Affiliations"}
+                  buttonName={"Add Affiliations"}
+                  placeholder={"e.g Trade  Association"}
+                  name={"affiliations"}
+                  formData={formData}
+                  setFormData={setFormData}
+                />
+                <AddExecutiveLeadershipInputs
+                  heading={"International Offices"}
+                  buttonName={"Add Offices"}
+                  placeholder={"e.g Ottawa canada"}
+                  name={"offices"}
+                  formData={formData}
+                  setFormData={setFormData}
+                />
               </div>
             </div>
 
@@ -122,16 +164,17 @@ const BusinessIntelligenceForm = () => {
 
                 <div>
                   <p className="text-text-primary font-primary font-semibold text-[14px] capitalize">
-                    region of operation
+                    Region of Operation
                   </p>
 
                   <div className="flex items-center flex-wrap gap-[12px] py-[12px]">
-                    {regionOfOperations.map((region, index) => (
+                    {selectedRegions.map((region, index) => (
                       <button
                         key={index}
+                        type="button"
                         className="flex items-center gap-[4px] text-[14px] font-secondary py-[11px] px-[16px] bg-brand-primary border-[1px] border-border-outline-light rounded-[8px] text-white"
                       >
-                        <span>
+                        <span onClick={() => removeRegion(region)}>
                           <RxCross2 size={20} />
                         </span>
                         <span>{region}</span>
@@ -141,65 +184,70 @@ const BusinessIntelligenceForm = () => {
                 </div>
               </div>
 
-              <div className="relative">
-                <input
-                  type="text"
-                  className="md-py-[12px] py-[10px] md:py-[12px] py-[10px] md:px-[32px] px-[32px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px]    "
-                />
-                <IoIosSearch
-                  size={20}
-                  className="absolute left-[12px] top-1/2 -translate-y-1/2 text-text-gray-more pointer-events-none"
-                />
+              <div className="flex items-center flex-wrap justify-between">
+                {REGIONS.map((region, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center sm:gap-[8px] gap-[4px]"
+                  >
+                    <input
+                      type="checkbox"
+                      id={region}
+                      checked={selectedRegions.includes(region)}
+                      onChange={() => handleChange(region)}
+                      className="cursor-pointer accent-brand-primary w-[17px] h-[17px] "
+                    />
+                    <label
+                      htmlFor={region}
+                      className="text-[14px] font-secondary cursor-pointer text-text-gray-more"
+                    >
+                      {region}
+                    </label>
+                  </div>
+                ))}
               </div>
 
               <div className="flex flex-col md:gap-[8px] sm:gap-[6px] gap-[4px] py-[16px] ">
                 <div>
-                  <label className="text-[14px] font-semibold font-primary text-text-primary capitalize">
-                    product capacity
-                  </label>
+                  <label className="label">Product Capacity</label>
                 </div>
-                <div>
-                  <input
-                    type="number"
-                    placeholder="00.00"
-                    className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more  "
+                <div className="relative">
+                  <select className="w-full appearance-none md:py-[12px] py-[10px] md:px-[16px] px-[12px] pr-[40px] border border-border-gray-light rounded-[12px] cursor-pointer text-[14px] font-secondary text-text-gray-more outline-none">
+                    <option>Select option</option>
+                    {productionCapacityBusiness.map((option, ind) => (
+                      <option
+                        className="text-[14px] font-secondary text-text-gray-more"
+                        key={ind}
+                        value={option}
+                      >
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Custom Icon */}
+                  <RiArrowDropDownLine
+                    size={26}
+                    className="absolute right-[12px] top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none text-black "
                   />
                 </div>
 
-                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-[8px] md:gap-[16px]">
-                  <select  className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more w-full  " >
-                    <option value="">Prices</option>
-                    <option value="">400$</option>
-                    <option value="">600$</option>
-                  </select>
-
-                    <select  className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more w-full  " >
-                    <option value="">Per Month</option>
-                    <option value="">400$</option>
-                    <option value="">600$</option>
-                  </select>
-                 
-                </div>
-
                 <div>
-                  <label className="text-[14px] font-semibold font-primary text-text-primary capitalize">
-                    Trade affiliation
-                  </label>
+                  <label className="label">Trade affiliation</label>
                 </div>
                 <div>
                   <input
                     type="text"
                     placeholder="Trade affiliation"
-                    className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more  "
+                    className="operations-input"
                   />
                 </div>
               </div>
 
-
-               <div>
+              <div>
                 <div>
                   <h6 className="font-semibold font-primary md:text-[18px] text-[16px] text-text-setting-dark capitalize">
-                    financial and regulatory 
+                    financial and regulatory
                   </h6>
                   <div className="md:pt-[16px] sm:pt-[14px] pb-[28px] md:pb-[32px] ">
                     <div className="bg-border-outline-light h-[1px]" />
@@ -207,29 +255,24 @@ const BusinessIntelligenceForm = () => {
                 </div>
 
                 <div className="flex flex-col md:gap-[8px] sm:gap-[6px] gap-[4px] ">
-                <div>
-                  <label className="text-[14px] font-semibold font-primary text-text-primary capitalize">
-                    Auditing Agency
-                  </label>
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    placeholder="e.g., SGS, Intertek, PWC, or Local Auditor"
-                    className="md:py-[12px] py-[10px] md:px-[16px] px-[12px]  w-full outline-none border-[1px] text-text-gray-more border-border-gray-light rounded-[12px] text-[14px] font-secondary placeholder:capitalize placeholder:text-text-gray-more placeholder:text-[14px] text-text-gray-more  "
-                  />
+                  <div>
+                    <label className="label">Auditing Agency</label>
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="e.g., SGS, Intertek, PWC, or Local Auditor"
+                      className="operations-input"
+                    />
+                  </div>
                 </div>
               </div>
+            </div>
 
-                
-              </div>
-
-
-
-
-
-
-
+            <div>
+              <button className="bg-brand-primary px-[24] py-[10] rounded-[12px] hover:bg-brand-primary ">
+                Save Changes
+              </button>
             </div>
           </form>
         </div>

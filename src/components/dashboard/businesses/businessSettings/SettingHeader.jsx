@@ -28,13 +28,7 @@ const SettingHeader = ({ backButton, saveButton }) => {
               Manage your company's digital presence and operations.
             </p>
           </div>
-          {saveButton && (
-            <div>
-              <button className="bg-brand-primary px-[24] py-[10] rounded-[12px] hover:bg-brand-primary ">
-                Save Changes
-              </button>
-            </div>
-          )}
+         
         </div>
       </div>
     </section>
